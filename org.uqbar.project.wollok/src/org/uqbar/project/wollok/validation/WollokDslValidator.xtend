@@ -791,9 +791,17 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 				]
 		}
 		// Variable is never used
-		if (!variable.isUsed && !property)
+		if (!variable.isUsed && !variable.isGlobal && !property)
 			warning(WollokDslValidator_VARIABLE_NEVER_USED, it, WVARIABLE_DECLARATION__VARIABLE,
 				WARNING_UNUSED_VARIABLE)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def globalVariablesNotAllowed(WVariableDeclaration it) {
+		if (writeable && variable.isGlobal) {
+			report(WollokDslValidator_GLOBAL_VARIABLE_NOT_ALLOWED, it, WVARIABLE_DECLARATION__VARIABLE)
+		}
 	}
 
 	@Check

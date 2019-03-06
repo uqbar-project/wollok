@@ -56,6 +56,7 @@ import static extension org.eclipse.xtext.EcoreUtil2.*
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.notNullAnd
+import org.uqbar.project.wollok.wollokDsl.WNamed
 
 /**
  * Extension methods for WMethodContainers.
@@ -100,8 +101,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch body(WClosure it) { expression }
 	def static dispatch body(WMethodDeclaration it) { expression }
 
-	def static namedObjects(WPackage p){p.elements.filter(WNamedObject)}
-	def static namedObjects(WFile p){p.elements.filter(WNamedObject)}
+	def static namedElements(WFile it){ elements.map[named]}
+	def static namedElements(WPackage it){ elements.map[named]}
+	def static dispatch named(WNamed it) { it }
+	def static dispatch named(WVariableDeclaration it) { variable }
 
 	def static boolean isAbstract(WMethodContainer it) { !unimplementedAbstractMethods.empty }
 

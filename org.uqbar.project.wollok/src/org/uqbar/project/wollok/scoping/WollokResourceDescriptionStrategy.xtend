@@ -12,6 +12,7 @@ import org.eclipse.xtext.util.IAcceptor
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WPackage
+import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 /**
  * Customizes the strategy in order to avoid exporting all "named" objects
@@ -32,6 +33,10 @@ class WollokResourceDescriptionStrategy extends DefaultResourceDescriptionStrate
 			super.createEObjectDescriptions(eObject, acceptor)
 		else if (eObject instanceof WMethodContainer) {
 			super.createEObjectDescriptions(eObject, acceptor)
+			false
+		}
+		else if (eObject instanceof WVariableDeclaration && eObject.eContainer instanceof WFile) {
+			super.createEObjectDescriptions((eObject as WVariableDeclaration).variable, acceptor)
 			false
 		}
 		else
