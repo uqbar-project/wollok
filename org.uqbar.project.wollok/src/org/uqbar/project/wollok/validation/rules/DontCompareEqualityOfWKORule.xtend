@@ -20,12 +20,12 @@ class DontCompareEqualityOfWKORule {
 		}
 	}
 
-	def static dispatch boolean isBinaryOperationInsideIfCondition(EObject _) { false }
+	def static dispatch boolean isBinaryOperationInsideIfCondition(EObject unused) { false }
 	def static dispatch boolean isBinaryOperationInsideIfCondition(WBinaryOperation expression) {
 		isBinaryOperationInsideIfCondition(expression, expression.eContainer)
 	}
 
-	def static dispatch isBinaryOperationInsideIfCondition(WBinaryOperation expression, EObject _) { false }
+	def static dispatch isBinaryOperationInsideIfCondition(WBinaryOperation expression, EObject unused) { false }
 
 	def static dispatch isBinaryOperationInsideIfCondition(WBinaryOperation expression, WBinaryOperation container) {
 		isBinaryOperationInsideIfCondition(container)

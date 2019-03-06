@@ -56,7 +56,7 @@ WPackage:
 ;
 
 // reglas generales (solo para ordenar y para fijar bien las relaciones entre clases porque a veces xtext no genera bien.
-WLibraryElement: (WPackage | WClass | WNamedObject | WMixin);
+WLibraryElement: (WPackage | WClass | WNamedObject | WMixin | WVariableDeclaration);
 WNamed: WMethodDeclaration | WReferenciable | WPackage | WClass | WMixin;
 WMethodContainer: WClass | {WObjectLiteral} | WNamedObject | WMixin | WSuite;
 WReferenciable: WParameter | {WVariable} | WNamedObject ;

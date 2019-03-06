@@ -8,6 +8,7 @@ import org.junit.Ignore
  * Test representative error messages for fixtures
  * @author dodain
  */
+@Ignore
 class FixtureParserTest extends AbstractWollokInterpreterTestCase {
 	
 	@Test

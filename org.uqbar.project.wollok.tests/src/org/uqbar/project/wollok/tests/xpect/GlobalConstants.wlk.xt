@@ -1,0 +1,20 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+// XPECT errors --> "Global variables are not allowed" at "x"
+var x = 1
+
+// XPECT errors --> "Variable is never assigned" at "w"
+const w
+
+// XPECT errors --> "Duplicated Name" at "y"
+const y = 1
+
+// XPECT errors --> "Duplicated Name" at "y"
+object y {}
+
+// XPECT errors --> "Duplicated Name" at "z"
+const z = 1
+
+// XPECT errors --> "Duplicated Name" at "z"
+const z = 1
+

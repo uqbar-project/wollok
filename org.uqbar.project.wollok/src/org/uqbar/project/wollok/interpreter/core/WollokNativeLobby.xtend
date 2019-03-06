@@ -8,7 +8,6 @@ import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeNativeObject
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * Contiene metodos "nativos" que están disponibles

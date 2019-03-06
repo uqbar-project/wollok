@@ -14,6 +14,7 @@ import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.core.CallableSuper
+import org.uqbar.project.wollok.interpreter.core.WCallable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
@@ -50,6 +51,7 @@ import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
+import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral
@@ -60,6 +62,7 @@ import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
+import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
@@ -70,6 +73,7 @@ import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtil
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
 /**
@@ -113,7 +117,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	protected def EvaluationContext<WollokObject> currentContext() {
 		interpreter.currentContext
 	}
-	
+
 	/* BINARY */
 	override resolveBinaryOperation(String operator) { operator.asBinaryOperation }
 
@@ -140,12 +144,12 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		elements.evalAll
 	}
 
-	def dispatch WollokObject evaluate(WTest it) { elements.evalAll	}
+	def dispatch WollokObject evaluate(WTest it) { elements.evalAll }
 
 	def dispatch WollokObject evaluate(WSuite it) {
 		tests.fold(null) [ a, test |
 			members.forEach[m|evaluate(m)]
-			fixture.elements.forEach [ evaluate ]
+			fixture.elements.forEach[evaluate]
 			test.eval
 		]
 	}
@@ -153,21 +157,21 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def dispatch WollokObject evaluate(WMethodDeclaration it) {}
 
 	def dispatch WollokObject evaluate(WVariableDeclaration it) {
-		interpreter.currentContext.addReference(variable.name, right?.eval)
+		interpreter.currentContext.addReference(variable.variableName, right?.eval)
 		WollokDSK.getVoid(interpreter as WollokInterpreter, it)
 	}
 
 	def dispatch WollokObject evaluate(WVariableReference it) {
-		if (ref instanceof WNamedObject)
-			return ref.eval
-		
-		val variableName = ref.name
-		if (variableName === null) {
+		if (ref.name === null) {
 			throw new UnresolvableReference(Messages.LINKING_COULD_NOT_RESOLVE_REFERENCE.trim + " " + astNode.text.trim)
 		}
-		interpreter.currentContext.resolve(variableName)
+
+		if(ref.isGlobal) ref.ensureInitialization
+		interpreter.currentContext.resolve(ref.variableName)
 	}
-	
+
+	def variableName(WReferenciable it) { if(isGlobal) qualifiedName else name }
+
 	def dispatch WollokObject evaluate(WIfExpression it) {
 		val cond = condition.eval
 
@@ -176,13 +180,15 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			throw newWollokExceptionAsJava(NLS.bind(Messages.WollokInterpreter_cannot_use_null_in_if, NULL))
 		}
 		if (!(cond.isWBoolean))
-			throw new WollokInterpreterException(NLS.bind(Messages.WollokInterpreter_expression_in_if_must_evaluate_to_boolean, cond, cond?.class.name), it)
+			throw new WollokInterpreterException(
+				NLS.bind(Messages.WollokInterpreter_expression_in_if_must_evaluate_to_boolean, cond, cond?.class.name),
+				it)
 
-		if (wollokToJava(cond, Boolean) == Boolean.TRUE)
-			then.eval
-		else
-			^else?.eval
-	}
+			if (wollokToJava(cond, Boolean) == Boolean.TRUE)
+				then.eval
+			else
+				^else?.eval
+		}
 
 	def dispatch WollokObject evaluate(WTry t) {
 		try
@@ -214,7 +220,9 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		throw new WollokProgramExceptionWrapper(obj, t)
 	}
 
-	def boolean matches(WCatch cach, WollokObject it) { cach.exceptionType === null || isKindOf(cach.exceptionType) }
+	def boolean matches(WCatch cach, WollokObject it) {
+		cach.exceptionType === null || isKindOf(cach.exceptionType)
+	}
 
 	// literals
 	def dispatch WollokObject evaluate(WStringLiteral it) { newInstanceWithWrapped(STRING, value) }
@@ -277,11 +285,11 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			l.addMixinsMembers(wo)
 			if (l.hasParentParameterValues)
 				wo.invokeConstructor(l.parentParameters.values.evalEach)
-			
+
 			if (l.hasParentParameterInitializers) {
-				wo.initialize(l.parentParameters.initializers)
+				wo.initializeObject(l.parentParameters.initializers)
 			}
-				
+
 		]
 	}
 
@@ -299,7 +307,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def addMixinsMembers(WMethodContainer it, WollokObject wo) {
 		mixins.forEach[addMembersTo(wo)]
 	}
-	
+
 	def dispatch evaluate(WReturnExpression it) {
 		throw new ReturnValueException(expression.eval)
 	}
@@ -335,62 +343,20 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			classRef.addMixinsMembers(wo)
 		]
 	}
-	
+
 	def newInstance(WClass classRef, WollokObject... arguments) {
 		if (!classRef.hasConstructorForArgs(arguments.size)) {
-			throw newWollokExceptionAsJava(Messages.WollokDslValidator_WCONSTRUCTOR_CALL__ARGUMENTS + " " + classRef.prettyPrintConstructors)
+			throw newWollokExceptionAsJava(Messages.WollokDslValidator_WCONSTRUCTOR_CALL__ARGUMENTS + " " +
+				classRef.prettyPrintConstructors)
 		}
 		val wo = classRef.createInstance
 		wo.invokeConstructor(arguments.toArray(newArrayOfSize(arguments.size)))
 		wo
 	}
 
-	def newInstance(WClass classRef, EList<WInitializer> initializers) {
-		val wo = classRef.createInstance
-		wo.initialize(initializers)
-		wo
-	}
-
-	def initialize(WollokObject wo, EList<WInitializer> namedParameters) {
-		namedParameters.forEach([ namedParameter | 
-			wo.setReference(namedParameter.initializer.name, namedParameter.initialValue.eval)
-		])
-	}
-	
-	def dispatch evaluate(WNamedObject namedObject) {
-		val qualifiedName = qualifiedNameProvider.getFullyQualifiedName(namedObject).toString
-
-		val x = try {
-			interpreter.currentContext.resolve(qualifiedName)
-		} catch (UnresolvableReference e) {
-			createNamedObject(namedObject, qualifiedName)
-		}
-		x
-	}
-
-	def createNamedObject(WNamedObject namedObject, String qualifiedName) {
-		new WollokObject(interpreter, namedObject) => [ wo |
-			// first add it to solve cross-refs !
-			interpreter.currentContext.addGlobalReference(qualifiedName, wo)
-			try {
-				namedObject.addObjectMembers(wo)
-				namedObject.parent.addInheritsMembers(wo)
-				namedObject.addMixinsMembers(wo)
-
-				if (namedObject.native)
-					wo.nativeObjects.put(namedObject, namedObject.createNativeObject(wo, interpreter))
-
-				if (namedObject.hasParentParameterValues)
-					wo.invokeConstructor(namedObject.parentParameters.values.evalEach)
-
-				if (namedObject.hasParentParameterInitializers)
-					wo.initialize(namedObject.parentParameters.initializers)
-					
-			} catch (RuntimeException e) {
-				// if init failed remove it !
-				interpreter.currentContext.removeGlobalReference(qualifiedName)
-				throw e
-			}
+	def newInstance(WClass wollokClass, EList<WInitializer> initializers) {
+		wollokClass.createInstance => [
+			initializeObject(initializers)
 		]
 	}
 
@@ -406,15 +372,15 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	def createCollection(String collectionName, List<WExpression> elements) {
 		newInstance(collectionName) => [
-			elements.forEach [ e |	
+			elements.forEach [ e |
 				call("add", e.eval)
 			]
 		]
 	}
 
 	// other expressions
-	def dispatch WollokObject evaluate(WBlockExpression b) { 
-		if (b.expressions.isEmpty) 
+	def dispatch WollokObject evaluate(WBlockExpression b) {
+		if (b.expressions.isEmpty)
 			return WollokDSK.getVoid(interpreter as WollokInterpreter, b)
 
 		b.expressions.evalAll
@@ -426,9 +392,9 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		WollokDSK.getVoid(interpreter as WollokInterpreter, a)
 	}
 
-	// ********************************************************
-	// ** operations (unary, binary, multiops, postfix)
-	// ********************************************************
+	// ********************************************************************************************
+	// ** Operations (unary, binary, multiops, postfix)
+	// ********************************************************************************************
 	def dispatch WollokObject evaluate(WBinaryOperation binary) {
 		if (binary.isMultiOpAssignment) {
 			val reference = binary.leftOperand
@@ -438,7 +404,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			val operation = binary.feature
 			validateNullOperand(leftOperand, operation)
 			validateVoidOperand(leftOperand, binary.leftOperand)
-			operation.asBinaryOperation.apply(leftOperand, binary.rightOperand.lazyEval)// this is just for the null == null comparisson. Otherwise is re-retrying to convert
+			operation.asBinaryOperation.apply(leftOperand, binary.rightOperand.lazyEval) // this is just for the null == null comparisson. Otherwise is re-retrying to convert
 			.javaToWollok
 		}
 
@@ -446,7 +412,8 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	private def validateNullOperand(WollokObject leftOperand, String operation) {
 		if (leftOperand === null && !#["==", "!=", "===", "!=="].contains(operation)) {
-			throw newWollokExceptionAsJava(NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST, NULL, operation))
+			throw newWollokExceptionAsJava(
+				NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST, NULL, operation))
 		}
 	}
 
@@ -460,7 +427,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			])
 		]
 	}
-	
+
 	def dispatch WollokObject evaluate(WPostfixOperation op) {
 		op.operand.performOpAndUpdateRef(op.feature.substring(0, 1), [|getOrCreateNumber("1")])
 	}
@@ -473,10 +440,11 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		validateNullOperand(reference.eval, operator)
 		val variableName = (reference as WVariableReference).ref.name
 		if (variableName === null) {
-			throw new UnresolvableReference(Messages.LINKING_COULD_NOT_RESOLVE_REFERENCE.trim + " " + reference.astNode.text)
+			throw new UnresolvableReference(Messages.LINKING_COULD_NOT_RESOLVE_REFERENCE.trim + " " +
+				reference.astNode.text)
 		}
 		val newValue = operator.asBinaryOperation.apply(reference.eval, rightPart).javaToWollok
-		
+
 		interpreter.currentContext.setReference(variableName, newValue)
 		WollokDSK.getVoid(interpreter as WollokInterpreter, reference)
 	}
@@ -496,23 +464,81 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		val target = call.evaluateTarget
 		val memberTarget = call.memberTarget
 		if (target === null) {
-			throw newWollokExceptionAsJava(NLS.bind(Messages.WollokDslValidator_REFERENCE_UNITIALIZED, memberTarget.sourceCode.trim))
+			throw newWollokExceptionAsJava(
+				NLS.bind(Messages.WollokDslValidator_REFERENCE_UNITIALIZED, memberTarget.sourceCode.trim))
 		}
 		
-		if (call.isVoid && memberTarget !== null && !ignoreVoidValidation) {
-			throw newWollokExceptionAsJava(NLS.bind(Messages.WollokDslValidator_VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES, memberTarget.sourceCode.trim)) 
+		if (target.isVoid(call) && memberTarget !== null && !ignoreVoidValidation) {
+			throw newWollokExceptionAsJava(
+				NLS.bind(Messages.WollokDslValidator_VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES,
+					memberTarget.sourceCode.trim))
 		}
 		val parameters = call.memberCallArguments.evalEach
-		parameters.forEach [ param, i | param.validateVoidOperand(call.memberCallArguments.get(i)) ]
+		parameters.forEach[param, i|param.validateVoidOperand(call.memberCallArguments.get(i))]
 		target.call(call.feature, parameters)
 	}
 	
 	private def void validateVoidOperand(WollokObject o, WExpression expression) {
-		if (o !== null && o.isVoid && !ignoreVoidValidation) {
-			throw newWollokExceptionAsJava(NLS.bind(Messages.WollokDslValidator_VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES, expression.sourceCode.trim)) 
+		if (o !== null && o.isVoid(expression) && !ignoreVoidValidation) {
+			throw newWollokExceptionAsJava(
+				NLS.bind(Messages.WollokDslValidator_VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES,
+					expression.sourceCode.trim))
+		}
+	}
+
+	// ********************************************************************************************
+	// ** Initialization of objects and references
+	// ********************************************************************************************
+	def initializeObject(WollokObject wollokObject, EList<WInitializer> namedParameters) {
+		namedParameters.forEach([ namedParameter |
+			wollokObject.setReference(namedParameter.initializer.name, namedParameter.initialValue.eval)
+		])
+	}
+
+	def void ensureInitialization(WReferenciable it) {
+		try {
+			// Tries to get value but is never used, could be improved.
+			interpreter.currentContext.resolve(qualifiedName)
+		} catch (UnresolvableReference e) {
+			initializeReference
 		}
 	}
 	
+	def dispatch void initializeReference(WNamedObject it) { createNamedObject(qualifiedName) }
+
+	def dispatch void initializeReference(WVariable it) { eContainer.eval }
+
+	def createNamedObject(WNamedObject namedObject, String qualifiedName) {
+		new WollokObject(interpreter, namedObject) => [ wollokObject |
+			// first add it to solve cross-refs !
+			interpreter.currentContext.addGlobalReference(qualifiedName, wollokObject)
+			try {
+				namedObject.addObjectMembers(wollokObject)
+				namedObject.parent.addInheritsMembers(wollokObject)
+				namedObject.addMixinsMembers(wollokObject)
+
+				if (namedObject.native)
+					wollokObject.nativeObjects.put(namedObject,
+						namedObject.createNativeObject(wollokObject, interpreter))
+
+				if (namedObject.hasParentParameterValues)
+					wollokObject.invokeConstructor(namedObject.parentParameters.values.evalEach)
+
+				if (namedObject.hasParentParameterInitializers)
+					wollokObject.initializeObject(namedObject.parentParameters.initializers)
+
+			} catch (RuntimeException e) {
+				// if init failed remove it !
+				interpreter.currentContext.removeGlobalReference(qualifiedName)
+				throw e
+			}
+		]
+	}
+
+	def qualifiedName(EObject it) {
+		qualifiedNameProvider.getFullyQualifiedName(it).toString
+	}
+
 	// ********************************************************************************************
 	// ** Helpers
 	// ********************************************************************************************
@@ -530,7 +556,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		}
 	}
 
-	def isVoid(EObject object) {
-		object === getVoid(interpreter, object)
-	}
+	def dispatch isVoid(WollokObject object, EObject context) { object === getVoid(interpreter, context) }
+	def dispatch isVoid(CallableSuper call, EObject context) { false }
 }
+	
