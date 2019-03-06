@@ -83,8 +83,8 @@ class GenericTypeInfo extends TypeInfo {
 	}
 
 	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable offender) {
-		minTypes.statesDo(offender) [
-			if(!offender.hasErrors(type)) {
+		minTypes.allStatesDo(offender) [
+			if(!offender.hasErrors(type) && !maxTypes.empty) {
 				val matchingMaxType = maxTypes.findMatching(type)
 				if(matchingMaxType !== null) {
 					type.beSubtypeOf(matchingMaxType)
@@ -141,9 +141,9 @@ class GenericTypeInfo extends TypeInfo {
 	}
 
 	def validateType(WollokType type, TypeVariable offender) {
-		val readyMinTypes = minTypes.filter[k, value| value == Ready]
-		if(sealed && !readyMinTypes.empty && !readyMinTypes.keySet.exists[isSuperTypeOf(type)]) {
-			throw new RejectedMinTypeException(offender, type, readyMinTypes.keySet)
+		val readyMinTypes = minTypes.filter[k, value| value != Error ].keySet
+		if(sealed && !readyMinTypes.empty && !readyMinTypes.exists[isSuperTypeOf(type)]) {
+			throw new RejectedMinTypeException(offender, type, readyMinTypes)
 		}
 
 		validMessages.forEach [

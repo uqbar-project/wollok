@@ -33,6 +33,10 @@ class AnalysisResultReporter<T> {
 	def ready() { currentEntry.value = Ready }
 
 	def pending() { currentEntry.value = Pending }
+	
+	def newState(ConcreteTypeState state) {
+		currentEntry.value = state
+	}
 
 	def error(TypeSystemException typeError) {
 		offender.addError(typeError)
@@ -44,20 +48,19 @@ class AnalysisResultReporter<T> {
 	 * updating each state according to action result 
 	 * and reporting errors to the indicated type variable.
 	 */
-	static def <T> statesDo(Map<T, ConcreteTypeState> states, TypeVariable errorTarget, Consumer<AnalysisResultReporter<T>> action) {
+	static def <T> allStatesDo(Map<T, ConcreteTypeState> states, TypeVariable errorTarget, Consumer<AnalysisResultReporter<T>> action) {
 		val reporter = new AnalysisResultReporter(errorTarget)
 		states.entrySet.forEach [
 			reporter.currentEntry = it
 			action.accept(reporter)
 		]
 	}
+	
 
-	static def <T> pendingStatesDo(Map<T, ConcreteTypeState> states, TypeVariable errorTarget, Consumer<AnalysisResultReporter<T>> action) {
-		val reporter = new AnalysisResultReporter(errorTarget)
-		states.entrySet.forEach [
-			if (value == Pending) {
-				reporter.currentEntry = it
-				action.accept(reporter)
+	static def <T> statesWithValueDo(Map<T, ConcreteTypeState> states, ConcreteTypeState state, TypeVariable errorTarget, Consumer<AnalysisResultReporter<T>> action) {
+		states.allStatesDo(errorTarget) [
+			if (it.state == state) {
+				action.accept(it)
 			}
 		]
 	}
