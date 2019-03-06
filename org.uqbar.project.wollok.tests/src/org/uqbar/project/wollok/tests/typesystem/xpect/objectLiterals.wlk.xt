@@ -5,7 +5,8 @@ class Persona {
 	// XPECT type at hambriento -->  { cena }
 	var hambriento = object {
 		var a = 0
-		
+	
+		// XPECT methodType at cena() --> () => Number	
 		method cena() {
 			return a
 		}
@@ -13,18 +14,25 @@ class Persona {
 	
 	// XPECT type at charlatan -->  { habla }
 	var charlatan = object {
+		// XPECT methodType at habla() --> () => String
 		method habla() = "Hola"
 	}
 	
 	// XPECT type at multifacetico -->  { habla; cena }
 	var multifacetico = object {
+		// XPECT methodType at habla() --> () => String
 		method habla() = "Chau"
+		
+		// XPECT methodType at cena() --> () => Number
 		method cena() = 100
 	}
 	
 	// XPECT type at friki -->  { habla; cena }
 	var friki = object {
+		// XPECT methodType at habla() --> () => Number
 		method habla() = 42
+		
+		// XPECT methodType at cena() --> () => String
 		method cena() = "Wollok"
 	}
 	
@@ -63,7 +71,7 @@ class Persona {
 	// XPECT methodType at hacerHablarAFriki() -->  () => (Number|String)	
 	method hacerHablarAFriki() = self.hacerHablar(friki)
 	
-	// XPECT! warnings --> "{ cena } does not understand habla()" at "hambriento"
+	// XPECT warnings --> "Type system: expected <<{ habla ; cena }|{ habla ; cena }|{ habla }>> but found <<{ cena }>>" at "hambriento"
 	method hacerHablarAHambriento() = self.hacerHablar(hambriento)
 
 	// XPECT methodType at hacerHablar(personalidad) --> (({ habla ; cena }|{ habla ; cena }|{ habla })) => (Number|String)
