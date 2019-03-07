@@ -15,6 +15,7 @@ class RejectedMinTypeException extends TypeSystemException {
 	Set<WollokType> expectedTypes = newHashSet
 	
 	new(TypeVariable variable, WollokType type) {
+		super(variable)
 		this.type = type
 	}
 
