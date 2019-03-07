@@ -625,6 +625,7 @@ Library.
       <feature id="org.eclipse.egit"/>
       <feature id="code.satyagraha.gfm.viewer.feature"/>
       <feature id="org.eclipse.jgit"/>
+      <feature id="SGit"/>
    </features>
 
    <configurations>
