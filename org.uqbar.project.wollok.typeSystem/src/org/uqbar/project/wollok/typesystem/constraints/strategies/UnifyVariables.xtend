@@ -135,11 +135,11 @@ class UnifyVariables extends AbstractInferenceStrategy {
 	}
 	
 	def dispatch doUnifyWith(GenericTypeInfo t1, VoidTypeInfo t2) {
-		Ready
+		Error
 	}
 
 	def dispatch doUnifyWith(VoidTypeInfo t1, GenericTypeInfo t2) {
-		Ready
+		Error
 	}
 
 	protected def minTypesUnion(GenericTypeInfo t1, GenericTypeInfo t2) {
