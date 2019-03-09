@@ -1,10 +1,9 @@
 package org.uqbar.project.wollok.typesystem.constraints
 
-import com.google.inject.Inject 
+import com.google.inject.Inject
 import java.util.List
 import java.util.Map
 import java.util.Set
-import org.apache.log4j.Level
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.osgi.util.NLS
@@ -18,6 +17,8 @@ import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.MessageType
 import org.uqbar.project.wollok.typesystem.Messages
 import org.uqbar.project.wollok.typesystem.NamedObjectType
+import org.uqbar.project.wollok.typesystem.ObjectLiteralType
+import org.uqbar.project.wollok.typesystem.SuiteType
 import org.uqbar.project.wollok.typesystem.TypeFactory
 import org.uqbar.project.wollok.typesystem.TypeProvider
 import org.uqbar.project.wollok.typesystem.TypeSystem
@@ -34,7 +35,8 @@ import org.uqbar.project.wollok.typesystem.constraints.strategies.GuessMinTypeFr
 import org.uqbar.project.wollok.typesystem.constraints.strategies.MaxTypesFromMessages
 import org.uqbar.project.wollok.typesystem.constraints.strategies.OpenMethod
 import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagateMaximalTypes
-import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagateMinimalTypes
+import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagatePendingMinimalTypes
+import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagatePostponedMinimalTypes
 import org.uqbar.project.wollok.typesystem.constraints.strategies.SealVariables
 import org.uqbar.project.wollok.typesystem.constraints.strategies.UnifyVariables
 import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.AnnotatedTypeRegistry
@@ -45,15 +47,13 @@ import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
+import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
+import org.uqbar.project.wollok.wollokDsl.WSuite
 
 import static org.uqbar.project.wollok.scoping.WollokResourceCache.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.fqn
 import static extension org.uqbar.project.wollok.typesystem.annotations.TypeDeclarations.*
-import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
-import org.uqbar.project.wollok.typesystem.ObjectLiteralType
-import org.uqbar.project.wollok.wollokDsl.WSuite
-import org.uqbar.project.wollok.typesystem.SuiteType
 
 /**
  * @author npasserini
@@ -161,10 +161,11 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	 * Definition of the strategies to run in each stage
 	 */
 	Iterable<Iterable<Class<? extends AbstractInferenceStrategy>>> stages = #[
-		#[PropagateMinimalTypes],
+		#[PropagatePendingMinimalTypes],
 		#[OpenMethod],
 		#[UnifyVariables],
 		#[PropagateMaximalTypes, MaxTypesFromMessages],
+		#[PropagatePostponedMinimalTypes],
 		#[SealVariables],
 		#[GuessMinTypeFromMaxType]
 	]

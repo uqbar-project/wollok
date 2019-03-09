@@ -68,4 +68,13 @@ class Entrenador {
 		var c = { g => g.come(comida) } 
 		c.apply(golondrina)
 	}
+
+	// XPECT methodType at id --> ((Golondrina|pepita)) => (Golondrina|pepita)
+	method id(ave) = ave
+
+	// XPECT methodType at typeIdWithPepita --> () => (Golondrina|pepita)
+	method typeIdWithPepita() = self.id(pepita)
+	
+	// XPECT methodType at typeIdWithgolondrina --> () => (Golondrina|pepita)
+	method typeIdWithgolondrina() = self.id(new Golondrina())
 }

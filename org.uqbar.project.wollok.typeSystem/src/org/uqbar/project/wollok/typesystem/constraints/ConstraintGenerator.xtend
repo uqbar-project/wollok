@@ -140,7 +140,8 @@ class ConstraintGenerator {
 		// TODO Process supertype information: mixins
 		parentParameters?.arguments?.forEach[generateVariables]
 		members.forEach[generateVariables]
-		newTypeVariable.beSealed(objectLiteralType(it))
+		typeSystem.allTypes.add(objectLiteralType)
+		newTypeVariable.beSealed(objectLiteralType)
 		if (parentParameters !== null) objectParentConstraintsGenerator.add(it)
 	}
 	

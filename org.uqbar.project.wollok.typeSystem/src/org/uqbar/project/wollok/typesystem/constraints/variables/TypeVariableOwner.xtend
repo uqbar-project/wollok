@@ -11,6 +11,7 @@ import org.uqbar.project.wollok.typesystem.Messages
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.exceptions.CannotBeVoidException
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
+import org.uqbar.project.wollok.wollokDsl.WParameter
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.isReferenceTo
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
@@ -42,13 +43,15 @@ abstract class TypeVariableOwner {
 
 	def void checkCanBeVoid()
 
+	def isParameter() { false }
+
 	// ************************************************************************
 	// ** Error handling
 	// ************************************************************************
 	def addError(TypeSystemException exception) {
 		if (isCoreObject)
-
-			throw new RuntimeException(NLS.bind(Messages.RuntimeTypeSystemException_TRIED_TO_ADD_ERROR_TO_CORE_OBJECT, debugInfoInContext))
+			throw new RuntimeException(
+				NLS.bind(Messages.RuntimeTypeSystemException_TRIED_TO_ADD_ERROR_TO_CORE_OBJECT, debugInfoInContext))
 
 		errors.add(exception)
 	}
@@ -69,17 +72,14 @@ abstract class TypeVariableOwner {
 
 	}
 
-
 	def EObject getErrorReportTarget()
 
 	// ************************************************************************
 	// ** Model information
 	// ************************************************************************
-
 	def isReferenceTo(TypeVariableOwner ref) {
 		errorReportTarget.isReferenceTo(ref.errorReportTarget)
 	}
-	
 
 	// ************************************************************************
 	// ** Debugging
@@ -88,7 +88,7 @@ abstract class TypeVariableOwner {
 
 	def String debugInfoInContext()
 
-	override toString() { debugInfoInContext }	
+	override toString() { debugInfoInContext }
 
 	// ************************************************************************
 	// ** Static helpers
@@ -96,18 +96,19 @@ abstract class TypeVariableOwner {
 	static def URI getURI(EObject object) {
 		EcoreUtil.getURI(object)
 	}
-	
+
 }
 
 class ProgramElementTypeVariableOwner extends TypeVariableOwner {
 	@Accessors
 	val EObject programElement
-	
+
 	URI uri
 
 	new(EObject programElement) {
-		if(programElement === null) 
-			throw new IllegalArgumentException(NLS.bind(Messages.RuntimeTypeSystemException_REQUIRES_PROGRAM_ELEMENT, class.simpleName))
+		if (programElement === null)
+			throw new IllegalArgumentException(
+				NLS.bind(Messages.RuntimeTypeSystemException_REQUIRES_PROGRAM_ELEMENT, class.simpleName))
 		this.programElement = programElement
 	}
 
@@ -128,10 +129,10 @@ class ProgramElementTypeVariableOwner extends TypeVariableOwner {
 		}
 	}
 
+	override isParameter() { programElement instanceof WParameter }
 	// ************************************************************************
 	// ** Error handling
 	// ************************************************************************
-
 	override getErrorReportTarget() {
 		programElement
 	}
@@ -151,35 +152,35 @@ class ProgramElementTypeVariableOwner extends TypeVariableOwner {
 class ParameterTypeVariableOwner extends TypeVariableOwner {
 	@Accessors(PUBLIC_GETTER)
 	TypeVariableOwner parent
-	
+
 	String paramName
-	
+
 	new(TypeVariableOwner parent, String paramName) {
 		this.parent = parent
 		this.paramName = paramName
 	}
-	
+
 	override getURI() {
 		// Warning: the generated URI is very unintuitive, but it is easy and provides uniqueness.
 		// TODO: Replace by a more legible implementation when this fails short.
 		parent.URI.appendSegment(paramName)
 	}
-	
+
 	override isCoreObject() {
 		parent.isCoreObject
 	}
-	
+
 	override checkCanBeVoid() {
 		// Do nothing, allways allow true (TODO sure?)
 	}
-	
+
 	override getErrorReportTarget() {
 		parent.errorReportTarget
 	}
-	
+
 	def ownDebugInfo() '''«if (paramName.startsWith("$")) "instance" else "param"» «paramName»'''
-	
+
 	override debugInfo() '''«ownDebugInfo» of «parent.debugInfo»'''
-	
+
 	override debugInfoInContext() '''«ownDebugInfo» of «parent.debugInfoInContext»'''
 }

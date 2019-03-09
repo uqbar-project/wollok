@@ -74,18 +74,22 @@ class GenericTypeInfo extends TypeInfo {
 	// ** Adding type information
 	// ************************************************************************
 	override beSealed() {
-		maximalConcreteTypes = new MaximalConcreteTypes(minTypes.keySet)
+		//TODO: Check this
+		if (maximalConcreteTypes === null) 
+			maximalConcreteTypes = new MaximalConcreteTypes(minTypes.keySet)
+		else if (!minTypes.empty)
+			maximalConcreteTypes.restrictTo(new MaximalConcreteTypes(minTypes.keySet))
 		super.beSealed
 	}
 
 	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable offender) {
-		minTypes.statesDo(offender) [
-			if(!offender.hasErrors(type)) {
+		minTypes.allStatesDo(offender) [
+			if(!offender.hasErrors(type) && !maxTypes.empty) {
 				val matchingMaxType = maxTypes.findMatching(type)
 				if(matchingMaxType !== null) {
 					type.beSubtypeOf(matchingMaxType)
 				} else {
-					error(new RejectedMinTypeException(offender, type))
+					error(new RejectedMinTypeException(offender, type, maxTypes.maximalConcreteTypes))
 					maxTypes.state = Error
 				}
 			}
@@ -137,8 +141,9 @@ class GenericTypeInfo extends TypeInfo {
 	}
 
 	def validateType(WollokType type, TypeVariable offender) {
-		if(sealed && !minTypes.keySet.exists[isSuperTypeOf(type)]) {
-			throw new RejectedMinTypeException(offender, type, maximalConcreteTypes.maximalConcreteTypes)
+		val readyMinTypes = minTypes.filter[k, value| value != Error ].keySet
+		if(sealed && !readyMinTypes.empty && !readyMinTypes.exists[isSuperTypeOf(type)]) {
+			throw new RejectedMinTypeException(offender, type, readyMinTypes)
 		}
 
 		validMessages.forEach [

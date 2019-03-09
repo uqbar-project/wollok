@@ -16,7 +16,12 @@ class TypeSystemException extends RuntimeException {
 	@Accessors
 	TypeVariable variable
 
-	new() {
+	new() { }
+	
+	new(TypeVariable variable) { 
+		if (!variable.owner.isCoreObject) {
+			this.variable = variable
+		}
 	}
 	
 	new(String message) {

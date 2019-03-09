@@ -5,7 +5,10 @@ program p {
 	[].add(1)
 
 	// XPECT! warnings --> "This statement does not produce a value" at "[].add(1)"
+	// XPECT warnings --> "An expression is expected at this position." at "nada"
 	const nada = [].add(1)
+	
+	// XPECT warnings --> "An expression is expected at this position." at "nada"
 	console.println(nada)
 
 	/* X-PECT errors --- 

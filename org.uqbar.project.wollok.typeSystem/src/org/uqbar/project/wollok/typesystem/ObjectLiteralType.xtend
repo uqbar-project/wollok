@@ -1,34 +1,21 @@
 package org.uqbar.project.wollok.typesystem
 
 import java.util.List
-import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WParameter
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.allUntypedMethods
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.lookupMethod
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.methods
 
 /**
  * 
  * @author jfernandes
  */
-class ObjectLiteralType extends BasicType implements ConcreteType {
-	WObjectLiteral object
-
-	@Accessors(PUBLIC_GETTER)
-	TypeSystem typeSystem
-	
+class ObjectLiteralType extends AbstractContainerWollokType implements ConcreteType {
 	new(WObjectLiteral obj, TypeSystem typeSystem) {
-		super("<object>")
-		object = obj
-		this.typeSystem = typeSystem
+		super(obj, typeSystem)
 	}
-	
-	override getName() { '{ ' + object.methods.map[name].join(' ; ') + ' }'	}
-
-	override getContainer() { object }
 	
 	def signature(WMethodDeclaration m) {
 		m.name + parametersSignature(m) + returnTypeSignature(m)
@@ -58,7 +45,7 @@ class ObjectLiteralType extends BasicType implements ConcreteType {
 	}
 	
 	override lookupMethod(String selector, List<?> parameterTypes) {
-		val m = object.lookupMethod(selector, parameterTypes, true)
+		val m = container.lookupMethod(selector, parameterTypes, true)
 		// TODO: por ahora solo checkea misma cantidad de parametros
 		// 		debería en realidad checkear tipos !  
 		if (m !== null)
@@ -73,7 +60,7 @@ class ObjectLiteralType extends BasicType implements ConcreteType {
 		typeSystem.type(method)
 	}
 	
-	override getAllMessages() { object.allUntypedMethods.map[messageType] }
+	override getAllMessages() { container.allUntypedMethods.map[messageType] }
 	
 	override dispatch refine(WollokType previous) {
 		val intersectMessages = allMessages.filter[previous.understandsMessage(it)]
