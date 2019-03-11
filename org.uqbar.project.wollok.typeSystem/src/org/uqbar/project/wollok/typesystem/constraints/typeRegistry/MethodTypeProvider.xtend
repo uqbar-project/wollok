@@ -37,7 +37,7 @@ class MethodTypeProvider {
 		type.lookupSchema(it)?.instanceFor(type, it)
 	}
 	
-	def dispatch methodType(WollokType type, MessageSend it) {
+	def dispatch MethodTypeInfo methodType(WollokType type, MessageSend it) {
 		throw new UnsupportedOperationException(NLS.bind(Messages.RuntimeTypeSystemException_CANT_EXTRACT_METHOD_TYPE, type))
 	}
 

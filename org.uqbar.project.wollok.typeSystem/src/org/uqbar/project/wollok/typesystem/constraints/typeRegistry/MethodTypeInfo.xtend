@@ -23,7 +23,7 @@ class MethodTypeInfo {
 		this.returnType = returnType
 	}
 
-	static def forClosureApply(GenericTypeInstance closureType) {
+	static def MethodTypeInfo forClosureApply(GenericTypeInstance closureType) {
 		new MethodTypeInfo(closureType.paramTypeVariables, closureType.returnTypeVariable)
 	}
 
