@@ -99,10 +99,10 @@ class WollokModelExtensions {
 	def static dispatch name(WObjectLiteral it) { '{ ' + methods.map[name].join(' ; ') + ' }' }
 	def static dispatch name(WSuite it) { name }
 
-	def static dispatch fqn(WClass it) { nameWithPackage }
-	def static dispatch fqn(WNamedObject it) { nameWithPackage }
-	def static dispatch fqn(WMixin it) { nameWithPackage }
-	def static dispatch fqn(WSuite it) { nameWithPackage }
+	def static dispatch String fqn(WClass it) { nameWithPackage }
+	def static dispatch String fqn(WNamedObject it) { nameWithPackage }
+	def static dispatch String fqn(WMixin it) { nameWithPackage }
+	def static dispatch String fqn(WSuite it) { nameWithPackage }
 
 	/** 
 	 * This method is intended to univocally identify every WMethodContainer
