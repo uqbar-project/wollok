@@ -1,7 +1,7 @@
 Bundle-ManifestVersion: 2
 Bundle-Name: Wollok Game
 Bundle-SymbolicName: org.uqbar.project.wollok.game
-Bundle-Version: 1.7.2.qualifier
+Bundle-Version: 1.7.2
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.junit;version="4.11.0",
  org.osgi.framework;version="1.3.0",
