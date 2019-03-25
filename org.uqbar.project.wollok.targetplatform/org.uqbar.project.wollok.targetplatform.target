@@ -47,8 +47,8 @@
 <repository location="http://dl.bintray.com/satyagraha/generic/2.0.1/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="SGit.feature.group" version="1.0.0.201903201456"/>
-<unit id="SGit.source.feature.group" version="1.0.0.201903201456"/>
+<unit id="SGit.feature.group" version="1.0.0.201903251016"/>
+<unit id="SGit.source.feature.group" version="1.0.0.201903251016"/>
 <repository location="http://dl.bintray.com/wollok/sgit-update-site/"/>
 </location>
 </locations>
