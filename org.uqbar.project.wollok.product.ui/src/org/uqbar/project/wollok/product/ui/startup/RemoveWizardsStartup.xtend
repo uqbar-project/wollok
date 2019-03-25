@@ -61,7 +61,9 @@ class RemoveWizardsStartup implements WollokUIStartup {
 		"org\\.eclipse\\.jdt\\.ui\\.wizards\\.NewPackageCreationWizard",
 		"org\\.eclipse\\.jdt\\.ui\\.wizards\\.NewSourceFolderCreationWizard",
 		"org\\.eclipse\\.team\\.svn\\...*",
-		"org\\.eclipse\\.egit\\..*"
+		"org\\.eclipse\\.egit\\..*",
+		"org\\.uqbar\\...*"
+		
 	]
 
 	def includeWizards(String id) {

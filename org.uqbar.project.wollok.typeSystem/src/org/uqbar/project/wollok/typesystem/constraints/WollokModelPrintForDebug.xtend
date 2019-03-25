@@ -104,7 +104,10 @@ class WollokModelPrintForDebug {
 		'''«debugInfo»«parameterNames» in «eContainer.debugInfoInContext»'''
 		
 	static def dispatch String debugInfoInContext(WVariableReference it)
-		'''«debugInfo» in «declaringContainer.debugInfoInContext»'''
+		'''«debugInfo»«declaringContainer.debugInfoInContextIfPresent»]'''
+
+	static def dispatch String debugInfoInContextIfPresent(Void noContext) { "" }
+	static def dispatch String debugInfoInContextIfPresent(EObject it) { debugInfoInContext }
 
 	// ************************************************************************
 	// ** Helpers

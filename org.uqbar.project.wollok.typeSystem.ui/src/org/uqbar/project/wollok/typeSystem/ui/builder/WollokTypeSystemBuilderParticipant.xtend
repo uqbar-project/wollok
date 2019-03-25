@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.typeSystem.ui.builder
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
-import org.apache.log4j.Level
 import org.apache.log4j.Logger
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.IProgressMonitor
@@ -76,10 +75,11 @@ class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
 				wollokActivator.generateIssues(it)
 				wollokActivator.refreshTypeErrors(project, it, monitor)
 			]
+
+			wollokActivator.refreshOutline
+			wollokActivator.refreshErrorsInEditor
 		]
 
-		wollokActivator.refreshOutline
-		wollokActivator.refreshErrorsInEditor
 	}
 
 	def isWollokUserFile(Resource it) { IFile !== null && IFile.isWollokExtension && !isCoreLib }
