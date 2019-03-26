@@ -39,7 +39,7 @@ class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
 	override build(IBuildContext context, IProgressMonitor monitor) throws CoreException {
 		val project = context.builtProject
 		val wollokActivator = WollokActivator.getInstance
-		
+
 		// Setting default severity from preferences
 		WollokTypeSystemActivator.^default.setDefaultValuesFor(project)
 
@@ -48,11 +48,11 @@ class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
 			listenersInitialized = true
 		}
 
+		context.loadAllResources
+		val wollokFiles = context.resourceSet.resources.filter[isWollokUserFile].toList
+
 		WollokTypeSystemActivator.^default.ifEnabledFor(project) [
 			// First add all Wollok files to the type system for constraint generation
-			context.loadAllResources
-
-			val wollokFiles = context.resourceSet.resources.filter[isWollokUserFile].toList
 			log.debug("Infering types for files: " + wollokFiles.map[it.URI.lastSegment])
 
 			val ts = it as ConstraintBasedTypeSystem
@@ -70,15 +70,16 @@ class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
 				log.fatal("Type inference failed", e)
 			}
 
-			// Refreshing views - markers (problems tab), then outline and finally active editor
-			wollokFiles.forEach [
-				wollokActivator.generateIssues(it)
-				wollokActivator.refreshTypeErrors(project, it, monitor)
-			]
 
-			wollokActivator.refreshOutline
-			wollokActivator.refreshErrorsInEditor
 		]
+
+		// Refreshing views: markers (problems tab), then outline and finally active editor
+		wollokFiles.forEach [
+			wollokActivator.generateIssues(it)
+			wollokActivator.refreshMarkers(project, it, monitor)
+		]
+		wollokActivator.refreshOutline
+		wollokActivator.refreshErrorsInEditor
 
 	}
 
