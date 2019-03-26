@@ -43,8 +43,8 @@ before_deploy:
 - cd ..
 - mkdir results-server
 - mv org.uqbar.project.wollok.launch/target/org.uqbar.project.wollok.launch-*-wdk.zip results-server/
-- cp results-server/org.uqbar.project.wollok.launch-*-wdk.zip results-products/org.uqbar.project.wollok.launch-wdk.zip
 - mkdir results-products
+- cp results-server/org.uqbar.project.wollok.launch-*-wdk.zip results-products/org.uqbar.project.wollok.launch-wdk.zip
 - mv org.uqbar.project.wollok.updatesite/target/org.uqbar.project.wollok.updatesite-*.zip results-products/
 - mv org.uqbar.project.wollok.updatesite/target/products/*.zip results-products/
 - mkdir results-update
