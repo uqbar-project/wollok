@@ -43,9 +43,12 @@ before_deploy:
 - cd ..
 - mkdir results-server
 - mv org.uqbar.project.wollok.launch/target/org.uqbar.project.wollok.launch-*-wdk.zip results-server/
+- cp results-server/org.uqbar.project.wollok.launch-*-wdk.zip results-products/org.uqbar.project.wollok.launch-wdk.zip
 - mkdir results-products
 - mv org.uqbar.project.wollok.updatesite/target/org.uqbar.project.wollok.updatesite-*.zip results-products/
 - mv org.uqbar.project.wollok.updatesite/target/products/*.zip results-products/
+- mkdir results-update
+- unzip results-products/org.uqbar.project.wollok.updatesite-*.zip -d results-update/
 - ls results-server
 - ls results-products
 - df -h
@@ -96,3 +99,33 @@ deploy:
   on:
     repo: uqbar-project/wollok
     tags: true
+
+# Uploading download products
+
+- provider: s3
+  access_key_id: AKIAJLCGMGO45ZQFSLJA
+  secret_access_key:
+    secure: S2sP/SZJVO4uJtMrUYud3/qyLm7bN5ohTZrxO3TzONA5qiHYFnQdX+WUiEgbtUL0OZI6ZR5L29E/SRuH07zKEfWODsA7PDsAF7XfpgYi3LC20tqHBMq+07w4HPnRI/K19SC6V1/lnEBCRyGuOd5RIpC3VXccTRcPZDQIAqUviR4=
+  bucket: wollokdownload
+  local_dir: results-products
+  upload-dir: wollok/products/$UPDATE_SITE
+  acl: public_read
+  skip_cleanup: true
+  region: us-west-2
+  on:
+    condition: "$UPDATE_SITE =~ ^dev|stable$"
+
+# Uploading update site
+	
+- provider: s3
+  access_key_id: AKIAJLCGMGO45ZQFSLJA
+  secret_access_key:
+    secure: S2sP/SZJVO4uJtMrUYud3/qyLm7bN5ohTZrxO3TzONA5qiHYFnQdX+WUiEgbtUL0OZI6ZR5L29E/SRuH07zKEfWODsA7PDsAF7XfpgYi3LC20tqHBMq+07w4HPnRI/K19SC6V1/lnEBCRyGuOd5RIpC3VXccTRcPZDQIAqUviR4=
+  bucket: wollokupdate
+  local_dir: results-update
+  upload-dir: wollok/$UPDATE_SITE
+  acl: public_read
+  skip_cleanup: true
+  region: us-west-2
+  on:
+    condition: "$UPDATE_SITE =~ ^dev|stable$"	
