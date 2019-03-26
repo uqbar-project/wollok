@@ -23,19 +23,7 @@ script:
   jacoco:report coveralls:report -P $PROFILES
 # I will delete the org.uqbar.wollok in the .m2 repo, as it is generated in every run, and is useless
 - rm -rf /home/travis/.m2/repository/org/uqbar-project
-
-notifications:
-  webhooks:
-    urls:
-    - env.GITTER_URL
-    on_success: change
-    on_failure: always
-    on_start: never
-cache:
-  directories:
-  - $HOME/.m2
-
-before_deploy:
+# Moved from before_deploy, because it runs for each deploy, not only once
 # I list the used space if there is a problem with the size of the build
 - df -h
 - du -h -d 4 ..
@@ -52,6 +40,17 @@ before_deploy:
 - ls results-server
 - ls results-products
 - df -h
+
+notifications:
+  webhooks:
+    urls:
+    - env.GITTER_URL
+    on_success: change
+    on_failure: always
+    on_start: never
+cache:
+  directories:
+  - $HOME/.m2
 
 # If there is an error I will try to upload the logs
 after_failure:
