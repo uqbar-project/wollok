@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target includeMode="feature" name="org.uqbar.project.wollok.targetplatform" sequenceNumber="60">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target includeMode="feature" name="org.uqbar.project.wollok.targetplatform" sequenceNumber="60">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.xpect.sdk.feature.group" version="0.2.0.201611211350"/>
@@ -47,8 +46,8 @@
 <repository location="http://dl.bintray.com/satyagraha/generic/2.0.1/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="SGit.feature.group" version="1.0.0.201903251016"/>
-<unit id="SGit.source.feature.group" version="1.0.0.201903251016"/>
+<unit id="SGit.feature.group" version="1.0.0.201903252240"/>
+<unit id="SGit.source.feature.group" version="1.0.0.201903252240"/>
 <repository location="http://dl.bintray.com/wollok/sgit-update-site/"/>
 </location>
 </locations>

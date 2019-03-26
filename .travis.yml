@@ -12,16 +12,14 @@ script:
 # Creates the correct profile to run
 - cd org.uqbar.project.wollok.releng/
 - export PROFILES=normalProfile
-- if [ $TRAVIS_PULL_REQUEST == "false" -a $TRAVIS_BRANCH == "dev" ] ; then export
-  PROFILES="uploadRepo,uploadProducts"; export UPDATE_SITE="dev" ; fi
-- if [ $TRAVIS_PULL_REQUEST == "false" ] && [[ "$TRAVIS_TAG" =~ ^v[0-9.]* ]] ; then
-  export PROFILES="uploadRepo,uploadProducts"; export UPDATE_SITE="stable" ; fi
+- if [ $TRAVIS_PULL_REQUEST == "false" -a $TRAVIS_BRANCH == "dev" ] ; export UPDATE_SITE="dev" ; fi
+- if [ $TRAVIS_PULL_REQUEST == "false" ] && [[ "$TRAVIS_TAG" =~ ^v[0-9.]* ]] ; then export UPDATE_SITE="stable" ; fi
 - echo "Running with profiles $PROFILES"
 
 
 # Maven build
 - export MAVEN_OPTS=-Xmx2048m
-- mvn -e -Darguments='-Dtycho.disableP2Mirrors=true' -Dtycho.disableP2Mirrors=true -U -DupdateSiteFolder=$UPDATE_SITE -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean install
+- mvn -e -Darguments='-Dtycho.disableP2Mirrors=true' -Dtycho.disableP2Mirrors=true -U -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean install
   jacoco:report coveralls:report -P $PROFILES
 # I will delete the org.uqbar.wollok in the .m2 repo, as it is generated in every run, and is useless
 - rm -rf /home/travis/.m2/repository/org/uqbar-project
