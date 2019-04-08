@@ -31,7 +31,6 @@ import org.eclipse.xtext.validation.IResourceValidator
 import org.eclipse.xtext.validation.Issue
 import org.osgi.framework.BundleContext
 import org.uqbar.project.wollok.ui.editor.WollokTextEditor
-import org.uqbar.project.wollok.ui.preferences.WollokDynamicDiagramPreferencePage
 
 import static extension org.uqbar.project.wollok.model.ResourceUtils.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
@@ -111,7 +110,7 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 		mapIssues.put(resource.platformFullPath, issues)
 	}
 	
-	def void refreshTypeErrors(IProject project, Resource resource, IProgressMonitor monitor) {
+	def void refreshMarkers(IProject project, Resource resource, IProgressMonitor monitor) {
 		Display.^default.syncExec [
 			val issues = mapIssues.get(resource.platformFullPath)
 			new MarkerIssueProcessor(resource.IFile, markerCreator, markerTypeProvider).processIssues(issues, monitor)
