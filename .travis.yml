@@ -12,9 +12,11 @@ script:
 # Creates the correct profile to run
 - cd org.uqbar.project.wollok.releng/
 - export PROFILES=normalProfile
+- export UPDATE_SITE=none
 - if [ $TRAVIS_PULL_REQUEST == "false" -a $TRAVIS_BRANCH == "dev" ] ; then export UPDATE_SITE="dev" ; fi
 - if [ $TRAVIS_PULL_REQUEST == "false" ] && [[ "$TRAVIS_TAG" =~ ^v[0-9.]* ]] ; then export UPDATE_SITE="stable" ; fi
 - echo "Running with profiles $PROFILES"
+- echo "Running with UPDATE_SITE $UPDATE_SITE"
 
 
 # Maven build
@@ -113,9 +115,6 @@ deploy:
   region: us-west-2
   on:
     condition: "$UPDATE_SITE =~ ^dev|stable$"
-    branch:
-    - dev
-    - master
 
 # Uploading update site
 
@@ -131,6 +130,3 @@ deploy:
   region: us-west-2
   on:
     condition: "$UPDATE_SITE =~ ^dev|stable$"
-    branch:
-    - dev
-    - master
