@@ -114,6 +114,7 @@ deploy:
   skip_cleanup: true
   region: us-west-2
   on:
+    all_branches: true
     condition: "$UPDATE_SITE =~ ^dev|stable$"
 
 # Uploading update site
@@ -129,4 +130,5 @@ deploy:
   skip_cleanup: true
   region: us-west-2
   on:
+    all_branches: true
     condition: "$UPDATE_SITE =~ ^dev|stable$"
