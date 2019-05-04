@@ -21,8 +21,13 @@ while [ -h "$PRG" ] ; do
 done
 
 DIR=`dirname "$PRG"`
+LIB="../../lib"
+SRC="$DIR/../../target"
 
-WCLASS_PATH="echo $(for i in `find $DIR/../lib -name "*.jar"`; do echo $i; done)"
+WCLASS_PATH="echo $(for i in `find $SRC -name "*.jar"`; do echo $i; done) $(for i in `find $DIR/$LIB -name "*.jar"`; do echo $i; done)"
+
+echo $WCLASS_PATH
+echo
 
 #echo java -cp "$(echo $WCLASS_PATH | sed 's# #:#g')" org.uqbar.project.wollok.launch.WollokLauncher $@
 java -cp "$(echo $WCLASS_PATH | sed 's# #:#g')" org.uqbar.project.wollok.launch.WollokLauncher -r $@
