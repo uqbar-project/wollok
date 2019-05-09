@@ -94,4 +94,18 @@ class CollectionInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertTypeOfAsString("Set<String>", "sPares")
 		]
 	}
+	
+	@Test
+	def void maxWithComparator() {
+		'''
+		program p {
+			const strings = ["Hola", "Chau"]
+			const sMax = strings.max { s => s.length() }
+		}
+		'''.parseAndInfer.asserting [
+			assertTypeOfAsString("List<String>", "strings")
+			assertTypeOfAsString("String", "sMax")
+			noIssues
+		]
+	}
 }
