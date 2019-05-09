@@ -18,6 +18,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 abstract class TypeVariableSchema extends ITypeVariable {
 	@Accessors
 	extension TypeVariablesRegistry registry
+	var instanceCount = 0
 	
 	new(TypeVariableOwner owner) {
 		super(owner)
@@ -34,5 +35,8 @@ abstract class TypeVariableSchema extends ITypeVariable {
 	def dispatch beSupertypeOf(ITypeVariable variable) {
 		throw new UnsupportedOperationException("Yet not implemented")		
 	}
-
+	
+	def createCompoundOwner() {
+		new ParameterTypeVariableOwner(owner, '''$« instanceCount += 1 »''')
+	}
 }

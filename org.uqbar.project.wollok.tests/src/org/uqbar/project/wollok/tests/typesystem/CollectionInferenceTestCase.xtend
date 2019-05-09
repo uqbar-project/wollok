@@ -5,7 +5,6 @@ import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
-import org.junit.Ignore
 
 class CollectionInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 
