@@ -229,8 +229,8 @@ class SetList {
 	}
 
 	method selfTypedSet() {
-		// XPECT! type at filterSet --> {({(Number) => Boolean}) => Set<Number>}
-//		const filterSet = { cond => set.filter(cond) }
+		// XPECT type at filterSet --> {({(Number) => Boolean}) => Set<Number>}
+		const filterSet = { cond => set.filter(cond) }
 
 		// XPECT type at plusSet --> {(Collection<Number>) => Set<Number>}
 		const plusSet = { c => set + c }

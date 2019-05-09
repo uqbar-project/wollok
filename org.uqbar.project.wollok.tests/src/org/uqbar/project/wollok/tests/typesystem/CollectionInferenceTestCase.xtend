@@ -80,7 +80,6 @@ class CollectionInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	}
 	
 	@Test
-	@Ignore
 	def void setAndListSelfType() {
 		'''
 		program p {
