@@ -49,6 +49,11 @@ object gameTest {
 		return game.getObjectsIn(pos)
 	}
 	
+	// XPECT methodType at m82 --> (Position) => List<Number>
+	method m82(pos) {
+		return game.getObjectsIn(pos).map{n => n + 1}
+	}
+	
 	// XPECT methodType at m9 --> (Any, String) => Void
 	method m9(obj, msj) {
 		game.say(obj, msj)
