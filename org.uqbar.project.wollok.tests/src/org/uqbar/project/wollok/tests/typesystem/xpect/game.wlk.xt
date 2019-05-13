@@ -68,6 +68,11 @@ object gameTest {
 	method m11(obj) {
 		return game.colliders(obj)
 	}
+	
+	// XPECT methodType at m112 --> (Any) => List<String>
+	method m112(obj) {
+		return game.colliders(obj).filter{s => s.startsWith("asd")}
+	}
 		
 	// XPECT methodType at m12 --> () => Void
 	method m12() {
