@@ -4,6 +4,7 @@ import org.uqbar.project.wollok.typesystem.AnyType
 import org.uqbar.project.wollok.typesystem.ClassInstanceType
 import org.uqbar.project.wollok.typesystem.Messages
 import org.uqbar.project.wollok.typesystem.StructuralType
+import org.uqbar.project.wollok.typesystem.UnionType
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInstance
 
@@ -27,6 +28,14 @@ class SubtypingRules {
 	/** No type is supertype of Any */
 	static def dispatch isSuperTypeOf(WollokType supertype, AnyType subtype) {
 		false
+	}
+	
+	static def dispatch boolean isSuperTypeOf(UnionType supertype, WollokType subtype) {
+		return supertype.types.exists[isSuperTypeOf(subtype)]
+	}
+	
+	static def dispatch boolean isSuperTypeOf(WollokType supertype, UnionType subtype) {
+		return subtype.types.exists[subtype.isSuperTypeOf(it)]
 	}
 
 	static def dispatch isSuperTypeOf(ClassInstanceType supertype, ClassInstanceType subtype) {
