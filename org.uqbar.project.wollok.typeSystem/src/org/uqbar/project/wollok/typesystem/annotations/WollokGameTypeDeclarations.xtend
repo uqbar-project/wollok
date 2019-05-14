@@ -13,7 +13,7 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		Position >> "drawElement" === #[Any] => Void
 		Position >> "drawCharacter" === #[Any] => Void
 		Position >> "say" === #[Any, String] => Void
-		Position >> "allElements" === #[] => List.of(Any)
+		Position >> "allElements" === #[] => List.of(T)
 		Position >> "clone" === #[] => Position
 		Position >> "distance" === #[Position] => Number
 		Position >> "clear" === #[] => Void
