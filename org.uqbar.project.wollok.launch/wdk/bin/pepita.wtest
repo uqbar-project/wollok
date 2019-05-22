@@ -1,5 +1,0 @@
-import pepita.*
-
-test "pepita tiene 0 de energia inicial" {
-    assert.equals(0, pepita.energia())
-}

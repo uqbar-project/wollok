@@ -1,6 +1,0 @@
-import pepita.*
-
-test "pepita come y sube energia" {
-    pepita.comer(20)
-    assert.equals(60, pepita.energia())
-}
