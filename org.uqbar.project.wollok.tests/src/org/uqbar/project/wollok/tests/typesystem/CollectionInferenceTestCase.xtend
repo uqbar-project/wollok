@@ -5,7 +5,6 @@ import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
-import org.junit.Ignore
 
 class CollectionInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 
@@ -80,7 +79,6 @@ class CollectionInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	}
 	
 	@Test
-	@Ignore
 	def void setAndListSelfType() {
 		'''
 		program p {
@@ -94,6 +92,20 @@ class CollectionInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertTypeOfAsString("List<Number>", "lPares")
 			assertTypeOfAsString("Set<String>", "s")
 			assertTypeOfAsString("Set<String>", "sPares")
+		]
+	}
+	
+	@Test
+	def void maxWithComparator() {
+		'''
+		program p {
+			const strings = ["Hola", "Chau"]
+			const sMax = strings.max { s => s.length() }
+		}
+		'''.parseAndInfer.asserting [
+			assertTypeOfAsString("List<String>", "strings")
+			assertTypeOfAsString("String", "sMax")
+			noIssues
 		]
 	}
 }

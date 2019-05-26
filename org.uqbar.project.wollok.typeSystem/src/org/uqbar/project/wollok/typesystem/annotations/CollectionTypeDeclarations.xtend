@@ -77,10 +77,10 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		C >> "asSet" === #[] => Set.of(E)
 		C >> "occurrencesOf" === #[E] => Number
 		
-		C >> "copy" === #[] => SelfType.of(E);
-		C >> "newInstance" === #[] => SelfType.of(Any);
-		C >> "filter" === #[predicate(E)] => SelfType.of(E);
-//		C >> "flatten" === #[] => SelfType.of(E); //TODO: Should be C<C<E>>
+		C >> "copy" === #[] => SelfType.of(E)
+		C >> "newInstance" === #[] => SelfType.of(Any)
+		C >> "filter" === #[predicate(E)] => SelfType.of(E)
+		C >> "flatten" === #[] => E //TODO: Should be C<C<E>>
 		
 		/* privates */
 		C >> "toStringPrefix" === #[] => String
