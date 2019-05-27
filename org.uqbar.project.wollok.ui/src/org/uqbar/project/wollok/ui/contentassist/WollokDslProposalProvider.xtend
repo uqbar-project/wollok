@@ -59,7 +59,7 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 		labelExtension
 	}
 	
-	def synchronized getAllMethods(EObject obj) {
+	def getAllMethods(EObject obj) {
 		val untypedMethods = obj.allUntypedMethods
 		if (!obj.isTypeSystemEnabled) {
 			untypedMethods
