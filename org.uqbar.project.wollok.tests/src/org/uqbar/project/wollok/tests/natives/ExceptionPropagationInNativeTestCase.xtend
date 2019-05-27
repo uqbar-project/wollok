@@ -46,7 +46,7 @@ program natives {
 			} catch e {
 				assert.equals(e.getStackTraceAsString(), 
 		"wollok.lib.AssertionException: Expected [1] but found [true]
-			at  [/lib.wlk:86]
+			at  [/lib.wlk:91]
 			at  [/assertTest.wpgm:3]
 		"
 				)

@@ -28,6 +28,16 @@ class AssertTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
+	def void assertWithOneParameterShouldFail() {
+		'''
+		assert.throwsExceptionLike(
+			new AssertionException("assert.equals(expected, actual): missing second parameter"),
+			{ => assert.equals(4) }
+		)
+		'''.test
+	}
+	
+	@Test
 	def void assertEqualsWhenEqualsWorks() {
 		'''
 		assert.equals(4, 4)
