@@ -1,5 +1,3 @@
-import wollok.vm.*
-
 /** 
  * Console is a global wollok object that implements a character-based console device
  * called "standard input/output" stream 
@@ -72,6 +70,13 @@ object assert {
 	 */
 	method notThat(value) {
 		if (value) throw new AssertionException("Value was not false")
+	}
+	
+	/*
+	 * This method avoids confusion with equals definition in Object
+	 */
+	override method equals(value) {
+		throw new AssertionException("assert.equals(expected, actual): missing second parameter")
 	}
 	
 	/** 
