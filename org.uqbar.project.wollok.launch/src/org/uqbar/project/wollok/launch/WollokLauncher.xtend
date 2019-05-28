@@ -68,6 +68,8 @@ class WollokLauncher extends WollokChecker {
 			System.exit(0)
 		}
 		catch (Exception e) {
+			val stackTrace = e.stackTrace.map [ "\tat " + className + "." + methodName + " (" + fileName + ":" + lineNumber + ")" ].join("\n")
+			println("Error in Wollok Launcher => " + e.message + "\n" + stackTrace)
 			System.exit(-1)
 		}
 	}

@@ -12,16 +12,17 @@ import org.eclipse.debug.ui.DebugUITools
 import org.eclipse.debug.ui.RefreshTab
 import org.uqbar.project.wollok.launch.WollokLauncher
 import org.uqbar.project.wollok.ui.WollokActivator
+import org.uqbar.project.wollok.ui.console.RunInUI
 import org.uqbar.project.wollok.ui.wizard.WollokDslProjectInfo
 import org.uqbar.project.wollok.ui.wizard.WollokProjectCreator
 
 import static org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants.*
 import static org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
-import static org.uqbar.project.wollok.utils.WEclipseUtils.*
-import static extension org.uqbar.project.wollok.ui.launch.shortcut.LauncherExtensions.*
 
+import static extension org.uqbar.project.wollok.ui.launch.shortcut.LauncherExtensions.*
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
 import static extension org.uqbar.project.wollok.ui.libraries.WollokLibrariesStore.*
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**
  * This launcher is used to launch the REPL without an open project.
@@ -43,6 +44,12 @@ class LaunchReplWithoutFileHandler extends AbstractHandler {
 	public val String EMPTY_PROJECT_NAME = "__EMPTY__"
 
 	override execute(ExecutionEvent event) throws ExecutionException {
+		if (WollokActivator.instance.preferenceStoreAccess.dynamicDiagramActivated) {
+			RunInUI.runInUI [
+				WollokActivator.DYNAMIC_DIAGRAM_VIEW_ID.openView
+			]
+		}
+		
 		DebugUITools.launch(createConfiguration, "run")
 		null
 	}
@@ -50,7 +57,6 @@ class LaunchReplWithoutFileHandler extends AbstractHandler {
 	def createConfiguration() throws CoreException {
 		val cfgType = LAUNCH_CONFIGURATION_TYPE.configType
 		val configuration = cfgType.newInstance(null, "Wollok REPL")
-		configuration.activateDynamicDiagramIfNeeded(WollokActivator.instance.preferenceStoreAccess)
 		configureConfiguration(configuration)
 		configuration.doSave
 	}
@@ -65,6 +71,7 @@ class LaunchReplWithoutFileHandler extends AbstractHandler {
 			projectToUse = projects.get(0)
 		}
 
+		setAttribute(ATTR_WOLLOK_DYNAMIC_DIAGRAM, WollokActivator.instance.preferenceStoreAccess.dynamicDiagramActivated)
 		setAttribute(ATTR_PROJECT_NAME, projectToUse.name)
 		setAttribute(ATTR_MAIN_TYPE_NAME, WollokLauncher.name)
 		setAttribute(ATTR_STOP_IN_MAIN, false)

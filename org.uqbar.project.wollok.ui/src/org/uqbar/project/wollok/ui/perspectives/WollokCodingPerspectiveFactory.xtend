@@ -9,6 +9,7 @@ import org.uqbar.project.wollok.ui.wizard.objects.NewWollokObjectsWizard
 import org.uqbar.project.wollok.ui.wizard.program.NewWollokProgramWizard
 import org.uqbar.project.wollok.ui.wizard.tests.NewWollokDescribeWizard
 import org.uqbar.project.wollok.ui.wizard.tests.NewWollokTestWizard
+import org.uqbar.project.wollok.ui.WollokActivator
 
 /**
  * Wollok coding perspective.
@@ -47,7 +48,7 @@ class WollokCodingPerspectiveFactory implements IPerspectiveFactory {
 		createFolder("topLeft", IPageLayout.LEFT, 0.25f, factory.editorArea) => [
 			addView(JavaUI.ID_PACKAGES)
 			addView("org.uqbar.project.wollok.ui.launch.resultView")
-			addView("org.uqbar.project.wollok.ui.diagrams.object")
+			addView(WollokActivator.DYNAMIC_DIAGRAM_VIEW_ID)
 		]
 		
 		createFolder("topRight", IPageLayout.RIGHT, 0.75f, factory.editorArea) => [
