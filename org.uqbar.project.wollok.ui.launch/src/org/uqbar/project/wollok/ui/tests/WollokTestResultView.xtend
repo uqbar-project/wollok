@@ -15,6 +15,7 @@ import org.eclipse.jface.viewers.TreeViewer
 import org.eclipse.jface.viewers.Viewer
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.SashForm
+import org.eclipse.swt.custom.ScrolledComposite
 import org.eclipse.swt.events.SelectionAdapter
 import org.eclipse.swt.events.SelectionEvent
 import org.eclipse.swt.graphics.Color
@@ -173,9 +174,10 @@ class WollokTestResultView extends ViewPart implements Observer {
 		createSeparator(parent)
 		createResults(parent)
 		createBar(parent)
-		val sash = new Composite(parent, SWT.NONE)
-		sash.layout = new FillLayout
-		sash.layoutData = new GridData(GridData.FILL_BOTH)
+		val sash = new Composite(parent, SWT.NONE) => [
+			layout = new FillLayout
+			layoutData = new GridData(GridData.FILL_BOTH)
+		]
 		val sashForm = new SashForm(sash, SWT.VERTICAL)
 		createTree(sashForm)
 		createTextOutput(sashForm)
@@ -269,20 +271,25 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def createTextOutput(Composite parent) {
-		val textParent = new Composite(parent, SWT.BORDER)
-		val parentGridLayout = new GridLayout
-		parentGridLayout.marginWidth = 0
-		parentGridLayout.marginHeight = 0
-		textParent.layout = parentGridLayout
-		textParent.layoutData = new GridData
+		val textParent = new ScrolledComposite(parent, SWT.BORDER.bitwiseOr(SWT.WRAP.bitwiseOr(SWT.V_SCROLL.bitwiseOr(SWT.H_SCROLL))))
+		val parentGridLayout = new GridLayout => [
+			marginWidth = 0
+			marginHeight = 0
+		]
+		textParent => [
+			layout = parentGridLayout
+			layoutData = new GridData
+			expandHorizontal = true
+			expandVertical = true
+			setMinSize(300, 300)
+		]
 		textOutput = new Link(
 			textParent,
-			SWT.BORDER.bitwiseOr(SWT.WRAP).bitwiseOr(SWT.MULTI).bitwiseOr(SWT.V_SCROLL)
+			SWT.BORDER.bitwiseOr(SWT.WRAP).bitwiseOr(SWT.MULTI).bitwiseOr(SWT.V_SCROLL).bitwiseOr(SWT.H_SCROLL)
 		) => []
 		textOutput.background = new Color(Display.current, 255, 255, 255)
 		textOutput.foreground = new Color(Display.current, 50, 50, 50)
 
-		// textOutput.editable = false
 		new GridData => [
 			minimumHeight = 80
 			grabExcessHorizontalSpace = true
@@ -305,6 +312,8 @@ class WollokTestResultView extends ViewPart implements Observer {
 				}
 			}
 		)
+		
+		textParent.content = textOutput
 	}
 
 	def createResults(Composite parent) {
@@ -499,4 +508,3 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 	override inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
 
 }
-
