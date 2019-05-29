@@ -14,7 +14,6 @@ import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.core.CallableSuper
-import org.uqbar.project.wollok.interpreter.core.WCallable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
@@ -179,16 +178,14 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		if (cond === null) {
 			throw newWollokExceptionAsJava(NLS.bind(Messages.WollokInterpreter_cannot_use_null_in_if, NULL))
 		}
-		if (!(cond.isWBoolean))
-			throw new WollokInterpreterException(
-				NLS.bind(Messages.WollokInterpreter_expression_in_if_must_evaluate_to_boolean, cond, cond?.class.name),
-				it)
-
-			if (wollokToJava(cond, Boolean) == Boolean.TRUE)
-				then.eval
-			else
-				^else?.eval
+		if (!(cond.isWBoolean)) {
+			throw newWollokExceptionAsJava(NLS.bind(Messages.WollokInterpreter_expression_in_if_must_evaluate_to_boolean, cond, cond?.behavior?.name))
 		}
+		if (wollokToJava(cond, Boolean) == Boolean.TRUE)
+			then.eval
+		else
+			^else?.eval
+	}
 
 	def dispatch WollokObject evaluate(WTry t) {
 		try
