@@ -78,5 +78,23 @@ class AssertTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals(1,"hola")
 		'''.test
 	}
+
+	@Test
+	def void assertSameClassHappyPath(){
+		'''
+		assert.sameClass("pepe", "hola")
+		assert.sameClass(3.0, 2)
+		assert.sameClass(new Date(), new Date(10, 2, 1990))
+		assert.sameClass(assert, assert)
+		assert.sameClass(game, game)
+		'''.test
+	}
+	
+	@Test
+	def void assertSameClassDifferent(){
+		'''
+		assert.throwsExceptionWithMessage("Expected class [\"wollok.lang.String\"] but found [\"wollok.lang.Number\"]", { => assert.sameClass("pepe", 2.0) })
+		'''.test
+	}
 		
 }

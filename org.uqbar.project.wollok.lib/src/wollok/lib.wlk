@@ -236,12 +236,22 @@ object assert {
 	
 	/**
 	 * Throws an exception with a custom message. 
-	 * Useful when you reach code that should not be reached.
+	 * Useful when you want to throw an error for code that should not be reached.
 	 */
 	method fail(message) {
 		throw new AssertionException(message)
 	}
-	
+
+
+	/**
+	 * Returns true if both objects belong to the same class.
+	 */
+	method sameClass(object1, object2) {
+		const expected = object1.className()
+		const actual = object2.className()
+		if (expected != actual) throw new AssertionException("Expected class [" + expected.printString() + "] but found [" + actual.printString() + "]", expected.printString(), actual.printString()) 
+	}
+
 }
 
 class StringPrinter {
