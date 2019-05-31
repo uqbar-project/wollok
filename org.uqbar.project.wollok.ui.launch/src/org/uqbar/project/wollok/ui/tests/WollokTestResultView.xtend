@@ -16,6 +16,10 @@ import org.eclipse.jface.viewers.Viewer
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.SashForm
 import org.eclipse.swt.custom.ScrolledComposite
+import org.eclipse.swt.dnd.Clipboard
+import org.eclipse.swt.dnd.DND
+import org.eclipse.swt.dnd.RTFTransfer
+import org.eclipse.swt.dnd.TextTransfer
 import org.eclipse.swt.events.SelectionAdapter
 import org.eclipse.swt.events.SelectionEvent
 import org.eclipse.swt.graphics.Color
@@ -48,12 +52,16 @@ import org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**
- * 
  * @author tesonep
+ * @author dodain
  */
 class WollokTestResultView extends ViewPart implements Observer {
-
 	public val static NAME = "org.uqbar.project.wollok.ui.launch.resultView"
+
+	// opening tag "[<a href=\"" + fileName + STACKELEMENT_SEPARATOR + lineNumber + "\">"
+	public static String STACK_TRACE_LINK_OPENING_TAG = "\\[<(?:\"[^\"]*\"['\"]*|'[^']*'['\"]*|[^'\">])+>"
+	// closing tag "</a>]\n"
+	public static String STACK_TRACE_LINK_CLOSING_TAG = "<(?:\"[^\"]*\"['\"]*|'[^']*'['\"]*|[^'\">])+>\\]"
 
 	var TreeViewer testTree
 	var Link textOutput
@@ -83,11 +91,15 @@ class WollokTestResultView extends ViewPart implements Observer {
 	@Inject
 	WollokAllTestsLaunchShortcut allTestsLaunchShortcut
 
+	// First toolbar
 	ToolBar toolbar
-
 	ToolItem showFailuresAndErrors
 	ToolItem runAgain
 	ToolItem debugAgain
+
+	// Second toolbar
+	ToolBar toolbarTextOutput
+	ToolItem copyTextOutputToClipboard
 	
 //	static IViewPart previousActivePart
 
@@ -153,6 +165,28 @@ class WollokTestResultView extends ViewPart implements Observer {
 		results.showFailuresAndErrorsOnly(showFailuresAndErrors.selection)
 	}
 
+	def copySelectedTextOutputToClipboard() {
+		val clipboard = new Clipboard(Display.current)
+        val plainText = textOutput.text.parseLinksToPlain
+        val rtfText = "{\\rtf1\\deff0{\\fonttbl {\\f0 \\fcharset0 Ubuntu Mono;}}" + textOutput.text.parseLinksToRTF + "}"
+        val data = #[rtfText, plainText]
+		val types = #[RTFTransfer.instance, TextTransfer.instance]
+        clipboard.setContents(data, types, DND.CLIPBOARD)
+        clipboard.dispose()
+	}
+	
+	def String parseLinksToPlain(String text) {
+    	text.replaceAll(STACK_TRACE_LINK_OPENING_TAG, "")
+			.replaceAll(STACK_TRACE_LINK_CLOSING_TAG, "")
+	}
+
+	def String parseLinksToRTF(String text) {
+    	text.replaceAll("\n", "\\\\line")
+    		.replaceAll("\t", "\\\\tab")
+    		.replaceAll(STACK_TRACE_LINK_OPENING_TAG, "")
+			.replaceAll(STACK_TRACE_LINK_CLOSING_TAG, "")
+	}
+	
 	override createPartControl(Composite parent) {
 		parent.background = new Color(Display.current, new RGB(220, 220, 220))
 		resManager = new LocalResourceManager(JFaceResources.getResources(), parent)
@@ -181,6 +215,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 		val sashForm = new SashForm(sash, SWT.VERTICAL)
 		createTree(sashForm)
 		createTextOutput(sashForm)
+		createToolbarForTextOutput(parent)
 	}
 
 	def createSeparator(Composite parent) {
@@ -336,6 +371,21 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 		createResultNumberLabel(panel, WollokLaunchUIMessages.WollokTestResultView_ERROR_TESTS)
 		errorTextBox = createResultNumberTextBox(panel)
+	}
+
+	def createToolbarForTextOutput(Composite parent) {
+		toolbarTextOutput = new ToolBar(parent, SWT.RIGHT)
+
+		GridDataFactory.fillDefaults().align(SWT.END, SWT.END).grab(false, false).applyTo(toolbarTextOutput)
+
+		copyTextOutputToClipboard = new ToolItem(toolbarTextOutput, SWT.PUSH) => [
+			toolTipText = Messages.WollokTestResultView_copySelectedResultToClipboard
+			val pathImage = Activator.getDefault.getImageDescriptor(
+				"platform:/plugin/org.eclipse.compare/icons/full/elcl16/copycont_r_co.gif")
+			image = resManager.createImage(pathImage)
+			addListener(SWT.Selection)[this.copySelectedTextOutputToClipboard]
+			enabled = true
+		]
 	}
 
 	def createResultNumberLabel(Composite panel, String labelText) {
