@@ -14,7 +14,6 @@ import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.core.CallableSuper
-import org.uqbar.project.wollok.interpreter.core.WCallable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
@@ -157,7 +156,11 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def dispatch WollokObject evaluate(WMethodDeclaration it) {}
 
 	def dispatch WollokObject evaluate(WVariableDeclaration it) {
-		interpreter.currentContext.addReference(variable.variableName, right?.eval)
+		if (isGlobal) {
+			interpreter.currentContext.addGlobalReference(variable.variableName, right?.eval)
+		} else {
+			interpreter.currentContext.addReference(variable.variableName, right?.eval)
+		}
 		WollokDSK.getVoid(interpreter as WollokInterpreter, it)
 	}
 
