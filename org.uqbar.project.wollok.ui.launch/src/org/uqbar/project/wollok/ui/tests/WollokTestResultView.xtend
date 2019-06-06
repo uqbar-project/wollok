@@ -71,11 +71,13 @@ class WollokTestResultView extends ViewPart implements Observer {
 	// bar
 	var Label bar
 	Color noResultColor
+	Color pendingColor
 	Color successColor
 	Color failedColor
 	Color erroredColor
 	var ResourceManager resManager
 	public val static BAR_COLOR_NO_RESULT = new RGB(200, 200, 200)
+	public val static BAR_COLOR_PENDING = new RGB(239, 222, 205)
 	public val static BAR_COLOR_SUCCESS = new RGB(99, 184, 139)
 	public val static BAR_COLOR_FAILED = new RGB(255, 197, 3)
 	public val static BAR_COLOR_ERRORED = new RGB(237, 17, 18)
@@ -139,7 +141,8 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 	/** this method is invoked between test executions */
 	def cleanView() {
-		bar.background = noResultColor
+		bar.background = pendingColor
+		bar.text = Messages.WollokTestResultView_runningTests
 		totalTextBox.text = ""
 		failedTextBox.text = ""
 		errorTextBox.text = ""
@@ -257,9 +260,10 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def createBar(Composite parent) {
-		bar = new Label(parent, SWT.SHADOW_IN.bitwiseOr(SWT.BORDER))
+		bar = new Label(parent, SWT.SHADOW_IN.bitwiseOr(SWT.BORDER).bitwiseOr(SWT.CENTER))
 		// creates and cache colors
 		noResultColor = resManager.createColor(BAR_COLOR_NO_RESULT)
+		pendingColor = resManager.createColor(BAR_COLOR_PENDING)
 		successColor = resManager.createColor(BAR_COLOR_SUCCESS)
 		failedColor = resManager.createColor(BAR_COLOR_FAILED)
 		erroredColor = resManager.createColor(BAR_COLOR_ERRORED)
@@ -416,7 +420,10 @@ class WollokTestResultView extends ViewPart implements Observer {
 		testTree.expandAll
 
 		if (results.container !== null) {
-			val runned = (total - count[state == WollokTestState.PENDING])
+			val runningCount = count[state == WollokTestState.RUNNING]
+			val pendingCount = count[state == WollokTestState.PENDING]
+			
+			val runned = total - pendingCount
 			totalTextBox.text = runned.toString + "/" + total.toString
 
 			val errorCount = count[state == WollokTestState.ERROR]
@@ -426,7 +433,13 @@ class WollokTestResultView extends ViewPart implements Observer {
 			failedTextBox.text = failedCount.toString
 
 			val noErrors = errorCount == 0 && failedCount == 0
-			bar.background = if(noErrors) successColor else if(errorCount > 0) erroredColor else failedColor
+			
+			if (runningCount > 0 || pendingCount > 0) {
+				bar.background = pendingColor
+			} else {
+				bar.background = if (noErrors) successColor else if(errorCount > 0) erroredColor else failedColor
+				bar.text = ""
+			}
 
 			runAgain.enabled = true
 			debugAgain.enabled = true
