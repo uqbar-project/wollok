@@ -177,5 +177,9 @@ class WollokExceptionExtensions {
 	def static dispatch doOriginalMessage(Throwable e) {
 		e.message		
 	}
+
+	def static dispatch shouldShowStackTraceInJava(WollokProgramExceptionWrapper e) { false }
+	def static dispatch shouldShowStackTraceInJava(WollokInterpreterException e) { false }
+	def static dispatch shouldShowStackTraceInJava(Throwable t) { true }
 	
 }
