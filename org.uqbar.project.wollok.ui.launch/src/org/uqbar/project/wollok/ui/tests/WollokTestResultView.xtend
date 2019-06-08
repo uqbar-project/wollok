@@ -39,7 +39,6 @@ import org.eclipse.ui.texteditor.ITextEditor
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.ui.editor.GlobalURIEditorOpener
 import org.uqbar.project.wollok.ui.Messages
-import org.uqbar.project.wollok.ui.console.RunInUI
 import org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages
 import org.uqbar.project.wollok.ui.launch.Activator
 import org.uqbar.project.wollok.ui.tests.model.WollokTestContainer
@@ -106,7 +105,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 //	static IViewPart previousActivePart
 
 	def static activate() {
-		RunInUI.runInUI [
+//		RunInUI.runInUI [
 			// issue #1266 - dodain - this fixes the problem
 			// but only when Wollok Tests are in a different tab that Project Explorer 
 			// val activePart = activePage?.activePart
@@ -114,9 +113,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 			//	previousActivePart = activePage?.activePart as IViewPart
 			//}
 			// 
-		    val view = openView(WollokTestResultView.NAME)
-			(view as WollokTestResultView).cleanView
-		]
+//		]
 	}
 
 	def canRelaunch() {
@@ -418,7 +415,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 	override update(Observable o, Object arg) {
 		testTree.refresh(true)
 		testTree.expandAll
-
+		
 		if (results.container !== null) {
 			val runningCount = count[state == WollokTestState.RUNNING]
 			val pendingCount = count[state == WollokTestState.PENDING]
@@ -436,6 +433,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 			
 			if (runningCount > 0 || pendingCount > 0) {
 				bar.background = pendingColor
+				bar.text = Messages.WollokTestResultView_runningTests
 			} else {
 				bar.background = if (noErrors) successColor else if(errorCount > 0) erroredColor else failedColor
 				bar.text = ""

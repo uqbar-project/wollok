@@ -19,20 +19,21 @@ import org.eclipse.swt.widgets.Display
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.launch.WollokLauncher
+import org.uqbar.project.wollok.ui.WollokActivator
+import org.uqbar.project.wollok.ui.console.RunInUI
 import org.uqbar.project.wollok.ui.launch.Activator
 import org.uqbar.project.wollok.ui.launch.WollokLaunchConstants
+import org.uqbar.project.wollok.ui.tests.WollokTestResultView
 
 import static org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants.*
 import static org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages.*
 import static org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 
+import static extension org.uqbar.project.wollok.ui.launch.shortcut.LauncherExtensions.*
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
 import static extension org.uqbar.project.wollok.ui.libraries.WollokLibrariesStore.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
-import static extension org.uqbar.project.wollok.ui.launch.shortcut.LauncherExtensions.*
-
-import org.uqbar.project.wollok.ui.WollokActivator
 
 /**
  * Launches a "run" or "debug" configuration (already existing or creates one)
@@ -51,6 +52,12 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 			val confirm = MessageDialog.openQuestion(Display.current.activeShell,
 				Messages.TestLauncher_CompilationErrorTitle, Messages.TestLauncher_SeeProblemTab)
 			if(!confirm) return
+		}
+		if (currFile.location.isTestFile) {
+			RunInUI.runInUI [
+			    val view = openView(WollokTestResultView.NAME)
+				(view as WollokTestResultView).cleanView
+			]
 		}
 		doLaunch(currFile, mode)
 	}

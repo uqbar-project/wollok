@@ -317,5 +317,8 @@ class WEclipseUtils {
 	def static relativeToWorkspace(IResource resource) {
 		resource.locationURI.toString.replaceAll(workspaceURI, " ").trim
 	}
-	
+
+	def static isTestFile(IPath path) {
+		path.toString.endsWith(TEST_EXTENSION)
+	}
 }
