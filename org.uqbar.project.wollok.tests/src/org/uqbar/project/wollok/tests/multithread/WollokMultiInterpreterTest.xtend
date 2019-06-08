@@ -139,7 +139,7 @@ class WollokMultiInterpreterTest {
 			test "pepita vuela" {
 				(1..100).forEach{ i => 
 					pepita.volar()
-					console.println(pepita.energia())
+					//console.println(pepita.energia())
 					assert.equals(100-i, pepita.energia())
 				}
 			}
