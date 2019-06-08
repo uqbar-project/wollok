@@ -39,6 +39,7 @@ import org.eclipse.ui.texteditor.ITextEditor
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.ui.editor.GlobalURIEditorOpener
 import org.uqbar.project.wollok.ui.Messages
+import org.uqbar.project.wollok.ui.console.RunInUI
 import org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages
 import org.uqbar.project.wollok.ui.launch.Activator
 import org.uqbar.project.wollok.ui.tests.model.WollokTestContainer
@@ -96,7 +97,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 	ToolBar toolbar
 	ToolItem showFailuresAndErrors
 	ToolItem runAgain
-	ToolItem debugAgain
+//	ToolItem debugAgain
 
 	// Second toolbar
 	ToolBar toolbarTextOutput
@@ -105,7 +106,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 //	static IViewPart previousActivePart
 
 	def static activate() {
-//		RunInUI.runInUI [
+		RunInUI.runInUI [
 			// issue #1266 - dodain - this fixes the problem
 			// but only when Wollok Tests are in a different tab that Project Explorer 
 			// val activePart = activePage?.activePart
@@ -113,7 +114,9 @@ class WollokTestResultView extends ViewPart implements Observer {
 			//	previousActivePart = activePage?.activePart as IViewPart
 			//}
 			// 
-//		]
+		    val view = openView(WollokTestResultView.NAME)
+			(view as WollokTestResultView).cleanView
+		]
 	}
 
 	def canRelaunch() {
@@ -144,7 +147,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 		failedTextBox.text = ""
 		errorTextBox.text = ""
 		runAgain.enabled = false
-		debugAgain.enabled = false
+		//debugAgain.enabled = false
 		(testTree.contentProvider as WTestTreeContentProvider).results.container = new WollokTestContainer() {
 			override toString() {
 				return ""
@@ -246,14 +249,14 @@ class WollokTestResultView extends ViewPart implements Observer {
 			enabled = false
 		]
 
-		debugAgain = new ToolItem(toolbar, SWT.PUSH) => [
-			toolTipText = Messages.WollokTestResultView_debugAgain
-			image = resManager.createImage(
-				Activator.getDefault.getImageDescriptor(
-					"platform:/plugin/org.eclipse.debug.ui/icons/full/elcl16/debuglast_co.png"))
-			addListener(SWT.Selection)[this.relaunchDebug]
-			enabled = false
-		]
+//		debugAgain = new ToolItem(toolbar, SWT.PUSH) => [
+//			toolTipText = Messages.WollokTestResultView_debugAgain
+//			image = resManager.createImage(
+//				Activator.getDefault.getImageDescriptor(
+//					"platform:/plugin/org.eclipse.debug.ui/icons/full/elcl16/debuglast_co.png"))
+//			addListener(SWT.Selection)[this.relaunchDebug]
+//			enabled = false
+//		]
 	}
 
 	def createBar(Composite parent) {
@@ -440,13 +443,13 @@ class WollokTestResultView extends ViewPart implements Observer {
 			}
 
 			runAgain.enabled = true
-			debugAgain.enabled = true
+//			debugAgain.enabled = true
 		} else {
 			totalTextBox.text = ""
 			failedTextBox.text = ""
 			errorTextBox.text = ""
 			runAgain.enabled = false
-			debugAgain.enabled = false
+//			debugAgain.enabled = false
 		}
 
 		// issue #1266 - dodain - this fixes the problem

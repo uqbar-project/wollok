@@ -20,10 +20,8 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.launch.WollokLauncher
 import org.uqbar.project.wollok.ui.WollokActivator
-import org.uqbar.project.wollok.ui.console.RunInUI
 import org.uqbar.project.wollok.ui.launch.Activator
 import org.uqbar.project.wollok.ui.launch.WollokLaunchConstants
-import org.uqbar.project.wollok.ui.tests.WollokTestResultView
 
 import static org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants.*
 import static org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages.*
@@ -52,12 +50,6 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 			val confirm = MessageDialog.openQuestion(Display.current.activeShell,
 				Messages.TestLauncher_CompilationErrorTitle, Messages.TestLauncher_SeeProblemTab)
 			if(!confirm) return
-		}
-		if (currFile.location.isTestFile) {
-			RunInUI.runInUI [
-			    val view = openView(WollokTestResultView.NAME)
-				(view as WollokTestResultView).cleanView
-			]
 		}
 		doLaunch(currFile, mode)
 	}
