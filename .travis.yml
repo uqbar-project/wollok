@@ -38,7 +38,7 @@ script:
 - mv org.uqbar.project.wollok.updatesite/target/org.uqbar.project.wollok.updatesite-*.zip results-products/
 - mv org.uqbar.project.wollok.updatesite/target/products/*.zip results-products/
 - mkdir results-update
-- unzip results-products/org.uqbar.project.wollok.updatesite-*.zip -d results-update/
+- unzip -q results-products/org.uqbar.project.wollok.updatesite-*.zip -d results-update/
 - ls results-server
 - ls results-products
 - df -h
