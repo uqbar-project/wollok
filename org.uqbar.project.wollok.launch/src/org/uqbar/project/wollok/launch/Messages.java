@@ -43,6 +43,7 @@ public class Messages extends NLS {
 	public static String WollokLauncherOptions_DECIMAL_CONVERSION_STRATEGY;
 	public static String WollokLauncherOptions_JAR_LIBRARIES;
 	public static String WollokLauncherOptions_WOLLOK_FILES;
+	public static String WollokLauncherOptions_DONT_VALIDATE;
 	
 	static {
 		// initialize resource bundle
