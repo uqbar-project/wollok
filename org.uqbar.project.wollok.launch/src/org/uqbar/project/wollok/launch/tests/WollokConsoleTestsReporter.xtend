@@ -37,9 +37,9 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 				.a("  ").fg(YELLOW).a(test.name).a(": ✗ FAILED => ")
 				.a(assertionError.message)
 				.a(" (").a(resource.trimFragment).a(":").a(lineNumber)
-				.reset
 				.a("\n    ")
 				.a(assertionError.wollokException?.convertStackTrace.join("\n    "))
+				.a("\n").reset
 		)
 	}
 
@@ -49,9 +49,9 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 
 	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
 		println(ansi.a("  ").fg(RED).a(test.name).a(": ✗ ERRORED => ")
-			.a(exception.message)
-			.a(" (").a(resource.trimFragment).a(":").a(lineNumber)
-			.reset.a("\n    ").a(exception.convertStackTrace.join("\n    "))
+			.a(exception.convertToString)
+			.a("\n    ").a(exception.convertStackTrace.join("\n    "))
+			.a("\n").reset
 		)
 	}
 

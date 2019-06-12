@@ -88,8 +88,6 @@ class WollokLauncherParameters {
 		dynamicDiagramActivated = cmdLine.hasOption("dd")
 		
 		tests = cmdLine.hasOption("t")
-		println("cmdLine " + cmdLine.argList)
-		println("tests " + tests)
 		testPort = parseParameterInt(cmdLine, "testPort")
 		dynamicDiagramPort = parseParameterInt(cmdLine, "dynamicDiagramPort")
 		
