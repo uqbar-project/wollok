@@ -15,10 +15,11 @@ import org.eclipse.xtext.validation.IResourceValidator
 import org.eclipse.xtext.validation.Issue
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
 import org.uqbar.project.wollok.WollokConstants
+import org.uqbar.project.wollok.interpreter.nativeobj.WollokNumbersPreferences
 import org.uqbar.project.wollok.launch.setup.WollokLauncherSetup
 import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WFile
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokNumbersPreferences
+import org.uqbar.project.wollok.interpreter.WollokTestsFailedException
 
 /**
  * Wollok checker program.
@@ -53,11 +54,8 @@ class WollokChecker {
 			}
 
 			val parameters = new WollokLauncherParameters().parse(args)
-
 			this.configureNumberPreferences(parameters)
-
 			injector = new WollokLauncherSetup(parameters).createInjectorAndDoEMFRegistration
-
 			this.doConfigureParser(parameters)
 
 			if (parameters.severalFiles) {
@@ -70,6 +68,8 @@ class WollokChecker {
 			}
 
 			log.debug("Program finished")
+		} catch (WollokTestsFailedException e) {
+			System.exit(1)
 		} catch (Throwable t) {
 			log.error("Checker error : " + t.class.name)
 			t.stackTrace.forEach [ ste |

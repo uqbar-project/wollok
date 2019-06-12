@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.launch.tests
 import java.util.List
 import org.eclipse.emf.common.util.URI
 import org.fusesource.jansi.AnsiConsole
+import org.uqbar.project.wollok.interpreter.WollokTestsFailedException
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WTest
 import wollok.lib.AssertionException
@@ -18,9 +19,13 @@ import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionEx
  * like eclipse UI.
  * 
  * @author tesonep
+ * @author dodain
+ * 
  */
 class WollokConsoleTestsReporter implements WollokTestsReporter {
 
+	int testsFailed = 0
+	
 	override testsToRun(String suiteName, WFile file, List<WTest> tests) {
 		AnsiConsole.systemInstall
 		if (suiteName ?: '' !== '') {
@@ -28,11 +33,13 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 		} else {
 			println('''Running «tests.size» tests...''')
 		}
+		resetTestsFailed
 	}
 
 	override testStart(WTest test) {}
 
 	override reportTestAssertError(WTest test, AssertionException assertionError, int lineNumber, URI resource) {
+		incrementTestsFailed
 		println(ansi
 				.a("  ").fg(YELLOW).a(test.name).a(": ✗ FAILED => ")
 				.a(assertionError.message)
@@ -42,12 +49,13 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 				.a("\n").reset
 		)
 	}
-
+	
 	override reportTestOk(WTest test) {
 		println(ansi.a("  ").fg(GREEN).a(test.name).a(": √ (Ok)").reset)
 	}
 
 	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
+		incrementTestsFailed
 		println(ansi.a("  ").fg(RED).a(test.name).a(": ✗ ERRORED => ")
 			.a(exception.convertToString)
 			.a("\n    ").a(exception.convertStackTrace.join("\n    "))
@@ -57,12 +65,24 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 
 	override finished() {
 		AnsiConsole.systemUninstall
+		if (testsFailed > 0) {
+			throw new WollokTestsFailedException
+		}
 	}
 
 	override initProcessManyFiles(String folder) {
 	}
 	
 	override endProcessManyFiles() {
+	}
+
+
+	def resetTestsFailed() {
+		testsFailed = 0	
+	}
+	
+	def incrementTestsFailed() {
+		testsFailed++
 	}
 
 }

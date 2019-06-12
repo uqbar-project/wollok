@@ -116,6 +116,8 @@ class WollokInterpreter implements XInterpreter<EObject, WollokObject>, IWollokI
 			evaluator.evaluate(rootObject)
 		} catch (WollokProgramExceptionWrapper e) {
 			throw e
+		} catch (WollokTestsFailedException e) {
+			throw e
 		} catch (Throwable e) {
 			if (e.shouldShowStackTraceInJava) {
 				e.printStackTrace

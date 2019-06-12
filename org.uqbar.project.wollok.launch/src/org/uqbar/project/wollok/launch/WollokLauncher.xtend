@@ -20,6 +20,7 @@ import org.uqbar.project.wollok.launch.repl.WollokRepl
 import org.uqbar.project.wollok.wollokDsl.WFile
 
 import static org.uqbar.project.wollok.utils.OperatingSystemUtils.*
+import org.uqbar.project.wollok.interpreter.WollokTestsFailedException
 
 /**
  * Main program launcher for the interpreter.
@@ -66,8 +67,10 @@ class WollokLauncher extends WollokChecker {
 				new WollokRepl(this, injector, interpreter, mainFile, parsed, formatter).startRepl
 			}
 			System.exit(0)
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
+			if (e instanceof WollokTestsFailedException) {
+				throw e
+			}
 			val stackTrace = e.stackTrace.map [ "\tat " + className + "." + methodName + " (" + fileName + ":" + lineNumber + ")" ].join("\n")
 			println("Error in Wollok Launcher => " + e.message + "\n" + stackTrace)
 			System.exit(-1)
