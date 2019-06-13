@@ -37,8 +37,6 @@ class WollokDocParser extends WollokChecker {
 	val static HORIZONTAL_LINE = "<hr>"
 	val static BOLD_ON = "<b>"
 	val static BOLD_OFF = "</b>"
-	val static ITALIC_ON = "<i>"
-	val static ITALIC_OFF = "</i>"
 	val static PARAGRAPH_ON = "<p>"
 	val static PARAGRAPH_OFF = "</p>"
 	val static SPACE = " "
@@ -69,6 +67,11 @@ class WollokDocParser extends WollokChecker {
 	override String processName() {
 		"WollokDoc Parser"
 	}
+
+	/**
+	 * By default WollokChecker never validates
+	 */
+	override shouldValidate() { true }
 	
 	override doConfigureParser(WollokLauncherParameters parameters) {
 		injector.injectMembers(this)
@@ -327,7 +330,7 @@ class WollokDocParser extends WollokChecker {
 	def FileHandler launchWollokDocGeneration() {
 		[ int level, String path, File file | 
 			log.debug("Parsing program...")
-			WollokDocParser.this.generateWollokDocFile(file.parse(false, null), file)
+			generateWollokDocFile(file.parse(null), file)
 		]
 	}
 	

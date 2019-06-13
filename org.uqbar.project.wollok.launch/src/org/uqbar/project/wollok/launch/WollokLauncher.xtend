@@ -27,9 +27,9 @@ import static org.uqbar.project.wollok.utils.OperatingSystemUtils.*
  * a service through (lite) RMI to be used from the remote debugger.
  * 
  * @author jfernandes
+ * @author npasserini
  */
 class WollokLauncher extends WollokChecker {
-
 	def static void main(String[] args) {
 		new WollokLauncher().doMain(args)
 	}
@@ -41,6 +41,7 @@ class WollokLauncher extends WollokChecker {
 			val filesToParse = fileNames.map [ wollokFile |
 				new File(wollokFile)
 			]
+
 			interpreter.interpret(filesToParse.parse(parameters), parameters.folder)
 			System.exit(0)
 		} catch (Exception e) {
@@ -139,4 +140,10 @@ class WollokLauncher extends WollokChecker {
 		super.blockErrorHandler(handler, parameters)
 	}
 	
+	/**
+	 * Depends on parameters
+	 */
+	override shouldValidate() { 
+		parameters.validate
+	}
 }
