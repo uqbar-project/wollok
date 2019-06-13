@@ -42,7 +42,7 @@ class WollokChecker {
 	}
 
 	/**
-	 * By default WollokChecker allways validates
+	 * By default WollokChecker always validates
 	 */
 	def shouldValidate() { true }
 
