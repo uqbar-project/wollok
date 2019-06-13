@@ -143,7 +143,9 @@ class WollokRepl {
 		resourceSet.resources.add(resource)
 
 		resource.load(in, #{})
-		launcher.validate(injector, resource, [], [throw new ReplParserException(it)])
+		if (launcher.shouldValidate) {
+			launcher.validate(injector, resource, [], [throw new ReplParserException(it)])			
+		}
 		resource.contents.get(0) as WFile
 	}
 

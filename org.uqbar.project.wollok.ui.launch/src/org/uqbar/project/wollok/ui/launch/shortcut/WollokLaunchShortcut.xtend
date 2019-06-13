@@ -42,7 +42,7 @@ import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
  * @author jfernandes
  */
 class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
-	
+
 	ILaunchManager launchManager = DebugPlugin.getDefault.launchManager
 
 	override launch(IFile currFile, String mode) {
@@ -118,10 +118,14 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 		setAttribute(RefreshTab.ATTR_REFRESH_RECURSIVE, true)
 		setAttribute(ATTR_WOLLOK_LIBS, newArrayList(info.findLibs))
 	}
-	
-	def static getWollokFile(ILaunch launch) { launch.launchConfiguration.getAttribute(ATTR_WOLLOK_FILE, null as String) }
-	
-	def static getWollokProject(ILaunch launch) { launch.launchConfiguration.getAttribute(ATTR_PROJECT_NAME, null as String) }
+
+	def static getWollokFile(ILaunch launch) {
+		launch.launchConfiguration.getAttribute(ATTR_WOLLOK_FILE, null as String)
+	}
+
+	def static getWollokProject(ILaunch launch) {
+		launch.launchConfiguration.getAttribute(ATTR_PROJECT_NAME, null as String)
+	}
 
 	def findLibs(LaunchConfigurationInfo info) {
 		getProject(info.project).libPaths
@@ -146,27 +150,25 @@ class LaunchConfigurationInfo {
 	}
 
 	def configEquals(ILaunchConfiguration a) throws CoreException {
-		file == a.getAttribute(ATTR_WOLLOK_FILE, "X")
-			&& WollokLauncher.name == a.getAttribute(ATTR_MAIN_TYPE_NAME, "X")
-			&& project == a.getAttribute(ATTR_PROJECT_NAME, "X")
-			&& (LAUNCH_CONFIGURATION_TYPE == a.type.identifier || LAUNCH_TEST_CONFIGURATION_TYPE == a.type.identifier)
-			&& a.getAttribute(ATTR_WOLLOK_SEVERAL_FILES, false) === severalFiles
-			&& a.getAttribute(ATTR_WOLLOK_FOLDER, "").sameFolder()
-			&& a.getAttribute(ATTR_WOLLOK_LIBS, #[]).equals(libs) 
+		file == a.getAttribute(ATTR_WOLLOK_FILE, "X") &&
+			WollokLauncher.name == a.getAttribute(ATTR_MAIN_TYPE_NAME, "X") &&
+			project == a.getAttribute(ATTR_PROJECT_NAME, "X") &&
+			(LAUNCH_CONFIGURATION_TYPE == a.type.identifier || LAUNCH_TEST_CONFIGURATION_TYPE == a.type.identifier) &&
+			a.getAttribute(ATTR_WOLLOK_SEVERAL_FILES, false) === severalFiles &&
+			a.getAttribute(ATTR_WOLLOK_FOLDER, "").sameFolder() && a.getAttribute(ATTR_WOLLOK_LIBS, #[]).equals(libs)
 	}
-	
+
 	def sameFolder(String anotherFolder) {
 		val folder1EmptyValue = this.folder.emptyValue
 		val folder2EmptyValue = anotherFolder.emptyValue
-		
+
 		return (folder1EmptyValue && folder2EmptyValue) ||
-			(!folder1EmptyValue && !folder2EmptyValue &&
-			this.folder.equalsIgnoreCase(anotherFolder)
+			(!folder1EmptyValue && !folder2EmptyValue && this.folder.equalsIgnoreCase(anotherFolder)
 		)
 	}
-	
+
 	def emptyValue(String value) {
 		value === null || value.trim.equals("")
 	}
-	
+
 }
