@@ -72,8 +72,13 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 			.fg(STATUS)
 			.bold
 			.a(totalTests).a(" tests, ")
+<<<<<<< HEAD
 			.a(testsFailed).a(if (testsFailed == 1) " failure and " else " failures and ")
 			.a(testsErrored).a(if (testsErrored == 1) " error" else " errors")
+=======
+			.a(testsFailed).a(" failures and ")
+			.a(testsErrored).a(" errors")
+>>>>>>> 2dbe5f187510c397562fff6ec2219cf308787063
 			.a("\n")
 			.reset
 		)
