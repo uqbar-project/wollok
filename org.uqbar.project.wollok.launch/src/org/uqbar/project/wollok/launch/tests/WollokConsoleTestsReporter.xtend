@@ -25,15 +25,18 @@ import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionEx
 class WollokConsoleTestsReporter implements WollokTestsReporter {
 
 	int testsFailed = 0
+	int testsErrored = 0
+	int totalTests = 0
 	
 	override testsToRun(String suiteName, WFile file, List<WTest> tests) {
 		AnsiConsole.systemInstall
+		totalTests = tests.size
 		if (suiteName ?: '' !== '') {
 			println('''Running all tests from suite «suiteName»''')
 		} else {
-			println('''Running «tests.size» tests...''')
+			println('''Running «totalTests» tests...''')
 		}
-		resetTestsFailed
+		resetTestsCount
 	}
 
 	override testStart(WTest test) {}
@@ -41,12 +44,12 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 	override reportTestAssertError(WTest test, AssertionException assertionError, int lineNumber, URI resource) {
 		incrementTestsFailed
 		println(ansi
-				.a("  ").fg(YELLOW).a(test.name).a(": ✗ FAILED => ")
-				.a(assertionError.message)
-				.a(" (").a(resource.trimFragment).a(":").a(lineNumber)
+				.a("  ").fg(YELLOW).a(test.name).a(": ✗ FAILED => ").reset
+				.fg(YELLOW).a(assertionError.message).reset
+				.fg(YELLOW).a(" (").a(resource.trimFragment).a(":").a(lineNumber).a(")").reset
 				.a("\n    ")
-				.a(assertionError.wollokException?.convertStackTrace.join("\n    "))
-				.a("\n").reset
+				.fg(YELLOW).a(assertionError.wollokException?.convertStackTrace.join("\n    ")).reset
+				.a("\n")
 		)
 	}
 	
@@ -55,34 +58,49 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 	}
 
 	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
-		incrementTestsFailed
-		println(ansi.a("  ").fg(RED).a(test.name).a(": ✗ ERRORED => ")
-			.a(exception.convertToString)
-			.a("\n    ").a(exception.convertStackTrace.join("\n    "))
-			.a("\n").reset
+		incrementTestsErrored
+		println(ansi.a("  ").fg(RED).a(test.name).a(": ✗ ERRORED => ").reset
+			.fg(RED).a(exception.convertToString).reset
+			.a("\n    ").fg(RED).a(exception.convertStackTrace.filter [ contextDescription !== null ].join("\n    ")).reset
+			.a("\n")
 		)
 	}
 
 	override finished() {
+		val STATUS = if (processWasOK) GREEN else RED
+		println(ansi
+			.fg(STATUS)
+			.bold
+			.a(totalTests).a(" tests, ")
+			.a(testsFailed).a(if (testsFailed == 1) " failure and " else " failures and ")
+			.a(testsErrored).a(if (testsErrored == 1) " error" else " errors")
+			.a("\n")
+			.reset
+		)
 		AnsiConsole.systemUninstall
-		if (testsFailed > 0) {
+		if (!processWasOK) {
 			throw new WollokTestsFailedException
 		}
 	}
 
-	override initProcessManyFiles(String folder) {
-	}
+	override initProcessManyFiles(String folder) {}
 	
-	override endProcessManyFiles() {
-	}
+	override endProcessManyFiles() {}
 
-
-	def resetTestsFailed() {
-		testsFailed = 0	
+	def resetTestsCount() {
+		testsFailed = 0
+		testsErrored = 0	
 	}
 	
 	def incrementTestsFailed() {
 		testsFailed++
 	}
 
+	def incrementTestsErrored() {
+		testsErrored++
+	}
+	
+	def processWasOK() {
+		testsFailed + testsErrored === 0
+	}
 }

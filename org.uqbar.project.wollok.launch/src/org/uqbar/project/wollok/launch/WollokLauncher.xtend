@@ -137,7 +137,7 @@ class WollokLauncher extends WollokChecker {
 	}
 
 	override blockErrorHandler(WollokLauncherIssueHandler handler, WollokLauncherParameters parameters) {
-		if (parameters.hasRepl) {
+		if (parameters.hasRepl || parameters.exitOnBuildFailure) {
 			return [ handler.finished ; System.exit(-1) ]
 		}
 		super.blockErrorHandler(handler, parameters)

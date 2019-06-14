@@ -33,6 +33,7 @@ class WollokLauncherParameters {
 	boolean noAnsiFormat = false
 	boolean severalFiles = false
 	boolean validate = true
+	boolean exitOnBuildFailure = false
 
 	Integer numberOfDecimals = null
 	String printingStrategy = null
@@ -55,6 +56,7 @@ class WollokLauncherParameters {
 		if (severalFiles) sb.append("-severalFiles ")
 		sb.appendIfNotNull(folder, "folder")
 		if (jsonOutput) sb.append("-jsonOutput ")
+		if (exitOnBuildFailure) sb.append("-exitOnBuildFailure ")
 		if (noAnsiFormat) sb.append("-noAnsiFormat ")
 		if (!validate) sb.append("-dontValidate ")
 		buildNumberPreferences(sb)
@@ -83,7 +85,6 @@ class WollokLauncherParameters {
 	}
 
 	def parse(String[] args) {
-		args.forEach[println(it)]
 		val parser = new OptionalGnuParser
 		val cmdLine = parser.parse(options, args, false)
 
@@ -104,6 +105,7 @@ class WollokLauncherParameters {
 		eventsPort = parseParameterInt(cmdLine, "eventsPort")
 
 		validate = !cmdLine.hasOption("dontValidate")
+		exitOnBuildFailure = !cmdLine.hasOption("exitOnBuildFailure")
 		numberOfDecimals = parseParameterInt(cmdLine, "numberOfDecimals", null)
 		printingStrategy = parseParameterString(cmdLine, "printingStrategy")
 		coercingStrategy = parseParameterString(cmdLine, "coercingStrategy")
@@ -195,6 +197,7 @@ class WollokLauncherParameters {
 			addOption(new Option("noAnsiFormat", Messages.WollokLauncherOptions_DISABLE_COLORS_REPL))
 			addOption(new Option("severalFiles", Messages.WollokLauncherOptions_SEVERAL_FILES))
 			addOption(new Option("dontValidate", Messages.WollokLauncherOptions_DONT_VALIDATE))
+			addOption(new Option("exitOnBuildFailure", Messages.WollokLauncherOptions_EXIT_ON_BUILD_FAILURE))
 
 			add("testPort", Messages.WollokLauncherOptions_SERVER_PORT, "port", 1)
 			add("dynamicDiagramPort", Messages.WollokLauncherOptions_DYNAMIC_DIAGRAM_PORT, "port", 1)
