@@ -61,7 +61,7 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 		incrementTestsErrored
 		println(ansi.a("  ").fg(RED).a(test.name).a(": ✗ ERRORED => ").reset
 			.fg(RED).a(exception.convertToString).reset
-			.a("\n    ").fg(RED).a(exception.convertStackTrace.filter [ contextDescription !== null ].join("\n    ")).reset
+			.a("\n    ").fg(RED).a(exception.convertStackTrace.join("\n    ")).reset
 			.a("\n")
 		)
 	}

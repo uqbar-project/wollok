@@ -108,4 +108,8 @@ class StackTraceElementDTO implements Serializable {
 	def getElementForStackTrace() {
 		contextForStackTrace + linkForStackTrace
 	}
+	
+	def shouldAppearInStackTrace() {
+		!fileName.contains(CLASSPATH) && contextDescription !== null
+	}
 }
