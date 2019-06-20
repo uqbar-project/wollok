@@ -50,7 +50,7 @@ class InstanceVariableInitializationTest extends AbstractWollokInterpreterTestCa
 	def void assignmentToWKODeclared() {
 		'''
 			object before { method get() = "before" }
-		
+			
 			class A {
 				const b = before
 				const a = after 
