@@ -5,7 +5,7 @@ object pepita {
 
 object p {
     method run() {
-        // XPECT errors --> "Unnecessary if always evaluates to true !" at "true"
+        // XPECT warnings --> "Unnecessary if always evaluates to true !" at "true"
         if (true)
             throw new Exception("asd")
     }

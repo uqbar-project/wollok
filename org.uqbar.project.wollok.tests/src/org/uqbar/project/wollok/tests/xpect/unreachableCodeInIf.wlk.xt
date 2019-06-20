@@ -8,11 +8,11 @@ object p {
         if (true)
             throw new Exception("asd")
         else 
-	        // XPECT errors --> "Unreachable code" at "throw new Exception(\"else\")"
+	        // XPECT warnings --> "Unreachable code" at "throw new Exception(\"else\")"
         	throw new Exception("else")
         	
         if (false)
-	        // XPECT errors --> "Unreachable code" at "throw new Exception(\"asd\")"
+	        // XPECT warnings --> "Unreachable code" at "throw new Exception(\"asd\")"
             throw new Exception("asd")
         else 
         	throw new Exception("else")	

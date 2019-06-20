@@ -19,7 +19,7 @@ object p {
 			assert.fail("incorrect catch !")
 		catch e
 			console.println("blah")
-		// XPECT errors --> "Unreachable catch block" at "e" 
+		// XPECT warnings --> "Unreachable catch block" at "e" 
 		catch e : BException
 			assert.fail("incorrect catch !")
 	}
@@ -31,10 +31,10 @@ object p {
 		}
 		catch e
 			console.println("blah")
-		// XPECT errors --> "Unreachable catch block" at "e"
+		// XPECT warnings --> "Unreachable catch block" at "e"
 		catch e
 			assert.fail("incorrect catch !")
-		// XPECT errors --> "Unreachable catch block" at "e"
+		// XPECT warnings --> "Unreachable catch block" at "e"
 		catch e : BException
 			assert.fail("incorrect catch !")
 	}

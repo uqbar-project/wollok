@@ -6,7 +6,7 @@ class SpecialList inherits List {
         
     }
     
-    // XPECT errors --> "Method must be marked as override, since it overrides a superclass method" at "add"
+    // XPECT warnings --> "Method must be marked as override, since it overrides a superclass method" at "add"
     method add(other) {
 
     }
@@ -17,7 +17,7 @@ class SpecialList inherits List {
 }
 
 object bar inherits List {
-	// XPECT errors --> "Method must be marked as override, since it overrides a superclass method" at "=="
+	// XPECT warnings --> "Method must be marked as override, since it overrides a superclass method" at "=="
     method == (other) {
         return true
     }

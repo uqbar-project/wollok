@@ -27,12 +27,12 @@ class E inherits EmptyB {
 }
 
 class C inherits B {
-	// XPECT warnings --> "Invalid super constructor call. It does not exist in superclass. Valid constructors are: super(_x)" at "super()"
+	// XPECT errors --> "Invalid super constructor call. It does not exist in superclass. Valid constructors are: super(_x)" at "super()"
 	constructor() = super() {}
 }
 
 class D inherits B {
-	// XPECT errors --> "Must call a super class constructor explicitly" at "constructor() { 		 	}"
+	// XPECT warnings --> "Must call a super class constructor explicitly" at "constructor() { 		 	}"
 	constructor() {
 		
 	}
@@ -50,7 +50,7 @@ class SuperClass {
 }
 class SubClass inherits SuperClass { 
 	var anotherVariable
-	// XPECT warnings --> "Invalid super constructor call. Superclass has no explicit constructors." at "super()"
+	// XPECT errors --> "Invalid super constructor call. Superclass has no explicit constructors." at "super()"
 	constructor(n) = super() {
 		anotherVariable = n
 	}
@@ -92,14 +92,14 @@ class Superclase {
 class InvalidInstanceAccessOnConstructorDelegation inherits Superclase {
 	var x = 1
 	
-	// XPECT errors --> "Cannot access instance methods within constructor delegation." at "self"
+	// XPECT warnings --> "Cannot access instance methods within constructor delegation." at "self"
 	constructor() = super(self.getX()) 
 	
 	method getX() { return x }	
 }
 
 class InvalidInstanceAccessOnConstructorDelegation2 inherits Superclase {
-	// XPECT errors --> "Cannot access instance methods within constructor delegation." at "self"
+	// XPECT warnings --> "Cannot access instance methods within constructor delegation." at "self"
 	constructor() = super(self)
 }
 

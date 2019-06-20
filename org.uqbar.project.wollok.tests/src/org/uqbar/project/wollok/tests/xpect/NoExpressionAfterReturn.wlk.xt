@@ -5,13 +5,13 @@ class A {
 	method inABlock() {
 		return { a =>
 			return a
-			// XPECT errors --> "Unexpected expression after return" at "a > 23"
+			// XPECT warnings --> "Unexpected expression after return" at "a > 23"
 			a > 23
 		}
 		
-		// XPECT errors --> "Unexpected expression after return" at "const b = '23'"
+		// XPECT warnings --> "Unexpected expression after return" at "const b = '23'"
 		const b = '23'
-		// XPECT errors --> "Unexpected expression after return" at "b"
+		// XPECT warnings --> "Unexpected expression after return" at "b"
 		b
 	}
 	
@@ -20,20 +20,20 @@ class A {
 		var a = 1
 		if (a > 0) {
 			return 23
-			// XPECT errors --> "Unexpected expression after return" at "a = 23"
+			// XPECT warnings --> "Unexpected expression after return" at "a = 23"
 			a = 23
 		}
 		else {
 			a = 22
 			return a
-			// XPECT errors --> "Unexpected expression after return" at "a = 21"
+			// XPECT warnings --> "Unexpected expression after return" at "a = 21"
 			a = 21
 		}
 	}
 	
 	method returnAfterReturn() {
 		return "23"
-		// XPECT errors --> "Unexpected expression after return" at "return '24'"
+		// XPECT warnings --> "Unexpected expression after return" at "return '24'"
 		return '24'
 	}
 }

@@ -4,15 +4,15 @@ class A {
 	method inABlock() {
 		const aBlock = {a =>
 			throw new Exception()
-			// XPECT errors --> "Unexpected expression after throw" at "a > 23"
+			// XPECT warnings --> "Unexpected expression after throw" at "a > 23"
 			a > 23
 		}
 		aBlock.apply(23)
 		throw new Exception()
 		
-		// XPECT errors --> "Unexpected expression after throw" at "aBlock.apply(23)"
+		// XPECT warnings --> "Unexpected expression after throw" at "aBlock.apply(23)"
 		aBlock.apply(23)
-		// XPECT errors --> "Unexpected expression after throw" at "return '23'"
+		// XPECT warnings --> "Unexpected expression after throw" at "return '23'"
 		return '23'
 	}
 	
@@ -20,20 +20,20 @@ class A {
 		var a = 1
 		if (a > 0) {
 			throw new Exception()
-			// XPECT errors --> "Unexpected expression after throw" at "a = 23"
+			// XPECT warnings --> "Unexpected expression after throw" at "a = 23"
 			a = 23
 		}
 		else {
 			a = 22
 			throw new Exception()
-			// XPECT errors --> "Unexpected expression after throw" at "a = 21"
+			// XPECT warnings --> "Unexpected expression after throw" at "a = 21"
 			a = 21
 		}
 	}
 	
 	method throwAfterThrow() {
 		throw new Exception()
-		// XPECT errors --> "Unexpected expression after throw" at "throw new Exception()"
+		// XPECT warnings --> "Unexpected expression after throw" at "throw new Exception()"
 		throw new Exception()
 	}
 }

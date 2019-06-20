@@ -12,32 +12,32 @@ object p {
     	// AND
     	//
     	
-	    // XPECT errors --> "Unnecessary condition" at "true"
+	    // XPECT warnings --> "Unnecessary condition" at "true"
 		cond = true && algo
 		
-		// XPECT errors --> "Unreachable code" at "algo"
+		// XPECT warnings --> "Unreachable code" at "algo"
 		cond = false && algo
 		
-		// XPECT errors --> "Unnecessary condition" at "true"
+		// XPECT warnings --> "Unnecessary condition" at "true"
 		cond = algo && true
 		
-		// XPECT errors --> "Always evaluates to false !" at "algo && false"
+		// XPECT warnings --> "Always evaluates to false !" at "algo && false"
 		cond = algo && false
 		
 		//
     	// OR
     	//
 		
-		// XPECT errors --> "Unreachable code" at "algo"
+		// XPECT warnings --> "Unreachable code" at "algo"
 		cond = true || algo
 
-	    // XPECT errors --> "Unnecessary condition" at "false"
+	    // XPECT warnings --> "Unnecessary condition" at "false"
 		cond = false || algo
 		
-		// XPECT errors --> "Always evaluates to true !" at "algo || true"
+		// XPECT warnings --> "Always evaluates to true !" at "algo || true"
 		cond = algo || true
 		
-		// XPECT errors --> "Unnecessary condition" at "false"
+		// XPECT warnings --> "Unnecessary condition" at "false"
 		cond = algo || false 
     }
 }

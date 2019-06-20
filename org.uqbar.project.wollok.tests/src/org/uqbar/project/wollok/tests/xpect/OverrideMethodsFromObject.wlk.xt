@@ -15,7 +15,7 @@ object foo {
 }
 
 class Bar {
-	// XPECT errors --> "Method must be marked as override, since it overrides a superclass method" at "=="
+	// XPECT warnings --> "Method must be marked as override, since it overrides a superclass method" at "=="
     method == (other) {
         return true
     }
@@ -25,7 +25,7 @@ class Bar {
 }
 
 object bar {
-	// XPECT errors --> "Method must be marked as override, since it overrides a superclass method" at "=="
+	// XPECT warnings --> "Method must be marked as override, since it overrides a superclass method" at "=="
     method == (other) {
         return true
     }

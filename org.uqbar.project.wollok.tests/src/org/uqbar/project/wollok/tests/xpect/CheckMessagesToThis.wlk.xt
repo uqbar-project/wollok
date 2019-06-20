@@ -5,7 +5,7 @@ class Persona {
 		return "hardcodeado"
 	}
 	method blah() {
-		// XPECT errors --> "Method does not exist or invalid number of arguments" at "bleh"
+		// XPECT warnings --> "Method does not exist or invalid number of arguments" at "bleh"
 		self.bleh()
 	}
 }
@@ -14,7 +14,7 @@ class Profesor inherits Persona {
 	method subBlah() {
 		self.getNombre()
 		self.blah()
-		// XPECT errors --> "Method does not exist or invalid number of arguments" at "bleh"
+		// XPECT warnings --> "Method does not exist or invalid number of arguments" at "bleh"
 		self.bleh()
 	}
 }
@@ -25,7 +25,7 @@ object o {
 	}
 	method bar() {
 		self.foo()
-		// XPECT errors --> "Method does not exist or invalid number of arguments" at "foobar"
+		// XPECT warnings --> "Method does not exist or invalid number of arguments" at "foobar"
 		self.foobar()
 	}
 }
