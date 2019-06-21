@@ -32,6 +32,7 @@ import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilde
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 
 /**
  * A wollok user defined (dynamic) object.
@@ -112,13 +113,6 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		} catch (RuntimeException e) {
 			throw new RuntimeException(NLS.bind(Messages.WollokInterpreter_errorWhileMessageNotUnderstood, e.message), e)
 		}
-	}
-
-	def messageNotUnderstood(String message) {
-		val originalException = evaluator.newInstance(MESSAGE_NOT_UNDERSTOOD_EXCEPTION) => [
-			setReference("message", message.javaToWollok)
-		]
-		new WollokProgramExceptionWrapper(originalException)
 	}
 
 	// ahh repetido ! no son polimorficos metodos y constructores! :S

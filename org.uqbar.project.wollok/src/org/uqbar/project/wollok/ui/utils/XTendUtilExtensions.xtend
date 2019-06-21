@@ -11,8 +11,6 @@ import java.util.Map
 import java.util.Random
 import org.eclipse.osgi.util.NLS
 import org.uqbar.project.wollok.Messages
-import org.uqbar.project.wollok.interpreter.WollokInterpreter
-import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions
@@ -22,6 +20,7 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 
 /**
  * Utilities for xtend code
@@ -129,20 +128,6 @@ class XTendUtilExtensions {
 		matchingMethods.head.accesibleVersion.invokeConvertingArgs(target, args)
 	}
 
-	// TODO: repeated code
-	def static throwMessageNotUnderstood(Object nativeObject, String name, Object[] parameters) {
-		newException(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, nativeObject.createMessage(name, parameters))
-	}
-
-	def static evaluator() { WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator }
-
-	def static WollokProgramExceptionWrapper newException(String exceptionClassName, String message) {
-		val originalException = evaluator.newInstance(exceptionClassName) => [
-			setReference("message", message.javaToWollok)
-		]
-		new WollokProgramExceptionWrapper(originalException)
-	}
-
 	def static String createMessage(Object target, String message, Object... args) {
 		val fullMessage = message + "(" + args.join(",") + ")"
 		val wollokTarget = target.javaToWollok
@@ -166,7 +151,8 @@ class XTendUtilExtensions {
 		if ((!m.varArgs && m.parameterTypes.size != args.size) || (m.varArgs && args.length < m.parameterTypes.length -
 			1)) {
 				throw throwInvalidOperation(
-					NLS.bind(Messages.WollokConversion_INVALID_ARGUMENTS_SIZE, m.name, m.parameterTypes.map[simpleName] + "(" + m.parameterTypes.length + ")")
+					NLS.bind(Messages.WollokConversion_INVALID_ARGUMENTS_SIZE, m.name,
+						m.parameterTypes.map[simpleName] + "(" + m.parameterTypes.length + ")")
 				)
 			}
 
@@ -191,8 +177,9 @@ class XTendUtilExtensions {
 			} catch (InvocationTargetException e) {
 				throw wrapNativeException(e, m, result)
 			} catch (IllegalArgumentException e) {
-				throw throwInvalidOperation(
-					NLS.bind(Messages.WollokConversion_INVALID_OPERATION_PARAMETER, args.map [ toString ].join(", ")))
+				throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_OPERATION_PARAMETER, args.map [
+					toString
+				].join(", ")))
 			}
 		}
 
@@ -201,7 +188,7 @@ class XTendUtilExtensions {
 				e.cause.class.name.equalsIgnoreCase(ASSERTION_EXCEPTION_FQN))
 				e.cause
 			else {
-				new WollokProgramExceptionWrapper(WollokJavaConversions.newWollokException(e.cause.message))
+				new WollokProgramExceptionWrapper(e.cause.message.newWollokException)
 			}
 		}
 

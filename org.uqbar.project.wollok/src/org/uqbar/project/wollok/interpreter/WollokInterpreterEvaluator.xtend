@@ -74,6 +74,7 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 
 /**
  * It's the real "interpreter".
@@ -216,7 +217,6 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def dispatch WollokObject evaluate(WThrow t) {
 		// this must be checked!
 		val obj = t.exception.eval as WollokObject
-		println(obj)
 		throw new WollokProgramExceptionWrapper(obj, t)
 	}
 

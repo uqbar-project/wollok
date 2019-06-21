@@ -16,6 +16,7 @@ import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 
 /**
  * Holds common extensions for Wollok to Java and Java to Wollok conversions.
@@ -23,6 +24,8 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
  * @author jfernandes
  */
 class WollokJavaConversions {
+
+	def static getEvaluator() { (WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator) }
 
 	def static asNumber(WollokObject it) {
 		((it as WollokObject).getNativeObject(NUMBER) as JavaWrapper<BigDecimal>).wrapped
@@ -113,34 +116,8 @@ class WollokJavaConversions {
 	def static dispatch WollokObject convertJavaToWollok(WollokObject it) { it }
 
 	def static dispatch WollokObject convertJavaToWollok(Object o) {
-		throw WollokJavaConversions.throwInvalidOperation(NLS.bind(Messages.WollokConversion_UNSUPPORTED_CONVERSION_JAVA_WOLLOK, (o as WollokObject).call("printString"), o.class.name))
+		throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_UNSUPPORTED_CONVERSION_JAVA_WOLLOK, (o as WollokObject).call("printString"), o.class.name))
 	}
-
-	def static WollokProgramExceptionWrapper newWollokExceptionAsJava(String message) {
-		new WollokProgramExceptionWrapper(newWollokException(message))
-	}
-
-	def static instantiateException(String type, String message) {
-		evaluator.newInstance(type) => [
-			setReference("message", message.javaToWollok)
-		]
-	}
-	
-	def static newWollokException(String message) {
-		EXCEPTION.instantiateException(message)
-	}
-
-	def static newWollokException(String message, WollokObject cause) {
-		newWollokException(message) => [
-			setReference("cause", cause)
-		]
-	}
-
-	def static newWollokAssertionException(String message) {
-		ASSERTION_EXCEPTION_FQN.instantiateException(message)
-	}
-
-	def static getEvaluator() { (WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator) }
 
 	/**
 	 * Numeric conversions

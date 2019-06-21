@@ -14,8 +14,8 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
-import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 
 /**
  * Default implement
