@@ -120,16 +120,24 @@ class WollokJavaConversions {
 		new WollokProgramExceptionWrapper(newWollokException(message))
 	}
 
+	def static instantiateException(String type, String message) {
+		evaluator.newInstance(type) => [
+			setReference("message", message.javaToWollok)
+		]
+	}
+	
 	def static newWollokException(String message) {
-		evaluator.newInstance(EXCEPTION, message.javaToWollok)
+		EXCEPTION.instantiateException(message)
 	}
 
 	def static newWollokException(String message, WollokObject cause) {
-		evaluator.newInstance(EXCEPTION, message.javaToWollok, cause)
+		newWollokException(message) => [
+			setReference("cause", cause)
+		]
 	}
 
 	def static newWollokAssertionException(String message) {
-		evaluator.newInstance(ASSERTION_EXCEPTION_FQN, message.javaToWollok)
+		ASSERTION_EXCEPTION_FQN.instantiateException(message)
 	}
 
 	def static getEvaluator() { (WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator) }

@@ -26,16 +26,12 @@ class Range extends AbstractJavaWrapper<IntegerRange> {
 	
 	def initWrapped() {
 		if (wrapped === null) {
-			val start = solve("start")
-			val end = solve("end")
-			val step = solve("step")
+			val start = "start".solve
+			val end = "end".solve
+			val step = "step".solve
 			wrapped = new IntegerRange(start, end, step)
 		}
 		wrapped
-	}
-	
-	def solve(String fieldName) {
-		coerceToInteger(obj.resolve(fieldName)).intValue
 	}
 	
 	def anyOne() {

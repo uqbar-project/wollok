@@ -5,15 +5,8 @@ object dateTests {
 	// XPECT methodType at m1 --> () => Date
 	method m1() = new Date()
 
-	// XPECT methodType at m2 --> (Number) => Date
-	method m2(day) = new Date(day, day, 2018)
-
-	// XPECT methodType at m3 --> (Number) => Date
-	method m3(day) {
-		const fecha = new Date()
-		fecha.initialize(day, day, 2018)
-		return fecha
-	}
+	// X PECT methodType at m2 --> (Number) => Date
+	// method m2(aDay) = new Date(day = aDay, month = aDay, 2018)
 
 	// XPECT methodType at m4 --> (Number) => Date
 	method m4(days) = new Date().plusDays(days)

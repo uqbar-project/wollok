@@ -1,11 +1,11 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 
-class AException inherits wollok.lang.Exception {  constructor(m) = super(m) }
-class BException inherits wollok.lang.Exception {  constructor(m) = super(m) }
-class CException inherits wollok.lang.Exception {  constructor(m) = super(m) }
+class AException inherits wollok.lang.Exception {}
+class BException inherits wollok.lang.Exception {}
+class CException inherits wollok.lang.Exception {}
 			
 class A { 
-	method m1() { throw new CException("hello you see") }
+	method m1() { throw new CException(message = "hello you see") }
 }
 			
 object p {	

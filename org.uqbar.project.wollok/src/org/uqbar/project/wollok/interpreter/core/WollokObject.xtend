@@ -115,8 +115,10 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	}
 
 	def messageNotUnderstood(String message) {
-		val e = evaluator.newInstance(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, message.javaToWollok)
-		new WollokProgramExceptionWrapper(e)
+		val originalException = evaluator.newInstance(MESSAGE_NOT_UNDERSTOOD_EXCEPTION) => [
+			setReference("message", message.javaToWollok)
+		]
+		new WollokProgramExceptionWrapper(originalException)
 	}
 
 	// ahh repetido ! no son polimorficos metodos y constructores! :S
@@ -167,8 +169,9 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	override resolve(String variableName) {
 		if (variableName == SELF)
 			this
-		else if (instanceVariables.containsKey(variableName))
+		else if (instanceVariables.containsKey(variableName)) {
 			instanceVariables.get(variableName)
+		}
 		else
 			parentContext.resolve(variableName)
 	}

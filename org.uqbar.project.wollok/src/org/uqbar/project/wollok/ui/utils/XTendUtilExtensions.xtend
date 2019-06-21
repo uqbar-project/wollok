@@ -137,7 +137,10 @@ class XTendUtilExtensions {
 	def static evaluator() { WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator }
 
 	def static WollokProgramExceptionWrapper newException(String exceptionClassName, String message) {
-		new WollokProgramExceptionWrapper(evaluator.newInstance(exceptionClassName, message.javaToWollok))
+		val originalException = evaluator.newInstance(exceptionClassName) => [
+			setReference("message", message.javaToWollok)
+		]
+		new WollokProgramExceptionWrapper(originalException)
 	}
 
 	def static String createMessage(Object target, String message, Object... args) {

@@ -62,7 +62,7 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 				assert.fail("should have failed")
 			}
 			catch e {
-				assert.equals("Expected [7] but found [0]", e.getMessage())
+				assert.equals("Expected [7] but found [0]", e.message())
 			} 	
 		}
 		'''.interpretPropagatingErrors
@@ -157,7 +157,7 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 				assert.throwsExceptionLike(new BusinessException("chau"), { => throw new BusinessException("hola") })
 			}
 			catch ex {
-				assert.equals(ex.getMessage(), "The Exception expected was a BusinessException[message=chau, cause=null] but got a BusinessException[message=hola, cause=null]")
+				assert.equals(ex.message(), "The Exception expected was a BusinessException[message=chau, cause=null] but got a BusinessException[message=hola, cause=null]")
 			}
 		}
 		'''.interpretPropagatingErrors
@@ -177,7 +177,7 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 					assert.throwsExceptionLike(new BusinessException(), { => throw new OtherBusinessException() })
 				}
 				catch ex {
-					assert.equals(ex.getMessage(), "The Exception expected was a BusinessException[message=null, cause=null] but got a OtherBusinessException[message=null, cause=null]")
+					assert.equals(ex.message(), "The Exception expected was a BusinessException[message=null, cause=null] but got a OtherBusinessException[message=null, cause=null]")
 				}
 		}
 		'''.interpretPropagatingErrors
@@ -194,7 +194,7 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 					assert.throwsExceptionLike(new BusinessException(), { => console.println("Works great!")})
 				}
 				catch ex {
-					assert.equals("Should have thrown an exception", ex.getMessage())
+					assert.equals("Should have thrown an exception", ex.message())
 				}
 		}
 		'''.interpretPropagatingErrors
@@ -216,14 +216,13 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 	def void throwsExceptionExpectsADesiredMessageButGotOther (){
 		'''
 		class BusinessException inherits wollok.lang.Exception {
-			constructor(_message) {message = _message}
 		}
 		test "Use throwsExceptionWithMessage" {
 			try {
-				assert.throwsExceptionWithMessage("hola!", { => throw new BusinessException("Jamaica") })
+				assert.throwsExceptionWithMessage("hola!", { => throw new BusinessException(message = "Jamaica") })
 			}
 			catch ex {
-				assert.equals("The error message expected was hola! but got Jamaica", ex.getMessage())
+				assert.equals("The error message expected was hola! but got Jamaica", ex.message())
 			}
 		}
 		'''.interpretPropagatingErrors		
@@ -233,10 +232,9 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 	def void throwsExceptionExpectsADesiredExceptionClassWithDifferentMessages (){
 		'''
 		class BusinessException inherits wollok.lang.Exception {
-			constructor(_message) {message = _message}
 		}
 		test "Use throwsExceptionWithType" {
-			assert.throwsExceptionWithType(new BusinessException("lala"), { => throw new BusinessException("hola!") })
+			assert.throwsExceptionWithType(new BusinessException(message = "lala"), { => throw new BusinessException(message = "hola!") })
 		}
 		'''.interpretPropagatingErrors		
 	}
@@ -245,20 +243,18 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 	def void throwsExceptionExpectsADesiredExceptionClassButGotOther (){
 		#['excepciones' -> '''
 			class BusinessException inherits wollok.lang.Exception {
-				constructor(_message) {message = _message}
 			}
 			class OtherException inherits wollok.lang.Exception {
-				constructor(_message) {message = _message}
 			}
 		''',
 		'programa' -> '''
 			import excepciones.*
 			test "Use throwsExceptionWithType" {
 				try {
-					assert.throwsExceptionWithType(new BusinessException("hola!"), { => throw new OtherException("hola!") })
+					assert.throwsExceptionWithType(new BusinessException(message = "hola!"), { => throw new OtherException(message = "hola!") })
 				}
 				catch ex {
-					assert.equals("The exception expected was excepciones.BusinessException but got excepciones.OtherException", ex.getMessage())
+					assert.equals("The exception expected was excepciones.BusinessException but got excepciones.OtherException", ex.message())
 				}
 			}
 		'''

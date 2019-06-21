@@ -23,7 +23,6 @@ class AbstractJavaWrapper<T> implements JavaWrapper<T> {
 	protected val WollokObject obj
 	protected val WollokInterpreter interpreter
 	
-	
 	@Accessors protected T wrapped
 	
 	new(WollokObject obj, WollokInterpreter interpreter) {
@@ -35,6 +34,10 @@ class AbstractJavaWrapper<T> implements JavaWrapper<T> {
 		evaluator.newInstance(className)
 	}
 	
+	def solve(String fieldName) {
+		coerceToInteger(obj.resolve(fieldName)).intValue
+	}
+
 	def getEvaluator() {
 		interpreter.evaluator as WollokInterpreterEvaluator
 	}

@@ -55,6 +55,6 @@ class WollokProgramExceptionWrapper extends RuntimeException {
 	}
 	
 	def getWollokMessage() {
-		wollokException.call("getMessage").wollokToJava(String) as String
+		wollokException.call("message").wollokToJava(String) as String
 	}
 }

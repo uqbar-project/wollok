@@ -6,16 +6,12 @@
  * @since 1.0
  */
 class Exception {
-	const message
-	const cause = null
-
-	/** Constructs a new exception with no detailed message. */
-	constructor() { message = null }
-	/** Constructs a new exception with the specified detail message. */
-	constructor(_message) = self(_message, null)
-	/** Constructs a new exception with the specified detail message and cause. */
-	constructor(_message, _cause) { message = _message ; cause = _cause }
+	/** specified detail message. */
+	const property message = null
 	
+	/** specified cause */
+	const property cause = null
+
 	/** Prints this exception and its backtrace to the console */
 	method printStackTrace() { self.printStackTrace(console) }
 
@@ -58,14 +54,8 @@ class Exception {
 	 */
 	method getStackTrace() native
 	
-	/** Answers the cause of the exception, if present */
-	method getCause() = cause
-	
-	/** Answers the detail message string of this exception. */
-	method getMessage() = message
-	
 	/** Overrides the behavior to compare exceptions */
-	override method equals(other) = other.className().equals(self.className()) && other.getMessage() == self.getMessage()
+	override method equals(other) = other.className().equals(self.className()) && other.message() == self.message()
 }
 
 /**
@@ -79,21 +69,15 @@ class StackOverflowException inherits Exception {}
 /**
  * An exception that is thrown when a specified element cannot be found
  */
-class ElementNotFoundException inherits Exception {
-	constructor(_message) = super(_message)
-	constructor(_message, _cause) = super(_message, _cause)
-}
+class ElementNotFoundException inherits Exception {}
 
 /**
  * An exception that is thrown when an object cannot understand a certain message
  */
 class MessageNotUnderstoodException inherits Exception {
-	constructor()
-	constructor(_message) = super(_message)
-	constructor(_message, _cause) = super(_message, _cause)
 	
 	/*
-	'''«super.getMessage()»
+	'''«super.message()»
 		«FOR m : wollokStack»
 		«(m as WExpression).method?.declaringContext?.contextName».«(m as WExpression).method?.name»():«NodeModelUtils.findActualNodeFor(m).textRegionWithLineInformation.lineNumber»
 		«ENDFOR»
@@ -232,8 +216,8 @@ class Object {
 					self.toString()
 				 else 
 				 	self.kindName()
-		const message = self.generateDoesNotUnderstandMessage(target, messageName, parameters.size())
-		throw new MessageNotUnderstoodException(message)
+		const aMessage = self.generateDoesNotUnderstandMessage(target, messageName, parameters.size())
+		throw new MessageNotUnderstoodException(message = aMessage)
 	}
 
 	/**
@@ -245,8 +229,8 @@ class Object {
 	method generateDoesNotUnderstandMessage(target, messageName, parametersSize) native
 	
 	/** Builds an exception with a message */		
-	method error(message) {
-		throw new Exception(message)
+	method error(aMessage) {
+		throw new Exception(message = aMessage)
 	}
 }
 
@@ -287,7 +271,7 @@ class Collection {
 	  *       [].max({ e => e.length() })                       
 	  *            => Throws error, list must not be empty            
 	  */
-	method max(closure) = self.maxIfEmpty(closure, { throw new ElementNotFoundException("collection is empty") })
+	method max(closure) = self.maxIfEmpty(closure, { throw new ElementNotFoundException(message = "collection is empty") })
 
 	/**
 	  * Answers the element that represents the maximum value in the collection.
@@ -344,7 +328,7 @@ class Collection {
 	  *       [].min({ e => e.length() })
 	  *             => Throws error, list must not be empty
 	  */
-	method min(closure) = self.absolute(closure, { a, b => a < b }, { throw new ElementNotFoundException("collection is empty") })
+	method min(closure) = self.absolute(closure, { a, b => a < b }, { throw new ElementNotFoundException(message = "collection is empty") })
 
 	/**
 	  * Answers the element that represents the minimum value in the 
@@ -521,7 +505,7 @@ class Collection {
 	 *      #{}.find { number => number.even() }         => Throws ElementNotFoundException
 	 */
 	method find(predicate) = self.findOrElse(predicate, { 
-		throw new ElementNotFoundException("there is no element that satisfies the predicate")
+		throw new ElementNotFoundException(message = "there is no element that satisfies the predicate")
 	})
 
 	/**
@@ -744,27 +728,27 @@ class Collection {
 	/**
 	* @see subclasses implementations
 	*/
-	method anyOne() = throw new Exception("Should be implemented by the subclasses")
+	method anyOne() = throw new Exception(message = "Should be implemented by the subclasses")
 	
 	/**
 	* @see subclasses implementations
 	*/
-	method add(element) = throw new Exception("Should be implemented by the subclasses")
+	method add(element) = throw new Exception(message = "Should be implemented by the subclasses")
 	
 	/**
 	* @see subclasses implementations
 	*/
-	method remove(element) = throw new Exception("Should be implemented by the subclasses")
+	method remove(element) = throw new Exception(message = "Should be implemented by the subclasses")
 	
 	/**
 	* @see subclasses implementations
 	*/
-	method fold(element, closure) = throw new Exception("Should be implemented by the subclasses")
+	method fold(element, closure) = throw new Exception(message = "Should be implemented by the subclasses")
 	
 	/**
 	 * @see subclasses implementations
 	 */
-	method size() = throw new Exception("Should be implemented by the subclasses")
+	method size() = throw new Exception(message = "Should be implemented by the subclasses")
 
 	/** 
 	 * Removes all of the elements from this set. This is a side effect operation.
@@ -1032,7 +1016,7 @@ class List inherits Collection {
 	 */
 	override method anyOne() {
 		if (self.isEmpty()) 
-			throw new Exception("Illegal operation 'anyOne' on empty collection")
+			throw new Exception(message = "Illegal operation 'anyOne' on empty collection")
 		else 
 			return self.get(0.randomUpTo(self.size()))
 	}
@@ -1340,7 +1324,7 @@ class Dictionary {
 	 *     phones.get("4004-4004")  => Answers rolo
 	 *     phones.get("4004-4005")  => Throws ElementNotFoundException
 	 */
-	method get(_key) = self.getOrElse(_key,{ => throw new ElementNotFoundException("there is no element associated with key " + _key) })
+	method get(_key) = self.getOrElse(_key,{ => throw new ElementNotFoundException(message = "there is no element associated with key " + _key) })
 
 	/**
 	 * Answers the number of key-value mappings in this Dictionary.
@@ -2282,15 +2266,9 @@ class Closure {
  */	
 class Date {
 
-	/**
-	  * Default constructor instantiates the current day 
-	  */
-	constructor()
-	
-	/**
-	 * Constructor: you should pass the day, month and year (integer values only).
-	 */
-	constructor(_day, _month, _year) { self.initialize(_day, _month, _year) }
+	const property day
+	const property month
+	const property year
 	
 	/** String representation of a date */
 	override method toString() = self.toSmartString(false) 
@@ -2348,17 +2326,6 @@ class Date {
 	  */
 	method isLeapYear() native
 	
-	/** @private */
-	method initialize(_day, _month, _year) native
-	
-	/** 
-	  * Answers the day number of the Date
-	  *
-	  * Example:
-	  *     new Date(12, 7, 2019).day() ==> Answers 12 
-	  */
-	method day() native
-	
 	/** Answers the day of week of the Date, where
 	 * 1 = MONDAY
 	 * 2 = TUESDAY
@@ -2370,22 +2337,6 @@ class Date {
 	 *     new Date(24, 2, 2018).dayOfWeek() ==> Answers 6 (SATURDAY) 
 	 */
 	method dayOfWeek() native
-	
-	/** 
-	  * Answers the month number of the Date
-	  * 
-	  * Example:
-	  *     new Date(12, 7, 2019).month() ==> Answers 7 
-	  */
-	method month() native
-	
-	/** 
-	  * Answers the year number of the Date
-	  *
-	  * Example:
-	  *     new Date(12, 7, 2019).year() ==> Answers 2019 
-	  */
-	method year() native
 	
 	/** 
 	 * Answers the difference in days between two dates, assuming self is minuend and _aDate is subtrahend. 
@@ -2455,7 +2406,7 @@ class Date {
 
 	/** Shows nicely an internal representation of a date **/
 	override method toSmartString(alreadyShown) =
-		"a Date[day = " + self.day() + ", month = " + self.month() + ", year = " + self.year() + "]"
+		"a Date[day = " + day + ", month = " + month + ", year = " + year + "]"
 
 	/** 
 	  * Shows a short, internal representation of a date 
@@ -2465,6 +2416,6 @@ class Date {
 	  *         ==> Answers "2/4/2018"
 	  */
 	override method shortDescription() =
-		"" + self.day() + "/" + self.month() + "/" + self.year()
+		"" + day + "/" + month + "/" + year
 
 }
