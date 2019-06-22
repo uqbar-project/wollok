@@ -42,7 +42,7 @@ class Exception {
 	}
 	
 	/** @private */
-	method createStackTraceElement(contextDescription, location) = new StackTraceElement(contextDescription, location)
+	method createStackTraceElement(contextDescription, location) = new StackTraceElement(contextDescription = contextDescription, location = location)
 
 	/** Provides programmatic access to the stack trace information
 	 * printed by printStackTrace() with full path files for linking 
@@ -92,10 +92,6 @@ class MessageNotUnderstoodException inherits Exception {
 class StackTraceElement {
 	const property contextDescription
 	const property location
-	constructor(_contextDescription, _location) {
-		contextDescription = _contextDescription
-		location = _location
-	}
 }
 
 /**
