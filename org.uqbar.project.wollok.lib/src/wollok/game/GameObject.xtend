@@ -12,10 +12,10 @@ import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.lib.WPosition
 import org.uqbar.project.wollok.lib.WVisual
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * 

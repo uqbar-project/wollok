@@ -16,12 +16,11 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * 
  * This just defines the strings in a single place for easing maintenance.
  * 
- * import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
+ * import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
  * 
  * @author jfernandes
  */
-//TODO: fix typo
-class WollokDSK {
+class WollokSDK {
 	
 	// ************************************************************************
 	// ** SDK Classes

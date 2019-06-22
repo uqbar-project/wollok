@@ -3,10 +3,10 @@ package wollok.lang
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * 

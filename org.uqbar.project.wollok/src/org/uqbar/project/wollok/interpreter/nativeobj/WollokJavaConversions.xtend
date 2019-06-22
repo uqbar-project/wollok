@@ -15,8 +15,8 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * Holds common extensions for Wollok to Java and Java to Wollok conversions.

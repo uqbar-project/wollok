@@ -161,7 +161,7 @@ class Object {
 	 * Generates a Pair key-value association. @see Pair.
 	 */
 	method ->(other) {
-		return new Pair(self, other)
+		return new Pair(x = self, y = other)
 	}
 
 	/**
@@ -375,10 +375,10 @@ class Collection {
 		const result = self.fold(null, { acc, e =>
 			const n = closure.apply(e) 
 			if (acc == null)
-				new Pair(e, n)
+				new Pair(x = e, y = n)
 			else {
 				if (criteria.apply(n, acc.y()))
-					new Pair(e, n)
+					new Pair(x = e, y = n)
 				else
 					acc
 			}

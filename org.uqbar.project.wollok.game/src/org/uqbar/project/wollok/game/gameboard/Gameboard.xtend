@@ -13,13 +13,13 @@ import org.uqbar.project.wollok.game.listeners.ArrowListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import org.eclipse.osgi.util.NLS
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Sound
 import java.util.Map
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 @Accessors
 class Gameboard {

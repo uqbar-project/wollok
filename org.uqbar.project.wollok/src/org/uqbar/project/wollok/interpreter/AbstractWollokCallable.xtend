@@ -9,7 +9,6 @@ import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
 import org.uqbar.project.wollok.interpreter.core.WCallable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeNativeObject
-import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WParameter
@@ -20,6 +19,7 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import org.uqbar.project.wollok.sdk.WollokSDK
 
 /**
  * Methods to be shared between WollokObject and CallableSuper
@@ -40,7 +40,7 @@ abstract class AbstractWollokCallable implements WCallable {
 	// ** Feature calling
 	// ********************************************************************************************
 	
-	def WollokObject theVoid() { WollokDSK.getVoid(interpreter as WollokInterpreter, behavior) }
+	def WollokObject theVoid() { WollokSDK.getVoid(interpreter as WollokInterpreter, behavior) }
 	
 	def WollokObject call(WMethodDeclaration method, WollokObject... parameters) {
 		val c = method.createEvaluationContext(parameters).then(receiver)

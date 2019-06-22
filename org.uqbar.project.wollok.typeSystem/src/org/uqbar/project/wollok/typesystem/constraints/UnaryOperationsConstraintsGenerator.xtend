@@ -4,7 +4,7 @@ import java.util.Map
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 class UnaryOperationsConstraintsGenerator {
 	extension TypeVariablesRegistry registry

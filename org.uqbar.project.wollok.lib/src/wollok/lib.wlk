@@ -235,16 +235,3 @@ class StringPrinter {
 	}
 	method getBuffer() = buffer
 }	
-
-/** 
- * This object simplifies exception throwing
- */
-object error {
-	/**
-	 * Throws an exception with a given message.
-	 * This action alters the normal flow of the program. 
-	 */
-	method throwWithMessage(aMessage) {
-		throw new Exception(message = aMessage)
-	}
-}
