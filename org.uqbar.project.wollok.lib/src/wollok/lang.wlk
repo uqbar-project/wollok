@@ -780,9 +780,6 @@ class Collection {
  * @since 1.3
  */	
 class Set inherits Collection {
-	constructor(elements ...) {
-		self.addAll(elements)
-	}
 	
 	/** @private */
 	override method newInstance() = #{}
@@ -981,13 +978,6 @@ class Set inherits Collection {
  * @since 1.3
  */
 class List inherits Collection {
-
-	constructor() {}
-
-	constructor(head, tail...) = self() {
-		self.add(head)
-		self.addAll(tail)
-	}
 
 	/** 
 	 * Answers the element at the specified position in this non-empty list.
@@ -1528,7 +1518,7 @@ class Number {
 	 * Example:
 	 * 		1..4   		Answers ==> a new Range object from 1 to 4
 	 */
-	method ..(end) = new Range(self, end)
+	method ..(_end) = new Range(start = self, end = _end)
 	
 	method >(other) native
 	method <(other) native
@@ -2080,34 +2070,35 @@ class Boolean {
  * @since 1.3
  */
 class Range {
-	const start
-	const end
-	var step
+	const property start
+	const property end
+	var step = null
 	
 	/**
 	  * Instantiates a Range. 
-	  * Both _start and _end must be integer values.
+	  * Both start and end must be integer values.
 	  */
-	constructor(_start, _end) {
-		start = _start.coerceToInteger()
-		end = _end.coerceToInteger()
-		if (_start > _end) { 
-			step = -1 
-		} else {
-			step = 1
+	method init() {
+		start.coerceToInteger()
+		end.coerceToInteger()
+		if (step == null) {
+			if (start > end) { 
+				step = -1 
+			} else {
+				step = 1
+			}
 		}
 	}
-	
-	/**
-	 * Setter for step attribute.
-	 */
-	method step(_step) { step = _step }
 
+	method step(_step) {
+		step = _step
+	}
+	
 	/** 
 	 * Iterates over a Range from start to end, based on step.
 	 *
 	 * Example:
-	 *     new Range(1, 3).forEach { value => console.println(value) }
+	 *     new Range(start = 1, end = 3).forEach { value => console.println(value) }
 	 *     => prints 1, 2, 3
 	 */
 	method forEach(closure) native
@@ -2161,8 +2152,8 @@ class Range {
 	 * Answers the number of elements
 	 *
 	 * Examples:
-	 *     new Range(0, 2).size() ==> Answers 3
-	 *     new Range(-2, 2).size() ==> Answers 5  
+	 *     new Range(start = 0, end = 2).size() ==> Answers 3
+	 *     new Range(start = -2, end = 2).size() ==> Answers 5  
 	 */
 	method size() { return end - start + 1 }
 	
@@ -2185,7 +2176,7 @@ class Range {
 	 * Answers a random integer contained in the range
 	 *
 	 * Example:
-	 *     new Range(1, 3).anyOne() ==> Answers 1 or 2 or 3
+	 *     new Range(start = 1, end = 3).anyOne() ==> Answers 1 or 2 or 3
 	 */		
 	method anyOne() native
 	
@@ -2193,8 +2184,8 @@ class Range {
 	 * Tests whether a number e is contained in the range
 	 *
 	 * Examples:
-	 *     new Range(2, 5).contains(4) ==> Answers true 
-	 *     new Range(2, 5).contains(0) ==> Answers false
+	 *     new Range(start = 2, end = 5).contains(4) ==> Answers true 
+	 *     new Range(start = 2, end = 5).contains(0) ==> Answers false
 	 */
 	method contains(e) = self.asList().contains(e)
 	

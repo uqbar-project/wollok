@@ -48,11 +48,11 @@ class WollokExceptionExtensions {
 		]
 	}
 	
-	def static newWollokException(String message) {
+	def static WollokObject newWollokException(String message) {
 		EXCEPTION.instantiateException(message)
 	}
 
-	def static newWollokException(String message, WollokObject cause) {
+	def static WollokObject newWollokException(String message, WollokObject cause) {
 		newWollokException(message) => [
 			setReference("cause", cause)
 		]

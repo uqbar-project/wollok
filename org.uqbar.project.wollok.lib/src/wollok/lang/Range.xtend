@@ -15,16 +15,16 @@ import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 class Range extends AbstractJavaWrapper<IntegerRange> {
 
 	new(WollokObject obj, WollokInterpreter interpreter) {
-		super(obj, interpreter) 
+		super(obj, interpreter)
 	}
 	
 	def void forEach(WollokObject proc) {
 		val c = (proc.getNativeObject(CLOSURE) as Closure)
 		c.checkNotNull("forEach")
-		initWrapped.forEach[e| c.doApply(e.javaToWollok) ]
+		getWrapped.forEach[e| c.doApply(e.javaToWollok) ]
 	}
 	
-	def initWrapped() {
+	override getWrapped() {
 		if (wrapped === null) {
 			val start = "start".solve
 			val end = "end".solve
@@ -35,7 +35,6 @@ class Range extends AbstractJavaWrapper<IntegerRange> {
 	}
 	
 	def anyOne() {
-		val wrapped = initWrapped()
-		wrapped.toList.random
+		getWrapped.toList.random
 	}
 }

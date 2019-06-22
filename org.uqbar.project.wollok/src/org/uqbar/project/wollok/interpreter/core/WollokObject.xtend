@@ -128,6 +128,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 			val delegatedConstructor = constructor.wollokClass.resolveConstructorReference(other)
 			var EList<? extends EObject> arguments = ECollections.emptyEList
 			if (other.hasNamedParameters) {
+				println("initialize de " + behavior)
 				arguments = ECollections.asEList(delegatedConstructor.parameters.map [ name ].map [ 
 					argName | other.argumentList.getArgument(argName)					
 				])

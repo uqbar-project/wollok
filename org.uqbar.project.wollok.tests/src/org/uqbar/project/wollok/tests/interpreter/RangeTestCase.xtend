@@ -175,7 +175,7 @@ class RangeTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testRangeForDecimalsNotAllowed() {
 		'''
-		const range = new Range(2.4, 5.7)
+		const range = new Range(start = 2.4, end = 5.7)
 		assert.equals([2, 3, 4, 5], range.asList())
 		'''.test
 	}	
@@ -183,7 +183,7 @@ class RangeTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testRangeForStringsNotAllowed() {
 		'''
-		assert.throwsException({ => new Range("ABRACADBRA", "PATA")})
+		assert.throwsException({ => new Range(start = "ABRACADBRA", end = "PATA")})
 		'''.test
 	}	
 
@@ -254,7 +254,7 @@ class RangeTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
  	def void testRangeForDecimalsIfIntegersAreAllowed() {
  		'''
-		const range = new Range(2.0, 5.0)
+		const range = new Range(start = 2.0, end = 5.0)
 		assert.equals(5, range.max())
  		'''.test
  	}

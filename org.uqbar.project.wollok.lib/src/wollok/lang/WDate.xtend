@@ -31,12 +31,6 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 		wrapped
 	}
 	
-	def solveOr(String property, int value) {
-		val solvedProperty = obj.resolve(property)
-		if (solvedProperty === null) return value
-		coerceToInteger(solvedProperty)
-	}
-	
 	def plusDays(BigDecimal days) {
 		days.checkNotNull("plusDays") 
 		getWrapped.plusDays(days.coerceToInteger)

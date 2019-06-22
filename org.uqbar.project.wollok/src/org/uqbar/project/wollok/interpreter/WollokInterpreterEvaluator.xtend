@@ -289,8 +289,17 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			if (l.hasParentParameterInitializers) {
 				wo.initializeObject(l.parentParameters.initializers)
 			}
-
+			
+			wo.callInitIfDefined
 		]
+	}
+
+	def static callInitIfDefined(WollokObject wo) {
+		val clazz = wo.behavior
+		val initMethod = clazz.initMethod
+		if (initMethod !== null) {
+			wo.call(initMethod, #[])
+		}
 	}
 
 	def addObjectMembers(WMethodContainer it, WollokObject wo) {
@@ -316,21 +325,25 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		if (call.classRef.eResource === null) {
 			throw newWollokExceptionAsJava(Messages.LINKING_COULD_NOT_RESOLVE_REFERENCE + call.classNameWhenInvalid)
 		}
+		var WollokObject wollokObject
 		if (call.hasNamedParameters) {
-			return newInstance(call.classRef, call.initializers)
+			wollokObject = newInstance(call.classRef, call.initializers)
+		} else {
+			val values = call.values.evalEach
+			if (call.mixins.empty)
+				wollokObject = newInstance(call.classRef, values)
+			else {
+				val container = new MixedMethodContainer(call.classRef, call.mixins)
+				wollokObject = new WollokObject(interpreter, container) => [ wo |
+					// mixins first
+					call.mixins.forEach[addMembersTo(wo)]
+					call.classRef.addInheritsMembers(wo)
+					wo.invokeConstructor(values.toArray(newArrayOfSize(values.size)))
+				]
+			}
 		}
-		val values = call.values.evalEach
-		if (call.mixins.empty)
-			newInstance(call.classRef, values)
-		else {
-			val container = new MixedMethodContainer(call.classRef, call.mixins)
-			new WollokObject(interpreter, container) => [ wo |
-				// mixins first
-				call.mixins.forEach[addMembersTo(wo)]
-				call.classRef.addInheritsMembers(wo)
-				wo.invokeConstructor(values.toArray(newArrayOfSize(values.size)))
-			]
-		}
+		wollokObject.callInitIfDefined
+		wollokObject
 	}
 
 	def newInstance(String classFQN, WollokObject... arguments) {
@@ -527,6 +540,8 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 				if (namedObject.hasParentParameterInitializers)
 					wollokObject.initializeObject(namedObject.parentParameters.initializers)
 
+				wollokObject.callInitIfDefined
+				
 			} catch (RuntimeException e) {
 				// if init failed remove it !
 				interpreter.currentContext.removeGlobalReference(qualifiedName)

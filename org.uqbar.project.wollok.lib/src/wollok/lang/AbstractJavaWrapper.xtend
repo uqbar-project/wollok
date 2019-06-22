@@ -38,6 +38,12 @@ class AbstractJavaWrapper<T> implements JavaWrapper<T> {
 		coerceToInteger(obj.resolve(fieldName)).intValue
 	}
 
+	def solveOr(String property, int value) {
+		val solvedProperty = obj.resolve(property)
+		if (solvedProperty === null) return value
+		coerceToInteger(solvedProperty)
+	}
+	
 	def getEvaluator() {
 		interpreter.evaluator as WollokInterpreterEvaluator
 	}
