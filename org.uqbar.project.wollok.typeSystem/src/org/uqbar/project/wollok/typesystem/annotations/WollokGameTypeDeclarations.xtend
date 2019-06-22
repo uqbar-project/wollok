@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.typesystem.annotations
 
 class WollokGameTypeDeclarations extends TypeDeclarations {
 	override declarations() {
-		Position.constructor(Number, Number)
 		Position.variable("x", Number)
 		Position.variable("y", Number)
 		Position.clear
