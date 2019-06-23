@@ -93,7 +93,9 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 	}
 	
 	def throwMessageNotUnderstood(Object nativeObject, String name, Object[] parameters) {
-		new WollokProgramExceptionWrapper((interpreter.evaluator as WollokInterpreterEvaluator).newInstance(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, nativeObject.createMessage(name, parameters).javaToWollok))
+		new WollokProgramExceptionWrapper((interpreter.evaluator as WollokInterpreterEvaluator).newInstance(MESSAGE_NOT_UNDERSTOOD_EXCEPTION) => [
+			setReference("message", nativeObject.createMessage(name, parameters).javaToWollok)
+		])
 	}
 
 	def static handlesMessage(Method m, String message, Object... parameters) {

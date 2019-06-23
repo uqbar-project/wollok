@@ -36,7 +36,10 @@ class WPosition extends Position {
 	}
 
 	def buildPosition(int newX, int newY) {
-		((interpreter.evaluator as WollokInterpreterEvaluator).newInstance(POSITION, newX.javaToWollok, newY.javaToWollok))
+		(interpreter.evaluator as WollokInterpreterEvaluator).newInstance(POSITION) => [
+			setReference("x", newX.javaToWollok)
+			setReference("y", newY.javaToWollok) 
+		]
 	}
 	
 }

@@ -138,7 +138,9 @@ class Gameboard {
 	def removeListener(String listenerName) {
 		val listener = listeners.findFirst([ name.equals(listenerName) ])
 		if (listener === null) {
-			throw new WollokProgramExceptionWrapper(evaluator.newInstance(EXCEPTION, NLS.bind(Messages.WollokGame_ListenerNotFound, listenerName).javaToWollok))
+			throw new WollokProgramExceptionWrapper(evaluator.newInstance(EXCEPTION) => [
+				setReference("message", NLS.bind(Messages.WollokGame_ListenerNotFound, listenerName).javaToWollok) 
+			])
 		}
 		listeners.remove(listener)
 	}

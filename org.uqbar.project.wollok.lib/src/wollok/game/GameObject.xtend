@@ -135,8 +135,9 @@ class GameObject {
 		.findFirst[ wObject.equals(visual)]
 		
 		if (result === null)
-			// TODO i18n
-			throw new WollokProgramExceptionWrapper(evaluator.newInstance(EXCEPTION, NLS.bind(Messages.WollokGame_VisualComponentNotFound, visual).javaToWollok))
+			throw new WollokProgramExceptionWrapper(evaluator.newInstance(EXCEPTION) => [
+				setReference("message", NLS.bind(Messages.WollokGame_VisualComponentNotFound, visual).javaToWollok)	
+			])
 			
 		result
 	}
