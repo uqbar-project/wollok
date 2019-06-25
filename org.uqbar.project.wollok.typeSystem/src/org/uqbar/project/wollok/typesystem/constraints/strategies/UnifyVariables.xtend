@@ -58,7 +58,7 @@ class UnifyVariables extends AbstractInferenceStrategy {
 		}
 
 		// Do not unify args with params
-		if(subtype.typeInfo !== null && (subtype.typeInfo.isEmpty || subtype.typeInfo.hasPostponedMinType) && supertype.owner.isParameter) {
+		if(subtype.isArgOf(supertype)) {
 			return Cancel
 		}
 		
@@ -95,9 +95,14 @@ class UnifyVariables extends AbstractInferenceStrategy {
 		}
 	}
 
+	def isArgOf(TypeVariable subtype, TypeVariable supertype) { 
+		subtype.typeInfo !== null && 
+		(subtype.typeInfo.isEmpty || subtype.typeInfo.hasPostponedMinType) && 
+		supertype.owner.isParameter
+	}
+
 	def dispatch isEmpty(VoidTypeInfo it) { true }
 	def dispatch isEmpty(GenericTypeInfo it) { minTypes.isEmpty && maximalConcreteTypes === null }
-
 
 	def dispatch hasPostponedMinType(VoidTypeInfo it) { false }
 	def dispatch hasPostponedMinType(GenericTypeInfo it) { minTypes.values.contains(Postponed)}
