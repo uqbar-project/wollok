@@ -44,6 +44,7 @@ public class Messages extends NLS {
 	public static String WollokLauncherOptions_JAR_LIBRARIES;
 	public static String WollokLauncherOptions_WOLLOK_FILES;
 	public static String WollokLauncherOptions_DONT_VALIDATE;
+	public static String WollokLauncherOptions_SAVE_FILE;
 	
 	static {
 		// initialize resource bundle
