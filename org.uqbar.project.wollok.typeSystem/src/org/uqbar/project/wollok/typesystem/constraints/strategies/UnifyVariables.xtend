@@ -58,7 +58,7 @@ class UnifyVariables extends AbstractInferenceStrategy {
 		}
 
 		// Do not unify args with params
-		if(subtype.typeInfo !== null && subtype.typeInfo.hasPostponedMinType && supertype.owner.isParameter) {
+		if(subtype.typeInfo !== null && (subtype.typeInfo.isEmpty || subtype.typeInfo.hasPostponedMinType) && supertype.owner.isParameter) {
 			return Cancel
 		}
 		
