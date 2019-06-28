@@ -19,8 +19,8 @@ object game {
 	 * Adds an object to the board for drawing it on a specific position.
 	 *
 	 * Example:
-	 *     game.addVisual(pepita, game.origin()) ==> no need for pepita to have a position property
-	 *     game.addVisual(pepita, game.at(2, 2))
+	 *     game.addVisualIn(pepita, game.origin()) ==> no need for pepita to have a position property
+	 *     game.addVisualIn(pepita, game.at(2, 2))
 	 */
 	method addVisualIn(element, position) native
 
