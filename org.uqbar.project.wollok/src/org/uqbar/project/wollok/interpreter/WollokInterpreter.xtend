@@ -73,6 +73,11 @@ class WollokInterpreter implements XInterpreter<EObject, WollokObject>, IWollokI
 		listeners.add(listener)
 	}
 
+	def init(boolean interactive) {
+		this.interactive = interactive
+		listeners.forEach [ terminated ]	
+	}
+	
 	// ***********************
 	// ** Interprets
 	// ***********************
