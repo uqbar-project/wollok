@@ -5,8 +5,8 @@ import org.eclipse.debug.core.model.IVariable
 import org.uqbar.project.wollok.debugger.WollokDebugTarget
 import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrameVariable
 import org.uqbar.project.wollok.debugger.server.rmi.XDebugValue
-import org.uqbar.project.wollok.debugger.server.rmi.XWollokObjectDebugValue
 import org.uqbar.project.wollok.debugger.server.rmi.XWollokCollectionDebugValue
+import org.uqbar.project.wollok.debugger.server.rmi.XWollokObjectDebugValue
 
 /**
  * 
