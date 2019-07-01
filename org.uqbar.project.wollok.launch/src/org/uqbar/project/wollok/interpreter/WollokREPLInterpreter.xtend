@@ -2,9 +2,11 @@ package org.uqbar.project.wollok.interpreter
 
 import com.google.inject.Singleton
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.core.WollokNativeLobby
 import org.uqbar.project.wollok.interpreter.stack.XStackFrame
+import org.uqbar.project.wollok.launch.Messages
 import org.uqbar.project.wollok.wollokDsl.WVariable
 
 /**
@@ -17,6 +19,9 @@ class WollokREPLInterpreter extends WollokInterpreter {
 
 
 	def addREPLVariable(WVariable variable) {
+		if (previousREPLVariables.containsKey(variable.name)) {
+			throw new RuntimeException(NLS.bind(Messages.WollokLauncher_REFERENCE_ALREADY_DEFINED, variable.name))
+		}
 		previousREPLVariables.put(variable.name, variable)
 	}
 	
