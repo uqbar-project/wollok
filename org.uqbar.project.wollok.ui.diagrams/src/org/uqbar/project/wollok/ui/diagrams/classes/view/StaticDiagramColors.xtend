@@ -30,8 +30,8 @@ class StaticDiagramColors {
 	public static val OBJECTS_VALUE_NULL = new Color(null, 255, 255, 255)
 	public static val OBJECTS_VALUE_NUMERIC_BACKGROUND = new Color(null, 199, 224, 217)
 	public static val OBJECTS_VALUE_COLLECTION_BACKGROUND = new Color(null, 224, 199, 206)
-	public static val OBJECTS_VALUE_STRING_BACKGROUND = new Color(null, 224, 217, 199)
-	public static val OBJECTS_VALUE_BOOLEAN_BACKGROUND = new Color(null, 224, 199, 218)
+	public static val OBJECTS_VALUE_STRING_BACKGROUND = new Color(null, 199, 224, 217)
+	public static val OBJECTS_VALUE_BOOLEAN_BACKGROUND = new Color(null, 199, 224, 217)
 	public static val OBJECT_USER_DEFINED_BACKGROUND = new Color(null, 199, 206, 224)
 	
 	// FONTS
