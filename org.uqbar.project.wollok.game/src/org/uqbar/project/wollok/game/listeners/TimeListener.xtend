@@ -35,6 +35,5 @@ class TimeListener extends GameboardListener {
 	def boolean shouldRun() {
 		System.currentTimeMillis - timeSinceLastRun > millisecondsEvery
 	}
-	
-	
+
 }
