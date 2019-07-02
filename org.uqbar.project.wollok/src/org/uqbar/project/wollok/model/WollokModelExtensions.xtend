@@ -163,13 +163,10 @@ class WollokModelExtensions {
 		eContainer instanceof WFile
 	}
 	def static dispatch boolean isGlobal(WVariable it) {
-		//eContainer instanceof WVariableDeclaration && eContainer.
-		// getContainer === null && EcoreUtil2.getContainerOfType(it, WProgram) === null
-		eContainer.isGlobal
+		declaration.isGlobal
 	}
 	def static dispatch boolean isGlobal(WNamedObject it) { true }
 	def static dispatch boolean isGlobal(WParameter it) { false }
-	def static dispatch boolean isGlobal(EObject it) { false }
 
 	// ************************************************************************
 	// ** Variable & parameter usage
