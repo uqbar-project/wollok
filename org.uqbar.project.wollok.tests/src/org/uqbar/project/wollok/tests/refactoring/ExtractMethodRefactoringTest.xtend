@@ -150,7 +150,7 @@ class ExtractMethodRefactoringTest extends AbstractWollokInterpreterTestCase {
 				method foo(zoo) {
 					return 100 + self.calculus(zoo)
 				}
-			
+				
 				method calculus(zoo) {
 					return bar * 2 * zoo
 				}
@@ -176,7 +176,7 @@ class ExtractMethodRefactoringTest extends AbstractWollokInterpreterTestCase {
 					const tempVal = 2
 					return self.calculus()
 				}
-			
+				
 				method calculus() {
 					return 100 + 2 * tempVal
 				}
