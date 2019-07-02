@@ -23,7 +23,6 @@ public class Messages extends NLS {
 	public static String WollokLauncher_REPL_ONLY_WITH_WLK_FILES;
 	public static String WollokLauncher_FILE_OR_REPL_REQUIRED;
 	public static String WollokLauncher_INVALID_PARAMETER_NUMBER;
-	public static String WollokLauncher_REFERENCE_ALREADY_DEFINED;
 	
 	// ******************************
 	// ** Launcher Options Messages

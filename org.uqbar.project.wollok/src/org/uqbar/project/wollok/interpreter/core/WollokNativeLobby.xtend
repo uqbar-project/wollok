@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.interpreter.core
 
 import java.util.Map
+import org.eclipse.osgi.util.NLS
 import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterConsole
@@ -58,6 +59,9 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 	}
 	
 	override addReference(String variable, WollokObject value) {
+		if (localProgramVariables.containsKey(variable)) {
+			throw new RuntimeException(NLS.bind(Messages.WollokInterpreter_referenceAlreadyDefined, variable))
+		}
 		localProgramVariables.put(variable, value)
 		value
 	}

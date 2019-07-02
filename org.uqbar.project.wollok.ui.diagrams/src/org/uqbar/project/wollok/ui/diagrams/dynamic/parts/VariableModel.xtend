@@ -151,7 +151,7 @@ class VariableModel extends Shape {
 	def isList() { typeName.equalsIgnoreCase(LIST) }
 	def isSet() { typeName.equalsIgnoreCase(SET) }
 	def isString() { typeName.equalsIgnoreCase(STRING) }
-	def isBoolean() { typeName.equalsIgnoreCase(BOOLEAN) }
+	def isNative() { #[BOOLEAN, DATE, PAIR, RANGE].contains(typeName) }
 	def isCollection() { isList || isSet }
 	
 	def isUserDefined() {

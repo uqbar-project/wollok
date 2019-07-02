@@ -83,8 +83,8 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 			StaticDiagramColors.OBJECTS_VALUE_COLLECTION_BACKGROUND
 		else if (model.isString)
 			StaticDiagramColors.OBJECTS_VALUE_STRING_BACKGROUND
-		else if (model.isBoolean)
-			StaticDiagramColors.OBJECTS_VALUE_BOOLEAN_BACKGROUND
+		else if (model.isNative)
+			StaticDiagramColors.OBJECTS_VALUE_NATIVE_BACKGROUND
 		else if (model.isUserDefined)
 			StaticDiagramColors.OBJECT_USER_DEFINED_BACKGROUND
 		else

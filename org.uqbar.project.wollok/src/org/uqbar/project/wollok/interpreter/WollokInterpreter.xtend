@@ -179,7 +179,7 @@ class WollokInterpreter implements XInterpreter<EObject, WollokObject>, IWollokI
 
 	def setReference(String variableName, WollokObject value) {
 		if (!globalVariables.containsKey(variableName))
-			throw new UnresolvableReference(Messages.LINKING_COULD_NOT_RESOLVE_REFERENCE.trim + " " + variableName)
+			throw new UnresolvableReference(Messages.LINKING_COULD_NOT_RESOLVE_REFERENCE.trim + " " + (variableName ?: ""))
 		else
 			globalVariables.put(variableName, value)
 	}
@@ -188,7 +188,7 @@ class WollokInterpreter implements XInterpreter<EObject, WollokObject>, IWollokI
 		if (globalVariables.containsKey(variableName))
 			return globalVariables.get(variableName)
 
-		throw new UnresolvableReference(Messages.LINKING_COULD_NOT_RESOLVE_REFERENCE.trim + " " + variableName)
+		throw new UnresolvableReference(Messages.LINKING_COULD_NOT_RESOLVE_REFERENCE.trim + " " + (variableName ?: ""))
 	}
 	
 	// Accessing Thread State
