@@ -47,10 +47,17 @@ class Closure implements NodeAware<WClosure>, Function1<WollokObject, Object> {
 
 	@NativeMessage("apply")	
 	def doApply(WollokObject... args) {
+		val time = System.currentTimeMillis
 		val context = closure.createEvaluationContext(args).then(container)
-		interpreter.performOnStack(closure, context) [|
+		val tiempo2 = (System.currentTimeMillis - time)
+		val r = interpreter.performOnStack(closure, context) [|
 			interpreter.eval(closure.expression)
 		]
+		val tiempo = (System.currentTimeMillis - time)
+		if (tiempo > 50) {
+			println("    tiempo " + closure.astNode.text + " ==> " + tiempo2 + " - "+ tiempo)
+		}
+		r
 	}
 	
 	def static createEvaluationContext(WClosure c, WollokObject... values) {
