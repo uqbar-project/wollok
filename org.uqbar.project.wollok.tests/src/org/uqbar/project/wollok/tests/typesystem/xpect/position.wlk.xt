@@ -41,6 +41,11 @@ object positionTest {
 		return pos.allElements()
 	}
 	
+	// XPECT methodType at m122 --> (Position) => List<Number>
+	method m122(pos) {
+		return pos.allElements().filter{n => n > 3}
+	}
+	
 	// XPECT methodType at m13 --> (Position) => Position
 	method m13(pos) {
 		return pos.clone()

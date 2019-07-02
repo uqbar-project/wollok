@@ -182,16 +182,14 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		if (cond === null) {
 			throw newWollokExceptionAsJava(NLS.bind(Messages.WollokInterpreter_cannot_use_null_in_if, NULL))
 		}
-		if (!(cond.isWBoolean))
-			throw new WollokInterpreterException(
-				NLS.bind(Messages.WollokInterpreter_expression_in_if_must_evaluate_to_boolean, cond, cond?.class.name),
-				it)
-
-			if (wollokToJava(cond, Boolean) == Boolean.TRUE)
-				then.eval
-			else
-				^else?.eval
+		if (!(cond.isWBoolean)) {
+			throw newWollokExceptionAsJava(NLS.bind(Messages.WollokInterpreter_expression_in_if_must_evaluate_to_boolean, cond, cond?.behavior?.name))
 		}
+		if (wollokToJava(cond, Boolean) == Boolean.TRUE)
+			then.eval
+		else
+			^else?.eval
+	}
 
 	def dispatch WollokObject evaluate(WTry t) {
 		try

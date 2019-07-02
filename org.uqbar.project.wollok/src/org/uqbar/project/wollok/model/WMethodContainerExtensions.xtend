@@ -299,13 +299,14 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		methods.filter [ m | m.name.equals(methodName) && !m.overrides ].toList
 	}
 	
+	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(EObject o) { newArrayList }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WMixin it) { methods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WNamedObject it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WObjectLiteral it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(MixedMethodContainer it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WClass it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WSuite it) { methods }
-
+	
 	def static allVariables(WMethodContainer it) {
 		allVariableDeclarations.map [ variable ]
 	}

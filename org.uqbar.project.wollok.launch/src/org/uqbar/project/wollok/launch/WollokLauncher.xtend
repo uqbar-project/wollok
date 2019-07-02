@@ -12,6 +12,7 @@ import org.uqbar.project.wollok.debugger.server.out.XTextInterpreterEventPublish
 import org.uqbar.project.wollok.debugger.server.rmi.DebuggerCommandHandlerFactory
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+import org.uqbar.project.wollok.interpreter.WollokTestsFailedException
 import org.uqbar.project.wollok.interpreter.api.XDebugger
 import org.uqbar.project.wollok.interpreter.listeners.WollokRemoteContextStateListener
 import org.uqbar.project.wollok.launch.repl.AnsiColoredReplOutputFormatter
@@ -20,7 +21,6 @@ import org.uqbar.project.wollok.launch.repl.WollokRepl
 import org.uqbar.project.wollok.wollokDsl.WFile
 
 import static org.uqbar.project.wollok.utils.OperatingSystemUtils.*
-import org.uqbar.project.wollok.interpreter.WollokTestsFailedException
 
 /**
  * Main program launcher for the interpreter.
@@ -72,8 +72,10 @@ class WollokLauncher extends WollokChecker {
 			if (e instanceof WollokTestsFailedException) {
 				throw e
 			}
-			val stackTrace = e.stackTrace.map [ "\tat " + className + "." + methodName + " (" + fileName + ":" + lineNumber + ")" ].join("\n")
-			println("Error in Wollok Launcher => " + e.message + "\n" + stackTrace)
+			if (!e.class.simpleName.toUpperCase.startsWith("WOLLOK")) {
+				val stackTrace = e.stackTrace.map [ "\tat " + className + "." + methodName + " (" + fileName + ":" + lineNumber + ")" ].join("\n")
+				println("Error in Wollok Launcher => " + e.message + "\n" + stackTrace)
+			}
 			System.exit(-1)
 		}
 	}

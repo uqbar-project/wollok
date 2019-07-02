@@ -34,6 +34,7 @@ class WollokLauncherParameters {
 	boolean severalFiles = false
 	boolean validate = true
 	boolean exitOnBuildFailure = false
+	boolean saveFile = false
 
 	Integer numberOfDecimals = null
 	String printingStrategy = null
@@ -62,6 +63,9 @@ class WollokLauncherParameters {
 		buildNumberPreferences(sb)
 		buildListOption(sb, libraries, "lib", ',')
 		buildListOption(sb, wollokFiles, "wf", ' ')
+		// only for formatter
+		if (saveFile) sb.append("-save ")
+		//
 		sb.toString
 	}
 
@@ -110,6 +114,8 @@ class WollokLauncherParameters {
 		printingStrategy = parseParameterString(cmdLine, "printingStrategy")
 		coercingStrategy = parseParameterString(cmdLine, "coercingStrategy")
 
+		saveFile = cmdLine.hasOption("save")
+		
 		if ((requestsPort == 0 && eventsPort != 0) || (requestsPort != 0 && eventsPort == 0)) {
 			throw new RuntimeException(Messages.WollokLauncher_REQUEST_PORT_EVENTS_PORT_ARE_BOTH_REQUIRED)
 		}
@@ -208,6 +214,8 @@ class WollokLauncherParameters {
 			add("numberOfDecimals", Messages.WollokLauncherOptions_NUMBER_DECIMALS, "decimals", 1)
 			add("printingStrategy", Messages.WollokLauncherOptions_DECIMAL_PRINTING_STRATEGY, "name", 1)
 			add("coercingStrategy", Messages.WollokLauncherOptions_DECIMAL_CONVERSION_STRATEGY, "name", 1)
+
+			add("save", Messages.WollokLauncherOptions_SAVE_FILE, "save", 0)
 
 			addList("lib", Messages.WollokLauncherOptions_JAR_LIBRARIES, "libs", ',')
 			addList("wf", Messages.WollokLauncherOptions_WOLLOK_FILES, "files", ' ')
