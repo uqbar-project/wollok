@@ -110,16 +110,11 @@ public enum WollokTestState {
 
 		@Override
 		public URI getURI(WollokTestResult result) {
-			// Temporarily not linking to error resource because its URI is not
-			// available.
-			// return result.getErrorResource();
-
 			return result.getTestResource();
 		}
 
 		@Override
 		public String getOutputText(WollokTestResult result) {
-			//return new AssertErrorFormatter().format(result.getAssertException());
 			return result.getErrorOutput();
 		}
 

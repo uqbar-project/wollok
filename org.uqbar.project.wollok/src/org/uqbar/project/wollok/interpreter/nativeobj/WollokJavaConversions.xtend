@@ -37,7 +37,7 @@ class WollokJavaConversions {
 	/**
 	 * Only used to show a representative error message when converting Java and Wollok types
 	 */
-	def static Map conversionTypes() {
+	def static Map<?,?> conversionTypes() {
 		#{Function1 -> CLOSURE, BigDecimal -> NUMBER, String -> STRING,
 			List -> LIST, Map -> DICTIONARY, Set -> SET, Boolean -> BOOLEAN,
 			LocalDate -> DATE
@@ -56,11 +56,11 @@ class WollokJavaConversions {
 		if (o.isNativeType(STRING) && t == String)
 			return ((o as WollokObject).getNativeObject(STRING) as JavaWrapper<String>).wrapped
 		if (o.isNativeType(LIST) && (t == Collection || t == List))
-			return ((o as WollokObject).getNativeObject(LIST) as JavaWrapper<List>).wrapped
+			return ((o as WollokObject).getNativeObject(LIST) as JavaWrapper<List<?>>).wrapped
 		if (o.isNativeType(DICTIONARY) && (t == Collection || t == Map))
-			return ((o as WollokObject).getNativeObject(DICTIONARY) as JavaWrapper<Map>).wrapped
+			return ((o as WollokObject).getNativeObject(DICTIONARY) as JavaWrapper<Map<?,?>>).wrapped
 		if (o.isNativeType(SET) && (t == Collection || t == Set))
-			return ((o as WollokObject).getNativeObject(SET) as JavaWrapper<Set>).wrapped
+			return ((o as WollokObject).getNativeObject(SET) as JavaWrapper<Set<?>>).wrapped
 		if (o.isNativeType(BOOLEAN) && (t == Boolean || t == Boolean.TYPE))
 			return ((o as WollokObject).getNativeObject(BOOLEAN) as JavaWrapper<Boolean>).wrapped
 		if (o.isNativeType(DATE)) {
@@ -104,9 +104,9 @@ class WollokJavaConversions {
 
 	def static dispatch WollokObject convertJavaToWollok(Boolean o) { evaluator.booleanValue(o) }
 
-	def static dispatch WollokObject convertJavaToWollok(List o) { evaluator.newInstanceWithWrapped(LIST, o) }
+	def static dispatch WollokObject convertJavaToWollok(List<?> o) { evaluator.newInstanceWithWrapped(LIST, o) }
 
-	def static dispatch WollokObject convertJavaToWollok(Set o) { evaluator.newInstanceWithWrapped(SET, o) }
+	def static dispatch WollokObject convertJavaToWollok(Set<?> o) { evaluator.newInstanceWithWrapped(SET, o) }
 
 	def static dispatch WollokObject convertJavaToWollok(LocalDate o) { evaluator.newInstanceWithWrapped(DATE, o) }
 

@@ -3,13 +3,11 @@
  */
 package org.uqbar.project.wollok.formatting2
 
-import com.google.inject.Inject
 import java.util.regex.Pattern
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.IFormattableDocument
 import org.uqbar.project.wollok.WollokConstants
-import org.uqbar.project.wollok.services.WollokDslGrammarAccess
 import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
@@ -112,7 +110,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	def dispatch void format(WNamedArgumentsList l, extension IFormattableDocument document) {
 		l.prepend [ noSpace ]
 		l.initializers.forEach [ initializer, i |
-			initializer.format(document, i)
+			initializer.doFormat(document, i)
 		]
 		l.append [ noSpace ]
 	}
@@ -367,7 +365,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		c.argumentList?.format
 	}
 
-	def void format(WInitializer init, extension IFormattableDocument document, int i) {
+	def void doFormat(WInitializer init, extension IFormattableDocument document, int i) {
 		if (i != 0) {
 			init.initializer.surround [ oneSpace ]
 		} else {

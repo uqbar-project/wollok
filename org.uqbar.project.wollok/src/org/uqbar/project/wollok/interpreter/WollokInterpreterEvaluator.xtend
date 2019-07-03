@@ -156,7 +156,11 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def dispatch WollokObject evaluate(WMethodDeclaration it) {}
 
 	def dispatch WollokObject evaluate(WVariableDeclaration it) {
-		interpreter.currentContext.addReference(variable.variableName, right?.eval)
+		if (isGlobal) {
+			interpreter.currentContext.addGlobalReference(variable.variableName, right?.eval)
+		} else {
+			interpreter.currentContext.addReference(variable.variableName, right?.eval)
+		}
 		WollokDSK.getVoid(interpreter as WollokInterpreter, it)
 	}
 

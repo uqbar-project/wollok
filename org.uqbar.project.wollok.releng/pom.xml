@@ -265,6 +265,7 @@
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
+					<compilerArgument>-Xlint:none</compilerArgument>
 				</configuration>
 			</plugin>
 
@@ -401,6 +402,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-scm-plugin</artifactId>
+				<version>1.11.2</version>
 				<executions>
 					<execution>
 						<id>add-changelog-to-git</id>

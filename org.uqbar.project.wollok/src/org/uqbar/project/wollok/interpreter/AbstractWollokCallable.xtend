@@ -58,7 +58,7 @@ abstract class AbstractWollokCallable implements WCallable {
 					return r
 			}
 			else {
-				val WollokObject r = method.expression.eval as WollokObject
+				val WollokObject r = method.expression.eval
 				return if (method.supposedToReturnValue)
 						r
 					else

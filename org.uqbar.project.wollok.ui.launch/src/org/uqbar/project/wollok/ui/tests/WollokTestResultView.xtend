@@ -15,6 +15,11 @@ import org.eclipse.jface.viewers.TreeViewer
 import org.eclipse.jface.viewers.Viewer
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.SashForm
+import org.eclipse.swt.custom.ScrolledComposite
+import org.eclipse.swt.dnd.Clipboard
+import org.eclipse.swt.dnd.DND
+import org.eclipse.swt.dnd.RTFTransfer
+import org.eclipse.swt.dnd.TextTransfer
 import org.eclipse.swt.events.SelectionAdapter
 import org.eclipse.swt.events.SelectionEvent
 import org.eclipse.swt.graphics.Color
@@ -47,12 +52,16 @@ import org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**
- * 
  * @author tesonep
+ * @author dodain
  */
 class WollokTestResultView extends ViewPart implements Observer {
-
 	public val static NAME = "org.uqbar.project.wollok.ui.launch.resultView"
+
+	// opening tag "[<a href=\"" + fileName + STACKELEMENT_SEPARATOR + lineNumber + "\">"
+	public static String STACK_TRACE_LINK_OPENING_TAG = "\\[<(?:\"[^\"]*\"['\"]*|'[^']*'['\"]*|[^'\">])+>"
+	// closing tag "</a>]\n"
+	public static String STACK_TRACE_LINK_CLOSING_TAG = "<(?:\"[^\"]*\"['\"]*|'[^']*'['\"]*|[^'\">])+>\\]"
 
 	var TreeViewer testTree
 	var Link textOutput
@@ -62,11 +71,13 @@ class WollokTestResultView extends ViewPart implements Observer {
 	// bar
 	var Label bar
 	Color noResultColor
+	Color pendingColor
 	Color successColor
 	Color failedColor
 	Color erroredColor
 	var ResourceManager resManager
 	public val static BAR_COLOR_NO_RESULT = new RGB(200, 200, 200)
+	public val static BAR_COLOR_PENDING = new RGB(239, 222, 205)
 	public val static BAR_COLOR_SUCCESS = new RGB(99, 184, 139)
 	public val static BAR_COLOR_FAILED = new RGB(255, 197, 3)
 	public val static BAR_COLOR_ERRORED = new RGB(237, 17, 18)
@@ -82,11 +93,15 @@ class WollokTestResultView extends ViewPart implements Observer {
 	@Inject
 	WollokAllTestsLaunchShortcut allTestsLaunchShortcut
 
+	// First toolbar
 	ToolBar toolbar
-
 	ToolItem showFailuresAndErrors
 	ToolItem runAgain
-	ToolItem debugAgain
+//	ToolItem debugAgain
+
+	// Second toolbar
+	ToolBar toolbarTextOutput
+	ToolItem copyTextOutputToClipboard
 	
 //	static IViewPart previousActivePart
 
@@ -126,12 +141,13 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 	/** this method is invoked between test executions */
 	def cleanView() {
-		bar.background = noResultColor
+		bar.background = pendingColor
+		bar.text = Messages.WollokTestResultView_runningTests
 		totalTextBox.text = ""
 		failedTextBox.text = ""
 		errorTextBox.text = ""
 		runAgain.enabled = false
-		debugAgain.enabled = false
+		//debugAgain.enabled = false
 		(testTree.contentProvider as WTestTreeContentProvider).results.container = new WollokTestContainer() {
 			override toString() {
 				return ""
@@ -152,6 +168,28 @@ class WollokTestResultView extends ViewPart implements Observer {
 		results.showFailuresAndErrorsOnly(showFailuresAndErrors.selection)
 	}
 
+	def copySelectedTextOutputToClipboard() {
+		val clipboard = new Clipboard(Display.current)
+        val plainText = textOutput.text.parseLinksToPlain
+        val rtfText = "{\\rtf1\\deff0{\\fonttbl {\\f0 \\fcharset0 Ubuntu Mono;}}" + textOutput.text.parseLinksToRTF + "}"
+        val data = #[rtfText, plainText]
+		val types = #[RTFTransfer.instance, TextTransfer.instance]
+        clipboard.setContents(data, types, DND.CLIPBOARD)
+        clipboard.dispose()
+	}
+	
+	def String parseLinksToPlain(String text) {
+    	text.replaceAll(STACK_TRACE_LINK_OPENING_TAG, "")
+			.replaceAll(STACK_TRACE_LINK_CLOSING_TAG, "")
+	}
+
+	def String parseLinksToRTF(String text) {
+    	text.replaceAll("\n", "\\\\line")
+    		.replaceAll("\t", "\\\\tab")
+    		.replaceAll(STACK_TRACE_LINK_OPENING_TAG, "")
+			.replaceAll(STACK_TRACE_LINK_CLOSING_TAG, "")
+	}
+	
 	override createPartControl(Composite parent) {
 		parent.background = new Color(Display.current, new RGB(220, 220, 220))
 		resManager = new LocalResourceManager(JFaceResources.getResources(), parent)
@@ -173,12 +211,14 @@ class WollokTestResultView extends ViewPart implements Observer {
 		createSeparator(parent)
 		createResults(parent)
 		createBar(parent)
-		val sash = new Composite(parent, SWT.NONE)
-		sash.layout = new FillLayout
-		sash.layoutData = new GridData(GridData.FILL_BOTH)
+		val sash = new Composite(parent, SWT.NONE) => [
+			layout = new FillLayout
+			layoutData = new GridData(GridData.FILL_BOTH)
+		]
 		val sashForm = new SashForm(sash, SWT.VERTICAL)
 		createTree(sashForm)
 		createTextOutput(sashForm)
+		createToolbarForTextOutput(parent)
 	}
 
 	def createSeparator(Composite parent) {
@@ -209,20 +249,21 @@ class WollokTestResultView extends ViewPart implements Observer {
 			enabled = false
 		]
 
-		debugAgain = new ToolItem(toolbar, SWT.PUSH) => [
-			toolTipText = Messages.WollokTestResultView_debugAgain
-			image = resManager.createImage(
-				Activator.getDefault.getImageDescriptor(
-					"platform:/plugin/org.eclipse.debug.ui/icons/full/elcl16/debuglast_co.png"))
-			addListener(SWT.Selection)[this.relaunchDebug]
-			enabled = false
-		]
+//		debugAgain = new ToolItem(toolbar, SWT.PUSH) => [
+//			toolTipText = Messages.WollokTestResultView_debugAgain
+//			image = resManager.createImage(
+//				Activator.getDefault.getImageDescriptor(
+//					"platform:/plugin/org.eclipse.debug.ui/icons/full/elcl16/debuglast_co.png"))
+//			addListener(SWT.Selection)[this.relaunchDebug]
+//			enabled = false
+//		]
 	}
 
 	def createBar(Composite parent) {
-		bar = new Label(parent, SWT.SHADOW_IN.bitwiseOr(SWT.BORDER))
+		bar = new Label(parent, SWT.SHADOW_IN.bitwiseOr(SWT.BORDER).bitwiseOr(SWT.CENTER))
 		// creates and cache colors
 		noResultColor = resManager.createColor(BAR_COLOR_NO_RESULT)
+		pendingColor = resManager.createColor(BAR_COLOR_PENDING)
 		successColor = resManager.createColor(BAR_COLOR_SUCCESS)
 		failedColor = resManager.createColor(BAR_COLOR_FAILED)
 		erroredColor = resManager.createColor(BAR_COLOR_ERRORED)
@@ -269,20 +310,25 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def createTextOutput(Composite parent) {
-		val textParent = new Composite(parent, SWT.BORDER)
-		val parentGridLayout = new GridLayout
-		parentGridLayout.marginWidth = 0
-		parentGridLayout.marginHeight = 0
-		textParent.layout = parentGridLayout
-		textParent.layoutData = new GridData
+		val textParent = new ScrolledComposite(parent, SWT.BORDER.bitwiseOr(SWT.WRAP.bitwiseOr(SWT.V_SCROLL.bitwiseOr(SWT.H_SCROLL))))
+		val parentGridLayout = new GridLayout => [
+			marginWidth = 0
+			marginHeight = 0
+		]
+		textParent => [
+			layout = parentGridLayout
+			layoutData = new GridData
+			expandHorizontal = true
+			expandVertical = true
+			setMinSize(300, 300)
+		]
 		textOutput = new Link(
 			textParent,
-			SWT.BORDER.bitwiseOr(SWT.WRAP).bitwiseOr(SWT.MULTI).bitwiseOr(SWT.V_SCROLL)
+			SWT.BORDER.bitwiseOr(SWT.WRAP).bitwiseOr(SWT.MULTI).bitwiseOr(SWT.V_SCROLL).bitwiseOr(SWT.H_SCROLL)
 		) => []
 		textOutput.background = new Color(Display.current, 255, 255, 255)
 		textOutput.foreground = new Color(Display.current, 50, 50, 50)
 
-		// textOutput.editable = false
 		new GridData => [
 			minimumHeight = 80
 			grabExcessHorizontalSpace = true
@@ -305,6 +351,8 @@ class WollokTestResultView extends ViewPart implements Observer {
 				}
 			}
 		)
+		
+		textParent.content = textOutput
 	}
 
 	def createResults(Composite parent) {
@@ -327,6 +375,21 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 		createResultNumberLabel(panel, WollokLaunchUIMessages.WollokTestResultView_ERROR_TESTS)
 		errorTextBox = createResultNumberTextBox(panel)
+	}
+
+	def createToolbarForTextOutput(Composite parent) {
+		toolbarTextOutput = new ToolBar(parent, SWT.RIGHT)
+
+		GridDataFactory.fillDefaults().align(SWT.END, SWT.END).grab(false, false).applyTo(toolbarTextOutput)
+
+		copyTextOutputToClipboard = new ToolItem(toolbarTextOutput, SWT.PUSH) => [
+			toolTipText = Messages.WollokTestResultView_copySelectedResultToClipboard
+			val pathImage = Activator.getDefault.getImageDescriptor(
+				"platform:/plugin/org.eclipse.compare/icons/full/elcl16/copycont_r_co.gif")
+			image = resManager.createImage(pathImage)
+			addListener(SWT.Selection)[this.copySelectedTextOutputToClipboard]
+			enabled = true
+		]
 	}
 
 	def createResultNumberLabel(Composite panel, String labelText) {
@@ -355,9 +418,12 @@ class WollokTestResultView extends ViewPart implements Observer {
 	override update(Observable o, Object arg) {
 		testTree.refresh(true)
 		testTree.expandAll
-
+		
 		if (results.container !== null) {
-			val runned = (total - count[state == WollokTestState.PENDING])
+			val runningCount = count[state == WollokTestState.RUNNING]
+			val pendingCount = count[state == WollokTestState.PENDING]
+			
+			val runned = total - pendingCount
 			totalTextBox.text = runned.toString + "/" + total.toString
 
 			val errorCount = count[state == WollokTestState.ERROR]
@@ -367,16 +433,23 @@ class WollokTestResultView extends ViewPart implements Observer {
 			failedTextBox.text = failedCount.toString
 
 			val noErrors = errorCount == 0 && failedCount == 0
-			bar.background = if(noErrors) successColor else if(errorCount > 0) erroredColor else failedColor
+			
+			if (runningCount > 0 || pendingCount > 0) {
+				bar.background = pendingColor
+				bar.text = Messages.WollokTestResultView_runningTests
+			} else {
+				bar.background = if (noErrors) successColor else if(errorCount > 0) erroredColor else failedColor
+				bar.text = ""
+			}
 
 			runAgain.enabled = true
-			debugAgain.enabled = true
+//			debugAgain.enabled = true
 		} else {
 			totalTextBox.text = ""
 			failedTextBox.text = ""
 			errorTextBox.text = ""
 			runAgain.enabled = false
-			debugAgain.enabled = false
+//			debugAgain.enabled = false
 		}
 
 		// issue #1266 - dodain - this fixes the problem
@@ -499,4 +572,3 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 	override inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
 
 }
-
