@@ -1,6 +1,7 @@
 package wollok.lang
 
 import java.util.Collection
+import java.util.HashMap
 import java.util.Map
 import java.util.Map.Entry
 import java.util.TreeMap
@@ -21,7 +22,7 @@ class WDictionary implements JavaWrapper<Map> {
 		 
 	new(WollokObject o) {
 		wollokInstance = o
-		wrapped = new TreeMap<WollokObject,WollokObject>(new WollokObjectComparator)
+		wrapped = new TreeMap<WollokObject,WollokObject>(new WollokObjectComparator(new HashMap))
 	}
 	
 	def void clear() { 

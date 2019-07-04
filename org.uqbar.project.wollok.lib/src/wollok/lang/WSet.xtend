@@ -1,6 +1,8 @@
 package wollok.lang
 
 import java.util.Collection
+import java.util.HashMap
+import java.util.Map
 import java.util.Set
 import java.util.TreeSet
 import org.eclipse.osgi.util.NLS
@@ -12,9 +14,15 @@ import org.uqbar.project.wollok.interpreter.core.WollokObject
  * @author jfernandes
  */
 class WSet extends WCollection<Set<WollokObject>> {
+	Map<WollokObject, String> stringRepresentation = new HashMap
 	
 	new() {
-		wrapped = new TreeSet<WollokObject>(new WollokObjectComparator)
+		wrapped = new TreeSet<WollokObject>(new WollokObjectComparator(stringRepresentation))
+	}
+	
+	override add(WollokObject obj) {
+		stringRepresentation.put(obj, obj.toString)
+		super.add(obj)
 	}
 	
 	def anyOne() { 

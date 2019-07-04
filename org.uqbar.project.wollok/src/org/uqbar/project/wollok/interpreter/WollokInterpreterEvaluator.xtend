@@ -364,7 +364,6 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	def dispatch WollokObject evaluate(WListLiteral it) { 
-		println("evaluate " + astNode.text)
 		createCollection(LIST, elements)
 	}
 
@@ -373,14 +372,11 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	def createCollection(String collectionName, List<WExpression> elements) {
-		val time = System.currentTimeMillis
-		val ret = newInstance(collectionName) => [
+		newInstance(collectionName) => [
 			elements.forEach [ e |
 				call("add", e.eval)
 			]
 		]
-		println("create collection " + collectionName + " - elements " + elements + ": " + (System.currentTimeMillis - time))
-		ret
 	}
 
 	// other expressions

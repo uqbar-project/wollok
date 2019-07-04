@@ -38,7 +38,16 @@ class WCollection<T extends Collection<WollokObject>> {
 		continuation.doApply()
 	}
 
-	def void add(WollokObject e) { wrapped.add(e) }
+	def void add(WollokObject e) { 
+		val time = System.currentTimeMillis
+		wrapped.add(e)
+		val totalTime = System.currentTimeMillis - time
+		if (totalTime > 50) {
+			println("add " + totalTime)
+			println("  => " + wrapped)
+			println()	
+		}
+	}
 	
 	def void remove(WollokObject e) { 
 		// This is necessary because native #contains does not take into account Wollok object equality 
