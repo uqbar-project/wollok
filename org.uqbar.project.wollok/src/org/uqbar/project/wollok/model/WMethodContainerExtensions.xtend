@@ -274,13 +274,17 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static getOwnVariableDeclaration(WMethodContainer it, String name) {
 		variableDeclarations.findFirst [ variable?.name.equals(name) ]
 	}
-	
+
 	def static findMethod(WMethodContainer c, WMemberFeatureCall it) {
 		c.allUntypedMethods.findFirst [ m | m.matches(feature, memberCallArguments) ]	
 	}
 	
 	def static findMethodIgnoreCase(WMethodContainer c, String methodName, int argumentsSize) {
 		c.allUntypedMethods.findMethodIgnoreCase(methodName, argumentsSize) 
+	}
+
+	def static hasMethodIgnoreCase(Iterable<WMethodDeclaration> methods, String methodName, int argumentsSize) {
+		methods.findMethodIgnoreCase(methodName, argumentsSize) !== null 
 	}
 
 	def static findMethodIgnoreCase(Iterable<WMethodDeclaration> methods, String methodName, int argumentsSize) {

@@ -22,7 +22,7 @@ class WDictionary implements JavaWrapper<Map> {
 		 
 	new(WollokObject o) {
 		wollokInstance = o
-		wrapped = new TreeMap<WollokObject,WollokObject>(new WollokObjectComparator(new HashMap))
+		wrapped = new TreeMap<WollokObject,WollokObject>(new WollokObjectComparator)
 	}
 	
 	def void clear() { 

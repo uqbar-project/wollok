@@ -14,14 +14,11 @@ import org.uqbar.project.wollok.interpreter.core.WollokObject
  * @author jfernandes
  */
 class WSet extends WCollection<Set<WollokObject>> {
-	Map<WollokObject, String> stringRepresentation = new HashMap
-	
 	new() {
-		wrapped = new TreeSet<WollokObject>(new WollokObjectComparator(stringRepresentation))
+		wrapped = new TreeSet<WollokObject>(new WollokObjectComparator)
 	}
 	
 	override add(WollokObject obj) {
-		stringRepresentation.put(obj, obj.toString)
 		super.add(obj)
 	}
 	
