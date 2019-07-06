@@ -8,6 +8,7 @@ import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilde
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
 import static extension org.uqbar.project.wollok.utils.WollokObjectUtils.*
+import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * A stack frame variable's value that holds a wollok object.
@@ -16,7 +17,7 @@ import static extension org.uqbar.project.wollok.utils.WollokObjectUtils.*
  * @author jfernandes
  */
 class XWollokObjectDebugValue extends XDebugValue {
-	String typeName
+	@Accessors(PUBLIC_GETTER) String typeName
 	String varName
 
 	new(String varName, WollokObject obj) {

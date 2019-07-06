@@ -8,7 +8,6 @@ class WollokREPLInterpreterEvaluator extends WollokLauncherInterpreterEvaluator 
 	
 	override _evaluate(WVariableDeclaration it) {
 		val WollokREPLInterpreter replInterpreter = interpreter as WollokREPLInterpreter
-
 		if (it.eContainer instanceof WProgram) {
 			replInterpreter.addREPLVariable(variable)
 		}
