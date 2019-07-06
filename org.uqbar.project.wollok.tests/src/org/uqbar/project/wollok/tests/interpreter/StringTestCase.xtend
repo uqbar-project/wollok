@@ -223,6 +223,23 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 		assert.throwsExceptionWithMessage("-1.00000 must be a positive integer value", { "hola".left(-1) })
 		'''.test
 	}
+	
+	@Test
+	def void right() { 
+		'''
+		assert.equals("ola", "hola".right(3))
+		assert.equals("", "".right(3))
+		assert.equals("", "hola".right(0))
+		assert.equals("a", "hola".right(1.5))
+		'''.test
+	}
+	
+	@Test
+	def void rightFail() { 
+		'''
+		assert.throwsExceptionWithMessage("-1.00000 must be a positive integer value", { "hola".right(-1) })
+		'''.test
+	}
 
 	@Test
 	def void startsWithUsingNull() {

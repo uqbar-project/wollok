@@ -1500,6 +1500,14 @@ class Number {
 	 * (see definition of class Number)
 	 */
 	method coerceToInteger() native
+
+	/** 
+	 * @private
+	 * @see coerceToInteger
+	 *
+	 * Applies coercing strategy to integer. And throws exception if it is negative.
+	 */
+	method coerceToPositiveInteger() native
 	
 	/**
 	 * Two references are identical if they are the same number
@@ -1902,13 +1910,28 @@ class String {
 	 * @see take
 	 * 
 	 * Example:
-	 *     "lowercase".left(3)  ==> Answers "low"
-	 *     "lowercase".left(0)  ==> Answers ""
-	 *     "lowercase".left(-1) ==> Throws error
-	 *     "".left(2)           ==> Answers "" 
+	 *     "word".left(3)  ==> Answers "wor"
+	 *     "word".left(0)  ==> Answers ""
+	 *     "word".left(-1) ==> Throws error
+	 *     "".left(2)      ==> Answers "" 
 	 */
 	method left(length) = self.take(length)
-	
+		
+	/** 
+	 * Takes last n characters of this string.
+	 * n must be zero-positive integer.
+	 * 
+	 * Example:
+	 *     "word".right(3)  ==> Answers "ord"
+	 *     "word".right(0)  ==> Answers ""
+	 *     "word".right(-1) ==> Throws error
+	 *     "".right(2)      ==> Answers "" 
+	 */
+	method right(_length) {
+		const length = _length.coerceToPositiveInteger().min(self.size())
+		return self.drop(self.size() - length)
+	}
+		
 	method <(aString) native
 	method <=(aString) {
 		return self < aString || (self.equals(aString))

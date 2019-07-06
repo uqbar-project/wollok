@@ -160,6 +160,10 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 		num1.gcd(BigInteger.valueOf(divisor)).intValue
 	}
 
+	def coerceToPositiveInteger() {
+		wrapped.coerceToPositiveInteger
+	}
+
 	def coerceToInteger() {
 		wrapped.coerceToInteger
 	}
