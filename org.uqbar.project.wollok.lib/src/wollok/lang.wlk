@@ -1790,7 +1790,7 @@ class Number {
 	    self.checkNotNull(action, "times")
 		const intValue = self.coerceToInteger()
 		if (intValue < 0) self.error("times requires a positive integer number")
-		(1..intValue).forEach(action)
+		if (intValue > 0) (1..intValue).forEach(action)
 	}
 
 	/** Allows users to define a positive number with 1 or +1 */
