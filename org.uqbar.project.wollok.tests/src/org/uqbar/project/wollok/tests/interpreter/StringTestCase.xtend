@@ -198,6 +198,14 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals("l", "hola".charAt(2))
 		'''.test
 	}
+	
+	@Test
+	def void reverse() { 
+		'''
+		assert.equals("aloh", "hola".reverse())
+		assert.equals("", "".reverse())
+		'''.test
+	}
 
 	@Test
 	def void startsWithUsingNull() {
