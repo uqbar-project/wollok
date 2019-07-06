@@ -1889,6 +1889,15 @@ class String {
 	 */
 	method trim() native
 	
+	/** 
+	 * Answers a string reversing this string,
+	 * so that first character becomes last character of the new string and so on.
+	 * 
+	 * Example:
+	 * 		"hola".reverse()  ==> "aloh"
+	 */
+	method reverse() native
+	
 	method <(aString) native
 	method <=(aString) {
 		return self < aString || (self.equals(aString))
