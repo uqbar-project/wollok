@@ -1910,24 +1910,24 @@ class String {
 	 * @see take
 	 * 
 	 * Example:
-	 *     "word".left(3)  ==> Answers "wor"
-	 *     "word".left(0)  ==> Answers ""
-	 *     "word".left(-1) ==> Throws error
-	 *     "".left(2)      ==> Answers "" 
+	 *     "word".takeLeft(3)  ==> Answers "wor"
+	 *     "word".takeLeft(0)  ==> Answers ""
+	 *     "word".takeLeft(-1) ==> Throws error
+	 *     "".takeLeft(2)      ==> Answers "" 
 	 */
-	method left(length) = self.take(length)
+	method takeLeft(length) = self.take(length)
 		
 	/** 
 	 * Takes last n characters of this string.
 	 * n must be zero-positive integer.
 	 * 
 	 * Example:
-	 *     "word".right(3)  ==> Answers "ord"
-	 *     "word".right(0)  ==> Answers ""
-	 *     "word".right(-1) ==> Throws error
-	 *     "".right(2)      ==> Answers "" 
+	 *     "word".takeRight(3)  ==> Answers "ord"
+	 *     "word".takeRight(0)  ==> Answers ""
+	 *     "word".takeRight(-1) ==> Throws error
+	 *     "".takeRight(2)      ==> Answers "" 
 	 */
-	method right(_length) {
+	method takeRight(_length) {
 		const length = _length.coerceToPositiveInteger().min(self.size())
 		return self.drop(self.size() - length)
 	}

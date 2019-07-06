@@ -208,36 +208,36 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void left() { 
+	def void takeLeft() { 
 		'''
-		assert.equals("hol", "hola".left(3))
-		assert.equals("", "".left(3))
-		assert.equals("", "hola".left(0))
-		assert.equals("h", "hola".left(1.5))
+		assert.equals("hol", "hola".takeLeft(3))
+		assert.equals("", "".takeLeft(3))
+		assert.equals("", "hola".takeLeft(0))
+		assert.equals("h", "hola".takeLeft(1.5))
 		'''.test
 	}
 	
 	@Test
-	def void leftFail() { 
+	def void takeLeftFail() { 
 		'''
-		assert.throwsExceptionWithMessage("-1.00000 must be a positive integer value", { "hola".left(-1) })
+		assert.throwsExceptionWithMessage("-1.00000 must be a positive integer value", { "hola".takeLeft(-1) })
 		'''.test
 	}
 	
 	@Test
-	def void right() { 
+	def void takeRight() { 
 		'''
-		assert.equals("ola", "hola".right(3))
-		assert.equals("", "".right(3))
-		assert.equals("", "hola".right(0))
-		assert.equals("a", "hola".right(1.5))
+		assert.equals("ola", "hola".takeRight(3))
+		assert.equals("", "".takeRight(3))
+		assert.equals("", "hola".takeRight(0))
+		assert.equals("a", "hola".takeRight(1.5))
 		'''.test
 	}
 	
 	@Test
-	def void rightFail() { 
+	def void takeRightFail() { 
 		'''
-		assert.throwsExceptionWithMessage("-1.00000 must be a positive integer value", { "hola".right(-1) })
+		assert.throwsExceptionWithMessage("-1.00000 must be a positive integer value", { "hola".takeRight(-1) })
 		'''.test
 	}
 
