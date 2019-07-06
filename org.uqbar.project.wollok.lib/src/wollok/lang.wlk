@@ -1897,6 +1897,17 @@ class String {
 	 * 		"hola".reverse()  ==> "aloh"
 	 */
 	method reverse() native
+		
+	/** 
+	 * @see take
+	 * 
+	 * Example:
+	 *     "lowercase".left(3)  ==> Answers "low"
+	 *     "lowercase".left(0)  ==> Answers ""
+	 *     "lowercase".left(-1) ==> Throws error
+	 *     "".left(2)           ==> Answers "" 
+	 */
+	method left(length) = self.take(length)
 	
 	method <(aString) native
 	method <=(aString) {
