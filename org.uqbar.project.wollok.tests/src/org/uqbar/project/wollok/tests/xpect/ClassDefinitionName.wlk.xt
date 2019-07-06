@@ -1,0 +1,7 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+// XPECT errors --> "Object is a reserved name for a core element" at "Object"
+class Object { }
+
+// XPECT errors --> "List is a reserved name for a core element" at "List"
+class List { }
