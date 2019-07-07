@@ -10,7 +10,6 @@ import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 import org.uqbar.project.wollok.interpreter.nativeobj.NodeAware
-import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.wollokDsl.WClosure
 
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
@@ -25,7 +24,7 @@ class Closure implements NodeAware<WClosure>, Function1<WollokObject, Object> {
 	@Accessors WClosure EObject
 	extension WollokInterpreter interpreter
 	WollokObject obj
-	EvaluationContext container
+	EvaluationContext<WollokObject> container
 	
 	new(WollokObject obj, WollokInterpreter interpreter) {
 		this.obj = obj
@@ -33,7 +32,7 @@ class Closure implements NodeAware<WClosure>, Function1<WollokObject, Object> {
 		this.container = interpreter.currentContext
 	}
 	
-	def closure() { 
+	def closure() {
 		EObject
 	}
 	
@@ -47,17 +46,10 @@ class Closure implements NodeAware<WClosure>, Function1<WollokObject, Object> {
 
 	@NativeMessage("apply")	
 	def doApply(WollokObject... args) {
-		val time = System.currentTimeMillis
 		val context = closure.createEvaluationContext(args).then(container)
-		val tiempo2 = (System.currentTimeMillis - time)
-		val r = interpreter.performOnStack(closure, context) [|
+		interpreter.performOnStack(closure, context) [|
 			interpreter.eval(closure.expression)
 		]
-		val tiempo = (System.currentTimeMillis - time)
-		if (tiempo > 50) {
-			println("    tiempo " + closure.astNode.text + " ==> " + tiempo2 + " - "+ tiempo)
-		}
-		r
 	}
 	
 	def static createEvaluationContext(WClosure c, WollokObject... values) {

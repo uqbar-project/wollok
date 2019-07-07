@@ -897,6 +897,17 @@ class Set inherits Collection {
 	override method fold(initialValue, closure) native
 	
 	/**
+	 * @see Collection#filter(closure)
+	 */
+	override method filter(closure) native
+	
+	
+	/**
+	 * @see Collection#max()
+	 */
+	override method max() native
+	
+	/**
 	 * Tries to find an element in a collection (based on a closure) or
 	 * applies a continuation closure.
 	 *

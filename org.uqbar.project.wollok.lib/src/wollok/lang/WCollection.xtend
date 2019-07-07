@@ -39,14 +39,7 @@ class WCollection<T extends Collection<WollokObject>> {
 	}
 
 	def void add(WollokObject e) { 
-		val time = System.currentTimeMillis
 		wrapped.add(e)
-		val totalTime = System.currentTimeMillis - time
-		if (totalTime > 50) {
-			println("add " + totalTime)
-			println("  => " + wrapped)
-			println()	
-		}
 	}
 	
 	def void remove(WollokObject e) { 
@@ -80,13 +73,13 @@ class WCollection<T extends Collection<WollokObject>> {
 		hasNativeType(this.class.name)
 	}
 	
-	protected def getNativeCollection(WollokObject it) {
+	protected def Collection<WollokObject> getNativeCollection(WollokObject it) {
 		getNativeObject(this.class).getWrapped()
 	}
 	
-	protected def verifySizes(Collection col, Collection col2) {
+	protected def verifySizes(Collection<WollokObject> col, Collection<WollokObject> col2) {
 		col.size.equals(col2.size)
 	}
 	
-	protected def verifyWollokElementsContained(Collection set, Collection set2) { false } // Abstract method
+	protected def verifyWollokElementsContained(Collection<WollokObject> set, Collection<WollokObject> set2) { false } // Abstract method
 }
