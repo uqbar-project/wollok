@@ -976,6 +976,12 @@ class Set inherits Collection {
 	override method join() native
 	
 	/**
+	 *
+	 * @see List#contains(other)
+	 */
+	override method contains(other) native
+	
+	/**
 	 * Two sets are equals if they have the same elements
 	 *
 	 * Examples:
@@ -995,6 +1001,18 @@ class Set inherits Collection {
 	 * @see Object#==
 	 */
 	override method ==(other) native
+	
+	/*
+	 * Optimized version for long sets
+	 *  
+	 * @see Object#toString()
+	 */
+	override method toString() {
+		const size = self.size()
+		if (size > 50) return "#{..." + size + " elements}"
+		return super.toString()
+	}
+
 }
 
 /**

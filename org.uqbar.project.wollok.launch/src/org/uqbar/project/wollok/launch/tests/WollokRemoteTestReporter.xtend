@@ -80,7 +80,7 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 				resource?.toString))
 	}
 
-	override finished() {
+	override finished(long timeElapsed) {
 		if (!processingManyFiles) {
 			remoteTestNotifier.testsResult(testsResult)
 		}

@@ -73,4 +73,7 @@ class WSet extends WCollection<Set<WollokObject>> implements JavaWrapper<Set<Wol
 		seed
 	}
 	
+	def contains(WollokObject obj) {
+		wrapped.contains(obj)
+	}
 }

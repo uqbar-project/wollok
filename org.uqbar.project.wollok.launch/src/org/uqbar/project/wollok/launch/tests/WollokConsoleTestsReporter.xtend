@@ -33,7 +33,8 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 		println('''Test: «test.name» : «exception.message» («resource.trimFragment»:«lineNumber»)''')
 	}
 
-	override finished() {
+	override finished(long timeElapsed) {
+		println('''Total time elapsed: «timeElapsed» ms''')
 	}
 
 	override initProcessManyFiles(String folder) {

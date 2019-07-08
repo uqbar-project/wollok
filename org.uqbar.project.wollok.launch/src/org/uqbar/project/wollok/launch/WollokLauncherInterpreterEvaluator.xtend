@@ -37,8 +37,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 		if (main !== null)
 			main.eval
 		else {
-			var time = System.currentTimeMillis
-			
+			val time = System.currentTimeMillis
 			val _isASuite = isASuite
 			var testsToRun = tests
 			var String suiteName = null
@@ -47,10 +46,6 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 				testsToRun = suite.tests
 			}
 			wollokTestsReporter.testsToRun(suiteName, it, testsToRun)
-			
-			println("1 ==> " + (System.currentTimeMillis - time))
-			time = System.currentTimeMillis
-			
 			try {
 				testsToRun.fold(null) [ a, _test |
 					resetGlobalState
@@ -61,9 +56,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 					}
 				]
 			} finally {
-				println("2 ==> " + (System.currentTimeMillis - time))
-				time = System.currentTimeMillis
-				wollokTestsReporter.finished
+				wollokTestsReporter.finished(System.currentTimeMillis - time)
 			}
 		}
 	}
@@ -96,12 +89,9 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	override dispatch evaluate(WTest test) {
 		try {
 			test.elements.forEach [ expr |
-				var time = System.currentTimeMillis
 				interpreter.performOnStack(expr, currentContext) [ |
-					print("   " + expr.astNode.text + " ")
 					expr.eval
 				]
-				println("" + (System.currentTimeMillis - time))
 			]
 			wollokTestsReporter.reportTestOk(test)
 			null

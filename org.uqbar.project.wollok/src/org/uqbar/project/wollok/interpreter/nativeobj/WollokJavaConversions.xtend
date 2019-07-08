@@ -50,7 +50,7 @@ class WollokJavaConversions {
 		if (t == Object) return o
 
 		if (o.isNativeType(CLOSURE) && t == Function1)
-			return [Object a|((o as WollokObject).getNativeObject(CLOSURE) as Function1).apply(a)]
+			return [Object a|((o as WollokObject).getNativeObject(CLOSURE) as Function1<Object, Object>).apply(a)]
 		if (o.isNativeType(NUMBER) && (t == BigDecimal || t == Double.TYPE))
 			return ((o as WollokObject).getNativeObject(NUMBER) as JavaWrapper<BigDecimal>).wrapped.adaptValue
 		if (o.isNativeType(STRING) && t == String)
@@ -58,7 +58,7 @@ class WollokJavaConversions {
 		if (o.isNativeType(LIST) && (t == Collection || t == List))
 			return ((o as WollokObject).getNativeObject(LIST) as JavaWrapper<List<WollokObject>>).wrapped
 		if (o.isNativeType(DICTIONARY) && (t == Collection || t == Map))
-			return ((o as WollokObject).getNativeObject(DICTIONARY) as JavaWrapper<Map>).wrapped
+			return ((o as WollokObject).getNativeObject(DICTIONARY) as JavaWrapper<Map<WollokObject, WollokObject>>).wrapped
 		if (o.isNativeType(SET) && (t == Collection || t == Set))
 			return ((o as WollokObject).getNativeObject(SET) as JavaWrapper<Set<WollokObject>>).wrapped
 		if (o.isNativeType(BOOLEAN) && (t == Boolean || t == Boolean.TYPE))
