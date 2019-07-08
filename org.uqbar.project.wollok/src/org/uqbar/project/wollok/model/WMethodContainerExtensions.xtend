@@ -16,7 +16,6 @@ import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
-import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -34,6 +33,7 @@ import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WMixin
+import org.uqbar.project.wollok.wollokDsl.WNamed
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
@@ -56,7 +56,7 @@ import static extension org.eclipse.xtext.EcoreUtil2.*
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.notNullAnd
-import org.uqbar.project.wollok.wollokDsl.WNamed
+import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
 
 /**
  * Extension methods for WMethodContainers.
@@ -283,6 +283,14 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		c.allUntypedMethods.findMethodIgnoreCase(methodName, argumentsSize) 
 	}
 
+	def static hasEqualsMethod(WollokObject o) {
+		o.behavior.methods.hasMethodIgnoreCase(EQUALITY, 1) || o.behavior.methods.hasMethodIgnoreCase("equals", 1)  
+	}
+	
+	def static hasGreaterThanMethod(WollokObject o) {
+		o.behavior.methods.hasMethodIgnoreCase(GREATER_THAN, 1)  
+	}
+
 	def static hasMethodIgnoreCase(Iterable<WMethodDeclaration> methods, String methodName, int argumentsSize) {
 		methods.findMethodIgnoreCase(methodName, argumentsSize) !== null 
 	}
@@ -376,8 +384,8 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static boolean inheritsFromLibClass(WMethodContainer it) { parent.isCoreObject }
 
 	def static dispatch boolean inheritsFromObject(EObject e) { false }
-	def static dispatch boolean inheritsFromObject(WClass c) { c.parent.fqn.equals(WollokDSK.OBJECT) }
-	def static dispatch boolean inheritsFromObject(WNamedObject o) { o.parent.fqn.equals(WollokDSK.OBJECT) }
+	def static dispatch boolean inheritsFromObject(WClass c) { c.parent.fqn.equals(OBJECT) }
+	def static dispatch boolean inheritsFromObject(WNamedObject o) { o.parent.fqn.equals(OBJECT) }
 	def static dispatch boolean inheritsFromObject(WObjectLiteral o) { true }
 
 	def static dispatch WClass parent(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }

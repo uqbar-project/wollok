@@ -198,5 +198,13 @@ class ListTestCase extends CollectionTestCase {
 		}
 		'''.interpretPropagatingErrors
 	}	
-	
+
+	@Test
+	def void elementsToStringForLongLists() {
+		'''
+		const unList = []
+		(1..70).forEach { i => unList.add(i) }
+		assert.equals("[...70 elements]", unList.toString())
+		'''.test
+	}	
 }

@@ -89,9 +89,12 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	override dispatch evaluate(WTest test) {
 		try {
 			test.elements.forEach [ expr |
+				var time = System.currentTimeMillis
 				interpreter.performOnStack(expr, currentContext) [ |
+					print("   " + expr.astNode.text + " ")
 					expr.eval
 				]
+				println(", tiempo total: [" + (System.currentTimeMillis - time) + " ms]")
 			]
 			wollokTestsReporter.reportTestOk(test)
 			null

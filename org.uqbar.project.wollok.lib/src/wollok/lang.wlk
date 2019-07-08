@@ -679,8 +679,16 @@ class Collection {
 	method flatten() = self.flatMap { e => e }
 	
 	/** @private */
-	override method internalToSmartString(alreadyShown) =
-		self.toStringPrefix() + self.map{ e => e.toSmartString(alreadyShown) }.join(', ') + self.toStringSuffix()
+	/*
+	 * Optimized version for long collections
+	 *  
+	 * @see Object#toString()
+	 */
+	override method internalToSmartString(alreadyShown) {
+		const size = self.size()
+		const internalCollection = if (size > 50) "..." + size + " elements" else self.map{ e => e.toSmartString(alreadyShown) }.join(", ")
+		return self.toStringPrefix() + internalCollection + self.toStringSuffix()
+	}
 	
 	/** @private */
 	method toStringPrefix()
@@ -1002,19 +1010,6 @@ class Set inherits Collection {
 	 */
 	override method ==(other) native
 	
-	/*
-	 * Optimized version for long sets
-	 *  
-	 * @see Object#toString()
-	 */
-	override method toString() {
-		const size = self.size()
-		if (size > 50) 
-			return "#{..." + size + " elements}"
-		else
-			return super()
-	}
-
 }
 
 /**
@@ -1204,6 +1199,21 @@ class List inherits Collection {
 	 */
 	method reverse() = self.subList(self.size() - 1, 0)
 
+	/**
+	 * @see Collection#filter(closure)
+	 */
+	override method filter(closure) native
+
+	/**
+	 * @see Collection#contains(obj)
+	 */
+	override method contains(obj) native
+	
+	/**
+	 * @see Collection#max()
+	 */
+	override method max() native
+	
 	// REFACTORME: DUP METHODS
 	/** 
 	 * Reduce a collection to a certain value, beginning with a seed or initial value

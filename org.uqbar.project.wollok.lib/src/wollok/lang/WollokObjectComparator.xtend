@@ -46,14 +46,6 @@ class WollokObjectComparator implements Comparator<WollokObject> {
 class WollokObjectEqualsComparator implements Comparator<WollokObject> {
 	protected extension WollokInterpreterAccess = new WollokInterpreterAccess
 
-	def static hasEqualsMethod(WollokObject o) {
-		o.behavior.methods.hasMethodIgnoreCase(EQUALITY, 1) || o.behavior.methods.hasMethodIgnoreCase("equals", 1)  
-	}
-	
-	def static hasGreaterThanMethod(WollokObject o) {
-		o.behavior.methods.hasMethodIgnoreCase(GREATER_THAN, 1)  
-	}
-
 	override compare(WollokObject o1, WollokObject o2) {
 		if (o1.hasEqualsMethod && o1.kind.name.equals(o2.kind.name)) {
 			return if (o1.wollokEquals(o2)) 0 else 1 // o1.compareGreaterThan(o2)

@@ -10,8 +10,6 @@ import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
-
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
 
 /**
@@ -41,16 +39,8 @@ class WSet extends WCollection<Set<WollokObject>> implements JavaWrapper<Set<Wol
 	 * For performance reasons I had to use C-ish syntax, which resulted
 	 * in a much better performance ratio
 	 */
-	def filter(WollokObject objClosure) {
-		val closure = objClosure.asClosure
-		val Collection<WollokObject> result = newArrayList
-		for (var i = 0; i < wrapped.size; i++) {
-			val element = wrapped.get(i)
-			if ((closure.doApply(element).getNativeObject(BOOLEAN) as JavaWrapper<Boolean>).wrapped) {
-				result.add(element)
-			}
-		}
-		result.toSet
+	override filter(WollokObject objClosure) {
+		super.filter(objClosure).toSet
 	}
 	
 	def max() {
@@ -73,7 +63,4 @@ class WSet extends WCollection<Set<WollokObject>> implements JavaWrapper<Set<Wol
 		seed
 	}
 	
-	def contains(WollokObject obj) {
-		wrapped.contains(obj)
-	}
 }

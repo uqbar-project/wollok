@@ -1,15 +1,18 @@
 package wollok.lang
 
+import java.util.ArrayList
 import java.util.Collection
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.api.WollokInterpreterAccess
 import org.uqbar.project.wollok.interpreter.core.WCallable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
-import java.util.ArrayList
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
 
 /**
  * @author jfernandes
@@ -26,6 +29,39 @@ class WCollection<T extends Collection<WollokObject>> {
 		]
 	}
 
+	/**
+	 * @author: dodain
+	 * 
+	 * For performance reasons I had to use C-ish syntax, which resulted
+	 * in a much better performance ratio. 
+	 */
+	def filter(WollokObject objClosure) {
+		val closure = objClosure.asClosure
+		val wrappedAsList = wrapped.toArray
+		val Collection<WollokObject> result = newArrayList
+		for (var i = 0; i < wrapped.size; i++) {
+			val element = wrappedAsList.get(i) as WollokObject
+			if ((closure.doApply(element).getNativeObject(BOOLEAN) as JavaWrapper<Boolean>).wrapped) {
+				result.add(element)
+			}
+		}
+		result
+	}
+	
+	/**
+	 * @author dodain
+	 * 
+	 * Optimized implementation
+	 */
+	def contains(WollokObject obj) {
+		if (!obj.hasEqualsMethod) return wrapped.contains(obj)
+		for (var i = 0; i < wrapped.size; i++) {
+			val element = wrapped.get(i)
+			if (element.wollokEquals(obj)) return true
+		}
+		return false
+	}
+	
 	def Object findOrElse(WollokObject _predicate, WollokObject _continuation) {
 		val predicate = _predicate.asClosure
 		val continuation = _continuation.asClosure
