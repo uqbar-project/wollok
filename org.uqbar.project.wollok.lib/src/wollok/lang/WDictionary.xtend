@@ -1,7 +1,6 @@
 package wollok.lang
 
 import java.util.Collection
-import java.util.HashMap
 import java.util.Map
 import java.util.Map.Entry
 import java.util.TreeMap
@@ -14,10 +13,10 @@ import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
 
-class WDictionary implements JavaWrapper<Map> {
+class WDictionary implements JavaWrapper<Map<WollokObject, WollokObject>> {
 	
 	val WollokObject wollokInstance
-	@Accessors var Map wrapped
+	@Accessors var Map<WollokObject, WollokObject> wrapped
 	protected extension WollokInterpreterAccess = new WollokInterpreterAccess
 		 
 	new(WollokObject o) {
@@ -51,12 +50,12 @@ class WDictionary implements JavaWrapper<Map> {
 		convertToList(wrapped.values) 
 	}
 	
-	def convertToList(Collection _value) {
+	def convertToList(Collection<WollokObject> _value) {
 		_value.map [ it.javaToWollok ].toList
 	}
 	
 	def void forEach(WollokObject proc) {
-		wrapped.entrySet.sortBy [ toString ].forEach [ Entry entry |
+		wrapped.entrySet.sortBy [ toString ].forEach [ Entry<WollokObject, WollokObject> entry |
 			val c = proc.asClosure
 			c.doApply(entry.key.javaToWollok, entry.value.javaToWollok)
 		]

@@ -194,4 +194,12 @@ class SetTestCase extends CollectionTestCase {
 		'''.interpretPropagatingErrors
 	}
 
+	@Test
+	def void elementsToStringForLongSets() {
+		'''
+		const unSet = #{}
+		(1..70).forEach { i => unSet.add(i) }
+		assert.equals("#{...70 elements}", unSet.toString())
+		'''.test
+	}
 }

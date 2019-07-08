@@ -1009,8 +1009,10 @@ class Set inherits Collection {
 	 */
 	override method toString() {
 		const size = self.size()
-		if (size > 50) return "#{..." + size + " elements}"
-		return super.toString()
+		if (size > 50) 
+			return "#{..." + size + " elements}"
+		else
+			return super()
 	}
 
 }
