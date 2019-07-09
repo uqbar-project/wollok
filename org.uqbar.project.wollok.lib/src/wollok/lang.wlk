@@ -2370,7 +2370,12 @@ class Date {
 	  */
 	method day() native
 	
-	/** Answers the day of the week of the Date with an object representation */
+	/** Answers the day of the week of the Date with an object representation.
+	 * There is a wko (well known object) for every day of the week.
+	 *
+	 * Example:
+	 *     new Date(24, 2, 2018).dayOfWeek() ==> Answers saturday object
+	 */
 	method dayOfWeek() = daysOfWeek.get(self.internalDayOfWeek() - 1)
 	
 	/** Answers the day of week of the Date, where
