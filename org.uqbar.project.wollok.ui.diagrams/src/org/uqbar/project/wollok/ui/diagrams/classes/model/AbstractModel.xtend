@@ -10,9 +10,9 @@ import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
-import static extension java.lang.Integer.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.utils.StringUtils.*
 
 /**
  * Common class for modeling
@@ -89,14 +89,14 @@ abstract class AbstractModel extends Shape {
 	}
 	
 	def int shapeWidth() {
-		Math.min(ELEMENT_WIDTH + (allWidths.reduce [ a, b | a.max(b) ] * LETTER_WIDTH), MAX_ELEMENT_WIDTH)
+		Math.min(ELEMENT_WIDTH + (allWidths.reduce [ a, b | Math.max(a, b) ] * LETTER_WIDTH), MAX_ELEMENT_WIDTH)
 	}
 	
 	def allWidths() {
 		val result = newArrayList
-		result.addAll(variables.map [ it.name?.length ])
-		result.addAll(methods.map [ it.name?.length ])
-		result.add(component.name?.length)
+		result.addAll(variables.map [ name.safeLength ])
+		result.addAll(methods.map [ name.safeLength ])
+		result.add(component.name.safeLength)
 		result
 	}
 

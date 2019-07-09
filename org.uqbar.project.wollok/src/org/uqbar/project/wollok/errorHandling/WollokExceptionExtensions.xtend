@@ -8,7 +8,7 @@ import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
-
+import static org.uqbar.project.wollok.WollokConstants.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 /**
@@ -52,7 +52,7 @@ class WollokExceptionExtensions {
 			}
 			val newStack = new StackTraceElementDTO(contextDescription, fileName, lineNumber)
 			// Unfortunately there are duplicate lines in the stack (because of stack design)
-			if (!result.contains(newStack)) {
+			if (newStack.shouldAppearInStackTrace && !result.contains(newStack)) {
 				result.add(newStack)
 			}
 		]
@@ -177,5 +177,9 @@ class WollokExceptionExtensions {
 	def static dispatch doOriginalMessage(Throwable e) {
 		e.message		
 	}
+
+	def static dispatch shouldShowStackTraceInJava(WollokProgramExceptionWrapper e) { false }
+	def static dispatch shouldShowStackTraceInJava(WollokInterpreterException e) { false }
+	def static dispatch shouldShowStackTraceInJava(Throwable t) { true }
 	
 }

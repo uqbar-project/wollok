@@ -5,6 +5,8 @@ import java.util.Collection
 import java.util.Comparator
 import java.util.List
 import java.util.TreeSet
+import org.eclipse.osgi.util.NLS
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 
@@ -42,6 +44,7 @@ class WList extends WCollection<List<WollokObject>> implements JavaWrapper<List<
 	}
 
 	def max() {
+		if (wrapped.isEmpty) throw new RuntimeException(NLS.bind(Messages.WollokRuntime_WrongMessage_EMPTY_LIST, "max"))
 		val result = new TreeSet(new WollokObjectComparator)
 		result.addAll(wrapped) 
 		return result.last

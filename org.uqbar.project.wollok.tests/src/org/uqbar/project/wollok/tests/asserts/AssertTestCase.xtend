@@ -75,7 +75,7 @@ class AssertTestCase extends AbstractWollokInterpreterTestCase {
 	@Test(expected = ComparisonFailure)
 	def void assertIsTranslatedToComparisonFailure(){
 		'''
-		assert.equals(1,"hola")
+		assert.equals(1, "hola")
 		'''.test
 	}
 		

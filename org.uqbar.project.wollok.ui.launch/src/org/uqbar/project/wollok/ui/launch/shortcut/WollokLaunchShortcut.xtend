@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Display
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.launch.WollokLauncher
+import org.uqbar.project.wollok.ui.WollokActivator
 import org.uqbar.project.wollok.ui.launch.Activator
 import org.uqbar.project.wollok.ui.launch.WollokLaunchConstants
 
@@ -26,13 +27,11 @@ import static org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants.*
 import static org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages.*
 import static org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 
+import static extension org.uqbar.project.wollok.ui.launch.shortcut.LauncherExtensions.*
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
 import static extension org.uqbar.project.wollok.ui.libraries.WollokLibrariesStore.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
-import static extension org.uqbar.project.wollok.ui.launch.shortcut.LauncherExtensions.*
-
-import org.uqbar.project.wollok.ui.WollokActivator
 
 /**
  * Launches a "run" or "debug" configuration (already existing or creates one)

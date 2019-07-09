@@ -15,7 +15,9 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.RelationType
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.dynamic.DynamicDiagramView
 import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
+
 import static extension org.uqbar.project.wollok.ui.diagrams.dynamic.parts.DynamicDiagramUtils.*
+import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
 
 /**
  * 
@@ -145,19 +147,22 @@ class VariableModel extends Shape {
 		variable.value.valueString
 	}
 	
-	def isNumeric() {
-		if (variable.value === null) false else valueString.matches("^-?\\d+(\\.\\d+)?$")
-	} 
-	
-	def isList() {
-		if (variable.value === null) false else originalValueString.matches("^List.*")
-	}
-	
-	def isSet() {
-		if (variable.value === null) false else originalValueString.matches("^Set.*")
-	}
-	
+	def isNumeric() { if (variable.value === null) false else valueString.matches("^-?\\d+(\\.\\d+)?$") }
+	def isList() { typeName.equalsIgnoreCase(LIST) }
+	def isSet() { typeName.equalsIgnoreCase(SET) }
+	def isString() { typeName.equalsIgnoreCase(STRING) }
+	def isNative() { #[BOOLEAN, DATE, PAIR, RANGE].contains(typeName) }
 	def isCollection() { isList || isSet }
+	
+	def isUserDefined() {
+		if (variable.value === null) return false
+		!typeName.startsWith("wollok.")
+	}
+	
+	def typeName() {
+		if (variable.value === null) return "null"
+		variable.value.referenceTypeName	
+	}
 	
 	@Deprecated
 	def moveCloseTo(Shape shape) {

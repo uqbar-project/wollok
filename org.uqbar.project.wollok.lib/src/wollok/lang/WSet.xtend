@@ -44,6 +44,7 @@ class WSet extends WCollection<Set<WollokObject>> implements JavaWrapper<Set<Wol
 	}
 	
 	def max() {
+		if (wrapped.isEmpty) throw new RuntimeException(NLS.bind(Messages.WollokRuntime_WrongMessage_EMPTY_LIST, "max"))
 		wrapped.last
 	}
 	

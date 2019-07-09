@@ -27,7 +27,7 @@ class DefaultWollokTestsReporter implements WollokTestsReporter {
 		throw exception
 	}
 	
-	override finished(long timeElapsed) {
+	override finished(long millisecondsElapsed) {
 	
 	}
 	

@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.tests.interpreter.numbers
 
-import java.math.BigDecimal
 import org.apache.log4j.Logger
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameter

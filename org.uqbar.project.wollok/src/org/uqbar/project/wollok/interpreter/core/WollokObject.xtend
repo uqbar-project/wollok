@@ -203,7 +203,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		try {
 			// TODO: java string shouldn't call wollok string
 			// it should be a low-lever WollokVM debugging method
-			val string = call("toString", #[]) as WollokObject
+			val string = call("toString", #[])
 			(string.getNativeObject(STRING) as JavaWrapper<String>).wrapped
 		} // this is a hack while literal objects are not inheriting from wollok.lang.Object therefore
 		// they don't understand the toString() message

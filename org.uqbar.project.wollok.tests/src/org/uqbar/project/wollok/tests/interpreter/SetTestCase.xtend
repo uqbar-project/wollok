@@ -202,4 +202,12 @@ class SetTestCase extends CollectionTestCase {
 		assert.equals("#{...70 elements}", unSet.toString())
 		'''.test
 	}
+
+	@Test
+	def void maxSentToEmptySet() {
+		'''
+		assert.throwsExceptionWithMessage("Message max sent to an empty collection. It must have at least one element.", { #{}.max() })
+		'''.test
+	}	
+	
 }

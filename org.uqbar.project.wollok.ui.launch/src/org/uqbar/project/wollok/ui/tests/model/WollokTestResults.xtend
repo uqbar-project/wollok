@@ -45,7 +45,7 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		this.container.defineTests(newArrayList(tests.map[new WollokTestResult(it)]), this.shouldShowOnlyFailuresAndErrors)
 		
 		this.setChanged
-		this.notifyObservers		
+		this.notifyObservers("testReceived")		
 	}
 	
 	override showFailuresAndErrorsOnly(boolean showFailuresAndErrors) {
@@ -53,7 +53,7 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		this.container.filterTestByState(this.shouldShowOnlyFailuresAndErrors)
 
 		this.setChanged
-		this.notifyObservers		
+		this.notifyObservers("testsEnded")		
 	}
 
 	override testStart(String testName) {
@@ -79,20 +79,21 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		RunInUI.runInUI[super.notifyObservers(arg)]
 	}
 	
-	override testsResult(List<WollokResultTestDTO> tests) {
+	override testsResult(List<WollokResultTestDTO> tests, long millisecondsElapsed) {
 		tests.forEach [
 			val test = testByName(testName)
 			if (ok()) {
 				test.endedOk()
 			}
 			if (failure()) {
-				test.endedAssertError(message, stackTraceFiltered, errorLineNumber, resource)
+				test.endedAssertError(message, stackTrace, errorLineNumber, resource)
 			}
 			if (error()) {
-				test.endedError(message, stackTraceFiltered, errorLineNumber, resource)
+				test.endedError(message, stackTrace, errorLineNumber, resource)
 			}
 		]
 		this.container.filterTestByState(this.shouldShowOnlyFailuresAndErrors)
+		this.container.millisecondsElapsed = millisecondsElapsed
 		this.setChanged
 		this.notifyObservers
 	}

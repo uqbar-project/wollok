@@ -31,6 +31,7 @@ public class Messages extends NLS {
 	public static String WollokInterpreter_visualObjectWithoutPosition;
 	public static String WollokInterpreter_illegalOperationEmptyCollection;
 	public static String WollokDslInterpreter_native_class_not_found;
+	public static String WollokInterpreter_referenceAlreadyDefined;
 
 	public static String WollokScopeProvider_unresolvedImport;
 	
@@ -135,6 +136,8 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_OVERRIDING_A_METHOD_SHOULD_DO_SOMETHING_DIFFERENT;
 	public static String WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR;
 	public static String WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_DELEGATED_CONSTRUCTOR;
+	
+	public static String WollokRuntime_WrongMessage_EMPTY_LIST;
 	
 	public static String TestLauncher_CompilationErrorTitle;
 	public static String TestLauncher_SeeProblemTab;

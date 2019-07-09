@@ -37,7 +37,7 @@ class WollokJavaConversions {
 	/**
 	 * Only used to show a representative error message when converting Java and Wollok types
 	 */
-	def static Map<?, ?> conversionTypes() {
+	def static Map<?,?> conversionTypes() {
 		#{Function1 -> CLOSURE, BigDecimal -> NUMBER, String -> STRING,
 			List -> LIST, Map -> DICTIONARY, Set -> SET, Boolean -> BOOLEAN,
 			LocalDate -> DATE
@@ -106,9 +106,7 @@ class WollokJavaConversions {
 
 	def static dispatch WollokObject convertJavaToWollok(List<?> o) { evaluator.newInstanceWithWrapped(LIST, o) }
 
-	def static dispatch WollokObject convertJavaToWollok(Set<?> o) {
-		evaluator.newInstanceWithWrapped(SET, o)
-	}
+	def static dispatch WollokObject convertJavaToWollok(Set<?> o) { evaluator.newInstanceWithWrapped(SET, o) }
 
 	def static dispatch WollokObject convertJavaToWollok(LocalDate o) { evaluator.newInstanceWithWrapped(DATE, o) }
 

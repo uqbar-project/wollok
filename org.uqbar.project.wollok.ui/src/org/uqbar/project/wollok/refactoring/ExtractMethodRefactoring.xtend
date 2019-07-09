@@ -5,7 +5,6 @@ import com.google.common.collect.Multimap
 import com.google.inject.Inject
 import com.google.inject.Provider
 import java.util.List
-import java.util.Set
 import org.apache.log4j.Logger
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.IProgressMonitor
@@ -30,7 +29,6 @@ import org.eclipse.xtext.ui.refactoring.impl.EditorDocumentChange
 import org.eclipse.xtext.ui.refactoring.impl.StatusWrapper
 import org.eclipse.xtext.util.ITextRegion
 import org.eclipse.xtext.util.ReplaceRegion
-import org.eclipse.xtext.util.TextRegion
 import org.eclipse.xtext.xbase.XFeatureCall
 import org.eclipse.xtext.xbase.compiler.ISourceAppender
 import org.eclipse.xtext.xbase.compiler.StringBuilderBasedAppendable

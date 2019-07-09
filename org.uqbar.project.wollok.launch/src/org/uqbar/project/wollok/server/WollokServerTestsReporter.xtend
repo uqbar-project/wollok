@@ -11,7 +11,7 @@ class WollokServerTestsReporter extends WollokJSONTestsReporter {
 		writer.name("tests").beginArray
 	}	
 	
-	override finished(long timeElapsed) {
+	override finished(long millisecondsElapsed) {
 		writer => [
 			endArray
 			writeSummary

@@ -1,9 +1,9 @@
 package org.uqbar.project.wollok.interpreter
 
-import java.io.Serializable
 import com.google.inject.Singleton
+import java.io.Serializable
+
 import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
-import org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions
 
 /**
  * A console where the interpreter will write stuff into.

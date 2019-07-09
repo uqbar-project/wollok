@@ -156,7 +156,11 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def dispatch WollokObject evaluate(WMethodDeclaration it) {}
 
 	def dispatch WollokObject evaluate(WVariableDeclaration it) {
-		interpreter.currentContext.addReference(variable.variableName, right?.eval)
+		if (isGlobal) {
+			interpreter.currentContext.addGlobalReference(variable.variableName, right?.eval)
+		} else {
+			interpreter.currentContext.addReference(variable.variableName, right?.eval)
+		}
 		WollokDSK.getVoid(interpreter as WollokInterpreter, it)
 	}
 
@@ -231,11 +235,12 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def dispatch WollokObject evaluate(WNumberLiteral it) { value.getOrCreateNumber }
 
 	def getOrCreateNumber(String value) {
-		if (numbersCache.containsKey(value) && numbersCache.get(value).get !== null) {
-			numbersCache.get(value).get
+		val roundedValue = "" + new BigDecimal(value).adaptValue
+		if (numbersCache.containsKey(roundedValue) && numbersCache.get(roundedValue).get !== null) {
+			numbersCache.get(roundedValue).get
 		} else {
-			val n = instantiateNumber(value)
-			numbersCache.put(value, new WeakReference(n))
+			val n = instantiateNumber(roundedValue)
+			numbersCache.put(roundedValue, new WeakReference(n))
 			n
 		}
 	}

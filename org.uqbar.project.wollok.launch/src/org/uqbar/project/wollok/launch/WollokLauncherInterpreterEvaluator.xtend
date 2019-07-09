@@ -16,7 +16,6 @@ import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionEx
 import static extension org.uqbar.project.wollok.launch.tests.WollokExceptionUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
 /**
  * 
@@ -89,9 +88,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	override dispatch evaluate(WTest test) {
 		try {
 			test.elements.forEach [ expr |
-				var time = System.currentTimeMillis
 				interpreter.performOnStack(expr, currentContext) [ | expr.eval ]
-				println("   " + expr.astNode.text + ", tiempo total: [" + (System.currentTimeMillis - time) + " ms]")
 			]
 			wollokTestsReporter.reportTestOk(test)
 			null

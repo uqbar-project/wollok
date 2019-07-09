@@ -222,6 +222,9 @@ public class Messages extends NLS {
 	public static String WollokTestResultView_runAgain;
 	public static String WollokTestResultView_showOnlyFailuresAndErrors;
 	public static String WollokTestResultView_debugAgain;
+	public static String WollokTestResultView_copySelectedResultToClipboard;
+	public static String WollokTestResultView_runningTests;
+	public static String WollokTestResultView_timeTestsElapsed;
 	
 	// **************************************
 	// ** Wollok proposals (autocomplete)
