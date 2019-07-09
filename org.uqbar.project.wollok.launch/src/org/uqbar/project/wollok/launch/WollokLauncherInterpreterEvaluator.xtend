@@ -90,11 +90,8 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 		try {
 			test.elements.forEach [ expr |
 				var time = System.currentTimeMillis
-				interpreter.performOnStack(expr, currentContext) [ |
-					print("   " + expr.astNode.text + " ")
-					expr.eval
-				]
-				println(", tiempo total: [" + (System.currentTimeMillis - time) + " ms]")
+				interpreter.performOnStack(expr, currentContext) [ | expr.eval ]
+				println("   " + expr.astNode.text + ", tiempo total: [" + (System.currentTimeMillis - time) + " ms]")
 			]
 			wollokTestsReporter.reportTestOk(test)
 			null

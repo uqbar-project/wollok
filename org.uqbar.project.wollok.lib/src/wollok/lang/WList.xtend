@@ -18,10 +18,7 @@ import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
  */
 class WList extends WCollection<List<WollokObject>> implements JavaWrapper<List<WollokObject>> {
 
- 	val WollokObject wollokInstance
- 
 	new(WollokObject o) {
-		wollokInstance = o
 		wrapped = newArrayList
 	}
 	
@@ -46,8 +43,8 @@ class WList extends WCollection<List<WollokObject>> implements JavaWrapper<List<
 
 	def max() {
 		val result = new TreeSet(new WollokObjectComparator)
-		result.addAll(wrapped)
-		result.last
+		result.addAll(wrapped) 
+		return result.last
 	}
 	
 	override protected def verifyWollokElementsContained(Collection<WollokObject> list, Collection<WollokObject> list2) {

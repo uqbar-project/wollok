@@ -9,10 +9,10 @@ import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
+
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
 
 /**
  * @author jfernandes
@@ -54,7 +54,6 @@ class WCollection<T extends Collection<WollokObject>> {
 	 * Optimized implementation
 	 */
 	def contains(WollokObject obj) {
-		if (!obj.hasEqualsMethod) return wrapped.contains(obj)
 		for (var i = 0; i < wrapped.size; i++) {
 			val element = wrapped.get(i)
 			if (element.wollokEquals(obj)) return true
