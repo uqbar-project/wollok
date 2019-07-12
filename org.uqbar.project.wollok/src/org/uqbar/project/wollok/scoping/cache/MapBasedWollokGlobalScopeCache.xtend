@@ -26,10 +26,10 @@ class MapBasedWollokGlobalScopeCache implements WollokGlobalScopeCache {
 	
 	override invalidateDependencies(URI uri) {
 		val Set<String> uris = cache.keySet
-		val urisClone = uris.clone
+		val urisCloned = uris.clone
 				
 		synchronized (this) {
-			urisClone.filter [ String uriDependency | 
+			urisCloned.filter [ String uriDependency | 
 				(cache.get(uriDependency) as MapBasedCacheContent).hasDependencyWith(uri)
 			].forEach [
 				cache.remove(it)
