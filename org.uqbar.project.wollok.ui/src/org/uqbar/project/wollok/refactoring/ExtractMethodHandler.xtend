@@ -41,15 +41,15 @@ class ExtractMethodHandler extends AbstractHandler {
 				document.priorityReadOnly[ resource |
 						val copiedResource = resourceCopier.loadIntoNewResourceSet(resource);
 						val expressions = expressionUtil.findSelectedSiblingExpressions(copiedResource, selection)
-						
-						if (!expressions.empty) {
-							val extractMethodRefactoring = refactoringProvider.get
-							if (extractMethodRefactoring.initialize(editor, expressions, true)) {
-								updateSelection(editor, expressions)
-								val wizard = wizardFactory.create(extractMethodRefactoring)
-								val openOperation = new RefactoringWizardOpenOperation_NonForking(wizard)
-								openOperation.run(editor.site.shell, "Extract Method");
-							}
+						if (expressions.empty) return null						
+						val extractMethodRefactoring = refactoringProvider.get
+						if (extractMethodRefactoring.initialize(editor, expressions, true)) {
+							updateSelection(editor, expressions)
+							val wizard = wizardFactory.create(extractMethodRefactoring)
+							val openOperation = new RefactoringWizardOpenOperation_NonForking(wizard)
+							openOperation.run(editor.site.shell, "Extract Method")
+						} else {
+							return null
 						}
 				]
 			}

@@ -13,7 +13,7 @@ class WollokObjectUtils {
 
 	/** calls any method and cast the result to a string */
 	def static asString(WollokObject o, String method) {
-		((o.call(method) as WollokObject).getNativeObject(STRING) as JavaWrapper<String>)?.wrapped
+		(o.call(method).getNativeObject(STRING) as JavaWrapper<String>)?.wrapped
 	}
 	
 }

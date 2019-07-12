@@ -56,7 +56,7 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 
 	@NativeMessage("==")
 	def wollokEquals(WollokObject other) {
-		other.hasNativeType(this.class.name) && (other.getNativeObject(this.class).wrapped?.equals(this.wrapped))
+		other.hasNativeType(this.class.name) && (other.getNativeObject(this.class).wrapped.equals(this.wrapped))
 	}
 
 	@NativeMessage("-")
@@ -79,7 +79,7 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 		wrapped.minusYears(years.coerceToInteger)
 	}
 	
-	def dayOfWeek() { wrapped.dayOfWeek.value }
+	def internalDayOfWeek() { wrapped.dayOfWeek.value }
 	
 	@NativeMessage("<")
 	def lessThan(LocalDate aDate) {

@@ -38,6 +38,13 @@ object gameTest {
 		game.whenCollideDo(obj, action)
 	}
 	
+	// XPECT methodType at m73 --> (Any) => Void
+	method m73(obj) {
+		// XPECT type at action --> {(Boolean) => Void} 
+		const action = {b => assert.that(b)}
+		game.whenCollideDo(obj, action)
+	}
+	
 	// XPECT methodType at m7_2 --> (Number, String, {() => Void}) => Void
 	method m7_2(n, name, action) {
 		game.onTick(n, name, action)
@@ -47,6 +54,11 @@ object gameTest {
 	// XPECT methodType at m8 --> (Position) => List<Any>
 	method m8(pos) {
 		return game.getObjectsIn(pos)
+	}
+	
+	// XPECT methodType at m82 --> (Position) => List<Number>
+	method m82(pos) {
+		return game.getObjectsIn(pos).map{n => n + 1}
 	}
 	
 	// XPECT methodType at m9 --> (Any, String) => Void
@@ -62,6 +74,11 @@ object gameTest {
 	// XPECT methodType at m11 --> (Any) => List<Any>
 	method m11(obj) {
 		return game.colliders(obj)
+	}
+	
+	// XPECT methodType at m112 --> (Any) => List<String>
+	method m112(obj) {
+		return game.colliders(obj).filter{s => s.startsWith("asd")}
 	}
 		
 	// XPECT methodType at m12 --> () => Void

@@ -17,7 +17,6 @@ import org.eclipse.debug.ui.RefreshTab
 import org.uqbar.project.wollok.ui.launch.WollokLaunchConstants
 
 import static org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants.*
-import static org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
 
 /**
  * @author jfernandes

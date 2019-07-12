@@ -1,9 +1,8 @@
 package org.uqbar.project.wollok.tests.libraries
 
-import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
-import org.junit.Test
 import org.eclipse.xtext.testing.InjectWith
-import java.io.File
+import org.junit.Test
+import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 
 //This injector creates lib parameter 
 @InjectWith(LoadLibraryWollokTestInjector)

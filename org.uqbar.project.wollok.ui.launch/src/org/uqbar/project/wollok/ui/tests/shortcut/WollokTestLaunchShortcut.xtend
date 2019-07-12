@@ -27,12 +27,16 @@ class WollokTestLaunchShortcut extends WollokLaunchShortcut {
 
 	override launch(IFile currFile, String mode) {
 		try {
-			activateWollokTestResultView
 			super.launch(currFile, mode)
 		} catch (CoreException e) {
 			MessageDialog.openError(Display.current.activeShell, WollokLaunchUIMessages.WollokTestLaunch_TITLE,
 				WollokLaunchUIMessages.WollokTestLaunch_ERROR_MESSAGE)
 		}
+	}
+	
+	override doLaunch(IFile currFile, String mode) {
+		activateWollokTestResultView
+		super.doLaunch(currFile, mode)
 	}
 	
 	def void activateWollokTestResultView() {

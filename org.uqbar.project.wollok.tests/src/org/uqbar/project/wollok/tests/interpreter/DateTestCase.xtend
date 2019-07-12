@@ -109,7 +109,15 @@ class DateTestCase extends AbstractWollokInterpreterTestCase {
 	def void tuesdayIsSecondDayOfWeek() {
 		'''
 		const aDay = new Date(7, 6, 2016)
-		assert.equals(aDay.dayOfWeek(), 2) 
+		assert.equals(aDay.internalDayOfWeek(), 2) 
+		'''.test
+	}
+	
+	@Test
+	def void tuesdayDayOfWeekIsTuesdayObject() {
+		'''
+		const aDay = new Date(7, 6, 2016)
+		assert.equals(aDay.dayOfWeek(), tuesday) 
 		'''.test
 	}
 

@@ -1790,7 +1790,7 @@ class Number {
 	    self.checkNotNull(action, "times")
 		const intValue = self.coerceToInteger()
 		if (intValue < 0) self.error("times requires a positive integer number")
-		(1..intValue).forEach(action)
+		if (intValue > 0) (1..intValue).forEach(action)
 	}
 
 	/** Allows users to define a positive number with 1 or +1 */
@@ -2274,6 +2274,17 @@ class Closure {
 	
 }
 
+/** Represents days of week. */	
+
+object monday { }
+object tuesday { }
+object wednesday { }
+object thursday { }
+object friday { }
+object saturday { }
+object sunday { }
+const daysOfWeek = [monday, tuesday, wednesday, thursday, friday, saturday, sunday]
+
 /**
  *
  * Represents a Date (without time). A Date is immutable, once created you can not change it.
@@ -2359,6 +2370,14 @@ class Date {
 	  */
 	method day() native
 	
+	/** Answers the day of the week of the Date with an object representation.
+	 * There is a wko (well known object) for every day of the week.
+	 *
+	 * Example:
+	 *     new Date(24, 2, 2018).dayOfWeek() ==> Answers saturday object
+	 */
+	method dayOfWeek() = daysOfWeek.get(self.internalDayOfWeek() - 1)
+	
 	/** Answers the day of week of the Date, where
 	 * 1 = MONDAY
 	 * 2 = TUESDAY
@@ -2367,9 +2386,9 @@ class Date {
 	 * 7 = SUNDAY
 	 *
 	 * Example:
-	 *     new Date(24, 2, 2018).dayOfWeek() ==> Answers 6 (SATURDAY) 
+	 *     new Date(24, 2, 2018).internalDayOfWeek() ==> Answers 6 (SATURDAY) 
 	 */
-	method dayOfWeek() native
+	method internalDayOfWeek() native
 	
 	/** 
 	  * Answers the month number of the Date

@@ -17,8 +17,11 @@ import static extension org.uqbar.project.wollok.utils.WollokObjectUtils.*
  */
 abstract class XWollokCollectionDebugValue extends XDebugValue {
 	
+	String concreteNativeType
+	
 	new(WollokObject collection, String concreteNativeType, String collectionType) {
 		super(collectionType, System.identityHashCode(collection))
+		this.concreteNativeType = concreteNativeType
 		var i = 0
 		val result = newArrayList
 		val elements = collection.getElements(concreteNativeType)
@@ -28,6 +31,8 @@ abstract class XWollokCollectionDebugValue extends XDebugValue {
 		}
 		variables = newArrayList(result)
 	}
+	
+	override getTypeName() { concreteNativeType }
 	
 	def getElements(WollokObject collection, String concreteNativeType) {
 		val native = collection.getNativeObject(concreteNativeType) as WCollection<Collection<WollokObject>>

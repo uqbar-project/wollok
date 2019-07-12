@@ -28,11 +28,11 @@ class Ave {
 	constructor() {
 		/* XPECT errors ---
 			"Property are only allowed in objects, classes and mixins" at "property"
-			"Variable is never assigned" at "localVariable"
+			"Variable could be never assigned" at "localVariable"
 		---
 		 XPECT warnings ---
 			"Property are only allowed in objects, classes and mixins" at "property"
-			"Variable is never assigned" at "localVariable"
+			"Variable could be never assigned" at "localVariable"
 		--- */
 		var property localVariable
 	}

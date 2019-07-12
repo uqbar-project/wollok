@@ -10,7 +10,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
  * @author dodain       Added id
  */
 @Accessors
-class XDebugValue implements Serializable {
+abstract class XDebugValue implements Serializable {
 	static val ArrayList<XDebugStackFrameVariable> EMPTY_LIST = newArrayList
 	
 	List<XDebugStackFrameVariable> variables = EMPTY_LIST
@@ -27,4 +27,5 @@ class XDebugValue implements Serializable {
 		(this.stringValue ?: "") + (if (id === null) "" else " (" + id + ")") + variablesToString
 	}
 	
+	public def String getTypeName()
 }
