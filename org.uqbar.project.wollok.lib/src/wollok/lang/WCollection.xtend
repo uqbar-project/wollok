@@ -71,13 +71,13 @@ class WCollection<T extends Collection<WollokObject>> {
 		hasNativeType(this.class.name)
 	}
 	
-	protected def getNativeCollection(WollokObject it) {
+	protected def Collection<?> getNativeCollection(WollokObject it) {
 		getNativeObject(this.class).getWrapped()
 	}
 	
-	protected def verifySizes(Collection col, Collection col2) {
+	protected def verifySizes(Collection<?> col, Collection<?> col2) {
 		col.size.equals(col2.size)
 	}
 	
-	protected def verifyWollokElementsContained(Collection set, Collection set2) { false } // Abstract method
+	protected def verifyWollokElementsContained(Collection<?> set, Collection<?> set2) { false } // Abstract method
 }

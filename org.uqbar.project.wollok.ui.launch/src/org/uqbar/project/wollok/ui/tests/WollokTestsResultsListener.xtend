@@ -10,19 +10,19 @@ import org.uqbar.project.wollok.launch.tests.WollokRemoteUITestNotifier
 import org.uqbar.project.wollok.ui.tests.model.WollokTestResults
 
 @Singleton
-class WollokTestsResultsListener{
+class WollokTestsResultsListener {
 	val Server server
 	val CallHandler callHandler
-	
+
 	@Accessors
 	val int listeningPort
-	
+
 	val WollokTestResults testResults
 
 	@Inject
 	new(WollokTestResults testResults) {
 		this.testResults = testResults
-		
+
 		callHandler = new CallHandler
 		callHandler.registerGlobal(WollokRemoteUITestNotifier, testResults)
 
@@ -30,8 +30,8 @@ class WollokTestsResultsListener{
 		listeningPort = IOUtils.findFreePort
 		server.bind(listeningPort, callHandler)
 	}
-	
-	def close(){
+
+	def close() {
 		server.close()
-	}	
+	}
 }

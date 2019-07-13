@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.tests.quickfix
 
 import org.junit.Test
 import org.uqbar.project.wollok.ui.Messages
-import org.uqbar.project.wollok.validation.WollokDslValidator
 
 class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 	

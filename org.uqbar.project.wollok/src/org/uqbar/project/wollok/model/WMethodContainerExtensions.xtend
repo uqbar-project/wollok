@@ -16,6 +16,7 @@ import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.sdk.WollokSDK
 import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -33,6 +34,7 @@ import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WMixin
+import org.uqbar.project.wollok.wollokDsl.WNamed
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
@@ -55,8 +57,7 @@ import static extension org.eclipse.xtext.EcoreUtil2.*
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.notNullAnd
-import org.uqbar.project.wollok.wollokDsl.WNamed
-import org.uqbar.project.wollok.sdk.WollokSDK
+import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * Extension methods for WMethodContainers.
@@ -299,13 +300,14 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		methods.filter [ m | m.name.equals(methodName) && !m.overrides ].toList
 	}
 	
+	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(EObject o) { newArrayList }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WMixin it) { methods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WNamedObject it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WObjectLiteral it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(MixedMethodContainer it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WClass it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WSuite it) { methods }
-
+	
 	def static allVariables(WMethodContainer it) {
 		allVariableDeclarations.map [ variable ]
 	}
@@ -655,7 +657,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	
 	def static WMethodDeclaration getInitMethod(WMethodContainer it) {
 		methods.findFirst [ m |
-			m.name.equals("init") && m.arguments.isEmpty
+			m.name.equals(INITIALIZE_METHOD) && m.arguments.isEmpty
 		]
 	}
 	

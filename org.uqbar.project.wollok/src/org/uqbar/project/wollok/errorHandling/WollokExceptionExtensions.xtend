@@ -6,8 +6,6 @@ import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.WollokInterpreterException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
-
-
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import static org.uqbar.project.wollok.sdk.WollokSDK.*
@@ -25,10 +23,6 @@ class WollokExceptionExtensions {
 	def static messageNotUnderstood(String message) {
 		new WollokProgramExceptionWrapper(MESSAGE_NOT_UNDERSTOOD_EXCEPTION.instantiateException(message))
 	}
-	
-//	def static dispatch WollokProgramExceptionWrapper throwMessageNotUnderstood(Object nativeObject, String name, WollokObject[] parameters) {
-//		newException(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, nativeObject.createMessage(name, parameters))
-//	}
 	
 	def static throwMessageNotUnderstood(Object nativeObject, String name, Object[] parameters) {
 		newException(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, nativeObject.createMessage(name, parameters))
@@ -98,7 +92,7 @@ class WollokExceptionExtensions {
 			}
 			val newStack = new StackTraceElementDTO(contextDescription, fileName, lineNumber)
 			// Unfortunately there are duplicate lines in the stack (because of stack design)
-			if (!result.contains(newStack)) {
+			if (newStack.shouldAppearInStackTrace && !result.contains(newStack)) {
 				result.add(newStack)
 			}
 		]
@@ -223,5 +217,9 @@ class WollokExceptionExtensions {
 	def static dispatch doOriginalMessage(Throwable e) {
 		e.message		
 	}
+
+	def static dispatch shouldShowStackTraceInJava(WollokProgramExceptionWrapper e) { false }
+	def static dispatch shouldShowStackTraceInJava(WollokInterpreterException e) { false }
+	def static dispatch shouldShowStackTraceInJava(Throwable t) { true }
 	
 }

@@ -12,7 +12,7 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		Position >> "drawElement" === #[Any] => Void
 		Position >> "drawCharacter" === #[Any] => Void
 		Position >> "say" === #[Any, String] => Void
-		Position >> "allElements" === #[] => List.of(Any)
+		Position >> "allElements" === #[] => List.of(T)
 		Position >> "clone" === #[] => Position
 		Position >> "distance" === #[Position] => Number
 		Position >> "clear" === #[] => Void
@@ -33,12 +33,12 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		game >> "addVisualCharacterIn" === #[Any, Position] => Void
 		game >> "removeVisual" === #[Any] => Void
 		game >> "whenKeyPressedDo" === #[Number, closure(#[], Void)] => Void
-		game >> "whenCollideDo" === #[Any, closure(#[Any], Void)] => Void
+		game >> "whenCollideDo" === #[Any, closure(#[T], Void)] => Void
 		game >> "onTick" === #[Number, String, closure(#[], Void)] => Void
 		game >> "removeTickEvent" === #[String] => Void
-		game >> "getObjectsIn" === #[Position] => List.of(Any)
+		game >> "getObjectsIn" === #[Position] => List.of(T)
 		game >> "say" === #[Any, String] => Void
-		game >> "colliders" === #[Any] => List.of(Any)
+		game >> "colliders" === #[Any] => List.of(T)
 		game >> "stop" === #[] => Void
 		game >> "start" === #[] => Void
 		game >> "at" === #[Number, Number] => Position

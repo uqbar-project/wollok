@@ -4,8 +4,6 @@ import java.math.BigDecimal
 import java.util.Collection
 import java.util.Comparator
 import java.util.List
-import org.eclipse.osgi.util.NLS
-import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 

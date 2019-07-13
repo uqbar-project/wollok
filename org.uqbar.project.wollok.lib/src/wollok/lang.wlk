@@ -375,7 +375,7 @@ class Collection {
 		const result = self.fold(null, { acc, e =>
 			const n = closure.apply(e) 
 			if (acc == null)
-				new Pair(x = e, y = n)
+				e -> n
 			else {
 				if (criteria.apply(n, acc.y()))
 					new Pair(x = e, y = n)
@@ -1760,7 +1760,7 @@ class Number {
 	    self.checkNotNull(action, "times")
 		const intValue = self.coerceToInteger()
 		if (intValue < 0) self.error("times requires a positive integer number")
-		(1..intValue).forEach(action)
+		if (intValue > 0) (1..intValue).forEach(action)
 	}
 
 	/** Allows users to define a positive number with 1 or +1 */
@@ -2074,7 +2074,7 @@ class Range {
 	  * Instantiates a Range. 
 	  * Both start and end must be integer values.
 	  */
-	method init() {
+	method initialize() {
 		start.coerceToInteger()
 		end.coerceToInteger()
 		if (step == null) {
@@ -2151,7 +2151,10 @@ class Range {
 	 *     new Range(start = 0, end = 2).size() ==> Answers 3
 	 *     new Range(start = -2, end = 2).size() ==> Answers 5  
 	 */
-	method size() { return end - start + 1 }
+	method size()  {
+	    const base = (end - start) / step
+	    return if (base >= 0) base.truncate(0) + 1 else 0
+	}
 	
 	/** @see List#any(closure) */
 	method any(closure) = self.asList().any(closure)
@@ -2245,6 +2248,17 @@ class Closure {
 	
 }
 
+/** Represents days of week. */	
+
+object monday { }
+object tuesday { }
+object wednesday { }
+object thursday { }
+object friday { }
+object saturday { }
+object sunday { }
+const daysOfWeek = [monday, tuesday, wednesday, thursday, friday, saturday, sunday]
+
 /**
  *
  * Represents a Date (without time). A Date is immutable, once created you can not change it.
@@ -2269,10 +2283,10 @@ class Date {
 	  * This operation has no side effect (a new date is returned).	  
 	  *
 	  * Example:
-	  *     new Date(12, 5, 2018).plusDays(1) 
+	  *     new Date(day = 12, month = 5, year = 2018).plusDays(1) 
 	  *        ==> Answers a Date[day = 13, month = 5, year = 2018], a day forward
 	  *     
-	  *     new Date(12, 5, 2018).plusDays(-1)
+	  *     new Date(day = 12, month = 5, year = 2018).plusDays(-1)
 	  *        ==> Answers a Date[day = 11, month = 5, year = 2018], a day back
 	  */
 	method plusDays(_days) native
@@ -2283,10 +2297,10 @@ class Date {
 	  * This operation has no side effect (a new date is returned).
 	  *
 	  * Example:
-	  *     new Date(31, 1, 2018).plusMonths(1)
+	  *     new Date(day = 31, month = 1, year = 2018).plusMonths(1)
       *        ==> Answers a Date[day = 28, month = 2, year = 2018], a month forward 
 	  *     
-	  *     new Date(12, 5, 2018).plusMonths(-1)
+	  *     new Date(day = 12, month = 5, year = 2018).plusMonths(-1)
 	  *        ==> Answers a Date[day = 12, month = 4, year = 2018], a month back
 	  */
 	method plusMonths(_months) native
@@ -2297,10 +2311,10 @@ class Date {
 	  * This operation has no side effect (a new date is returned).
 	  *
 	  * Example:
-	  *     new Date(31, 1, 2018).plusYears(1)
+	  *     new Date(day = 31, month = 1, year = 2018).plusYears(1)
       *        ==> Answers a Date[day = 31, month = 1, year = 2019], a year forward 
 	  *     
-	  *     new Date(12, 5, 2018).plusYears(-1)
+	  *     new Date(day = 12, month = 5, year = 2018).plusYears(-1)
 	  *        ==> Answers a Date[day = 12, month = 5, year = 2017], a year back
 	  */
 	method plusYears(_years) native
@@ -2309,9 +2323,17 @@ class Date {
 	  * Checks if the year is a leap year, like 2000, 2004, 2008...
 	  *
 	  * Example:
-	  *     new Date(12, 5, 2018).isLeapYear() ==> Answers false 
+	  *     new Date(day = 12, month = 5, year = 2018).isLeapYear() ==> Answers false 
 	  */
 	method isLeapYear() native
+	
+	/** Answers the day of the week of the Date with an object representation.
+	 * There is a wko (well known object) for every day of the week.
+	 *
+	 * Example:
+	 *     new Date(day = 24, month = 2, year = 2018).dayOfWeek() ==> Answers saturday object
+	 */
+	method dayOfWeek() = daysOfWeek.get(self.internalDayOfWeek() - 1)
 	
 	/** Answers the day of week of the Date, where
 	 * 1 = MONDAY
@@ -2321,9 +2343,9 @@ class Date {
 	 * 7 = SUNDAY
 	 *
 	 * Example:
-	 *     new Date(24, 2, 2018).dayOfWeek() ==> Answers 6 (SATURDAY) 
+	 *     new Date(day = 24, month = 2, year = 2018).internalDayOfWeek() ==> Answers 6 (SATURDAY) 
 	 */
-	method dayOfWeek() native
+	method internalDayOfWeek() native
 	
 	/** 
 	 * Answers the difference in days between two dates, assuming self is minuend and _aDate is subtrahend. 
@@ -2341,10 +2363,10 @@ class Date {
 	 * This operation has no side effect (a new date is returned).	 
      *
 	 * Examples:
-	 * 		new Date(1, 1, 2009).minusDays(1) 
+	 * 		new Date(day = 1, month = 1, year = 2009).minusDays(1) 
 	 *          ==> Answers a Date[day = 31, month = 12, year = 2008], a day back 
 	 *
-	 * 		new Date(1, 1, 2009).minusDays(-1) 
+	 * 		new Date(day = 1, month = 1, year = 2009).minusDays(-1) 
 	 *          ==> Answers a Date[day = 2, month = 1, year = 2009], a day forward 
 	 */
 	method minusDays(_days) native
@@ -2355,10 +2377,10 @@ class Date {
 	  * This operation has no side effect (a new date is returned).	  
 	  *
 	  * Examples:
-	  * 		new Date(1, 1, 2009).minusMonths(1) 
+	  * 		new Date(day = 1, month = 1, year = 2009).minusMonths(1) 
 	  *             ==> Answers a Date[day = 1, month = 12, year = 2008], a month back
 	  *
-	  * 		new Date(1, 1, 2009).minusMonths(-1) 
+	  * 		new Date(day = 1, month = 1, year = 2009).minusMonths(-1) 
 	  *             ==> Answers a Date[day = 1, month = 2, year = 2009], a month forward
 	  */
 	method minusMonths(_months) native
@@ -2369,10 +2391,10 @@ class Date {
 	  * This operation has no side effect (a new date is returned).	  
 	  *
 	  * Examples:
-	  * 		new Date(1, 1, 2009).minusYears(1) 
+	  * 		new Date(day = 1, month = 1, year = 2009).minusYears(1) 
 	  *             ==> Answers a Date[day = 1, month = 1, year = 2008], a year back
 	  *
-	  * 		new Date(1, 1, 2009).minusYears(-1) 
+	  * 		new Date(day = 1, month = 1, year = 2009).minusYears(-1) 
 	  *             ==> Answers a Date[day = 1, month = 1, year = 2010], a year forward
 	  */
 	method minusYears(_years) native
@@ -2386,7 +2408,7 @@ class Date {
 	  * Answers whether self is between two dates (both inclusive comparison)
 	  *
 	  * Example:
-	  *     new Date(2, 4, 2018).between(new Date(1, 4, 2018), new Date(2, 4, 2018))
+	  *     new Date(day = 2, month = 4, year = 2018).between(new Date(day = 1, month = 4, year = 2018), new Date(day = 2, month = 4, year = 2018))
 	  *         ==> Answers true 
 	  */
 	method between(_startDate, _endDate) = (self >= _startDate) && (self <= _endDate) 
@@ -2399,7 +2421,7 @@ class Date {
 	  * Shows a short, internal representation of a date 
 	  * 
 	  * Example:
-	  *     new Date(2, 4, 2018).shortDescription()
+	  *     new Date(day = 2, month = 4, year = 2018).shortDescription()
 	  *         ==> Answers "2/4/2018"
 	  */
 	override method shortDescription() =

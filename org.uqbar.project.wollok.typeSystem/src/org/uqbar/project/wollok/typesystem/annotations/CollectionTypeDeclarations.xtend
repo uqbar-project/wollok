@@ -116,7 +116,7 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		R.variable("start", Number)
 		R.variable("end", Number)
 		R.variable("step", Number)
-		R >> "init" === #[] => Void
+		R >> "initialize" === #[] => Void
 		R >> "step" === #[Number] => Void
 		R >> "filter" === #[predicate(Number)] => List.of(Number);
 	}

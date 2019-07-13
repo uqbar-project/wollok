@@ -799,7 +799,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def globalVariablesNotAllowed(WVariableDeclaration it) {
-		if (writeable && variable.isGlobal) {
+		if (writeable && isGlobal) {
 			report(WollokDslValidator_GLOBAL_VARIABLE_NOT_ALLOWED, it, WVARIABLE_DECLARATION__VARIABLE)
 		}
 	}

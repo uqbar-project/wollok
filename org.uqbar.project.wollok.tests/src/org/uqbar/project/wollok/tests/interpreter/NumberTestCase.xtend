@@ -246,11 +246,20 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	}
 		
 	@Test
-	def void times() {
+	def void timesUsingPositiveValue() {
 		'''
 		var x = 0
 		6.times { i => x += 1 }
 		assert.equals(6, x)
+		'''.test
+	}
+	
+	@Test
+	def void timesUsingZero() {
+		'''
+		var x = 0
+		0.times { i => x += 1 }
+		assert.equals(0, x)
 		'''.test
 	}
 

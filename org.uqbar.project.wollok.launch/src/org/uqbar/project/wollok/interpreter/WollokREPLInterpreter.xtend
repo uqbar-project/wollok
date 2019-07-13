@@ -19,7 +19,7 @@ class WollokREPLInterpreter extends WollokInterpreter {
 	def addREPLVariable(WVariable variable) {
 		previousREPLVariables.put(variable.name, variable)
 	}
-	
+
 	// It uses always the same NativeLobby to keep the value of the local REPL variables.
 	override createInitialStackElement(EObject root) {
 		new XStackFrame(root, nativeLobby, WollokSourcecodeLocator.INSTANCE)

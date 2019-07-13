@@ -75,7 +75,7 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 		getWrapped.minusYears(years.coerceToInteger)
 	}
 	
-	def dayOfWeek() { getWrapped.dayOfWeek.value }
+	def internalDayOfWeek() { getWrapped.dayOfWeek.value }
 	
 	@NativeMessage("<")
 	def lessThan(LocalDate aDate) {

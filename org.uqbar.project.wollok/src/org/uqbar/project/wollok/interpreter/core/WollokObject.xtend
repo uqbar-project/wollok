@@ -31,8 +31,7 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
-import org.uqbar.project.wollok.sdk.WollokSDK
-import static org.uqbar.project.wollok.sdk.WollokSDK.*
+import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * A wollok user defined (dynamic) object.
@@ -201,7 +200,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		try {
 			// TODO: java string shouldn't call wollok string
 			// it should be a low-lever WollokVM debugging method
-			val string = call("toString", #[]) as WollokObject
+			val string = call("toString", #[])
 			(string.getNativeObject(STRING) as JavaWrapper<String>).wrapped
 		} // this is a hack while literal objects are not inheriting from wollok.lang.Object therefore
 		// they don't understand the toString() message
@@ -215,7 +214,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 
 	def getKind() { behavior }
 
-	def isVoid() { this == WollokSDK.getVoid(interpreter as WollokInterpreter, behavior) }
+	def isVoid() { this == getVoid(interpreter as WollokInterpreter, behavior) }
 
 	def isKindOf(WMethodContainer c) { behavior.isKindOf(c) }
 

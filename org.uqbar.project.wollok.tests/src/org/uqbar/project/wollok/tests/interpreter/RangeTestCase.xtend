@@ -72,6 +72,18 @@ class RangeTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals(11, (0..10).size())
 		assert.equals(10, (12..21).size())
 		assert.equals(7, (-3..3).size())
+		assert.equals(3, new Range(start= 2, end = 10, step = 3).size())
+		assert.equals(4, new Range(start= 2, end = 11, step = 3).size())
+		assert.equals(3, new Range(start= 10, end = 2, step = -3).size())
+		assert.equals(4, new Range(start= 11, end = 2, step = -3).size())
+		assert.equals(1, new Range(start= 10, end = 11,step = 3).size())
+		assert.equals(1, new Range(start= 10, end = 10,step = 3).size())
+		assert.equals(0, new Range(start= 10, end = 9, step = 3).size())
+		assert.equals(1, new Range(start= 10, end = 9, step = -3).size())
+		assert.equals(1, new Range(start= 10, end = 10,step = -3).size())
+		assert.equals(0, new Range(start= 10, end = 11,step = -3).size())
+		assert.equals(0, new Range(start= 2, end = 10, step = -3).size())
+		assert.equals(0, new Range(start= 10, end = 2, step = 3).size())
 		'''.test
 	
 	}

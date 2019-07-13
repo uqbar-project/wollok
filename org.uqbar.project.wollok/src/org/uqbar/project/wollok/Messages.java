@@ -31,6 +31,7 @@ public class Messages extends NLS {
 	public static String WollokInterpreter_visualObjectWithoutPosition;
 	public static String WollokInterpreter_illegalOperationEmptyCollection;
 	public static String WollokDslInterpreter_native_class_not_found;
+	public static String WollokInterpreter_referenceAlreadyDefined;
 
 	public static String WollokScopeProvider_unresolvedImport;
 	

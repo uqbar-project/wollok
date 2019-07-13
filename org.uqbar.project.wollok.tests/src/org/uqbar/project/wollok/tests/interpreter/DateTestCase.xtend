@@ -8,7 +8,6 @@ import org.junit.Test
  * @author dodain
  */
 class DateTestCase extends AbstractWollokInterpreterTestCase {
-
 	
 	@Test
 	def void twoDatesAreEqualsBecauseTheyHaveNoTime() {
@@ -109,7 +108,15 @@ class DateTestCase extends AbstractWollokInterpreterTestCase {
 	def void tuesdayIsSecondDayOfWeek() {
 		'''
 		const aDay = new Date(day = 7, month = 6, year = 2016)
-		assert.equals(aDay.dayOfWeek(), 2) 
+		assert.equals(aDay.internalDayOfWeek(), 2) 
+		'''.test
+	}
+	
+	@Test
+	def void tuesdayDayOfWeekIsTuesdayObject() {
+		'''
+		const aDay = new Date(day = 7, month = 6, year = 2016)
+		assert.equals(aDay.dayOfWeek(), tuesday) 
 		'''.test
 	}
 

@@ -1,10 +1,8 @@
 package org.uqbar.project.wollok.interpreter.core
 
+import org.uqbar.project.wollok.interpreter.AbstractWollokCallable
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
-
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.uqbar.project.wollok.interpreter.AbstractWollokCallable
 
 /**
  * The receiver of a "super" feature call.

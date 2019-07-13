@@ -73,8 +73,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
-import org.uqbar.project.wollok.sdk.WollokSDK
-import static org.uqbar.project.wollok.sdk.WollokSDK.*
+import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * It's the real "interpreter".
@@ -157,8 +156,12 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def dispatch WollokObject evaluate(WMethodDeclaration it) {}
 
 	def dispatch WollokObject evaluate(WVariableDeclaration it) {
-		interpreter.currentContext.addReference(variable.variableName, right?.eval)
-		WollokSDK.getVoid(interpreter as WollokInterpreter, it)
+		if (isGlobal) {
+			interpreter.currentContext.addGlobalReference(variable.variableName, right?.eval)
+		} else {
+			interpreter.currentContext.addReference(variable.variableName, right?.eval)
+		}
+		getVoid(interpreter as WollokInterpreter, it)
 	}
 
 	def dispatch WollokObject evaluate(WVariableReference it) {
@@ -179,16 +182,14 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		if (cond === null) {
 			throw newWollokExceptionAsJava(NLS.bind(Messages.WollokInterpreter_cannot_use_null_in_if, NULL))
 		}
-		if (!(cond.isWBoolean))
-			throw new WollokInterpreterException(
-				NLS.bind(Messages.WollokInterpreter_expression_in_if_must_evaluate_to_boolean, cond, cond?.class.name),
-				it)
-
-			if (wollokToJava(cond, Boolean) == Boolean.TRUE)
-				then.eval
-			else
-				^else?.eval
+		if (!(cond.isWBoolean)) {
+			throw newWollokExceptionAsJava(NLS.bind(Messages.WollokInterpreter_expression_in_if_must_evaluate_to_boolean, cond, cond?.behavior?.name))
 		}
+		if (wollokToJava(cond, Boolean) == Boolean.TRUE)
+			then.eval
+		else
+			^else?.eval
+	}
 
 	def dispatch WollokObject evaluate(WTry t) {
 		try
@@ -234,11 +235,12 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def dispatch WollokObject evaluate(WNumberLiteral it) { value.getOrCreateNumber }
 
 	def getOrCreateNumber(String value) {
-		if (numbersCache.containsKey(value) && numbersCache.get(value).get !== null) {
-			numbersCache.get(value).get
+		val roundedValue = "" + new BigDecimal(value).adaptValue
+		if (numbersCache.containsKey(roundedValue) && numbersCache.get(roundedValue).get !== null) {
+			numbersCache.get(roundedValue).get
 		} else {
-			val n = instantiateNumber(value)
-			numbersCache.put(value, new WeakReference(n))
+			val n = instantiateNumber(roundedValue)
+			numbersCache.put(roundedValue, new WeakReference(n))
 			n
 		}
 	}
@@ -394,7 +396,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	// other expressions
 	def dispatch WollokObject evaluate(WBlockExpression b) {
 		if (b.expressions.isEmpty)
-			return WollokSDK.getVoid(interpreter as WollokInterpreter, b)
+			return getVoid(interpreter as WollokInterpreter, b)
 
 		b.expressions.evalAll
 	}
@@ -402,7 +404,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def dispatch WollokObject evaluate(WAssignment a) {
 		val newValue = a.value.eval
 		interpreter.currentContext.setReference(a.feature.ref.name, newValue)
-		WollokSDK.getVoid(interpreter as WollokInterpreter, a)
+		getVoid(interpreter as WollokInterpreter, a)
 	}
 
 	// ********************************************************************************************
@@ -459,7 +461,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		val newValue = operator.asBinaryOperation.apply(reference.eval, rightPart).javaToWollok
 
 		interpreter.currentContext.setReference(variableName, newValue)
-		WollokSDK.getVoid(interpreter as WollokInterpreter, reference)
+		getVoid(interpreter as WollokInterpreter, reference)
 	}
 
 	def dispatch WollokObject evaluate(WUnaryOperation oper) {
@@ -574,4 +576,3 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def dispatch isVoid(WollokObject object, EObject context) { object === getVoid(interpreter, context) }
 	def dispatch isVoid(CallableSuper call, EObject context) { false }
 }
-	

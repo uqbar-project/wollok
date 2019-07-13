@@ -11,6 +11,8 @@ public class Messages extends NLS {
 	public static String WollokGame_NoMessage;
 	public static String WollokGame_CharacterKeyNotFound;
 	public static String WollokGame_ListenerNotFound;
+	public static String WollokGame_SoundGameNotStarted;
+	public static String WollokGame_AudioNotFound;
 	
 	static {
 		// initialize resource bundle

@@ -11,10 +11,7 @@ class DateTypeDeclarations extends TypeDeclarations {
 		Date >> "plusMonths" === #[Number] => Date
 		Date >> "plusYears" === #[Number] => Date
 		Date >> "isLeapYear" === #[] => Boolean
-//		Date >> "day" === #[] => Number
-		Date >> "dayOfWeek" === #[] => Number
-//		Date >> "month" === #[] => Number
-//		Date >> "year" === #[] => Number
+		Date >> "internalDayOfWeek" === #[] => Number
 		Date >> "minusDays" === #[Number] => Date
 		Date >> "minusMonths" === #[Number] => Date
 		Date >> "minusYears" === #[Number] => Date

@@ -24,10 +24,7 @@ object dateTests {
 	method m9(_date) = _date.isLeapYear()
 
 	// XPECT methodType at m10 --> (Date) => Number
-	method m10(_date) = _date.day() + _date.dayOfWeek() + _date.month() + _date.year()
-
-	// XPECT methodType at m10 --> (Date) => Number
-	method m10(_date) = _date - new Date()
+	method m10(_date) = _date.day() + _date.internalDayOfWeek() + _date.month() + _date.year()
 
 	// XPECT methodType at m11 --> (Date) => Date
 	method m11(_date) = _date.minusYears(1)
@@ -55,5 +52,8 @@ object dateTests {
 
 	// XPECT methodType at m19 --> (List<Object>) => String
 	method m19(b) = new Date().toSmartString(b)
+
+	// XPECT methodType at m20 --> (Date) => Number
+	method m20(_date) = _date.day() + _date.internalDayOfWeek() + _date.month() + _date.year()
 
 }

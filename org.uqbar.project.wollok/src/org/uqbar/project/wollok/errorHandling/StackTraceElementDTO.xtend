@@ -39,7 +39,20 @@ class StackTraceElementDTO implements Serializable {
 	}
 	
 	override toString() {
-		contextDescription + " [" + fileName + ":" + lineNumber + "]"
+		val hasContextDescription = contextDescription ?: "" !== ""
+		val result = new StringBuffer => [
+			if (hasContextDescription) {
+				append(contextDescription)
+				append("[")
+			}
+			append(fileName)
+			append(":")
+			append(lineNumber)
+			if (hasContextDescription) {
+				append("]")
+			}	
+		]
+		result.toString
 	}
 	
 	def asStackTraceElement(){
@@ -94,5 +107,9 @@ class StackTraceElementDTO implements Serializable {
 	
 	def getElementForStackTrace() {
 		contextForStackTrace + linkForStackTrace
+	}
+	
+	def shouldAppearInStackTrace() {
+		!fileName.contains(CLASSPATH) && contextDescription !== null
 	}
 }

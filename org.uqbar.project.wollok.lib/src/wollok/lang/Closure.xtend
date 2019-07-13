@@ -15,7 +15,6 @@ import org.uqbar.project.wollok.wollokDsl.WClosure
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import org.uqbar.project.wollok.sdk.WollokSDK
 
 /**
  * 
@@ -25,7 +24,7 @@ class Closure implements NodeAware<WClosure>, Function1<WollokObject, Object> {
 	@Accessors WClosure EObject
 	extension WollokInterpreter interpreter
 	WollokObject obj
-	EvaluationContext container
+	EvaluationContext<WollokObject> container
 	
 	new(WollokObject obj, WollokInterpreter interpreter) {
 		this.obj = obj

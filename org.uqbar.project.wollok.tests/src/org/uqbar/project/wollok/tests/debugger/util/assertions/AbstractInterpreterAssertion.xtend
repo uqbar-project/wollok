@@ -27,8 +27,8 @@ class AbstractInterpreterAssertion implements InterpreterAssertion {
 	var InterpreterAsserter asserter
 	
 	protected def checkAndAssert(Pair<EObject, XStackFrame> state) {
-		if (matcher == null) throw new RuntimeException("You didn't set any matcher to this assertion !")
-		if (asserter == null) throw new RuntimeException("You didn't set any asserter to this assertion !")
+		if (matcher === null) throw new RuntimeException("You didn't set any matcher to this assertion !")
+		if (asserter === null) throw new RuntimeException("You didn't set any asserter to this assertion !")
 		
 		if (matcher.matches(state))
 			asserter.assertIt(state)

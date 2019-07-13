@@ -43,7 +43,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 			class MyException inherits wollok.lang.Exception {}
 			class A { method m1() { throw new MyException() } }
-		
+			
 			program p {	
 				const a = new A()
 				var counter = 0

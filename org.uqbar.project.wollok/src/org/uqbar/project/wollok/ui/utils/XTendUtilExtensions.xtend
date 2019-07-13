@@ -13,14 +13,13 @@ import org.eclipse.osgi.util.NLS
 import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions
 
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
+import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
-import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * Utilities for xtend code
