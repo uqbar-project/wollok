@@ -63,7 +63,10 @@ class WObject {
 	}
 
 	def variableMirror(String name) {
-		newInstance("wollok.mirror.InstanceVariableMirror", obj, name)
+		newInstance("wollok.mirror.InstanceVariableMirror") => [
+			setReference("target", obj)
+			setReference("name", name.javaToWollok)
+		]
 	}
 
 	def resolve(String instVarName) {

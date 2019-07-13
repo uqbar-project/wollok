@@ -18,8 +18,8 @@ class WollokLibTypeDeclarations extends TypeDeclarations {
 		assertWKO >> "throwsExceptionByComparing" === #[closure(#[], Any), closure(#[ExceptionType], Boolean)] => Void
 		assertWKO >> "fail" === #[String] => Void;
 
-		InstanceVariableMirror.constructor(Object, String) 
-		InstanceVariableMirror.variable("name", String)  
+		InstanceVariableMirror.variable("target", Object)
+		InstanceVariableMirror.variable("name", String)
 		InstanceVariableMirror >> "value" === #[] => Any //TODO: should return variable type
 		InstanceVariableMirror >> "valueToSmartString" === #[List.of(Object)] => String
 
