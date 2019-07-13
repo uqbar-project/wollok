@@ -14,6 +14,7 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import org.uqbar.project.wollok.sdk.WollokSDK
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * Wollok Object class. It's the native part
@@ -63,7 +64,7 @@ class WObject {
 	}
 
 	def variableMirror(String name) {
-		newInstance("wollok.mirror.InstanceVariableMirror") => [
+		newInstance(INSTANCE_VARIABLE_MIRROR) => [
 			setReference("target", obj)
 			setReference("name", name.javaToWollok)
 		]
