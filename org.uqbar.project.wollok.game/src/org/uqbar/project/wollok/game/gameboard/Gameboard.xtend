@@ -1,9 +1,12 @@
 package org.uqbar.project.wollok.game.gameboard;
 
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.audio.Sound
 import java.util.Collection
-
 import java.util.List
+import java.util.Map
 import org.apache.log4j.Logger
+import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.game.Messages
 import org.uqbar.project.wollok.game.Position
@@ -16,10 +19,6 @@ import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
-import org.eclipse.osgi.util.NLS
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.audio.Sound
-import java.util.Map
 
 @Accessors
 class Gameboard {
@@ -165,14 +164,25 @@ class Gameboard {
 	}
 
 	def sound(String audioFile) {
-		audioFile.fetchSound.play(1.0f)
+		val sound = audioFile.fetchSound
+		if (sound !== null) {
+			sound.play(1.0f)
+		}
 	}
 	
 	def fetchSound(String audioFile) {
+		if (Gdx.app === null)
+			throw new RuntimeException(Messages.WollokGame_SoundGameNotStarted)
+			
 		var sound = audioFiles.get(audioFile)
 		if (sound === null) {
-			sound = Gdx.audio.newSound(Gdx.files.internal(audioFile))
-			audioFiles.put(audioFile, sound)
+			try {
+				val soundFile = Gdx.files.internal(audioFile)
+				sound = Gdx.audio.newSound(soundFile)
+				audioFiles.put(audioFile, sound)
+			} catch (Exception e) {
+				println(NLS.bind(Messages.WollokGame_AudioNotFound, audioFile))
+			}
 		}
 		sound
 	}
