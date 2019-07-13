@@ -3,7 +3,7 @@ package org.uqbar.project.wollok.interpreter.core
 import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
-import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
+import static org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 
 /**
  * This is a hack but I need to cut the refactor somewhere.

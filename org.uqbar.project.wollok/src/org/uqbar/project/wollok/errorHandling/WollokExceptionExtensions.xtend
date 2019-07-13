@@ -20,11 +20,11 @@ class WollokExceptionExtensions {
 	/**
 	 * Factory methods for Wollok well-known exceptions
 	 */
-	def static messageNotUnderstood(String message) {
+	def static WollokProgramExceptionWrapper messageNotUnderstood(String message) {
 		new WollokProgramExceptionWrapper(MESSAGE_NOT_UNDERSTOOD_EXCEPTION.instantiateException(message))
 	}
 	
-	def static throwMessageNotUnderstood(Object nativeObject, String name, Object[] parameters) {
+	def static WollokProgramExceptionWrapper throwMessageNotUnderstood(Object nativeObject, String name, Object[] parameters) {
 		newException(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, nativeObject.createMessage(name, parameters))
 	}
 	
