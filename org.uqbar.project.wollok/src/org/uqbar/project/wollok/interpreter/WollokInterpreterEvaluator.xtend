@@ -467,7 +467,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		val memberTarget = call.memberTarget
 		if (target === null) {
 			throw newWollokExceptionAsJava(
-				NLS.bind(Messages.WollokDslValidator_REFERENCE_UNITIALIZED, memberTarget.sourceCode.trim))
+				NLS.bind(Messages.WollokDslValidator_REFERENCE_UNINITIALIZED, memberTarget.sourceCode.trim))
 		}
 		
 		if (target.isVoid(call) && memberTarget !== null && !ignoreVoidValidation) {

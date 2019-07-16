@@ -282,6 +282,7 @@ class Position {
 	 * Returns the distance between given position and self.
 	 */	
 	method distance(position) {
+		self.checkNotNull(position, "distance")
 	    const deltaX = x - position.x()
 	    const deltaY = y - position.y()
 	    return (deltaX.square() + deltaY.square()).squareRoot() 

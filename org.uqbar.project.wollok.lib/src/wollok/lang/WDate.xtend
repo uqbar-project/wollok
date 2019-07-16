@@ -1,12 +1,13 @@
 package wollok.lang
 
 import java.math.BigDecimal
+
 import java.time.LocalDate
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
-import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 
+import static extension org.uqbar.project.wollok.utils.WollokObjectUtils.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 /**
  * Native implementation of the date wollok class

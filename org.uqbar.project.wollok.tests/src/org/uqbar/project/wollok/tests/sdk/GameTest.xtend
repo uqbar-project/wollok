@@ -58,4 +58,33 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 	private def position(int x, int y) {
 		'''new Position(«x»,«y»)'''
 	}
+	
+	@Test
+	def void addVisualUsingNullMustFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation addVisual doesn't support null parameters", { => game.addVisual(null) })
+		'''.test
+	}
+
+	@Test
+	def void collidersUsingNullMustFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation colliders doesn't support null parameters", { => game.colliders(null) })
+		'''.test
+	}
+
+	@Test
+	def void onTickUsingNullMustFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation onTick doesn't support null parameters", { => game.onTick(null, null, null) })
+		'''.test
+	}
+
+	@Test
+	def void whenKeyPressedDoUsingNullMustFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation whenKeyPressedDo doesn't support null parameters", { => game.whenKeyPressedDo(null, null) })
+		'''.test
+	}
+	
 }

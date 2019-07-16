@@ -258,5 +258,40 @@ class RangeTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals(5, range.max())
  		'''.test
  	}
+ 
+ 	@Test
+	def void rangeWithNullMustFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation .. doesn't support null parameters", { => 1..null })
+		'''.test
+	}
+ 
+  	@Test
+	def void forEachUsingNullMustFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation forEach doesn't support null parameters", { => (1..4).forEach(null) })
+		'''.test
+	}
+	
+  	@Test
+	def void filterUsingNullMustFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation filter doesn't support null parameters", { => (1..4).filter(null) })
+		'''.test
+	}
+
+  	@Test
+	def void mapUsingNullMustFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation map doesn't support null parameters", { => (1..4).map(null) })
+		'''.test
+	}
+	
+  	@Test
+	def void anyUsingNullMustFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation any doesn't support null parameters", { => (1..4).any(null) })
+		'''.test
+	}
  	
 }

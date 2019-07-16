@@ -1,10 +1,12 @@
 package wollok.lang
 
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
+
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
+import static extension org.uqbar.project.wollok.utils.WollokObjectUtils.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
@@ -19,8 +21,8 @@ class Range extends AbstractJavaWrapper<IntegerRange> {
 	}
 	
 	def void forEach(WollokObject proc) {
+		proc.checkNotNull("forEach")
 		val c = (proc.getNativeObject(CLOSURE) as Closure)
-		c.checkNotNull("forEach")
 		initWrapped.forEach[e| c.doApply(e.javaToWollok) ]
 	}
 	

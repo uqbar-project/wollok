@@ -1,16 +1,12 @@
 package wollok.lang
 
-import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.api.WollokInterpreterAccess
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 import org.uqbar.project.wollok.interpreter.natives.DefaultNativeObjectFactory
-
-import static org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 /**
  * abstract base class to share some code between java wrappers
@@ -42,12 +38,6 @@ class AbstractJavaWrapper<T> implements JavaWrapper<T> {
 	def newInstanceWithWrapped(T wrapped) {
 		val String transformedClassName = DefaultNativeObjectFactory.javaToWollokFQN(class.name)
 		evaluator.newInstanceWithWrapped(transformedClassName, wrapped)
-	}
-	
-	def checkNotNull(Object o, String operation) {
-		if (o === null) {
-			throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_OPERATION_NULL_PARAMETER, operation)) 	
-		}
 	}
 	
 }

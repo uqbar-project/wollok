@@ -37,6 +37,21 @@ class ListTestCase extends CollectionTestCase {
 	}
 	
 	@Test
+	def void subListUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation subList doesn't support null parameters", { => [1, 2].subList(null, 1) })
+		assert.throwsExceptionWithMessage("Operation subList doesn't support null parameters", { => [1, 2].subList(1, null) })
+		'''.test
+	}
+	
+	@Test
+	def void takeUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation take doesn't support null parameters", { => [1, 2].take(null) })
+		'''.test
+	}
+	
+	@Test
 	def void take() {
 		'''
 		«instantiateCollectionAsNumbersVariable»
@@ -146,6 +161,13 @@ class ListTestCase extends CollectionTestCase {
 	}	
 	
 	@Test
+	def void sortByUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation sortBy doesn't support null parameters", { => [1, 2].sortBy(null) })
+		'''.test
+	}
+	
+	@Test
 	def void sortBy() {
 		'''
 		«instantiateCollectionAsNumbersVariable»
@@ -155,6 +177,13 @@ class ListTestCase extends CollectionTestCase {
 		assert.equals([2,10,22], numbers)
 		'''.test
 	}		
+
+	@Test
+	def void getUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation get doesn't support null parameters", { => [1, 2].get(null) })
+		'''.test
+	}
 
 	@Test
 	def void getHappyPath() {

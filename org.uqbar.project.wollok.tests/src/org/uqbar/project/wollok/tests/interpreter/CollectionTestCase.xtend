@@ -33,6 +33,14 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
+	def void minUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation min doesn't support null parameters", { => [1, 2].min(null) })
+		'''.test
+	}
+	
+	
+	@Test
 	def void minNoArgs() {
 		'''
 		«instantiateCollectionAsNumbersVariable»		
@@ -70,6 +78,13 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 		catch (WollokProgramExceptionWrapper e)
 					fail(e.message)
 	}
+
+	@Test
+	def void maxUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation max doesn't support null parameters", { => [1, 2].max(null) })
+		'''.test
+	}
 	
 	@Test
 	def void maxNoArgs() {
@@ -87,6 +102,13 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 		«instantiateStrings»
 		assert.equals('bonjour', strings.maxIfEmpty({ e => e.length() }, { 'lista vacia' }))
 		assert.equals('lista vacia', [].maxIfEmpty({ e => e.length() }, { 'lista vacia' }))
+		'''.test
+	}
+	
+	@Test
+	def void maxIfEmptyUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation maxIfEmpty doesn't support null parameters", { => [1, 2].maxIfEmpty(null) })
 		'''.test
 	}
 	
@@ -133,6 +155,13 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 			assert.notThat(l.contains(4))
 		}'''.interpretPropagatingErrors
 	}
+
+	@Test
+	def void anyUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation any doesn't support null parameters", { => [1, 2].any(null) })
+		'''.test
+	}
 	
 	@Test
 	def void any() {
@@ -171,6 +200,13 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
+	def void forEachUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation forEach doesn't support null parameters", { => [1, 2].forEach(null) })
+		'''.test
+	}
+	
+	@Test
 	def void forEach() {
 		'''
 		«instantiateCollectionAsNumbersVariable»
@@ -179,6 +215,13 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 		numbers.forEach({n => sum += n})
 		
 		assert.equals(34, sum)
+		'''.test
+	}
+	
+	@Test
+	def void allUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation all doesn't support null parameters", { => [1, 2].all(null) })
 		'''.test
 	}
 	
@@ -192,11 +235,25 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
+	def void filterUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation filter doesn't support null parameters", { => [1, 2].filter(null) })
+		'''.test
+	}
+	
+	@Test
 	def void filter() {
 		'''
 		«instantiateCollectionAsNumbersVariable»
 		var greaterThanFiveElements = numbers.filter({n => n > 5})
 		assert.that(greaterThanFiveElements.size() == 2)
+		'''.test
+	}
+	
+	@Test
+	def void mapUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation map doesn't support null parameters", { => [1, 2].map(null) })
 		'''.test
 	}
 	
@@ -321,12 +378,26 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
+	def void countUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation count doesn't support null parameters", { => [1, 2].count(null) })
+		'''.test
+	}
+	
+	@Test
 	def void count() {
 		'''
 		«instantiateCollectionAsNumbersVariable»
 		assert.equals(1, numbers.count{e=> e > 20})
 		assert.equals(3, numbers.count{e=> e > 0})
 		assert.equals(0, numbers.count{e=> e < 0})
+		'''.test
+	}
+	
+	@Test
+	def void sumUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation sum doesn't support null parameters", { => [1, 2].sum(null) })
 		'''.test
 	}
 	

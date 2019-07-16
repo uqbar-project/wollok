@@ -48,6 +48,13 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 	}
 	
 	@Test
+	def void distanceUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation distance doesn't support null parameters", { => new Position(1, 2).distance(null) })
+		'''.test
+	}
+	
+	@Test
 	def void testDistance() {
 		'''
 		assert.equals(5, «position».distance(new Position(3,4)))
