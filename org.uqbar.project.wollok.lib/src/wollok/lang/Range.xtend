@@ -1,10 +1,9 @@
 package wollok.lang
 
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
-
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 import static extension org.uqbar.project.wollok.utils.WollokObjectUtils.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
@@ -13,35 +12,31 @@ import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 /**
  * 
  * @author jfernandes
+ * @author dodain      Using named parameters
+ * 
  */
 class Range extends AbstractJavaWrapper<IntegerRange> {
-
 	new(WollokObject obj, WollokInterpreter interpreter) {
-		super(obj, interpreter) 
+		super(obj, interpreter)
 	}
 	
 	def void forEach(WollokObject proc) {
 		proc.checkNotNull("forEach")
 		val c = (proc.getNativeObject(CLOSURE) as Closure)
-		initWrapped.forEach[e| c.doApply(e.javaToWollok) ]
+		getWrapped.forEach[e| c.doApply(e.javaToWollok) ]
 	}
 	
-	def initWrapped() {
+	override getWrapped() {
 		if (wrapped === null) {
-			val start = solve("start")
-			val end = solve("end")
-			val step = solve("step")
+			val start = "start".solve
+			val end = "end".solve
+			val step = "step".solve
 			wrapped = new IntegerRange(start, end, step)
 		}
 		wrapped
 	}
 	
-	def solve(String fieldName) {
-		coerceToInteger(obj.resolve(fieldName)).intValue
-	}
-	
 	def anyOne() {
-		val wrapped = initWrapped()
-		wrapped.toList.random
+		getWrapped.toList.random
 	}
 }

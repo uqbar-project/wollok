@@ -64,13 +64,13 @@ abstract class AbstractXDebuggingTestCase extends AbstractXDebuggerImplTestCase 
 			(realDebugger.eventSender as AsyncXTextInterpreterEventPublisher).close()
 		}
 		finally {
-			if (commandClient != null)
+			if (commandClient !== null)
 				commandClient.close
-			if (server != null) {
+			if (server !== null) {
 				server.close
 				var socketField = Server.declaredFields.findFirst[name == "serverSocket"]
 				socketField.accessible = true
-				if (socketField != null) {
+				if (socketField !== null) {
 					val socket = socketField.get(server) as ServerSocket
 					socket.close
 				}	

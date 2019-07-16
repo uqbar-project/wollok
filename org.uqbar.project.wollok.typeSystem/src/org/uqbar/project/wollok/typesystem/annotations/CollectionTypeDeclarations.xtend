@@ -110,11 +110,14 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 	}
 	
 	def rangeDeclarations(AnnotationContext R) {
-		R.constructor(Number, Number)
 		R.basicCollection(Number)
 		R.sumableCollection(Number)
 		R.basicComparableCollection(Number)
-		R >> "step" === #[Number] => Void;
+		R.variable("step", Number)
+		R >> "start" === #[] => Number
+		R >> "end" === #[] => Number
+		R >> "initialize" === #[] => Void
+		R >> "step" === #[Number] => Void
 		R >> "filter" === #[predicate(Number)] => List.of(Number);
 	}
 	

@@ -7,11 +7,11 @@ object p {
     method run() {
         // XPECT errors --> "Expecting a boolean" at "null"
         if (!null)
-            throw new Exception("asd")
+            throw new Exception(message = "asd")
 
         // XPECT errors --> "Expecting a boolean" at "2"
         if (!2)
-            throw new Exception("asd")
+            throw new Exception(message = "asd")
         
         var cond = true
         // XPECT errors --> "Expecting a boolean" at "pepita"    

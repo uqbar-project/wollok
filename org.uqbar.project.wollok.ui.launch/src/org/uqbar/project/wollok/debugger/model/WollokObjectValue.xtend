@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.debugger.model
 
 import org.eclipse.debug.core.DebugException
 import org.eclipse.debug.core.model.IVariable
-import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.debugger.WollokDebugTarget
 import org.uqbar.project.wollok.debugger.server.rmi.XDebugValue
 

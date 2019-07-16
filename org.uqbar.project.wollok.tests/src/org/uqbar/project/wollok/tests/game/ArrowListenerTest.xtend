@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.tests.game
 
 import org.junit.Assert
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.uqbar.project.wollok.game.Image
 import org.uqbar.project.wollok.game.VisualComponent

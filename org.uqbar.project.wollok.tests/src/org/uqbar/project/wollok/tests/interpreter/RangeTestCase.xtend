@@ -72,6 +72,18 @@ class RangeTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals(11, (0..10).size())
 		assert.equals(10, (12..21).size())
 		assert.equals(7, (-3..3).size())
+		assert.equals(3, new Range(start= 2, end = 10, step = 3).size())
+		assert.equals(4, new Range(start= 2, end = 11, step = 3).size())
+		assert.equals(3, new Range(start= 10, end = 2, step = -3).size())
+		assert.equals(4, new Range(start= 11, end = 2, step = -3).size())
+		assert.equals(1, new Range(start= 10, end = 11,step = 3).size())
+		assert.equals(1, new Range(start= 10, end = 10,step = 3).size())
+		assert.equals(0, new Range(start= 10, end = 9, step = 3).size())
+		assert.equals(1, new Range(start= 10, end = 9, step = -3).size())
+		assert.equals(1, new Range(start= 10, end = 10,step = -3).size())
+		assert.equals(0, new Range(start= 10, end = 11,step = -3).size())
+		assert.equals(0, new Range(start= 2, end = 10, step = -3).size())
+		assert.equals(0, new Range(start= 10, end = 2, step = 3).size())
 		'''.test
 	
 	}
@@ -175,7 +187,10 @@ class RangeTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testRangeForDecimalsNotAllowed() {
 		'''
-		const range = new Range(2.4, 5.7)
+		const range = new Range(start = 2.4, end = 5.7)
+		assert.equals(range.start(), 2)
+		assert.equals(range.end(), 5)
+		assert.equals(range.step(), 1)
 		assert.equals([2, 3, 4, 5], range.asList())
 		'''.test
 	}	
@@ -183,7 +198,7 @@ class RangeTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testRangeForStringsNotAllowed() {
 		'''
-		assert.throwsException({ => new Range("ABRACADBRA", "PATA")})
+		assert.throwsException({ => new Range(start = "ABRACADBRA", end = "PATA")})
 		'''.test
 	}	
 
@@ -254,7 +269,7 @@ class RangeTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
  	def void testRangeForDecimalsIfIntegersAreAllowed() {
  		'''
-		const range = new Range(2.0, 5.0)
+		const range = new Range(start = 2.0, end = 5.0)
 		assert.equals(5, range.max())
  		'''.test
  	}

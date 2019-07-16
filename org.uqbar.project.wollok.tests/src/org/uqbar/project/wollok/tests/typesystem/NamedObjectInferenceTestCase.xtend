@@ -87,7 +87,7 @@ class NamedObjectInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				var ref = pepona
 			}
 		'''].parseAndInfer.asserting [
-			// TODO Assert adecquate error is informed.
+			// TODO Assert adequate error is informed.
 		]
 	}
 }

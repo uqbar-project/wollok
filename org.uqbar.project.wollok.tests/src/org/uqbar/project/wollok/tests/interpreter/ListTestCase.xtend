@@ -8,13 +8,6 @@ import org.junit.Test
 class ListTestCase extends CollectionTestCase {
 	
 	@Test
-	def void listConstructor() {
-		'''
-		assert.equals([22,2,3], new List(22,2,3))
-		'''.test
-	}
-
-	@Test
 	def void subList() {
 		'''
 		«instantiateCollectionAsNumbersVariable»
@@ -197,7 +190,7 @@ class ListTestCase extends CollectionTestCase {
 	def void getUnhappyPath() {
 		'''
 		«instantiateCollectionAsNumbersVariable»
-		assert.throwsExceptionWithMessage("-1.00000 must be a positive integer value", { numbers.get(-1) })
+		assert.throwsExceptionWithMessage("-1 must be a positive integer value", { numbers.get(-1) })
 		'''.test
 	}		
 

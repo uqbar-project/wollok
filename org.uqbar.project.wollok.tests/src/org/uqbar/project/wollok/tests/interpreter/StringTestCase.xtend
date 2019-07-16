@@ -234,6 +234,48 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals("l", "hola".charAt(2))
 		'''.test
 	}
+	
+	@Test
+	def void reverse() { 
+		'''
+		assert.equals("aloh", "hola".reverse())
+		assert.equals("", "".reverse())
+		'''.test
+	}
+	
+	@Test
+	def void takeLeft() { 
+		'''
+		assert.equals("hol", "hola".takeLeft(3))
+		assert.equals("", "".takeLeft(3))
+		assert.equals("", "hola".takeLeft(0))
+		assert.equals("h", "hola".takeLeft(1.5))
+		'''.test
+	}
+	
+	@Test
+	def void takeLeftFail() { 
+		'''
+		assert.throwsExceptionWithMessage("-1 must be a positive integer value", { "hola".takeLeft(-1) })
+		'''.test
+	}
+	
+	@Test
+	def void takeRight() { 
+		'''
+		assert.equals("ola", "hola".takeRight(3))
+		assert.equals("", "".takeRight(3))
+		assert.equals("", "hola".takeRight(0))
+		assert.equals("a", "hola".takeRight(1.5))
+		'''.test
+	}
+	
+	@Test
+	def void takeRightFail() { 
+		'''
+		assert.throwsExceptionWithMessage("-1 must be a positive integer value", { "hola".takeRight(-1) })
+		'''.test
+	}
 
 	@Test
 	def void startsWithUsingNull() {
@@ -245,7 +287,7 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void startsWithFail() {
 		'''
-		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018]", { "hola".startsWith(new Date(1, 1, 2018)) })
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018]", { "hola".startsWith(new Date(day = 1, month = 1, year = 2018)) })
 		'''.test
 	}
 	
@@ -266,7 +308,7 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void endsWithFail() {
 		'''
-		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018]", { "hola".endsWith(new Date(1, 1, 2018)) })
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018]", { "hola".endsWith(new Date(day = 1, month = 1, year = 2018)) })
 		'''.test
 	}
 	
@@ -287,7 +329,7 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void indexOfFail() {
 		'''
-		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018]", { "hola".indexOf(new Date(1, 1, 2018)) })
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018]", { "hola".indexOf(new Date(day = 1, month = 1, year = 2018)) })
 		'''.test
 	}
 
@@ -301,7 +343,7 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void lastIndexOfFail() {
 		'''
-		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018]", { "hola".lastIndexOf(new Date(1, 1, 2018)) })
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018]", { "hola".lastIndexOf(new Date(day = 1, month = 1, year = 2018)) })
 		'''.test
 	}
 
@@ -315,7 +357,7 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void containsFail() {
 		'''
-		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018]", { "hola".contains(new Date(1, 1, 2018)) })
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018]", { "hola".contains(new Date(day = 1, month = 1, year = 2018)) })
 		'''.test
 	}
 
@@ -357,7 +399,7 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void equalsIgnoreCaseFail() {
 		'''
-		assert.throwsExceptionWithMessage("a Date[day = 1, month = 1, year = 2018] does not understand toUpperCase()", { "hola".equalsIgnoreCase(new Date(1, 1, 2018)) })
+		assert.throwsExceptionWithMessage("a Date[day = 1, month = 1, year = 2018] does not understand toUpperCase()", { "hola".equalsIgnoreCase(new Date(day = 1, month = 1, year = 2018)) })
 		'''.test
 	}
 
@@ -372,7 +414,7 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void replaceFail() {
 		'''
-		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018], a", { "hola".replace(new Date(1, 1, 2018), "a") })
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018], a", { "hola".replace(new Date(day = 1, month = 1, year = 2018), "a") })
 		'''.test
 	}
 

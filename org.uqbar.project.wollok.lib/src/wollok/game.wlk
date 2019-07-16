@@ -19,8 +19,8 @@ object game {
 	 * Adds an object to the board for drawing it on a specific position.
 	 *
 	 * Example:
-	 *     game.addVisual(pepita, game.origin()) ==> no need for pepita to have a position property
-	 *     game.addVisual(pepita, game.at(2, 2))
+	 *     game.addVisualIn(pepita, game.origin()) ==> no need for pepita to have a position property
+	 *     game.addVisualIn(pepita, game.at(2, 2))
 	 */
 	method addVisualIn(element, position) native
 
@@ -128,7 +128,7 @@ object game {
 	 * Returns a position for given coordinates.
 	 */	
 	method at(x, y) {
-		return new Position(x, y)
+		return new Position(x = x, y = y)
 	}
 
 	/**
@@ -216,42 +216,28 @@ object game {
  * It is an immutable object since Wollok 1.8.0
  */
 class Position {
-	const property x
-	const property y
-	
-	/**
-	 * Returns the position at origin: (0,0).
-	 */		
-	constructor() = self(0, 0)
-			
-	/**
-	 * Returns a position with given x and y coordinates.
-	 * From now on, position is immutable.
-	 */	
-	constructor(_x, _y) {
-		x = _x
-		y = _y
-	}
+	const property x = 0
+	const property y = 0
 	
 	/**
 	 * Returns a new Position n steps right from this one.
 	 */		
-	method right(n) = new Position(x + n, y)
+	method right(n) = new Position(x = x + n, y = y)
 	
 	/**
 	 * Returns a new Position n steps left from this one.
 	 */		
-	method left(n) = new Position(x - n, y)
+	method left(n) = new Position(x = x - n, y = y)
 	
 	/**
 	 * Returns a new Position n steps up from this one.
 	 */		
-	method up(n) = new Position(x, y + n)
+	method up(n) = new Position(x = x, y = y + n)
 	
 	/**
 	 * Returns a new Position, n steps down from this one.
 	 */		
-	method down(n) = new Position(x, y - n) 
+	method down(n) = new Position(x = x, y = y - n) 
 
 	/**
 	 * Adds an object to the board for drawing it in self.
@@ -276,7 +262,7 @@ class Position {
 	/**
 	 * Returns a new position with same coordinates.
 	 */	
-	method clone() = new Position(x, y)
+	method clone() = new Position(x = x, y = y)
 
 	/**
 	 * Returns the distance between given position and self.
@@ -319,9 +305,9 @@ class Position {
  */
 object keyboard {
 
-	method any() = new Key(-1)
+	method any() = new Key(keyCodes = [-1])
 
-	method num(n) = new Key(n + 7, n + 144)
+	method num(n) = new Key(keyCodes = [n + 7, n + 144])
 	
 	method num0() = self.num(0)
 
@@ -343,98 +329,94 @@ object keyboard {
 
 	method num9() = self.num(9)
 
-	method a() = new Key(29)
+	method a() = new Key(keyCodes = [29])
 
-	method alt() = new Key(57, 58)
+	method alt() = new Key(keyCodes = [57, 58])
 
-	method b() = new Key(30)
+	method b() = new Key(keyCodes = [30])
 
-	method backspace() = new Key(67)
+	method backspace() = new Key(keyCodes = [67])
 
-	method c() = new Key(31)
+	method c() = new Key(keyCodes = [31])
 
-	method control() = new Key(129, 130)
+	method control() = new Key(keyCodes = [129, 130])
 
-	method d() = new Key(32)
+	method d() = new Key(keyCodes = [32])
 
-	method del() = new Key(67)
+	method del() = new Key(keyCodes = [67])
 
-	method center() = new Key(23)
+	method center() = new Key(keyCodes = [23])
 
-	method down() = new Key(20)
+	method down() = new Key(keyCodes = [20])
 
-	method left() = new Key(21)
+	method left() = new Key(keyCodes = [21])
 
-	method right() = new Key(22)
+	method right() = new Key(keyCodes = [22])
 
-	method up() = new Key(19)
+	method up() = new Key(keyCodes = [19])
 
-	method e() = new Key(33)
+	method e() = new Key(keyCodes = [33])
 
-	method enter() = new Key(66)
+	method enter() = new Key(keyCodes = [66])
 
-	method f() = new Key(34)
+	method f() = new Key(keyCodes = [34])
 
-	method g() = new Key(35)
+	method g() = new Key(keyCodes = [35])
 
-	method h() = new Key(36)
+	method h() = new Key(keyCodes = [36])
 
-	method i() = new Key(37)
+	method i() = new Key(keyCodes = [37])
 
-	method j() = new Key(38)
+	method j() = new Key(keyCodes = [38])
 
-	method k() = new Key(39)
+	method k() = new Key(keyCodes = [39])
 
-	method l() = new Key(40)
+	method l() = new Key(keyCodes = [40])
 
-	method m() = new Key(41)
+	method m() = new Key(keyCodes = [41])
 
-	method minusKey() = new Key(69)
+	method minusKey() = new Key(keyCodes = [69])
 
-	method n() = new Key(42)
+	method n() = new Key(keyCodes = [42])
 
-	method o() = new Key(43)
+	method o() = new Key(keyCodes = [43])
 
-	method p() = new Key(44)
+	method p() = new Key(keyCodes = [44])
 
-	method plusKey() = new Key(81)
+	method plusKey() = new Key(keyCodes = [81])
 
-	method q() = new Key(45)
+	method q() = new Key(keyCodes = [45])
 
-	method r() = new Key(46)
+	method r() = new Key(keyCodes = [46])
 
-	method s() = new Key(47)
+	method s() = new Key(keyCodes = [47])
 
-	method shift() = new Key(59, 60)
+	method shift() = new Key(keyCodes = [59, 60])
 
-	method slash() = new Key(76)
+	method slash() = new Key(keyCodes = [76])
 
-	method space() = new Key(62)
+	method space() = new Key(keyCodes = [62])
 
-	method t() = new Key(48)
+	method t() = new Key(keyCodes = [48])
 
-	method u() = new Key(49)
+	method u() = new Key(keyCodes = [49])
 
-	method v() = new Key(50)
+	method v() = new Key(keyCodes = [50])
 
-	method w() = new Key(51)
+	method w() = new Key(keyCodes = [51])
 
-	method x() = new Key(52)
+	method x() = new Key(keyCodes = [52])
 
-	method y() = new Key(53)
+	method y() = new Key(keyCodes = [53])
 
-	method z() = new Key(54)
+	method z() = new Key(keyCodes = [54])
 
 }
 
 
 class Key {	
-	var keyCodes
+	const property keyCodes
 	
-	constructor(_keyCodes...) {
-		keyCodes = _keyCodes
-	}
-
 	/**
 	 * Adds a block that will be executed always self is pressed.
 	 *

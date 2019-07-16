@@ -260,7 +260,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 				object pepita {
 					method volar() { 
 						console.println('abc')
-						const p = new Pair(1, 2)
+						const p = new Pair(x = 1, y = 2)
 					}
 				}	
 			}
@@ -272,7 +272,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 		'''
 			object pepita {
 				method volar() { 
-					const p = new Pair(1, 2)
+					const p = new Pair(x = 1, y = 2)
 				}
 			}	
 		'''.interpretPropagatingErrors

@@ -7,6 +7,6 @@ object p {
     method run() {
         // XPECT errors --> "Unnecessary if always evaluates to true !" at "true"
         if (true)
-            throw new Exception("asd")
+            throw new Exception(message = "asd")
     }
 }

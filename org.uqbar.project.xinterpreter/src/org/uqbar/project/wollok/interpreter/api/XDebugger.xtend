@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.interpreter.api
 
 import java.io.Serializable
 import java.util.Stack
-import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.interpreter.stack.XStackFrame
 
 /**

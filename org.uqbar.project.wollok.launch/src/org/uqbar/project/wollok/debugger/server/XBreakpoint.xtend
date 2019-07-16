@@ -1,7 +1,7 @@
 package org.uqbar.project.wollok.debugger.server
 
 import org.eclipse.emf.ecore.EObject
-import org.eclipse.xtend.lib.Property
+import org.eclipse.xtend.lib.annotations.Accessors
 
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
@@ -10,9 +10,10 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
  * 
  * @author jfernandes
  */
+@Accessors
 class XBreakpoint {
-	@Property String fileURI
-	@Property int lineNumber
+	String fileURI
+	int lineNumber
 	
 	new(String fileURI, int lineNumber) {
 		this.fileURI = fileURI
