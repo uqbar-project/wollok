@@ -161,7 +161,7 @@ class ListTestCase extends CollectionTestCase {
 	def void getUnhappyPath() {
 		'''
 		«instantiateCollectionAsNumbersVariable»
-		assert.throwsExceptionWithMessage("-1.00000 must be a positive integer value", { numbers.get(-1) })
+		assert.throwsExceptionWithMessage("-1 must be a positive integer value", { numbers.get(-1) })
 		'''.test
 	}		
 

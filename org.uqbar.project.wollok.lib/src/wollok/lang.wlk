@@ -1470,6 +1470,14 @@ class Number {
 	 * (see definition of class Number)
 	 */
 	method coerceToInteger() native
+
+	/** 
+	 * @private
+	 * @see coerceToInteger
+	 *
+	 * Applies coercing strategy to integer. And throws exception if it is negative.
+	 */
+	method coerceToPositiveInteger() native
 	
 	/**
 	 * Two references are identical if they are the same number
@@ -1859,6 +1867,41 @@ class String {
 	 */
 	method trim() native
 	
+	/** 
+	 * Answers a string reversing this string,
+	 * so that first character becomes last character of the new string and so on.
+	 * 
+	 * Example:
+	 * 		"hola".reverse()  ==> "aloh"
+	 */
+	method reverse() native
+		
+	/** 
+	 * @see take
+	 * 
+	 * Example:
+	 *     "word".takeLeft(3)  ==> Answers "wor"
+	 *     "word".takeLeft(0)  ==> Answers ""
+	 *     "word".takeLeft(-1) ==> Throws error
+	 *     "".takeLeft(2)      ==> Answers "" 
+	 */
+	method takeLeft(length) = self.take(length)
+		
+	/** 
+	 * Takes last n characters of this string.
+	 * n must be zero-positive integer.
+	 * 
+	 * Example:
+	 *     "word".takeRight(3)  ==> Answers "ord"
+	 *     "word".takeRight(0)  ==> Answers ""
+	 *     "word".takeRight(-1) ==> Throws error
+	 *     "".takeRight(2)      ==> Answers "" 
+	 */
+	method takeRight(_length) {
+		const length = _length.coerceToPositiveInteger().min(self.size())
+		return self.drop(self.size() - length)
+	}
+		
 	method <(aString) native
 	method <=(aString) {
 		return self < aString || (self.equals(aString))

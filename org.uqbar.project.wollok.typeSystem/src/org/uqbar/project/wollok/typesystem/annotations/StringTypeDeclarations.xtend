@@ -28,5 +28,8 @@ class StringTypeDeclarations extends TypeDeclarations {
 		
 		String >> "take" === #[Number] => String
 		String >> "drop" === #[Number] => String
+		String >> "takeLeft" === #[Number] => String
+		String >> "takeRight" === #[Number] => String
+		String >> "reverse" === #[] => String
 	}
 }

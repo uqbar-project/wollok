@@ -134,7 +134,7 @@ class WollokJavaConversions {
 	
 	def static int coerceToPositiveInteger(BigDecimal value) {
 		if (value.intValue < 0) {
-			throw WollokJavaConversions.throwInvalidOperation(NLS.bind(Messages.WollokConversion_POSITIVE_INTEGER_VALUE_REQUIRED, value))
+			throw WollokJavaConversions.throwInvalidOperation(NLS.bind(Messages.WollokConversion_POSITIVE_INTEGER_VALUE_REQUIRED, value.coerceToInteger))
 		}
 		value.coerceToInteger
 	}

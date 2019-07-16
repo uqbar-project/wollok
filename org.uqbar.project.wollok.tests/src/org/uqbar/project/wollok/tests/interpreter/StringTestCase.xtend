@@ -198,6 +198,48 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals("l", "hola".charAt(2))
 		'''.test
 	}
+	
+	@Test
+	def void reverse() { 
+		'''
+		assert.equals("aloh", "hola".reverse())
+		assert.equals("", "".reverse())
+		'''.test
+	}
+	
+	@Test
+	def void takeLeft() { 
+		'''
+		assert.equals("hol", "hola".takeLeft(3))
+		assert.equals("", "".takeLeft(3))
+		assert.equals("", "hola".takeLeft(0))
+		assert.equals("h", "hola".takeLeft(1.5))
+		'''.test
+	}
+	
+	@Test
+	def void takeLeftFail() { 
+		'''
+		assert.throwsExceptionWithMessage("-1 must be a positive integer value", { "hola".takeLeft(-1) })
+		'''.test
+	}
+	
+	@Test
+	def void takeRight() { 
+		'''
+		assert.equals("ola", "hola".takeRight(3))
+		assert.equals("", "".takeRight(3))
+		assert.equals("", "hola".takeRight(0))
+		assert.equals("a", "hola".takeRight(1.5))
+		'''.test
+	}
+	
+	@Test
+	def void takeRightFail() { 
+		'''
+		assert.throwsExceptionWithMessage("-1 must be a positive integer value", { "hola".takeRight(-1) })
+		'''.test
+	}
 
 	@Test
 	def void startsWithUsingNull() {
