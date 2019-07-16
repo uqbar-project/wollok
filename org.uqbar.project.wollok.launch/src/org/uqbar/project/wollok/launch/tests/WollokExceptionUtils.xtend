@@ -6,7 +6,7 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreterException
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import wollok.lib.AssertionException
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 class WollokExceptionUtils {
 

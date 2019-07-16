@@ -15,7 +15,6 @@ import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfoInContext
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 /**
  * When a type error is found because we found an incompatible subtype relationship between two type variables, 

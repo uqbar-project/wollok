@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.validation
 
 import org.eclipse.osgi.util.NLS
 import org.uqbar.project.wollok.Messages
-import com.google.common.base.CharMatcher
 
 class ElementNameValidation {
 	
