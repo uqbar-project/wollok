@@ -220,7 +220,7 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void takeLeftFail() { 
 		'''
-		assert.throwsExceptionWithMessage("-1.00000 must be a positive integer value", { "hola".takeLeft(-1) })
+		assert.throwsExceptionWithMessage("-1 must be a positive integer value", { "hola".takeLeft(-1) })
 		'''.test
 	}
 	
@@ -237,7 +237,7 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void takeRightFail() { 
 		'''
-		assert.throwsExceptionWithMessage("-1.00000 must be a positive integer value", { "hola".takeRight(-1) })
+		assert.throwsExceptionWithMessage("-1 must be a positive integer value", { "hola".takeRight(-1) })
 		'''.test
 	}
 
