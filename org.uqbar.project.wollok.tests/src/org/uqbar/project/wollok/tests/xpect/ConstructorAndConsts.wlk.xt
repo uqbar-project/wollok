@@ -60,14 +60,9 @@ class C {
 }
 
 class D inherits C {
-	/* XPECT errors ---
-		"Unused variable" at "y"
-		"Variable is never assigned" at "y"
-	--- 
-		XPECT warnings ---
-		"Unused variable" at "y"
-		"Variable is never assigned" at "y"
-	---
-	*/
+	// XPECT errors --> "Variable is never assigned" at "y"
 	const y
+
+	
+	method lalala() = y + 1
 }

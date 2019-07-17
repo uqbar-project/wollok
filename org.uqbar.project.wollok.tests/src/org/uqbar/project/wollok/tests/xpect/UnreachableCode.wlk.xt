@@ -8,7 +8,7 @@ class A {
 		catch e : Exception {
 			return 2
 		}
-		// XPECT errors --> "Unreachable code" at "return 3"
+		// XPECT warnings --> "Unreachable code" at "return 3"
 		return 3
 	}
 	
@@ -22,15 +22,14 @@ class A {
 		return 3
 	}
 	
-// TODO: re-enable after merging dev-natives-to-wollok
-//	method inABlock2() {
-//		try {
-//			return 1
-//		}
-//		catch e : Exception {
-//			return 2
-//		}
-//	}
+	method inABlock2() {
+		try {
+			return 1
+		}
+		catch e : Exception {
+			return 2
+		}
+	}
 	
 	method inABlock3() {
 		try {
@@ -49,7 +48,7 @@ class A {
 		catch e : Exception {
 			throw e
 		}
-		// XPECT errors --> "Unreachable code" at "return 3"
+		// XPECT warnings --> "Unreachable code" at "return 3"
 		return 3
 	}
 	
