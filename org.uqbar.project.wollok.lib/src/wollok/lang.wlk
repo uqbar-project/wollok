@@ -111,13 +111,22 @@ class Object {
 	 */
 	method identity() native
 	
-	/** Answers a list of instance variables for this Wollok object */
+	/** 
+	 * Answers a list of instance variables for this Wollok object
+	 * @private 
+	 */
 	method instanceVariables() native
 	
-	/** Retrieves a specific variable. Expects a name */
+	/** 
+	 * Retrieves a specific variable. Expects a name
+	 * @private 
+	 */
 	method instanceVariableFor(name) native
 	
-	/** Accesses a variable by name, in a reflexive way. */
+	/**
+	 * @private 
+	 * Accesses a variable by name, in a reflexive way. 
+	 */
 	method resolve(name) native
 	
 	/** Object description in english/spanish/... (depending on i18n configuration)
@@ -125,9 +134,15 @@ class Object {
 	 * Examples:
 	 * 		"2".kindName()  => Answers "a String"
 	 *  	2.kindName()    => Answers "a Integer"
+	 *
+	 * @private
 	 */
 	method kindName() native
-	/** Full name of Wollok object class */
+	
+	/** 
+	 * Full name of Wollok object class
+	 * @private 
+	 */
 	method className() native
 	
 	/**
