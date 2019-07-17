@@ -67,5 +67,14 @@ object stringsTests {
 		const value2 = value.drop(n)
 		return if (value == value2) ["hola"] else value2.words()
 	}
+
+	// XPECT methodType at stringTakeLeft --> (Number) => String
+	method stringTakeLeft(n) = "hola".takeLeft(n)
+
+	// XPECT methodType at stringTakeRight --> (Number) => String
+	method stringTakeRight(n) = "hola".takeRight(n)
+
+	// XPECT methodType at stringReverse --> () => String
+	method stringReverse() = "hola".reverse()
 	
 }

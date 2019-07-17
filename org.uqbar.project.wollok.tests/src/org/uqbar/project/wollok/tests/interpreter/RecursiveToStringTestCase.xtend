@@ -70,7 +70,7 @@ class RecursiveToStringTestCase extends AbstractWollokInterpreterTestCase {
 				cuenta.duenios().add(duenio)
 				cuenta.metodoInexistente()
 			} catch e {
-				assert.equals("a Cuenta[duenios=[a Duenio[cuentas=[a Cuenta]]]] does not understand metodoInexistente()", e.getMessage())
+				assert.equals("a Cuenta[duenios=[a Duenio[cuentas=[a Cuenta]]]] does not understand metodoInexistente()", e.message())
 			}
 		}
 		'''.interpretPropagatingErrors

@@ -5,7 +5,7 @@ describe "fakeTest" {
 	}
 	
 	test "calling to unexistent method" {
-		// XPECT warnings --> "Method does not exist or invalid number of arguments" at "fakeSayHi"
+		// XPECT errors --> "Method does not exist or invalid number of arguments" at "fakeSayHi"
 	 	self.fakeSayHi()
 	 	assert.equals(1, 1)
 	}

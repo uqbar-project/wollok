@@ -24,10 +24,7 @@ class BasicTypeResolver {
 	extension WollokClassFinder classFinder = WollokClassFinder.getInstance
 	
 	def dispatch WMethodContainer resolveType(WVariable variable) {
-		if (variable.declaration.right === null)
-			null
-		else
-			variable.declaration.right.resolveType
+		variable.declaration.initValue?.resolveType
 	}
 	
 	def dispatch WMethodContainer resolveType(WListLiteral it) { listClass }

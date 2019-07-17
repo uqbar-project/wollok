@@ -61,36 +61,36 @@ class A {
 		
 		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "true"
 		if (cond == true)
-			throw new Exception("Blah")
+			throw new Exception(message = "Blah")
 
 		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "false"
 		if (cond == false)
-			throw new Exception("Blah")
+			throw new Exception(message = "Blah")
 			
 		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "true"
 		if (cond != true)
-			throw new Exception("Blah")
+			throw new Exception(message = "Blah")
 
 		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "false"
 		if (cond != false)
-			throw new Exception("Blah")
+			throw new Exception(message = "Blah")
 			
 		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "true"
 		if (cond !== true)
-			throw new Exception("Blah")
+			throw new Exception(message = "Blah")
 
 		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "false"
 		if (cond !== false)
-			throw new Exception("Blah")		
+			throw new Exception(message = "Blah")		
 			
 		// if as left side
 		
 		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "true"
 		if (true == cond)
-			throw new Exception("Blah")
+			throw new Exception(message = "Blah")
 
 		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "false"
 		if (false == cond)
-			throw new Exception("Blah")
+			throw new Exception(message = "Blah")
 	}
 }

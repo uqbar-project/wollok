@@ -39,7 +39,7 @@ class GolondrinaSarasa inherits Golondrina {
 	var comio = false
 	
 	override method comer(a, p) {
-		// XPECT warnings --> "Incorrect number of arguments for super. Expecting 2: alimento, postre" at "super()"
+		// XPECT errors --> "Incorrect number of arguments for super. Expecting 2: alimento, postre" at "super()"
 		super()
 		comio = true
 	}
@@ -104,7 +104,7 @@ class SuperInvocationTest {
 	method run() {
 		return object {
 			method valak(a) {
-				// XPECT warnings --> "Super can only be used in an overriding method" at "super(a)"
+				// XPECT errors --> "Super can only be used in an overriding method" at "super(a)"
 				super(a)
 			}
 		}

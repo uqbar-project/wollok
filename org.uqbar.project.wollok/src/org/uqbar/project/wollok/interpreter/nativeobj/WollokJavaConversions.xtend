@@ -15,7 +15,8 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * Holds common extensions for Wollok to Java and Java to Wollok conversions.
@@ -23,6 +24,8 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
  * @author jfernandes
  */
 class WollokJavaConversions {
+
+	def static getEvaluator() { (WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator) }
 
 	def static asNumber(WollokObject it) {
 		((it as WollokObject).getNativeObject(NUMBER) as JavaWrapper<BigDecimal>).wrapped
@@ -37,7 +40,7 @@ class WollokJavaConversions {
 	/**
 	 * Only used to show a representative error message when converting Java and Wollok types
 	 */
-	def static Map conversionTypes() {
+	def static Map<?,?> conversionTypes() {
 		#{Function1 -> CLOSURE, BigDecimal -> NUMBER, String -> STRING,
 			List -> LIST, Map -> DICTIONARY, Set -> SET, Boolean -> BOOLEAN,
 			LocalDate -> DATE
@@ -56,11 +59,11 @@ class WollokJavaConversions {
 		if (o.isNativeType(STRING) && t == String)
 			return ((o as WollokObject).getNativeObject(STRING) as JavaWrapper<String>).wrapped
 		if (o.isNativeType(LIST) && (t == Collection || t == List))
-			return ((o as WollokObject).getNativeObject(LIST) as JavaWrapper<List>).wrapped
+			return ((o as WollokObject).getNativeObject(LIST) as JavaWrapper<List<?>>).wrapped
 		if (o.isNativeType(DICTIONARY) && (t == Collection || t == Map))
-			return ((o as WollokObject).getNativeObject(DICTIONARY) as JavaWrapper<Map>).wrapped
+			return ((o as WollokObject).getNativeObject(DICTIONARY) as JavaWrapper<Map<?,?>>).wrapped
 		if (o.isNativeType(SET) && (t == Collection || t == Set))
-			return ((o as WollokObject).getNativeObject(SET) as JavaWrapper<Set>).wrapped
+			return ((o as WollokObject).getNativeObject(SET) as JavaWrapper<Set<?>>).wrapped
 		if (o.isNativeType(BOOLEAN) && (t == Boolean || t == Boolean.TYPE))
 			return ((o as WollokObject).getNativeObject(BOOLEAN) as JavaWrapper<Boolean>).wrapped
 		if (o.isNativeType(DATE)) {
@@ -104,35 +107,17 @@ class WollokJavaConversions {
 
 	def static dispatch WollokObject convertJavaToWollok(Boolean o) { evaluator.booleanValue(o) }
 
-	def static dispatch WollokObject convertJavaToWollok(List o) { evaluator.newInstanceWithWrapped(LIST, o) }
+	def static dispatch WollokObject convertJavaToWollok(List<?> o) { evaluator.newInstanceWithWrapped(LIST, o) }
 
-	def static dispatch WollokObject convertJavaToWollok(Set o) { evaluator.newInstanceWithWrapped(SET, o) }
+	def static dispatch WollokObject convertJavaToWollok(Set<?> o) { evaluator.newInstanceWithWrapped(SET, o) }
 
 	def static dispatch WollokObject convertJavaToWollok(LocalDate o) { evaluator.newInstanceWithWrapped(DATE, o) }
 
 	def static dispatch WollokObject convertJavaToWollok(WollokObject it) { it }
 
 	def static dispatch WollokObject convertJavaToWollok(Object o) {
-		throw WollokJavaConversions.throwInvalidOperation(NLS.bind(Messages.WollokConversion_UNSUPPORTED_CONVERSION_JAVA_WOLLOK, (o as WollokObject).call("printString"), o.class.name))
+		throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_UNSUPPORTED_CONVERSION_JAVA_WOLLOK, (o as WollokObject).call("printString"), o.class.name))
 	}
-
-	def static WollokProgramExceptionWrapper newWollokExceptionAsJava(String message) {
-		new WollokProgramExceptionWrapper(newWollokException(message))
-	}
-
-	def static newWollokException(String message) {
-		evaluator.newInstance(EXCEPTION, message.javaToWollok)
-	}
-
-	def static newWollokException(String message, WollokObject cause) {
-		evaluator.newInstance(EXCEPTION, message.javaToWollok, cause)
-	}
-
-	def static newWollokAssertionException(String message) {
-		evaluator.newInstance(ASSERTION_EXCEPTION_FQN, message.javaToWollok)
-	}
-
-	def static getEvaluator() { (WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator) }
 
 	/**
 	 * Numeric conversions
@@ -149,7 +134,7 @@ class WollokJavaConversions {
 	
 	def static int coerceToPositiveInteger(BigDecimal value) {
 		if (value.intValue < 0) {
-			throw WollokJavaConversions.throwInvalidOperation(NLS.bind(Messages.WollokConversion_POSITIVE_INTEGER_VALUE_REQUIRED, value))
+			throw WollokJavaConversions.throwInvalidOperation(NLS.bind(Messages.WollokConversion_POSITIVE_INTEGER_VALUE_REQUIRED, value.coerceToInteger))
 		}
 		value.coerceToInteger
 	}

@@ -4,13 +4,13 @@ class Golondrina {
 	var energia = 100
 
 	method asignarEnergia() {
-		// XPECT warnings --> "Cannot assign a variable to itself. It does not have any effect" at "energia"
+		// XPECT errors --> "Cannot assign a variable to itself. It does not have any effect" at "energia"
 		energia = energia 
 	}
 	
 	method comer(alimento) {
 		alimento.sum { x =>
-			// XPECT warnings --> "Cannot assign a variable to itself. It does not have any effect" at "energia"
+			// XPECT errors --> "Cannot assign a variable to itself. It does not have any effect" at "energia"
 			energia = energia 
 		}
 		

@@ -6,15 +6,15 @@ object pepita {
 object p {
     method run() {
         if (true)
-            throw new Exception("asd")
+            throw new Exception(message = "asd")
         else 
-	        // XPECT warnings --> "Unreachable code" at "throw new Exception(\"else\")"
-        	throw new Exception("else")
+	        // XPECT errors --> "Unreachable code" at "throw new Exception(message = \"else\")"
+        	throw new Exception(message = "else")
         	
         if (false)
-	        // XPECT warnings --> "Unreachable code" at "throw new Exception(\"asd\")"
-            throw new Exception("asd")
+	        // XPECT errors --> "Unreachable code" at "throw new Exception(message = \"asd\")"
+            throw new Exception(message = "asd")
         else 
-        	throw new Exception("else")	
+        	throw new Exception(message = "else")	
     }
 }

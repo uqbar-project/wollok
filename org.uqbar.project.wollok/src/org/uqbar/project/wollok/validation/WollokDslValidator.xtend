@@ -533,7 +533,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def dispatch String cannotModifyErrorId(WVariableReference it) { cannotModifyErrorId(ref) }
 
 	@Check
-	@DefaultSeverity(WARN)
+	@DefaultSeverity(ERROR)
 	@NotConfigurable	
 	def cannotAssignToItself(WAssignment a) {
 		if (!(a.value instanceof WVariableReference))
@@ -649,7 +649,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	}
 
 	@Check
-	@DefaultSeverity(WARN)
+	@DefaultSeverity(ERROR)
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
 	def methodInvocationToSelfMustExist(WMemberFeatureCall call) {
 		val declaringContext = call.declaringContext
@@ -849,7 +849,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	@NotConfigurable
 	def globalVariablesNotAllowed(WVariableDeclaration it) {
-		if (writeable && variable.isGlobal) {
+		if (writeable && isGlobal) {
 			report(WollokDslValidator_GLOBAL_VARIABLE_NOT_ALLOWED, it, WVARIABLE_DECLARATION__VARIABLE)
 		}
 	}
@@ -923,7 +923,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	}
 
 	@Check
-	@DefaultSeverity(WARN)
+	@DefaultSeverity(ERROR)
 	@CheckGroup(WollokCheckGroup.UNNECESARY_CODE)
 	def unreachableCodeInIf(WIfExpression it) {
 		if (^else !== null && condition.isTrueLiteral)
@@ -965,7 +965,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	}
 
 	@Check
-	@DefaultSeverity(WARN)
+	@DefaultSeverity(ERROR)
 	@CheckGroup(WollokCheckGroup.POTENTIAL_DESIGN_PROBLEM)
 	def superInvocationOnlyInValidMethod(WSuperInvocation sup) {
 		if (!sup.method.overrides && !sup.isInMixin)
@@ -996,7 +996,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	}
 
 	@Check
-	@DefaultSeverity(WARN)
+	@DefaultSeverity(ERROR)
 	@CheckGroup(WollokCheckGroup.UNNECESARY_CODE)
 	def unreachableCatch(WCatch it) {
 		val hidingCatch = catchesBefore.findFirst [ c |
@@ -1142,7 +1142,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	}
 
 	@Check
-	@DefaultSeverity(WARN)
+	@DefaultSeverity(ERROR)
 	@CheckGroup(WollokCheckGroup.UNNECESARY_CODE)
 	def noExtraSentencesAfterReturnStatement(WBlockExpression it) {
 		checkNoAfter(first(WReturnExpression), WollokDslValidator_NO_EXPRESSION_AFTER_RETURN)

@@ -8,9 +8,9 @@ object pepita {
 
 	method volar() {
 		energia -= 100
-		// XPECT warnings --> "Method does not exist or invalid number of arguments" at "peso"
+		// XPECT errors --> "Method does not exist or invalid number of arguments" at "peso"
 		self.peso(1, 1)
-		// XPECT warnings --> "Cannot modify constant property peso" at "peso" 
+		// XPECT errors --> "Cannot modify constant property peso" at "peso" 
 		self.peso(2)
 	}
 	
@@ -32,7 +32,7 @@ class Ave {
 		
 	method volar() {
 		energia -= 10
-		// XPECT warnings --> "Cannot modify constant property peso" at "peso"
+		// XPECT errors --> "Cannot modify constant property peso" at "peso"
 		self.peso(1)
 		alas.forEach { ala => 
 			// XPECT errors --> "Property are only allowed in objects, classes and mixins" at "property"

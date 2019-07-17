@@ -15,7 +15,7 @@ object positionTest {
 	
 	// XPECT methodType at m3 --> (Number, Number) => Position 
 	method m3(_x, _y) {
-		return new Position(_x, _y)
+		return new Position(x = _x, y = _y)
 	}
 
 	// XPECT methodType at m4 --> (Position, Number) => Position
@@ -39,6 +39,11 @@ object positionTest {
 	// XPECT methodType at m12 --> (Position) => List<Any>
 	method m12(pos) {
 		return pos.allElements()
+	}
+	
+	// XPECT methodType at m122 --> (Position) => List<Number>
+	method m122(pos) {
+		return pos.allElements().filter{n => n > 3}
 	}
 	
 	// XPECT methodType at m13 --> (Position) => Position
