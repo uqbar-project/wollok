@@ -40,8 +40,8 @@ class ImageTest extends AbstractWollokParameterizedInterpreterTest {
 		}
 
 		program p {
-			new Position(0,0).drawElement(aVisual)
-			new Position(0,0).drawElement(otherVisual)
+			new Position(x = 0, y = 0).drawElement(aVisual)
+			new Position(x = 0, y = 0).drawElement(otherVisual)
 		}'''.interpretPropagatingErrors
 		
 		validateImage
@@ -57,7 +57,7 @@ class ImageTest extends AbstractWollokParameterizedInterpreterTest {
 		}
 
 		program p {
-			new Position(0,0).drawElement(visual)
+			new Position(x = 0, y = 0).drawElement(visual)
 		}'''.interpretPropagatingErrors
 		
 		validateImage
@@ -71,7 +71,7 @@ class ImageTest extends AbstractWollokParameterizedInterpreterTest {
 		object visual { }
 		
 		program p {
-			new Position(0,0).drawElement(visual)
+			new Position(x = 0, y = 0).drawElement(visual)
 		}'''.interpretPropagatingErrors
 		
 		validateDefaultImage

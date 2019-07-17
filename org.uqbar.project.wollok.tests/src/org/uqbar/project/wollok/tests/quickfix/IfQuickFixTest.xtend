@@ -18,7 +18,7 @@ class IfQuickFixTest extends AbstractWollokQuickFixTestCase {
 		
 			method foo() {
 				if (a    =  b)
-					throw new Exception("asd")
+					throw new Exception(message = "asd")
 			}
 		}
 		''']
@@ -31,7 +31,7 @@ class IfQuickFixTest extends AbstractWollokQuickFixTestCase {
 		
 			method foo() {
 				if (a == b)
-					throw new Exception("asd")
+					throw new Exception(message = "asd")
 			}
 		}
 		''']

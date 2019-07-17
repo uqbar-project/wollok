@@ -41,7 +41,7 @@ class RunThroughDebuggerState extends XDebuggerState {
 class SteppingOver extends XDebuggerState {
 	var EObject currentStepObject
 	new(EObject step) {
-		if (step == null) throw new WollokRuntimeException("Tried to create an instance with a null EObject") 
+		if (step === null) throw new WollokRuntimeException("Tried to create an instance with a null EObject") 
 		currentStepObject = step
 	}
 	

@@ -5,9 +5,6 @@ object rangeTest {
 	const range = new Range(0, 0)
 	
 	method rangeDeclarations() {
-		// XPECT type at rangeConstructor --> {(Number, Number) => Range}
-		const rangeConstructor = {start, end => new Range(start, end)}
-		
 		// XPECT type at step --> {(Number) => Void}
 		const step = {n => range.step(n)}
 		

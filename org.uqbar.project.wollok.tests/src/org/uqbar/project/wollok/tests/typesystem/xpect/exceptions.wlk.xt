@@ -5,17 +5,11 @@ object exceptionTest {
 	// XPECT methodType at createException1 --> () => Exception
 	method createException1() = new Exception()
 	
-	// XPECT methodType at createException2 --> (String) => Exception
-	method createException2(message) = new Exception(message)
-	
-	// XPECT methodType at createException3 --> (String, Exception) => Exception
-	method createException3(message, cause) = new Exception(message, cause)
-	
-	// XPECT methodType at getMessage --> (Exception) => String
-	method getMessage(e) = e.getMessage()
+	// XPECT methodType at getMyMessage --> (Exception) => String
+	method getMyMessage(e) = e.message()
 
-	// XPECT methodType at getCause --> (Exception) => Exception
-	method getCause(e) = e.getCause()
+	// XPECT methodType at getMyCause --> (Exception) => Exception
+	method getMyCause(e) = e.cause()
 
 	// XPECT methodType at getStackTrace --> (Exception) => List<String>
 	method getStackTrace(e) = e.getStackTrace()

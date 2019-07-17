@@ -15,7 +15,7 @@ object positionTest {
 	
 	// XPECT methodType at m3 --> (Number, Number) => Position 
 	method m3(_x, _y) {
-		return new Position(_x, _y)
+		return new Position(x = _x, y = _y)
 	}
 
 	// XPECT methodType at m4 --> (Position, Number) => Position

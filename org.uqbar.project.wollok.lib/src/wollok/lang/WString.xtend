@@ -66,6 +66,7 @@ class WString extends AbstractJavaWrapper<String> {
 	def toLowerCase() { wrapped.toLowerCase }
 	def toUpperCase() { wrapped.toUpperCase }
 	def trim() { wrapped.trim }
+	def reverse() { new StringBuilder(wrapped).reverse().toString() }
 	
 	def substring(BigDecimal index) {
 		index.checkNotNull("substring")

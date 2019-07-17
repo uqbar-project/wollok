@@ -56,6 +56,6 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 	}
 	
 	private def position(int x, int y) {
-		'''new Position(«x»,«y»)'''
+		'''new Position(x = «x», y = «y»)'''
 	}
 }

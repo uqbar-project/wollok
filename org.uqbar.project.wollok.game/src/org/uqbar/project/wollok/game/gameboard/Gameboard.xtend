@@ -16,9 +16,8 @@ import org.uqbar.project.wollok.game.listeners.ArrowListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
-
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 @Accessors
 class Gameboard {
@@ -137,7 +136,9 @@ class Gameboard {
 	def removeListener(String listenerName) {
 		val listener = listeners.findFirst([ name.equals(listenerName) ])
 		if (listener === null) {
-			throw new WollokProgramExceptionWrapper(evaluator.newInstance(EXCEPTION, NLS.bind(Messages.WollokGame_ListenerNotFound, listenerName).javaToWollok))
+			throw new WollokProgramExceptionWrapper(evaluator.newInstance(EXCEPTION) => [
+				setReference("message", NLS.bind(Messages.WollokGame_ListenerNotFound, listenerName).javaToWollok) 
+			])
 		}
 		listeners.remove(listener)
 	}
