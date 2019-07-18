@@ -382,8 +382,8 @@ class Collection {
 	  *             => Answers "default"
 	  */
 	method minIfEmpty(toComparableClosure, emptyCaseClosure) {
-		self.checkNotNull(toComparableClosure, "maxIfEmpty")
-		self.checkNotNull(emptyCaseClosure, "maxIfEmpty")
+		self.checkNotNull(toComparableClosure, "minIfEmpty")
+		self.checkNotNull(emptyCaseClosure, "minIfEmpty")
 		return self.absolute(toComparableClosure, { a, b => a < b }, emptyCaseClosure)
 	}
 
@@ -399,7 +399,7 @@ class Collection {
 	  *       [].minIfEmpty({ 99 })                       => Answers 99
 	  */
 	method minIfEmpty(emptyCaseClosure) {
-		self.checkNotNull(emptyCaseClosure, "maxIfEmpty")
+		self.checkNotNull(emptyCaseClosure, "minIfEmpty")
 		return self.minIfEmpty({it => it}, emptyCaseClosure)
 	}
 
