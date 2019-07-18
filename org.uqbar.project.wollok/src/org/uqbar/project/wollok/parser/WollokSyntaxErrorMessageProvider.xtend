@@ -22,6 +22,7 @@ import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess
 import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WSuite
 
 import static org.eclipse.xtext.diagnostics.Diagnostic.*
 import static org.uqbar.project.wollok.WollokConstants.*
@@ -68,6 +69,13 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 		val token = exception.token.text
 		val completeMessage = operation + token
 		new SyntaxErrorMessage(NLS.bind(Messages.SYNTAX_DIAGNOSIS_BAD_MESSAGE, completeMessage), SYNTAX_DIAGNOSTIC)
+	}
+	
+	def dispatch getSyntaxErrorMessage(IParserErrorContext context, EarlyExitException exception) {
+		val declaringContext = context.currentContext
+		if (declaringContext instanceof WSuite) {
+			return new SyntaxErrorMessage(Messages.SYNTAX_DIAGNOSIS_CODE_NOT_ALLOWED_IN_DESCRIBE, SYNTAX_DIAGNOSTIC)
+		}
 	}
 	
 	def dispatch getSyntaxErrorMessage(IParserErrorContext context, RecognitionException exception) {
