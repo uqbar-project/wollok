@@ -60,6 +60,13 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
+	def void minIfEmptyUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation minIfEmpty doesn't support null parameters", { => [1, 2].minIfEmpty(null) })
+		'''.test
+	}
+	
+	@Test
 	def void minIfEmptyNoArgs() {
 		'''
 		assert.equals(1, [3,1,2].minIfEmpty({ 99 }))
