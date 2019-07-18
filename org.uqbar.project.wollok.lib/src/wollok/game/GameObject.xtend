@@ -32,7 +32,7 @@ class GameObject {
 
 	def addVisualIn(WollokObject it, WollokObject position) {
 		checkNotNull("addVisualIn")
-		position.checkNotNull("addVisual") 
+		position.checkNotNull("addVisualIn") 
 		board.addComponent(asVisualIn(position))
 	}
 	
