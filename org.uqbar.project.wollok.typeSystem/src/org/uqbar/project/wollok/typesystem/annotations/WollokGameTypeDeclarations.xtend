@@ -9,9 +9,9 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		Position >> "left" === #[Number] => Position
 		Position >> "up" === #[Number] => Position
 		Position >> "down" === #[Number] => Position
-		Position >> "drawElement" === #[Any] => Void
-		Position >> "drawCharacter" === #[Any] => Void
-		Position >> "say" === #[Any, String] => Void
+		Position >> "drawElement" === #[T] => Void
+		Position >> "drawCharacter" === #[T] => Void
+		Position >> "say" === #[T, String] => Void
 		Position >> "allElements" === #[] => List.of(T)
 		Position >> "clone" === #[] => Position
 		Position >> "distance" === #[Position] => Number
@@ -27,18 +27,18 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		game.fakeProperty("width", Number)
 		game.fakeProperty("height", Number)
 		game.clear
-		game >> "addVisual" === #[Any] => Void
-		game >> "addVisualIn" === #[Any, Position] => Void
-		game >> "addVisualCharacter" === #[Any] => Void
-		game >> "addVisualCharacterIn" === #[Any, Position] => Void
-		game >> "removeVisual" === #[Any] => Void
+		game >> "addVisual" === #[T] => Void
+		game >> "addVisualIn" === #[T, Position] => Void
+		game >> "addVisualCharacter" === #[T] => Void
+		game >> "addVisualCharacterIn" === #[T, Position] => Void
+		game >> "removeVisual" === #[T] => Void
 		game >> "whenKeyPressedDo" === #[Number, closure(#[], Void)] => Void
-		game >> "whenCollideDo" === #[Any, closure(#[T], Void)] => Void
+		game >> "whenCollideDo" === #[U, closure(#[T], Void)] => Void
 		game >> "onTick" === #[Number, String, closure(#[], Void)] => Void
 		game >> "removeTickEvent" === #[String] => Void
 		game >> "getObjectsIn" === #[Position] => List.of(T)
-		game >> "say" === #[Any, String] => Void
-		game >> "colliders" === #[Any] => List.of(T)
+		game >> "say" === #[T, String] => Void
+		game >> "colliders" === #[U] => List.of(T)
 		game >> "stop" === #[] => Void
 		game >> "start" === #[] => Void
 		game >> "at" === #[Number, Number] => Position
@@ -46,9 +46,9 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		game >> "center" === #[] => Position
 		game >> "ground" === #[String] => Void
 		game >> "boardGround" === #[String] => Void
-		game >> "hideAttributes" === #[Any] => Void
-		game >> "showAttributes" === #[Any] => Void
-		game >> "errorReporter" === #[Any] => Void
+		game >> "hideAttributes" === #[T] => Void
+		game >> "showAttributes" === #[T] => Void
+		game >> "errorReporter" === #[T] => Void
 		game >> "sound" === #[String] => Void
 
 		keyboard.allMethods.except("num") === #[] => Key

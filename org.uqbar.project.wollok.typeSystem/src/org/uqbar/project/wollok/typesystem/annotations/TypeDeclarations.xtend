@@ -219,6 +219,8 @@ abstract class TypeDeclarations {
 
 	def T() { Collection.methodParam("map", "T") }
 
+	def U() { Collection.methodParam("game", "U") }
+
 	def RETURN() { Closure.param(GenericTypeInfo.RETURN) }
 	
 	def Comparable() { unionType(Number, String, Date) } //TODO: Define as structural
