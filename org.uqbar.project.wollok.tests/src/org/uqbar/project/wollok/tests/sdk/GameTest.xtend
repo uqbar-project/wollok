@@ -67,6 +67,13 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
+	def void addVisualInUsingNullMustFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation addVisualIn doesn't support null parameters", { => game.addVisualIn(null, null) })
+		'''.test
+	}
+
+	@Test
 	def void collidersUsingNullMustFail() {
 		'''
 		assert.throwsExceptionWithMessage("Operation colliders doesn't support null parameters", { => game.colliders(null) })
