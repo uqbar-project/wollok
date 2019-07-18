@@ -7,10 +7,10 @@ object pepita {
   var energia = 100
   
   method comer(que) { 
-  	//  XPECT ! errors  --> "Do not compare for equality an Object. Send a Message" at "alpiste"
+  	//  XPECT warnings --> "Do not compare for equality an Object. Send a Message" at "que==alpiste"
 	if (que==alpiste)
 		energia += 5
-  	//  XPECT ! errors  --> "Do not compare for equality an Object. Send a Message" at "manzana"	
+  	//  XPECT warnings --> "Do not compare for equality an Object. Send a Message" at "que==manzana"	
   	else if (que==manzana) energia +=80
 
 	if (que==5)

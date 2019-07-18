@@ -6,16 +6,12 @@
  * @since 1.0
  */
 class Exception {
-	const message
-	const cause = null
-
-	/** Constructs a new exception with no detailed message. */
-	constructor() { message = null }
-	/** Constructs a new exception with the specified detail message. */
-	constructor(_message) = self(_message, null)
-	/** Constructs a new exception with the specified detail message and cause. */
-	constructor(_message, _cause) { message = _message ; cause = _cause }
+	/** specified detail message. */
+	const property message = null
 	
+	/** specified cause */
+	const property cause = null
+
 	/** Prints this exception and its backtrace to the console */
 	method printStackTrace() { self.printStackTrace(console) }
 
@@ -46,7 +42,7 @@ class Exception {
 	}
 	
 	/** @private */
-	method createStackTraceElement(contextDescription, location) = new StackTraceElement(contextDescription, location)
+	method createStackTraceElement(contextDescription, location) = new StackTraceElement(contextDescription = contextDescription, location = location)
 
 	/** Provides programmatic access to the stack trace information
 	 * printed by printStackTrace() with full path files for linking 
@@ -58,14 +54,8 @@ class Exception {
 	 */
 	method getStackTrace() native
 	
-	/** Answers the cause of the exception, if present */
-	method getCause() = cause
-	
-	/** Answers the detail message string of this exception. */
-	method getMessage() = message
-	
 	/** Overrides the behavior to compare exceptions */
-	override method equals(other) = other.className().equals(self.className()) && other.getMessage() == self.getMessage()
+	override method equals(other) = other.className().equals(self.className()) && other.message() == self.message()
 }
 
 /**
@@ -79,21 +69,15 @@ class StackOverflowException inherits Exception {}
 /**
  * An exception that is thrown when a specified element cannot be found
  */
-class ElementNotFoundException inherits Exception {
-	constructor(_message) = super(_message)
-	constructor(_message, _cause) = super(_message, _cause)
-}
+class ElementNotFoundException inherits Exception {}
 
 /**
  * An exception that is thrown when an object cannot understand a certain message
  */
 class MessageNotUnderstoodException inherits Exception {
-	constructor()
-	constructor(_message) = super(_message)
-	constructor(_message, _cause) = super(_message, _cause)
 	
 	/*
-	'''«super.getMessage()»
+	'''«super.message()»
 		«FOR m : wollokStack»
 		«(m as WExpression).method?.declaringContext?.contextName».«(m as WExpression).method?.name»():«NodeModelUtils.findActualNodeFor(m).textRegionWithLineInformation.lineNumber»
 		«ENDFOR»
@@ -108,10 +92,6 @@ class MessageNotUnderstoodException inherits Exception {
 class StackTraceElement {
 	const property contextDescription
 	const property location
-	constructor(_contextDescription, _location) {
-		contextDescription = _contextDescription
-		location = _location
-	}
 }
 
 /**
@@ -131,13 +111,22 @@ class Object {
 	 */
 	method identity() native
 	
-	/** Answers a list of instance variables for this Wollok object */
+	/** 
+	 * Answers a list of instance variables for this Wollok object
+	 * @private 
+	 */
 	method instanceVariables() native
 	
-	/** Retrieves a specific variable. Expects a name */
+	/** 
+	 * Retrieves a specific variable. Expects a name
+	 * @private 
+	 */
 	method instanceVariableFor(name) native
 	
-	/** Accesses a variable by name, in a reflexive way. */
+	/**
+	 * @private 
+	 * Accesses a variable by name, in a reflexive way. 
+	 */
 	method resolve(name) native
 	
 	/** Object description in english/spanish/... (depending on i18n configuration)
@@ -145,9 +134,15 @@ class Object {
 	 * Examples:
 	 * 		"2".kindName()  => Answers "a String"
 	 *  	2.kindName()    => Answers "a Integer"
+	 *
+	 * @private
 	 */
 	method kindName() native
-	/** Full name of Wollok object class */
+	
+	/** 
+	 * Full name of Wollok object class
+	 * @private 
+	 */
 	method className() native
 	
 	/**
@@ -181,7 +176,7 @@ class Object {
 	 * Generates a Pair key-value association. @see Pair.
 	 */
 	method ->(other) {
-		return new Pair(self, other)
+		return new Pair(x = self, y = other)
 	}
 
 	/**
@@ -232,8 +227,8 @@ class Object {
 					self.toString()
 				 else 
 				 	self.kindName()
-		const message = self.generateDoesNotUnderstandMessage(target, messageName, parameters.size())
-		throw new MessageNotUnderstoodException(message)
+		const aMessage = self.generateDoesNotUnderstandMessage(target, messageName, parameters.size())
+		throw new MessageNotUnderstoodException(message = aMessage)
 	}
 
 	/**
@@ -245,8 +240,8 @@ class Object {
 	method generateDoesNotUnderstandMessage(target, messageName, parametersSize) native
 	
 	/** Builds an exception with a message */		
-	method error(message) {
-		throw new Exception(message)
+	method error(aMessage) {
+		throw new Exception(message = aMessage)
 	}
 }
 
@@ -287,7 +282,7 @@ class Collection {
 	  *       [].max({ e => e.length() })                       
 	  *            => Throws error, list must not be empty            
 	  */
-	method max(closure) = self.maxIfEmpty(closure, { throw new ElementNotFoundException("collection is empty") })
+	method max(closure) = self.maxIfEmpty(closure, { throw new ElementNotFoundException(message = "collection is empty") })
 
 	/**
 	  * Answers the element that represents the maximum value in the collection.
@@ -344,7 +339,7 @@ class Collection {
 	  *       [].min({ e => e.length() })
 	  *             => Throws error, list must not be empty
 	  */
-	method min(closure) = self.absolute(closure, { a, b => a < b }, { throw new ElementNotFoundException("collection is empty") })
+	method min(closure) = self.absolute(closure, { a, b => a < b }, { throw new ElementNotFoundException(message = "collection is empty") })
 
 	/**
 	  * Answers the element that represents the minimum value in the 
@@ -395,10 +390,10 @@ class Collection {
 		const result = self.fold(null, { acc, e =>
 			const n = closure.apply(e) 
 			if (acc == null)
-				new Pair(e, n)
+				e -> n
 			else {
 				if (criteria.apply(n, acc.y()))
-					new Pair(e, n)
+					new Pair(x = e, y = n)
 				else
 					acc
 			}
@@ -521,7 +516,7 @@ class Collection {
 	 *      #{}.find { number => number.even() }         => Throws ElementNotFoundException
 	 */
 	method find(predicate) = self.findOrElse(predicate, { 
-		throw new ElementNotFoundException("there is no element that satisfies the predicate")
+		throw new ElementNotFoundException(message = "there is no element that satisfies the predicate")
 	})
 
 	/**
@@ -752,27 +747,27 @@ class Collection {
 	/**
 	* @see subclasses implementations
 	*/
-	method anyOne() = throw new Exception("Should be implemented by the subclasses")
+	method anyOne() = throw new Exception(message = "Should be implemented by the subclasses")
 	
 	/**
 	* @see subclasses implementations
 	*/
-	method add(element) = throw new Exception("Should be implemented by the subclasses")
+	method add(element) = throw new Exception(message = "Should be implemented by the subclasses")
 	
 	/**
 	* @see subclasses implementations
 	*/
-	method remove(element) = throw new Exception("Should be implemented by the subclasses")
+	method remove(element) = throw new Exception(message = "Should be implemented by the subclasses")
 	
 	/**
 	* @see subclasses implementations
 	*/
-	method fold(element, closure) = throw new Exception("Should be implemented by the subclasses")
+	method fold(element, closure) = throw new Exception(message = "Should be implemented by the subclasses")
 	
 	/**
 	 * @see subclasses implementations
 	 */
-	method size() = throw new Exception("Should be implemented by the subclasses")
+	method size() = throw new Exception(message = "Should be implemented by the subclasses")
 
 	/** 
 	 * Removes all of the elements from this set. This is a side effect operation.
@@ -804,9 +799,6 @@ class Collection {
  * @since 1.3
  */	
 class Set inherits Collection {
-	constructor(elements ...) {
-		self.addAll(elements)
-	}
 	
 	/** @private */
 	override method newInstance() = #{}
@@ -1024,13 +1016,6 @@ class Set inherits Collection {
  */
 class List inherits Collection {
 
-	constructor() {}
-
-	constructor(head, tail...) = self() {
-		self.add(head)
-		self.addAll(tail)
-	}
-
 	/** 
 	 * Answers the element at the specified position in this non-empty list.
 	 * 
@@ -1058,7 +1043,7 @@ class List inherits Collection {
 	 */
 	override method anyOne() {
 		if (self.isEmpty()) 
-			throw new Exception("Illegal operation 'anyOne' on empty collection")
+			throw new Exception(message = "Illegal operation 'anyOne' on empty collection")
 		else 
 			return self.get(0.randomUpTo(self.size()))
 	}
@@ -1381,7 +1366,7 @@ class Dictionary {
 	 *     phones.get("4004-4004")  => Answers rolo
 	 *     phones.get("4004-4005")  => Throws ElementNotFoundException
 	 */
-	method get(_key) = self.getOrElse(_key,{ => throw new ElementNotFoundException("there is no element associated with key " + _key) })
+	method get(_key) = self.getOrElse(_key,{ => throw new ElementNotFoundException(message = "there is no element associated with key " + _key) })
 
 	/**
 	 * Answers the number of key-value mappings in this Dictionary.
@@ -1541,6 +1526,14 @@ class Number {
 	 * (see definition of class Number)
 	 */
 	method coerceToInteger() native
+
+	/** 
+	 * @private
+	 * @see coerceToInteger
+	 *
+	 * Applies coercing strategy to integer. And throws exception if it is negative.
+	 */
+	method coerceToPositiveInteger() native
 	
 	/**
 	 * Two references are identical if they are the same number
@@ -1585,7 +1578,7 @@ class Number {
 	 * Example:
 	 * 		1..4   		Answers ==> a new Range object from 1 to 4
 	 */
-	method ..(end) = new Range(self, end)
+	method ..(_end) = new Range(start = self, end = _end)
 	
 	method >(other) native
 	method <(other) native
@@ -1930,6 +1923,41 @@ class String {
 	 */
 	method trim() native
 	
+	/** 
+	 * Answers a string reversing this string,
+	 * so that first character becomes last character of the new string and so on.
+	 * 
+	 * Example:
+	 * 		"hola".reverse()  ==> "aloh"
+	 */
+	method reverse() native
+		
+	/** 
+	 * @see take
+	 * 
+	 * Example:
+	 *     "word".takeLeft(3)  ==> Answers "wor"
+	 *     "word".takeLeft(0)  ==> Answers ""
+	 *     "word".takeLeft(-1) ==> Throws error
+	 *     "".takeLeft(2)      ==> Answers "" 
+	 */
+	method takeLeft(length) = self.take(length)
+		
+	/** 
+	 * Takes last n characters of this string.
+	 * n must be zero-positive integer.
+	 * 
+	 * Example:
+	 *     "word".takeRight(3)  ==> Answers "ord"
+	 *     "word".takeRight(0)  ==> Answers ""
+	 *     "word".takeRight(-1) ==> Throws error
+	 *     "".takeRight(2)      ==> Answers "" 
+	 */
+	method takeRight(_length) {
+		const length = _length.coerceToPositiveInteger().min(self.size())
+		return self.drop(self.size() - length)
+	}
+		
 	method <(aString) native
 	method <=(aString) {
 		return self < aString || (self.equals(aString))
@@ -2137,34 +2165,35 @@ class Boolean {
  * @since 1.3
  */
 class Range {
-	const start
-	const end
-	var step
+	const property start
+	const property end
+	var step = null
 	
 	/**
 	  * Instantiates a Range. 
-	  * Both _start and _end must be integer values.
+	  * Both start and end must be integer values.
 	  */
-	constructor(_start, _end) {
-		start = _start.coerceToInteger()
-		end = _end.coerceToInteger()
-		if (_start > _end) { 
-			step = -1 
-		} else {
-			step = 1
+	method initialize() {
+		start.coerceToInteger()
+		end.coerceToInteger()
+		if (step == null) {
+			if (start > end) { 
+				step = -1 
+			} else {
+				step = 1
+			}
 		}
 	}
-	
-	/**
-	 * Setter for step attribute.
-	 */
-	method step(_step) { step = _step }
 
+	method step(_step) {
+		step = _step
+	}
+	
 	/** 
 	 * Iterates over a Range from start to end, based on step.
 	 *
 	 * Example:
-	 *     new Range(1, 3).forEach { value => console.println(value) }
+	 *     new Range(start = 1, end = 3).forEach { value => console.println(value) }
 	 *     => prints 1, 2, 3
 	 */
 	method forEach(closure) native
@@ -2218,10 +2247,13 @@ class Range {
 	 * Answers the number of elements
 	 *
 	 * Examples:
-	 *     new Range(0, 2).size() ==> Answers 3
-	 *     new Range(-2, 2).size() ==> Answers 5  
+	 *     new Range(start = 0, end = 2).size() ==> Answers 3
+	 *     new Range(start = -2, end = 2).size() ==> Answers 5  
 	 */
-	method size() { return end - start + 1 }
+	method size()  {
+	    const base = (end - start) / step
+	    return if (base >= 0) base.truncate(0) + 1 else 0
+	}
 	
 	/** @see List#any(closure) */
 	method any(closure) = self.asList().any(closure)
@@ -2242,7 +2274,7 @@ class Range {
 	 * Answers a random integer contained in the range
 	 *
 	 * Example:
-	 *     new Range(1, 3).anyOne() ==> Answers 1 or 2 or 3
+	 *     new Range(start = 1, end = 3).anyOne() ==> Answers 1 or 2 or 3
 	 */		
 	method anyOne() native
 	
@@ -2250,8 +2282,8 @@ class Range {
 	 * Tests whether a number e is contained in the range
 	 *
 	 * Examples:
-	 *     new Range(2, 5).contains(4) ==> Answers true 
-	 *     new Range(2, 5).contains(0) ==> Answers false
+	 *     new Range(start = 2, end = 5).contains(4) ==> Answers true 
+	 *     new Range(start = 2, end = 5).contains(0) ==> Answers false
 	 */
 	method contains(e) = self.asList().contains(e)
 	
@@ -2334,15 +2366,9 @@ const daysOfWeek = [monday, tuesday, wednesday, thursday, friday, saturday, sund
  */	
 class Date {
 
-	/**
-	  * Default constructor instantiates the current day 
-	  */
-	constructor()
-	
-	/**
-	 * Constructor: you should pass the day, month and year (integer values only).
-	 */
-	constructor(_day, _month, _year) { self.initialize(_day, _month, _year) }
+	const property day
+	const property month
+	const property year
 	
 	/** String representation of a date */
 	override method toString() = self.toSmartString(false) 
@@ -2356,10 +2382,10 @@ class Date {
 	  * This operation has no side effect (a new date is returned).	  
 	  *
 	  * Example:
-	  *     new Date(12, 5, 2018).plusDays(1) 
+	  *     new Date(day = 12, month = 5, year = 2018).plusDays(1) 
 	  *        ==> Answers a Date[day = 13, month = 5, year = 2018], a day forward
 	  *     
-	  *     new Date(12, 5, 2018).plusDays(-1)
+	  *     new Date(day = 12, month = 5, year = 2018).plusDays(-1)
 	  *        ==> Answers a Date[day = 11, month = 5, year = 2018], a day back
 	  */
 	method plusDays(_days) native
@@ -2370,10 +2396,10 @@ class Date {
 	  * This operation has no side effect (a new date is returned).
 	  *
 	  * Example:
-	  *     new Date(31, 1, 2018).plusMonths(1)
+	  *     new Date(day = 31, month = 1, year = 2018).plusMonths(1)
       *        ==> Answers a Date[day = 28, month = 2, year = 2018], a month forward 
 	  *     
-	  *     new Date(12, 5, 2018).plusMonths(-1)
+	  *     new Date(day = 12, month = 5, year = 2018).plusMonths(-1)
 	  *        ==> Answers a Date[day = 12, month = 4, year = 2018], a month back
 	  */
 	method plusMonths(_months) native
@@ -2384,10 +2410,10 @@ class Date {
 	  * This operation has no side effect (a new date is returned).
 	  *
 	  * Example:
-	  *     new Date(31, 1, 2018).plusYears(1)
+	  *     new Date(day = 31, month = 1, year = 2018).plusYears(1)
       *        ==> Answers a Date[day = 31, month = 1, year = 2019], a year forward 
 	  *     
-	  *     new Date(12, 5, 2018).plusYears(-1)
+	  *     new Date(day = 12, month = 5, year = 2018).plusYears(-1)
 	  *        ==> Answers a Date[day = 12, month = 5, year = 2017], a year back
 	  */
 	method plusYears(_years) native
@@ -2396,26 +2422,15 @@ class Date {
 	  * Checks if the year is a leap year, like 2000, 2004, 2008...
 	  *
 	  * Example:
-	  *     new Date(12, 5, 2018).isLeapYear() ==> Answers false 
+	  *     new Date(day = 12, month = 5, year = 2018).isLeapYear() ==> Answers false 
 	  */
 	method isLeapYear() native
-	
-	/** @private */
-	method initialize(_day, _month, _year) native
-	
-	/** 
-	  * Answers the day number of the Date
-	  *
-	  * Example:
-	  *     new Date(12, 7, 2019).day() ==> Answers 12 
-	  */
-	method day() native
 	
 	/** Answers the day of the week of the Date with an object representation.
 	 * There is a wko (well known object) for every day of the week.
 	 *
 	 * Example:
-	 *     new Date(24, 2, 2018).dayOfWeek() ==> Answers saturday object
+	 *     new Date(day = 24, month = 2, year = 2018).dayOfWeek() ==> Answers saturday object
 	 */
 	method dayOfWeek() = daysOfWeek.get(self.internalDayOfWeek() - 1)
 	
@@ -2427,25 +2442,9 @@ class Date {
 	 * 7 = SUNDAY
 	 *
 	 * Example:
-	 *     new Date(24, 2, 2018).internalDayOfWeek() ==> Answers 6 (SATURDAY) 
+	 *     new Date(day = 24, month = 2, year = 2018).internalDayOfWeek() ==> Answers 6 (SATURDAY) 
 	 */
 	method internalDayOfWeek() native
-	
-	/** 
-	  * Answers the month number of the Date
-	  * 
-	  * Example:
-	  *     new Date(12, 7, 2019).month() ==> Answers 7 
-	  */
-	method month() native
-	
-	/** 
-	  * Answers the year number of the Date
-	  *
-	  * Example:
-	  *     new Date(12, 7, 2019).year() ==> Answers 2019 
-	  */
-	method year() native
 	
 	/** 
 	 * Answers the difference in days between two dates, assuming self is minuend and _aDate is subtrahend. 
@@ -2463,10 +2462,10 @@ class Date {
 	 * This operation has no side effect (a new date is returned).	 
      *
 	 * Examples:
-	 * 		new Date(1, 1, 2009).minusDays(1) 
+	 * 		new Date(day = 1, month = 1, year = 2009).minusDays(1) 
 	 *          ==> Answers a Date[day = 31, month = 12, year = 2008], a day back 
 	 *
-	 * 		new Date(1, 1, 2009).minusDays(-1) 
+	 * 		new Date(day = 1, month = 1, year = 2009).minusDays(-1) 
 	 *          ==> Answers a Date[day = 2, month = 1, year = 2009], a day forward 
 	 */
 	method minusDays(_days) native
@@ -2477,10 +2476,10 @@ class Date {
 	  * This operation has no side effect (a new date is returned).	  
 	  *
 	  * Examples:
-	  * 		new Date(1, 1, 2009).minusMonths(1) 
+	  * 		new Date(day = 1, month = 1, year = 2009).minusMonths(1) 
 	  *             ==> Answers a Date[day = 1, month = 12, year = 2008], a month back
 	  *
-	  * 		new Date(1, 1, 2009).minusMonths(-1) 
+	  * 		new Date(day = 1, month = 1, year = 2009).minusMonths(-1) 
 	  *             ==> Answers a Date[day = 1, month = 2, year = 2009], a month forward
 	  */
 	method minusMonths(_months) native
@@ -2491,10 +2490,10 @@ class Date {
 	  * This operation has no side effect (a new date is returned).	  
 	  *
 	  * Examples:
-	  * 		new Date(1, 1, 2009).minusYears(1) 
+	  * 		new Date(day = 1, month = 1, year = 2009).minusYears(1) 
 	  *             ==> Answers a Date[day = 1, month = 1, year = 2008], a year back
 	  *
-	  * 		new Date(1, 1, 2009).minusYears(-1) 
+	  * 		new Date(day = 1, month = 1, year = 2009).minusYears(-1) 
 	  *             ==> Answers a Date[day = 1, month = 1, year = 2010], a year forward
 	  */
 	method minusYears(_years) native
@@ -2508,23 +2507,23 @@ class Date {
 	  * Answers whether self is between two dates (both inclusive comparison)
 	  *
 	  * Example:
-	  *     new Date(2, 4, 2018).between(new Date(1, 4, 2018), new Date(2, 4, 2018))
+	  *     new Date(day = 2, month = 4, year = 2018).between(new Date(day = 1, month = 4, year = 2018), new Date(day = 2, month = 4, year = 2018))
 	  *         ==> Answers true 
 	  */
 	method between(_startDate, _endDate) = (self >= _startDate) && (self <= _endDate) 
 
 	/** Shows nicely an internal representation of a date **/
 	override method toSmartString(alreadyShown) =
-		"a Date[day = " + self.day() + ", month = " + self.month() + ", year = " + self.year() + "]"
+		"a Date[day = " + day + ", month = " + month + ", year = " + year + "]"
 
 	/** 
 	  * Shows a short, internal representation of a date 
 	  * 
 	  * Example:
-	  *     new Date(2, 4, 2018).shortDescription()
+	  *     new Date(day = 2, month = 4, year = 2018).shortDescription()
 	  *         ==> Answers "2/4/2018"
 	  */
 	override method shortDescription() =
-		"" + self.day() + "/" + self.month() + "/" + self.year()
+		"" + day + "/" + month + "/" + year
 
 }

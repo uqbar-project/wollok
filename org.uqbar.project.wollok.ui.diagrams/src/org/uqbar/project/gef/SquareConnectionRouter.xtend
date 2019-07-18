@@ -61,17 +61,17 @@ class SquareConnectionRouter extends AbstractRouter {
 	}
 	
 	override protected getStartPoint(Connection conn) {
-		if (conn.sourceAnchor?.equals(conn.targetAnchor)) {
+		if (conn.sourceAnchor !== null && conn.sourceAnchor.equals(conn.targetAnchor)) {
 			return new SelfReferenceAnchor(conn.sourceAnchor.owner).referencePoint
 		}
-		if (conn.sourceAnchor?.below(conn.targetAnchor)) {
+		if (conn.sourceAnchor !== null && conn.sourceAnchor.below(conn.targetAnchor)) {
 			return new DefaultWollokAnchor(conn.sourceAnchor.owner).referencePoint	
 		}
 		conn.sourceAnchor.referencePoint
 	}
 	
 	override protected getEndPoint(Connection conn) {
-		if (conn.sourceAnchor?.equals(conn.targetAnchor)) {
+		if (conn.sourceAnchor !== null && conn.sourceAnchor.equals(conn.targetAnchor)) {
 			return new SelfReferenceAnchor(conn.sourceAnchor.owner).getLocation(endPoint)
 		}
 		conn.targetAnchor?.getLocation(endPoint)

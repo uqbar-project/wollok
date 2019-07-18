@@ -5,7 +5,7 @@ class Golondrina {
 	var nivelAturdimiento = 0
 	
 	method energia() {
-		// XPECT errors --> "Super can only be used in an overriding method" at "super()"
+		// XPECT warnings --> "Super can only be used in an overriding method" at "super()"
 		super()
 		return energia
 	}
@@ -44,27 +44,27 @@ class GolondrinaSarasa inherits Golondrina {
 		comio = true
 	}
 	
-	// XPECT errors --> "Redefining a method just to delegate in super() is unnecessary." at "jugar"
+	// XPECT warnings --> "Redefining a method just to delegate in super() is unnecessary." at "jugar"
 	override method jugar(tiempo) {
 		super(tiempo)
 	}
 	
-	// XPECT errors --> "Redefining a method just to delegate in super() is unnecessary." at "alegria"
+	// XPECT warnings --> "Redefining a method just to delegate in super() is unnecessary." at "alegria"
 	override method alegria(tiempo) {
 		return super(tiempo)	
 	}	
 
-	// XPECT errors --> "Redefining a method just to delegate in super() is unnecessary." at "saltar"
+	// XPECT warnings --> "Redefining a method just to delegate in super() is unnecessary." at "saltar"
 	override method saltar() {
 		super()
 	}
 	
-	// XPECT errors --> "Redefining a method just to delegate in super() is unnecessary." at "estasCurada"
+	// XPECT warnings --> "Redefining a method just to delegate in super() is unnecessary." at "estasCurada"
 	override method estasCurada() {
         return super()
     }
 
-	// XPECT errors --> "Redefining a method just to delegate in super() is unnecessary." at "estasAlegre"
+	// XPECT warnings --> "Redefining a method just to delegate in super() is unnecessary." at "estasAlegre"
 	override method estasAlegre() = super()
 
 	override method estasPensativa() = !super()
@@ -91,10 +91,10 @@ class GolondrinaRenga inherits Golondrina {
 		super(1)
 	}
 	
-	// XPECT errors --> "Redefining a method just to delegate in super() is unnecessary." at "alegria"
+	// XPECT warnings --> "Redefining a method just to delegate in super() is unnecessary." at "alegria"
 	override method alegria(tiempo) = super(tiempo)
 
-	// XPECT errors --> "Redefining a method just to delegate in super() is unnecessary." at "estasCurada"
+	// XPECT warnings --> "Redefining a method just to delegate in super() is unnecessary." at "estasCurada"
 	override method estasCurada() = super()
 		
 }

@@ -5,7 +5,7 @@ import org.uqbar.project.wollok.interpreter.operation.WollokBasicBinaryOperation
 import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeBasicOperations
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
-import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
+import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * Gives access to some interpreter features which are needed to some Wollok objects to work properly.

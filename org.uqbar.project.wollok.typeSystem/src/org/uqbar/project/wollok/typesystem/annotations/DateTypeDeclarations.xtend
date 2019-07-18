@@ -2,18 +2,16 @@ package org.uqbar.project.wollok.typesystem.annotations
 
 class DateTypeDeclarations extends TypeDeclarations {
 	override declarations() {
-		Date.constructor(Number, Number, Number)
 		Date.comparable
+		Date.variable("day", Number)
+		Date.variable("month", Number)
+		Date.variable("year", Number)
 		Date - Date => Number
-		Date >> "initialize" === #[Number, Number, Number] => Void
 		Date >> "plusDays" === #[Number] => Date
 		Date >> "plusMonths" === #[Number] => Date
 		Date >> "plusYears" === #[Number] => Date
 		Date >> "isLeapYear" === #[] => Boolean
-		Date >> "day" === #[] => Number
-		Date >> "dayOfWeek" === #[] => Number
-		Date >> "month" === #[] => Number
-		Date >> "year" === #[] => Number
+		Date >> "internalDayOfWeek" === #[] => Number
 		Date >> "minusDays" === #[Number] => Date
 		Date >> "minusMonths" === #[Number] => Date
 		Date >> "minusYears" === #[Number] => Date

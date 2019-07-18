@@ -163,7 +163,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 	def void testMessageNotUnderstood() {
 		'''
 			class A { 
-				method m1() { throw new Exception("hello you see") }
+				method m1() { throw new Exception(message = "hello you see") }
 			}
 			
 			program p {	
@@ -175,7 +175,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				}	
 				catch e : MessageNotUnderstoodException {
 					// ok !
-					assert.equals("a A[] does not understand m2()", e.getMessage())
+					assert.equals("a A[] does not understand m2()", e.message())
 				}
 			}
 		'''.interpretPropagatingErrors
@@ -200,7 +200,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				}	
 				catch e : MessageNotUnderstoodException {
 					// ok !
-					assert.equals("a A[] does not understand m1(). However other methods exist with different argument count: m1(a)", e.getMessage())
+					assert.equals("a A[] does not understand m1(). However other methods exist with different argument count: m1(a)", e.message())
 				}
 			}
 		'''.interpretPropagatingErrors
@@ -225,8 +225,8 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				}	
 				catch e : MessageNotUnderstoodException {
 					// ok !
-					assert.equals("a A[] does not understand M1(param1). However other similar methods exist: m1(a)", e.getMessage())
-//					assert.equals("Wrong case-sensitive message M1(param1) sent to a A[]. Use m1(a)", e.getMessage())
+					assert.equals("a A[] does not understand M1(param1). However other similar methods exist: m1(a)", e.message())
+//					assert.equals("Wrong case-sensitive message M1(param1) sent to a A[]. Use m1(a)", e.message())
 				}
 			}
 		'''.interpretPropagatingErrors
@@ -251,7 +251,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				}	
 				catch e : MessageNotUnderstoodException {
 					// ok !
-					assert.equals("a A[] does not understand m1(param1, param2). However other methods exist with different argument count: m1(a)", e.getMessage())
+					assert.equals("a A[] does not understand m1(param1, param2). However other methods exist with different argument count: m1(a)", e.message())
 				}
 			}
 		'''.interpretPropagatingErrors
@@ -270,7 +270,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				}	
 				catch e : MessageNotUnderstoodException {
 					// ok !
-					assert.equals("4 does not understand truncate(). However other methods exist with different argument count: truncate(_decimals)", e.getMessage())
+					assert.equals("4 does not understand truncate(). However other methods exist with different argument count: truncate(_decimals)", e.message())
 				}
 			}
 		'''.interpretPropagatingErrors
@@ -289,7 +289,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				}	
 				catch e : MessageNotUnderstoodException {
 					// ok !
-					assert.equals("4 does not understand truncATE(param1). However other similar methods exist: truncate(_decimals)", e.getMessage())
+					assert.equals("4 does not understand truncATE(param1). However other similar methods exist: truncate(_decimals)", e.message())
 				}
 			}
 		'''.interpretPropagatingErrors
@@ -302,7 +302,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 	def void testMessageNotUnderstoodWithParams() {
 		'''
 			class A { 
-				method m1() { throw new Exception("hello you see") }
+				method m1() { throw new Exception(message = "hello you see") }
 			}
 			
 			program p {	
@@ -314,7 +314,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				}	
 				catch e : MessageNotUnderstoodException {
 					// ok !
-					assert.equals("a A[] does not understand m2(param1, param2)", e.getMessage())
+					assert.equals("a A[] does not understand m2(param1, param2)", e.message())
 				}
 			}
 		'''.interpretPropagatingErrors
@@ -324,7 +324,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 	def void testCatchWithoutType() {
 		'''
 			class A { 
-				method m1() { throw new Exception("hello you see") }
+				method m1() { throw new Exception(message = "hello you see") }
 			}
 			
 			program p {	
@@ -336,7 +336,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				}	
 				catch e {
 					// ok !
-					assert.equals("hello you see", e.getMessage())
+					assert.equals("hello you see", e.message())
 				}
 			}
 		'''.interpretPropagatingErrors
@@ -345,12 +345,12 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testMultipleMatchingCatchesWillOnlyExecuteTheFirstOne() {
 		'''
-			class AException inherits wollok.lang.Exception {  constructor(m) = super(m) }
-			class BException inherits AException {  constructor(m) = super(m) }
-			class CException inherits wollok.lang.Exception {  constructor(m) = super(m) }
+			class AException inherits wollok.lang.Exception {}
+			class BException inherits AException {}
+			class CException inherits wollok.lang.Exception {}
 			
 			class A { 
-				method m1() { throw new BException("hello you see") }
+				method m1() { throw new BException(message = "hello you see") }
 			}
 			
 			program p {	
@@ -376,11 +376,11 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testCatchWithoutTypeMatchingJustTheFirstCatch() {
 		'''
-			class AException inherits wollok.lang.Exception {  constructor(m) = super(m) }
-			class BException inherits wollok.lang.Exception {  constructor(m) = super(m) }
+			class AException inherits wollok.lang.Exception {}
+			class BException inherits wollok.lang.Exception {}
 			
 			class A { 
-				method m1() { throw new AException("hello you see") }
+				method m1() { throw new AException(message = "hello you see") }
 			}
 			
 			program p {	
@@ -406,11 +406,11 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testCatchWithoutTypeMatchingJustTheSecondCatch() {
 		'''
-			class AException inherits wollok.lang.Exception {  constructor(m) = super(m) }
-			class BException inherits wollok.lang.Exception {  constructor(m) = super(m) }
+			class AException inherits wollok.lang.Exception {}
+			class BException inherits wollok.lang.Exception {}
 			
 			class A { 
-				method m1() { throw new BException("hello you see") }
+				method m1() { throw new BException(message = "hello you see") }
 			}
 			
 			program p {	
@@ -436,12 +436,12 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testCatchWithoutTypeMatchingTheLastCatch() {
 		'''
-			class AException inherits wollok.lang.Exception {  constructor(m) = super(m) }
-			class BException inherits wollok.lang.Exception {  constructor(m) = super(m) }
-			class CException inherits wollok.lang.Exception {  constructor(m) = super(m) }
+			class AException inherits wollok.lang.Exception {}
+			class BException inherits wollok.lang.Exception {}
+			class CException inherits wollok.lang.Exception {}
 			
 			class A { 
-				method m1() { throw new CException("hello you see") }
+				method m1() { throw new CException(message = "hello you see") }
 			}
 			
 			program p {	
@@ -484,7 +484,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 			class C {
 				method foo() {
-					self.error("Gently failling!")
+					self.error("Gently failing!")
 				}
 			}
 			program p {
@@ -494,7 +494,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				}
 				catch e {
 					// OK !
-					assert.equals("Gently failling!", e.getMessage())
+					assert.equals("Gently failing!", e.message())
 				}
 			}
 		'''.interpretPropagatingErrors
@@ -504,11 +504,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 	def void testExceptionWithMessage(){
 		'''
 			class UserException inherits wollok.lang.Exception {
-			    var valorInvalido = 0
-			    
-			    constructor(mensaje, value) = super(mensaje) { 	
-			    	valorInvalido = value
-			    }
+			    var property valorInvalido = 0
 			}
 			
 			object monedero {
@@ -518,7 +514,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			
 			    method poner(cantidad) {
 			        if (cantidad < 0) {
-			            throw new UserException("La cantidad debe ser positiva", cantidad)
+			            throw new UserException(message = "La cantidad debe ser positiva", valorInvalido = cantidad)
 			        } 
 			        plata += cantidad
 			    }
@@ -531,7 +527,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 					monedero.poner(-2)
 					assert.fail('No should get here')
 				} catch e {
-					assert.equals("La cantidad debe ser positiva", e.getMessage())
+					assert.equals("La cantidad debe ser positiva", e.message())
 				}
 			}
 		'''.interpretPropagatingErrors
@@ -543,7 +539,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 		object cuenta {
 			method sacar() {
 				try {
-					throw new Exception("saldo insuficiente")
+					throw new Exception(message = "saldo insuficiente")
 				} 
 				catch e {
 					return 20
@@ -562,7 +558,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			method sacar(c) {
 				try {
 					if (c > 0)
-						throw new Exception("saldo insuficiente")
+						throw new Exception(message = "saldo insuficiente")
 					return 19
 				} 
 				catch e {
@@ -582,7 +578,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 		object cuenta {
 			method sacar(c) = try { 
 					if (c > 0) 
-						throw new Exception("saldo insuficiente") 
+						throw new Exception(message = "saldo insuficiente") 
 					else 19
 				} catch e {
 					20
@@ -599,7 +595,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		var a = 0
 		assert.throwsExceptionLike(
-			new AssertionException("Block { a + 1 } should have failed"),
+			new AssertionException(message = "Block { a + 1 } should have failed"),
 			{ assert.throwsException({ a + 1 }) }
 		)
 		'''.test

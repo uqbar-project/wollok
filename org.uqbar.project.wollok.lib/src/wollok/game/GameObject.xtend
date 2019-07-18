@@ -12,10 +12,10 @@ import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.lib.WPosition
 import org.uqbar.project.wollok.lib.WVisual
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * 
@@ -135,8 +135,9 @@ class GameObject {
 		.findFirst[ wObject.equals(visual)]
 		
 		if (result === null)
-			// TODO i18n
-			throw new WollokProgramExceptionWrapper(evaluator.newInstance(EXCEPTION, NLS.bind(Messages.WollokGame_VisualComponentNotFound, visual).javaToWollok))
+			throw new WollokProgramExceptionWrapper(evaluator.newInstance(EXCEPTION) => [
+				setReference("message", NLS.bind(Messages.WollokGame_VisualComponentNotFound, visual).javaToWollok)	
+			])
 			
 		result
 	}

@@ -56,7 +56,7 @@ import static extension org.eclipse.xtext.EcoreUtil2.*
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.notNullAnd
-import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
+import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * Extension methods for WMethodContainers.
@@ -445,7 +445,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		for (chunk : hierarchy) {
 			val method = chunk.methods.findFirst[ (!it.abstract || acceptsAbstract) && matches(message, params)]
 			if (method !== null)
-				return method;
+				return method
 		}
 		null
 	}
@@ -663,6 +663,12 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			// accumulate requirements
 			if (e instanceof WMixin) scm.addAll(e.superCallingMethods)
 			scm
+		]
+	}
+	
+	def static WMethodDeclaration getInitMethod(WMethodContainer it) {
+		methods.findFirst [ m |
+			m.name.equals(INITIALIZE_METHOD) && m.arguments.isEmpty
 		]
 	}
 	

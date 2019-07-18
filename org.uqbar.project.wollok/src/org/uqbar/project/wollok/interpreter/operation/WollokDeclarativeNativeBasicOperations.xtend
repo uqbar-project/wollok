@@ -9,10 +9,10 @@ import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.LazyWollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import static org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * WollokBasicBinaryOperations implementations which includes native

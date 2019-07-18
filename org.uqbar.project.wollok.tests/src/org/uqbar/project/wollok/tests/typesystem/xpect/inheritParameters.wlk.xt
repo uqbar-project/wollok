@@ -1,0 +1,36 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+class Ave {
+	var property energia
+		
+	method come() {
+		energia += 3
+	}
+}
+
+class Golondrina inherits Ave {
+	
+	method vola() {
+		energia -= 10 
+	}
+	
+}
+
+object entrenador {
+	// XPECT methodType at alimentar --> (Ave) => Void
+	method alimentar(ave) {
+		ave.come()
+	}
+	
+	// XPECT methodType at queVuele --> (Golondrina) => Void
+	method queVuele(golondrina) {
+		golondrina.vola()
+		self.alimentar(golondrina)
+	}
+}
+
+object wollok {
+	method testEntrenador() {
+		entrenador.alimentar(new Ave())
+	}
+}

@@ -40,13 +40,13 @@ class WollokParseHelper extends ParseHelper<WFile>{
 		
 		val p = parse(getAsStream(file.value), uri, null, resourceSetToUse)
 		p.eResource.URI = uri
-		if (p == null)
+		if (p === null)
 			throw new RuntimeException("Error while parsing program with resourceSet = " + resourceSetToUse.resources + " the following program: " + file.value)
 		return p
 	}
 	
 	def calculateUriFor(ResourceSet resourceSetToUse, Pair<String,String> file) {
-		if (file.key == null)
+		if (file.key === null)
 			computeUnusedUri(resourceSetToUse)
 		else
 			URI.createURI("target/test-files/" + file.key + "." + fileExtension);

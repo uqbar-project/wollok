@@ -2,6 +2,11 @@
 
 
 object pepita {
+	var energia = 0
+
+	// XPECT methodType at vola --> (Number) => Void
+	method vola(kms) { energia -= kms + 10 }
+	
 	method energia() = 100
 }
 
@@ -18,5 +23,10 @@ object wollok {
 	
 	// XPECT warnings --> "Type system: expected <<pepita>> but found <<arbol>>" at "arbol"
 	method prueba2() = self.tomarEnergia(arbol)
+	
+	method prueba3() {
+		// XPECT warnings --> "Type system: expected <<Number>> but found <<arbol>>" at "arbol"
+		pepita.vola(arbol)	
+	}
 }
 

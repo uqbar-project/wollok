@@ -16,12 +16,11 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * 
  * This just defines the strings in a single place for easing maintenance.
  * 
- * import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
+ * import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
  * 
  * @author jfernandes
  */
-//TODO: fix typo
-class WollokDSK {
+class WollokSDK {
 	
 	// ************************************************************************
 	// ** SDK Classes
@@ -60,7 +59,6 @@ class WollokDSK {
 	// ************************************************************************
 	// ** SDK Objects
 	// ************************************************************************
-
 	public static val CONSOLE = "wollok.lib.console"
 	public static val ASSERT = "wollok.lib.assert"
 	public static val ERROR = "wollok.lib.error"
@@ -74,6 +72,8 @@ class WollokDSK {
 	public static val EQUALITY = "=="
 	public static val GREATER_THAN = ">"
 		
+	public static val INITIALIZE_METHOD = "initialize"
+	
 	def static WollokObject getVoid(WollokInterpreter i, EObject context) {
 		(i.evaluator as WollokInterpreterEvaluator).getWKObject(VOID, context)
 	}

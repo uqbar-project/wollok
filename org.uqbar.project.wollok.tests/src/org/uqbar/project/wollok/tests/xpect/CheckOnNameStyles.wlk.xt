@@ -1,17 +1,17 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 
-	// XPECT errors --> "Object name must start with lowercase" at "Juancete"
+	// XPECT warnings --> "Object name should start with lowercase" at "Juancete"
 	object Juancete { }
 	
-	// XPECT errors --> "Class name must start with uppercase" at "carlota"
+	// XPECT warnings --> "Class name should start with uppercase" at "carlota"
 	class carlota {
 	}
 
 	class Carlotismo {
-		// XPECT errors --> "Variable name must start with lowercase" at "Carlota"
+		// XPECT warnings --> "Variable name should start with lowercase" at "Carlota"
 		var Carlota
 		
-		// XPECT errors --> "Parameter name must start with lowercase" at "Car"
+		// XPECT warnings --> "Parameter name should start with lowercase" at "Car"
 		constructor(Car) {
 			Carlota = Car	
 		}
@@ -23,11 +23,11 @@
 			
 			var car = 23
 			
-			// XPECT errors --> "Variable name must start with lowercase" at "Lota"
+			// XPECT warnings --> "Variable name should start with lowercase" at "Lota"
 			var Lota = "lota"
 			
 			var aBlock =
-			// XPECT errors --> "Parameter name must start with lowercase" at "A" 
+			// XPECT warnings --> "Parameter name should start with lowercase" at "A" 
 			{A 
 				=> A > 23
 			}

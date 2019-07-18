@@ -3,7 +3,7 @@
 object helper {}
 object testObject {
 	method motivation() {
-		/* XPECT errors ---
+		/* XPECT warnings ---
 			"This expression does not make sense in a sequence, as it does not produce any effects." at "(100)"
 			"This expression does not make sense in a sequence, as it does not produce any effects." at "helper"
 		--- */
@@ -18,7 +18,7 @@ object testObject {
 		return v
 	}
 	
-	// XPECT errors --> "This expression does not make sense in a sequence, as it does not produce any effects." at "helper" 
+	// XPECT warnings --> "This expression does not make sense in a sequence, as it does not produce any effects." at "helper" 
 	method invalidBlock() = { helper(100) }
 
 	method validBlock() = { var a = helper; [a] }
