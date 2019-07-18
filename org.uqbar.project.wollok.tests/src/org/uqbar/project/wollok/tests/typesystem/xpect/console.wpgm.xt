@@ -21,7 +21,7 @@ program p {
 	// XPECT type at console --> console 
  	console
 
-	// XPECT methodType at println --> (Any) => Void 
+	// XPECT type at "hola" --> String
  	console.println("hola") 	
 }
 
