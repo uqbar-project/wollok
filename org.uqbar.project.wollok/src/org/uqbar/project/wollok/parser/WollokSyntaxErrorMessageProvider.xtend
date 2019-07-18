@@ -71,13 +71,6 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 		new SyntaxErrorMessage(NLS.bind(Messages.SYNTAX_DIAGNOSIS_BAD_MESSAGE, completeMessage), SYNTAX_DIAGNOSTIC)
 	}
 	
-	def dispatch getSyntaxErrorMessage(IParserErrorContext context, EarlyExitException exception) {
-		val declaringContext = context.currentContext
-		if (declaringContext instanceof WSuite) {
-			return new SyntaxErrorMessage(Messages.SYNTAX_DIAGNOSIS_CODE_NOT_ALLOWED_IN_DESCRIBE, SYNTAX_DIAGNOSTIC)
-		}
-	}
-	
 	def dispatch getSyntaxErrorMessage(IParserErrorContext context, RecognitionException exception) {
 		enhanceSyntaxErrorMessage(context, exception)
 	}
@@ -129,9 +122,12 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 		if (specificMessage === null && context.currentContext !== null && context.grammarRule !== null) {
 			specificMessage = changeParserMessage(context.currentContext, context.grammarRule, exception)
 		}
+		if (specificMessage === null && declaringContext instanceof WSuite) {
+			specificMessage = new SpecialMessage(token, Messages.SYNTAX_DIAGNOSIS_CODE_NOT_ALLOWED_IN_DESCRIBE)
+		}
 		if (specificMessage === null) {
 			return super.getSyntaxErrorMessage(context)
-		}
+		}		
 
 		new SyntaxErrorMessage(specificMessage.message, SYNTAX_DIAGNOSTIC)
 	}
