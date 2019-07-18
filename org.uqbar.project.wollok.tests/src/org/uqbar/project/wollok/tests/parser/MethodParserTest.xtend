@@ -86,5 +86,5 @@ class MethodParserTest extends AbstractWollokInterpreterTestCase {
 		}
 		'''.expectsNoSyntaxError
 	}
-	
+
 }

@@ -82,4 +82,16 @@ class TestParserTest extends AbstractWollokInterpreterTestCase {
 		'''.expectsSyntaxError("Tests are not allowed in this definition.")
 	} 
 
+	@Test
+	def void codeNotAllowedInDescribe() {
+		'''
+		describe "a group of tests" {
+			"hola".size()
+			
+			test "nothing to do here" { 
+				assert.equals(1, 1)
+			}
+		}
+		'''.expectsSyntaxError("Code inside describe is not allowed, you should use the fixture for that")
+	}
 }
