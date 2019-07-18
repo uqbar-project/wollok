@@ -2,7 +2,7 @@ package org.uqbar.project.wollok.utils
 
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
-import static extension org.uqbar.project.wollok.sdk.WollokDSK.* 
+import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
 
 class WollokObjectUtils {
 

@@ -11,7 +11,7 @@ import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.stack.SourceCodeLocation
 import org.uqbar.project.wollok.interpreter.stack.XStackFrame
-import org.uqbar.project.wollok.sdk.WollokDSK
+import org.uqbar.project.wollok.sdk.WollokSDK
 
 /**
  * 
@@ -30,7 +30,7 @@ class XDebugStackFrame implements Serializable {
 	}
 
 	def static unwantedObjects() {
-		#[WollokConstants.SELF, WollokDSK.VOID, WollokDSK.CONSOLE]
+		#[WollokConstants.SELF, WollokSDK.VOID, WollokSDK.CONSOLE]
 	}
 
 	def static List<XDebugStackFrameVariable> debugVariables(EvaluationContext<WollokObject> context) {

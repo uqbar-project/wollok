@@ -7,53 +7,53 @@ object p {
     method run() {
         // XPECT errors --> "Expecting a boolean" at "null"
         if (null)
-            throw new Exception("asd")
+            throw new Exception(message = "asd")
 
         // XPECT errors --> "Expecting a boolean" at "2"
         if (2)
-            throw new Exception("asd")
+            throw new Exception(message = "asd")
         
         // XPECT errors --> "Expecting a boolean" at "pepita"    
         if (pepita)
-			throw new Exception("asd")
+			throw new Exception(message = "asd")
 		// XPECT errors --> "Expecting a boolean" at "new List()"	
 		if (new List())	 
-			throw new Exception("asd")
+			throw new Exception(message = "asd")
 		
 		// XPECT errors --> "Expecting a boolean" at "\"un poco de suerte\""	
 		if ("un poco de suerte")	 
-			throw new Exception("asd")
+			throw new Exception(message = "asd")
 			
 		// XPECT errors --> "Expecting a boolean" at "[1, 2, 3]"	
 		if ([1, 2, 3])	 
-			throw new Exception("asd")
+			throw new Exception(message = "asd")
 		
 		// XPECT errors --> "Expecting a boolean" at "#{1, 2, 3}"	
 		if (#{1, 2, 3})	 
-			throw new Exception("asd")	
+			throw new Exception(message = "asd")	
 		
 		// XPECT errors --> "Expecting a boolean" at "object {}"			
 		if (object {})	 
-			throw new Exception("asd")
+			throw new Exception(message = "asd")
 			
 		// XPECT errors --> "Expecting a boolean" at "{ a => a.toString() }"			
 		if ({ a => a.toString() })	 
-			throw new Exception("asd")	
+			throw new Exception(message = "asd")	
 
 		var a = 2
 		const b = 2
 		// XPECT errors --> "You did an assignment inside an if condition. This won't work, a boolean expression is expected. Maybe you wanted to use '==' instead of '=' ?" at "a = b"
 		if (a = b)
-			throw new Exception("asd")
+			throw new Exception(message = "asd")
 
 		// XPECT errors --> "You did an assignment inside an if condition. This won't work, a boolean expression is expected. Maybe you wanted to use '==' instead of '=' ?" at "(a = 3)"
 		if (a == 2 || (a = 3)) {
-			throw new Exception("asd")
+			throw new Exception(message = "asd")
 		}
 
 		// XPECT errors --> "You did an assignment inside an if condition. This won't work, a boolean expression is expected. Maybe you wanted to use '==' instead of '=' ?" at "(a = 3)"
 		if (a == 2 && (a = 3)) {
-			throw new Exception("asd")
+			throw new Exception(message = "asd")
 		}
 					
 		// *************************************
@@ -62,7 +62,7 @@ object p {
 		
         //  errors --> "Expecting a boolean" at "2+2"
         if (2+2)
-            throw new Exception("asd")
+            throw new Exception(message = "asd")
 
     }
     

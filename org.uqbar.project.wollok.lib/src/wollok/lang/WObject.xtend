@@ -8,12 +8,13 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.ToStringBuilder
 import org.uqbar.project.wollok.interpreter.core.WollokObject
-import org.uqbar.project.wollok.sdk.WollokDSK
 
 import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.sdk.WollokSDK
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * Wollok Object class. It's the native part
@@ -63,7 +64,10 @@ class WObject {
 	}
 
 	def variableMirror(String name) {
-		newInstance("wollok.mirror.InstanceVariableMirror", obj, name)
+		newInstance(INSTANCE_VARIABLE_MIRROR) => [
+			setReference("target", obj)
+			setReference("name", name.javaToWollok)
+		]
 	}
 
 	def resolve(String instVarName) {
@@ -76,7 +80,7 @@ class WObject {
 	}
 
 	def newList(Collection<WollokObject> elements) {
-		val list = newInstance(WollokDSK.LIST)
+		val list = newInstance(WollokSDK.LIST)
 		elements.forEach [
 			list.call("add", it.javaToWollok)
 		]

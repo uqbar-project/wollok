@@ -4,10 +4,10 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
-import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.wollokDsl.WThrow
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import org.uqbar.project.wollok.sdk.WollokSDK
 
 /**
  * Wraps a user exception (an exception thrown in the user code
@@ -39,11 +39,11 @@ class WollokProgramExceptionWrapper extends RuntimeException {
 	}
 	
 	def boolean isMessageNotUnderstood() {
-		wollokException.call("className").wollokToJava(String) != WollokDSK.MESSAGE_NOT_UNDERSTOOD_EXCEPTION
+		wollokException.call("className").wollokToJava(String) != WollokSDK.MESSAGE_NOT_UNDERSTOOD_EXCEPTION
 	}
 	
 	def boolean isAssertion(){
-		wollokException.call("className").wollokToJava(String) == WollokDSK.ASSERTION_EXCEPTION_FQN		
+		wollokException.call("className").wollokToJava(String) == WollokSDK.ASSERTION_EXCEPTION_FQN		
 	}
 	
 	def exceptionClassName() {
@@ -55,6 +55,6 @@ class WollokProgramExceptionWrapper extends RuntimeException {
 	}
 	
 	def getWollokMessage() {
-		wollokException.call("getMessage").wollokToJava(String) as String
+		wollokException.call("message").wollokToJava(String) as String
 	}
 }
