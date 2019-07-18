@@ -15,6 +15,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.WollokObjectUtils.*
 import static org.uqbar.project.wollok.sdk.WollokSDK.*
+import org.uqbar.project.wollok.utils.WollokObjectUtils
 
 /**
  * Wollok Object class. It's the native part
@@ -90,9 +91,7 @@ class WObject {
 	}
 
 	def checkNotNull(WollokObject o, String operation) {
-		if (o === null) {
-			throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_OPERATION_NULL_PARAMETER, operation))
-		}
+		WollokObjectUtils.checkNotNull(o, operation)
 	}
 
 }
