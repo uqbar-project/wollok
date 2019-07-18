@@ -9,7 +9,6 @@ import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 
 class CompoundTypeVariableSchema extends TypeVariableSchema {
 	GenericTypeSchema typeSchema
-	var instanceCount = 0
 		
 	new(TypeVariableOwner owner, GenericTypeSchema typeSchema) {
 		super(owner)
@@ -44,15 +43,11 @@ class CompoundTypeVariableSchema extends TypeVariableSchema {
 	// ************************************************************************
 	
 	override instanceFor(TypeVariable variable) {
-		registry.newSealed(createOwner, typeSchema.instanceFor(variable))
+		registry.newSealed(createCompoundOwner, typeSchema.instanceFor(variable))
 	}
 	
 	override instanceFor(ConcreteType concreteReceiver, MessageSend message) {
-		registry.newSealed(createOwner, typeSchema.instanceFor(concreteReceiver, message))
-	}
-	
-	def createOwner() {
-		new ParameterTypeVariableOwner(owner, '''$« instanceCount += 1 »''')
+		registry.newSealed(createCompoundOwner, typeSchema.instanceFor(concreteReceiver, message))
 	}
 
 	override toString() '''t(«owner.debugInfoInContext»: «typeSchema»)'''

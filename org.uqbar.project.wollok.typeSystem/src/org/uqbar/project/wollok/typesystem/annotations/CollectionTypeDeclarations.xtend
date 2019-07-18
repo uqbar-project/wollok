@@ -77,10 +77,10 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		C >> "asSet" === #[] => Set.of(E)
 		C >> "occurrencesOf" === #[E] => Number
 		
-		C >> "copy" === #[] => SelfType.of(E);
-		C >> "newInstance" === #[] => SelfType.of(Any);
-		C >> "filter" === #[predicate(E)] => SelfType.of(E);
-//		C >> "flatten" === #[] => SelfType.of(E); //TODO: Should be C<C<E>>
+		C >> "copy" === #[] => SelfType.of(E)
+		C >> "newInstance" === #[] => SelfType.of(Any)
+		C >> "filter" === #[predicate(E)] => SelfType.of(E)
+		C >> "flatten" === #[] => E //TODO: Should be C<C<E>>
 		
 		/* privates */
 		C >> "toStringPrefix" === #[] => String
@@ -110,11 +110,14 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 	}
 	
 	def rangeDeclarations(AnnotationContext R) {
-		R.constructor(Number, Number)
 		R.basicCollection(Number)
 		R.sumableCollection(Number)
 		R.basicComparableCollection(Number)
-		R >> "step" === #[Number] => Void;
+		R.variable("start", Number)
+		R.variable("end", Number)
+		R.variable("step", Number)
+		R >> "initialize" === #[] => Void
+		R >> "step" === #[Number] => Void
 		R >> "filter" === #[predicate(Number)] => List.of(Number);
 	}
 	

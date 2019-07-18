@@ -1,12 +1,5 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
 
-object errorTest {
-	// XPECT methodType at throwException --> (String) => Void
-	method throwException(message) {
-		error.throwWithMessage(message)
-	}
-}
-
 object runtimeTest {	
 	// XPECT methodType at runtimeInteractive --> (runtime) => Boolean
 	method runtimeInteractive(rt) = rt.isInteractive()

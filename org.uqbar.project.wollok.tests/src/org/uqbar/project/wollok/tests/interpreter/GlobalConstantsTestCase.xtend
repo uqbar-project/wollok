@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.tests.interpreter
 import org.junit.Test
 
 class GlobalConstantsTestCase extends AbstractWollokInterpreterTestCase {
+	
 	@Test
 	def void effects() {
 		#[
@@ -52,6 +53,23 @@ class GlobalConstantsTestCase extends AbstractWollokInterpreterTestCase {
 				chuck.entrenar()
 				assert.equals(1, pepita.energia())
 			}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testWithGlobalConstants() {
+		'''
+		object wollok {
+			method numero() = numeroLoco
+		}
+		
+		const numeroLoco = 87
+
+		describe "Tests" {
+			test "Numero loco es 87" {
+				assert.equals(87, numeroLoco)
+			}
+		}
 		'''.interpretPropagatingErrors
 	}
 }

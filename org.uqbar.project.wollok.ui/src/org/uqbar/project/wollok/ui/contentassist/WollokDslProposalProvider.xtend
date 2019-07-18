@@ -44,6 +44,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	val extension BasicTypeResolver typeResolver = new BasicTypeResolver
 	val extension WollokClassFinder classFinder = WollokClassFinder.getInstance
+	public static val String PRIVATE = "@private"
 	
 	WollokProposalBuilder builder
 	
@@ -59,15 +60,13 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 		labelExtension
 	}
 	
-	def synchronized getAllMethods(EObject obj) {
-		if (!obj.isTypeSystemEnabled)
-			return (obj as WMethodContainer).allUntypedMethods
-		else {
-		val tsLabelExtension = obtainLabelExtension
-			if (tsLabelExtension !== null)
-				tsLabelExtension.allMethods(obj)
-			else
-				newArrayList
+	def getAllMethods(EObject obj) {
+		val untypedMethods = obj.allUntypedMethods
+		if (!obj.isTypeSystemEnabled) {
+			untypedMethods
+		} else {
+			val typedMethods = obtainLabelExtension?.allMethods(obj)
+			if (typedMethods !== null && !typedMethods.isEmpty) typedMethods else untypedMethods
 		}
 	}
 
@@ -227,10 +226,12 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	def addProposal(ICompletionProposalAcceptor acceptor, WollokProposal aProposal) {
 		if (aProposal === null) return;
 		val proposal = createCompletionProposal(aProposal.methodName, aProposal.displayMessage, aProposal.image, aProposal.priority, aProposal.prefix, aProposal.context)
-		acceptor.accept(proposal)
+		var shouldShow = true
 		if (proposal instanceof ConfigurableCompletionProposal) {
 			proposal.additionalProposalInfo = WollokActivator.getInstance.multilineProvider.getDocumentation(aProposal.member)
+			shouldShow = proposal.additionalProposalInfo === null || !proposal.additionalProposalInfo.contains(PRIVATE)
 		}
+		if (shouldShow) acceptor.accept(proposal)
 	}
 	
 	// ****************************************

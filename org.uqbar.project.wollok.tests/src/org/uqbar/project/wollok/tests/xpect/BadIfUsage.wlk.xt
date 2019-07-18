@@ -35,7 +35,7 @@ object joaquin {
 object sarasita {
 	
 	method withTheReturnWithinTheBranches(n) {
-		// XPECT errors --> "Bad usage of if ! You must return the condition itself without using if. Use:  return n % 2 == 0" at "n % 2 == 0"
+		// XPECT warnings --> "Bad usage of if ! You must return the condition itself without using if. Use:  return n % 2 == 0" at "n % 2 == 0"
 		if (n % 2 == 0)
 			return true
 		else
@@ -43,7 +43,7 @@ object sarasita {
 	}
 	
 	method withBlockOnThenButSimpleExpressionOnElse(n) {
-		// XPECT errors --> "Bad usage of if ! You must return the condition itself without using if. Use:  return n % 2 == 0" at "n % 2 == 0"
+		// XPECT warnings --> "Bad usage of if ! You must return the condition itself without using if. Use:  return n % 2 == 0" at "n % 2 == 0"
 		if (n % 2 == 0) {
 			return true
 		}
@@ -52,7 +52,7 @@ object sarasita {
 	}
 	
 	method withSimpleExpressionNoBlockOnThen(n) {
-		// XPECT errors --> "Bad usage of if ! You must return the condition itself without using if. Use:  return n % 2 == 0" at "n % 2 == 0"
+		// XPECT warnings --> "Bad usage of if ! You must return the condition itself without using if. Use:  return n % 2 == 0" at "n % 2 == 0"
 		if (n % 2 == 0)
 			return true
 		else {
@@ -61,7 +61,7 @@ object sarasita {
 	}
 	
 	method withSimpleExpressionNoBlockReturnOutsideOfTheIf(n) {
-		// XPECT errors --> "Bad usage of if ! You must return the condition itself without using if. Use:  return n % 2 == 0" at "n % 2 == 0"
+		// XPECT warnings --> "Bad usage of if ! You must return the condition itself without using if. Use:  return n % 2 == 0" at "n % 2 == 0"
 		return if (n % 2 == 0)
 			true
 		else
@@ -69,7 +69,7 @@ object sarasita {
 	}
 	
 	method esPar5(n) {
-		// XPECT errors --> "Bad usage of if ! You must return the condition itself without using if. Use:  return n % 2 == 0" at "n % 2 == 0"
+		// XPECT warnings --> "Bad usage of if ! You must return the condition itself without using if. Use:  return n % 2 == 0" at "n % 2 == 0"
 		return if (n % 2 == 0) {
 			true
 		}
@@ -78,7 +78,7 @@ object sarasita {
 	}
 	
 	method invertedCondition(n) {
-		// XPECT errors --> "Bad usage of if ! You must return the condition itself without using if. Use:  return !(n % 2 == 0)" at "n % 2 == 0"
+		// XPECT warnings --> "Bad usage of if ! You must return the condition itself without using if. Use:  return !(n % 2 == 0)" at "n % 2 == 0"
 		return if (n % 2 == 0) {
 			false
 		}
@@ -87,7 +87,7 @@ object sarasita {
 	}
 	
 	method invertedConditionWithReturnWithinBranches(n) {
-		// XPECT errors --> "Bad usage of if ! You must return the condition itself without using if. Use:  return !(n % 2 == 0)" at "n % 2 == 0"
+		// XPECT warnings --> "Bad usage of if ! You must return the condition itself without using if. Use:  return !(n % 2 == 0)" at "n % 2 == 0"
 		if (n % 2 == 0) {
 			return false
 		}
@@ -96,7 +96,7 @@ object sarasita {
 	}
 	
 	method invertedWithSimpleExpressionNoBlock(n) {
-		// XPECT errors --> "Bad usage of if ! You must return the condition itself without using if. Use:  return !(n % 2 == 0)" at "n % 2 == 0"
+		// XPECT warnings --> "Bad usage of if ! You must return the condition itself without using if. Use:  return !(n % 2 == 0)" at "n % 2 == 0"
 		return if (n % 2 == 0) false else true
 	}
 	

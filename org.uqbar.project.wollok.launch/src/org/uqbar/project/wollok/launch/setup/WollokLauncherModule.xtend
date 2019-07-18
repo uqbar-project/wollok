@@ -41,7 +41,7 @@ class WollokLauncherModule extends WollokDslRuntimeModule {
 		else
 			return WollokLauncherInterpreterEvaluator
 	}
-	
+
 	override libs() {
 		params.libraries
 	}
@@ -50,12 +50,12 @@ class WollokLauncherModule extends WollokDslRuntimeModule {
 		if (params.tests) {
 			if (params.testPort !== null && params.testPort != 0)
 				return WollokRemoteTestReporter
-			else if (params.jsonOutput)
+			if (params.jsonOutput)
 				return WollokJSONTestsReporter
-			else
-				return WollokConsoleTestsReporter
-		} else
+			return WollokConsoleTestsReporter
+		} else {
 			return DefaultWollokTestsReporter
+		}
 	}
 
 	def Class<? extends WollokLauncherIssueHandler> bindWollokLauncherIssueHandler() {

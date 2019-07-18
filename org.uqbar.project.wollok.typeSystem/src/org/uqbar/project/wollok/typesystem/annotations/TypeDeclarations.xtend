@@ -10,9 +10,9 @@ import org.uqbar.project.wollok.typesystem.UnionType
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 abstract class TypeDeclarations {
 	TypeDeclarationTarget target

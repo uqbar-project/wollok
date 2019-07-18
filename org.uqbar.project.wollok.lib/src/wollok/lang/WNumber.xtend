@@ -2,7 +2,6 @@ package wollok.lang
 
 import java.math.BigDecimal
 import java.math.BigInteger
-import java.math.MathContext
 import java.math.RoundingMode
 import org.eclipse.osgi.util.NLS
 import org.uqbar.project.wollok.Messages
@@ -159,6 +158,10 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 		val num1 = BigInteger.valueOf(wrapped.coerceToInteger)
 		val divisor = other.coerceToInteger
 		num1.gcd(BigInteger.valueOf(divisor)).intValue
+	}
+
+	def coerceToPositiveInteger() {
+		wrapped.coerceToPositiveInteger
 	}
 
 	def coerceToInteger() {

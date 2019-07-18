@@ -5,7 +5,7 @@ import wollok.lang.Closure
 import wollok.lang.WList
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * Extension methods to WollokObject

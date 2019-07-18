@@ -17,7 +17,6 @@ import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
-import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.visitors.ParameterUsesVisitor
 import org.uqbar.project.wollok.visitors.VariableAssignmentsVisitor
 import org.uqbar.project.wollok.visitors.VariableUsesVisitor
@@ -75,6 +74,7 @@ import static org.uqbar.project.wollok.WollokConstants.*
 import static extension org.uqbar.project.wollok.model.ResourceUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
+import org.uqbar.project.wollok.sdk.WollokSDK
 
 /**
  * Extension methods to Wollok semantic model.
@@ -139,15 +139,15 @@ class WollokModelExtensions {
 	// ** WReferenciable
 	// ************************************************************************
 	def static dispatch isModifiableFrom(WVariable v, WAssignment from) {
-		v.declaration.writeable || from.initializesInstanceValueFromConstructor(v)
+		v.declaration.isWriteable || from.initializesInstanceValueFromConstructor(v)
 	}
-
+	
 	def static dispatch isModifiableFrom(WParameter v, WAssignment from) { false }
 
 	def static dispatch isModifiableFrom(WReferenciable v, WAssignment from) { true }
 
 	def static boolean initializesInstanceValueFromConstructor(WAssignment a, WVariable v) {
-		v.declaration.right === null && a.isWithinConstructor
+		v.declaration.initValue === null && a.isWithinConstructor
 	}
 
 	def static boolean isWithinConstructor(EObject e) {
@@ -159,11 +159,15 @@ class WollokModelExtensions {
 	def static dispatch boolean isAConstructor(WFixture it) { true }
 
 	/** A variable is global if its declaration (i.e. its eContainer) is direct child of a WFile element */
+	def static dispatch boolean isGlobal(WVariableDeclaration it) {
+		eContainer instanceof WFile
+	}
 	def static dispatch boolean isGlobal(WVariable it) {
-		eContainer instanceof WVariableDeclaration && eContainer.eContainer instanceof WFile
+		declaration.isGlobal
 	}
 	def static dispatch boolean isGlobal(WNamedObject it) { true }
 	def static dispatch boolean isGlobal(WParameter it) { false }
+	def static dispatch boolean isGlobal(WCatch it) { false }
 
 	// ************************************************************************
 	// ** Variable & parameter usage
@@ -201,7 +205,19 @@ class WollokModelExtensions {
 		reference.ref == referenciable
 	}
 
-	def static declaration(WVariable variable) { variable.eContainer as WVariableDeclaration }
+	// **************************************************************************************************************
+	// This is to allow WVariableDeclaration and WCatch to be polymorphic in the role of variable declarations.
+	// TODO I think we should change the definition of WCatch to use WParameter instead of WVariable.
+	def static declaration(WVariable variable) { 
+		variable.eContainer // as WVariableDeclaration
+	}
+
+	def static dispatch isWriteable(WVariableDeclaration it) { writeable }
+	def static dispatch isWriteable(WCatch it) { false }
+	def static dispatch initValue (WVariableDeclaration it) { right }
+	def static dispatch initValue (WCatch it) { null }
+	// **************************************************************************************************************
+
 
 	def static dispatch declarationContext(WVariable variable) { variable.declaration.eContainer }
 	def static dispatch declarationContext(WParameter parameter) { parameter.eContainer }
@@ -843,7 +859,7 @@ class WollokModelExtensions {
 	}
 
 	def static dispatch boolean isAssertWKO(EObject e) { false }
-	def static dispatch boolean isAssertWKO(WNamedObject wko) { wko.fqn == WollokDSK.ASSERT }
+	def static dispatch boolean isAssertWKO(WNamedObject wko) { wko.fqn == WollokSDK.ASSERT }
 	def static dispatch boolean isAssertWKO(WVariableReference ref) { ref.ref.isAssertWKO }
 
 	// ************************************************************************

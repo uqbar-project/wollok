@@ -44,5 +44,3 @@ class WollokLauncherSetup extends WollokDslStandaloneSetup {
 	}
 	
 }
-
-

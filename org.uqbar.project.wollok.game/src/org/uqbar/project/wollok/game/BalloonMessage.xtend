@@ -22,7 +22,7 @@ class BalloonMessage {
 		timestamp != 0 && new Date().time - timestamp > timeToLive   
 	}
 	
-	def draw(Window window, VisualComponent character) {
+	def void draw(Window window, VisualComponent character) {
 		if (timestamp == 0)
 			timestamp = new Date().time
 		

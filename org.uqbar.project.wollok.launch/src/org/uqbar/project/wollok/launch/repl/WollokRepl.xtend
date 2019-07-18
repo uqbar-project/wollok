@@ -43,7 +43,7 @@ class WollokRepl {
 		this.injector = injector
 		this.launcher = launcher
 		this.interpreter = interpreter
-		this.interpreter.interactive = true
+		this.interpreter.init(true)
 		this.mainFile = mainFile
 		this.parsedMainFile = parsedMainFile
 		this.formatter = formatter
@@ -143,7 +143,9 @@ class WollokRepl {
 		resourceSet.resources.add(resource)
 
 		resource.load(in, #{})
-		launcher.validate(injector, resource, [], [throw new ReplParserException(it)])
+		if (launcher.shouldValidate) {
+			launcher.validate(injector, resource, [], [throw new ReplParserException(it)])			
+		}
 		resource.contents.get(0) as WFile
 	}
 

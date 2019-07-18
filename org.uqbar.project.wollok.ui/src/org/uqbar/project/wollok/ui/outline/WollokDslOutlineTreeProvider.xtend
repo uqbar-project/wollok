@@ -6,11 +6,13 @@ import org.eclipse.xtext.ui.editor.outline.IOutlineNode
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WConstructor
+import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuite
+import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
@@ -62,7 +64,9 @@ class WollokDslOutlineTreeProvider extends DefaultOutlineTreeProvider {
 	def _isLeaf(WMethodDeclaration m) 	{ true }
 	def _isLeaf(WConstructor c) 		{ true }
 	def _isLeaf(WMemberFeatureCall c) 	{ true }
-	
+	def _isLeaf(WTest t)			 	{ true }
+	def _isLeaf(WFixture t)			 	{ true }
+		
 	/** don't want to go inside a var (unless it's assigned to an object literal) */
 	def _isLeaf(WVariableDeclaration v) { v.right === null || !(v.right instanceof WObjectLiteral) }
 	def _isLeaf(WAssignment v) { !(v.value instanceof WObjectLiteral) }

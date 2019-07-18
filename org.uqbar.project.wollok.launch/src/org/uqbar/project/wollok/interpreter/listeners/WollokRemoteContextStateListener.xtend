@@ -17,6 +17,7 @@ class WollokRemoteContextStateListener implements XInterpreterListener {
 	CallHandler callHandler = new CallHandler
 	XContextStateListener contextStateListener
 	List<XDebugStackFrameVariable> currentVariables = newArrayList
+	boolean firstTime = true
 
 	new(WollokInterpreter interpreter, int requestPort) {
 		this.interpreter = interpreter
@@ -30,7 +31,11 @@ class WollokRemoteContextStateListener implements XInterpreterListener {
 	override terminated() {
 		try {
 			XDebugStackFrame.initAllVariables()
-			val variables = new XDebugStackFrame(interpreter.currentThread.stack.peek).variables
+			var variables = #[]
+			val currentStack = interpreter.currentThread.stack
+			if (!currentStack.isEmpty) {
+				variables = new XDebugStackFrame(currentStack.peek).variables	
+			}
 			variables.notifyPossibleStateChanged
 		} catch (Exception e) {
 			val realCause = e.realCause
@@ -53,11 +58,12 @@ class WollokRemoteContextStateListener implements XInterpreterListener {
 		if (newVariables.stateChanged) {
 			currentVariables = newVariables
 			contextStateListener.stateChanged(currentVariables)
+			firstTime = false
 		}
 	}
 	
 	def stateChanged(List<XDebugStackFrameVariable> newVariables) {
-		!currentVariables.map [ toString ].equals(newVariables.map [ toString ])
+		firstTime || !currentVariables.map [ toString ].equals(newVariables.map [ toString ])
 	}
-	
+
 }

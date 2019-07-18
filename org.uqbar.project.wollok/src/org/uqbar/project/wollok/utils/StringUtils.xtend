@@ -42,4 +42,8 @@ class StringUtils {
 	static def copyUptoLast(String string, Character character) {
 		string.substring(0, string.lastIndexOf(character))
 	}
+	
+	static def safeLength(String value) {
+		(value ?: "").length
+	}
 }

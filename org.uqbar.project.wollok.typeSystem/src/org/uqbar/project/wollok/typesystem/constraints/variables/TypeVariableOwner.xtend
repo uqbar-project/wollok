@@ -171,7 +171,7 @@ class ParameterTypeVariableOwner extends TypeVariableOwner {
 	}
 
 	override checkCanBeVoid() {
-		// Do nothing, allways allow true (TODO sure?)
+		// Do nothing, always allow true (TODO sure?)
 	}
 
 	override getErrorReportTarget() {

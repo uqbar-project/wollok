@@ -19,7 +19,7 @@ class Repeater {
 program natives {
 	const repeater = new Repeater()
 
-	const closure = { throw new Exception("SoundGarden") }
+	const closure = { throw new Exception(message = "SoundGarden") }
 	try {
 		repeater.ntimes(1, closure)
 	}
@@ -46,7 +46,7 @@ program natives {
 			} catch e {
 				assert.equals(e.getStackTraceAsString(), 
 		"wollok.lib.AssertionException: Expected [1] but found [true]
-			at  [/lib.wlk:86]
+			at wollok.lib.assert.equals(expected,actual) [/lib.wlk:75]
 			at  [/assertTest.wpgm:3]
 		"
 				)

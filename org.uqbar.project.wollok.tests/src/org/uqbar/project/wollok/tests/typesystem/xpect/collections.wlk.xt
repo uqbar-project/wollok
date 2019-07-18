@@ -194,17 +194,17 @@ class TestList {
 		// XPECT type at filterList --> {({(Number) => Boolean}) => List<Number>}
 		const filterList = { cond => list.filter(cond) }
 
-		// XPECT! type at plusList --> {(Collection<Number>) => List<Number>}
-//		const plusList = { c => list + c }
+		// XPECT type at plusList --> {(Collection<Number>) => List<Number>}
+		const plusList = { c => list + c }
 		
-		// XPECT! type at copyList --> List<Number>
-//		const copyList = list.copy()
+		// XPECT type at copyList --> List<Number>
+		const copyList = list.copy()
 		
 		// XPECT type at newInstanceList --> List<Any>
 		const newInstanceList = list.newInstance()
 
-		// XPECT! type at flattenList --> {() => List<Number>}
-//		const flattenList = { [list].flatten() }
+		// XPECT type at flattenList --> {() => List<Number>}
+		const flattenList = { [list].flatten() }
 	}			
 }
 
@@ -229,8 +229,8 @@ class SetList {
 	}
 
 	method selfTypedSet() {
-		// XPECT! type at filterSet --> {({(Number) => Boolean}) => Set<Number>}
-//		const filterSet = { cond => set.filter(cond) }
+		// XPECT type at filterSet --> {({(Number) => Boolean}) => Set<Number>}
+		const filterSet = { cond => set.filter(cond) }
 
 		// XPECT type at plusSet --> {(Collection<Number>) => Set<Number>}
 		const plusSet = { c => set + c }
@@ -241,7 +241,7 @@ class SetList {
 		// XPECT type at newInstanceSet --> Set<Any>
 		const newInstanceSet = set.newInstance()
 
-		// XPECT! type at flattenSet --> {() => Set<Number>}
-//		const flattenSet = { #{set}.flatten() }
+		// XPECT type at flattenSet --> {() => Set<Number>}
+		const flattenSet = { #{set}.flatten() }
 	}
 }

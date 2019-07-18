@@ -23,10 +23,11 @@ class ObservableStack<E> extends Stack<E> implements Serializable {
 		o
 	}
 	
-	def addObserver(StackObserver o) {
+	def addObserver(StackObserver<E> o) {
 		this.observers.add(o)
 	}
-	def removeObserver(StackObserver o) {
+	
+	def removeObserver(StackObserver<E> o) {
 		this.observers.remove(o)
 	}
 	
