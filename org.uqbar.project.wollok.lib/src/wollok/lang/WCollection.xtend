@@ -73,7 +73,7 @@ class WCollection<T extends Collection<WollokObject>> {
 		continuation.doApply()
 	}
 
-	def void add(WollokObject e) { 
+	def void add(WollokObject e) {
 		wrapped.add(e)
 	}
 	

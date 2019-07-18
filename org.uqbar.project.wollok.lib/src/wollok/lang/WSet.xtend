@@ -20,8 +20,8 @@ class WSet extends WCollection<Set<WollokObject>> implements JavaWrapper<Set<Wol
 		wrapped = new TreeSet<WollokObject>(new WollokObjectComparator)
 	}
 	
-	def anyOne() { 
-		if(wrapped.isEmpty) 
+	def anyOne() {
+		if (wrapped.isEmpty) 
 			throw new WollokRuntimeException(NLS.bind(Messages.WollokInterpreter_illegalOperationEmptyCollection, "anyOne"))
 		else
 			wrapped.head

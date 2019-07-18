@@ -96,7 +96,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 			handleExceptionInTest(e, test)
 		}
 	}
-	
+
 	protected def WollokObject handleExceptionInTest(Exception e, WTest test) {
 		if (e.isAssertionException) {
 			wollokTestsReporter.reportTestAssertError(test, e.generateAssertionError, e.lineNumber, e.URI)
@@ -138,7 +138,7 @@ class SuiteBuilder {
 		if (test !== null) {
 			// Now, declaring test local variables as suite wko instance variables
 			test.variableDeclarations.forEach[ variable |
-				suiteObject.addMember(variable)
+				suiteObject.addMember(variable, false)
 			]
 		}
 		suiteObject
