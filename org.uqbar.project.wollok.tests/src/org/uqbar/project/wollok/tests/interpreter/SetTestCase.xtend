@@ -210,4 +210,58 @@ class SetTestCase extends CollectionTestCase {
 		'''.test
 	}
 
+	@Test
+	def void equalsForObjectsOverridingEquals() {
+		'''
+		class AveLoca {
+			var property energia = 0
+			var property nombre = "pepita"
+			
+			method volar() {
+				energia -= 50
+			}
+			
+			method comer(gramos) {
+				energia += gramos * 2
+			}
+		
+			override method ==(otraAve) {
+				return energia == otraAve.energia()
+			}
+		
+		}
+		
+		test "two sets are equals because of the definition of their objects" {
+			const pepita = new AveLoca()
+			const unSet = #{ pepita }
+			const otroSet = #{ new AveLoca() }
+			assert.equals(unSet, otroSet)
+		}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void equalsForObjectsNotOverridingEquals() {
+		'''
+		class AveLoca {
+			var property energia = 0
+			var property nombre = "pepita"
+			
+			method volar() {
+				energia -= 50
+			}
+			
+			method comer(gramos) {
+				energia += gramos * 2
+			}
+		}
+		
+		test "two sets are different because of the definition of their objects" {
+			const pepita = new AveLoca()
+			const unSet = #{ pepita }
+			const otroSet = #{ new AveLoca() }
+			assert.notThat(unSet == otroSet)
+		}
+		'''.interpretPropagatingErrors
+	}	
 }
