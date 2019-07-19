@@ -245,8 +245,8 @@ class StringPrinter {
 	var buffer = ""
 	
 	method println(obj) {
-		self.checkNotNull(obj, "println")
-		buffer += obj.toString() + console.newline()
+		const objAsString = if (obj === null) "null" else obj.toString()
+		buffer += objAsString + console.newline()
 	}
 	
 	method getBuffer() = buffer

@@ -12,7 +12,7 @@ import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 /**
  * 
  * @author jfernandes
- * @author dodain      Using named parameters
+ * @author dodain
  * 
  */
 class Range extends AbstractJavaWrapper<IntegerRange> {

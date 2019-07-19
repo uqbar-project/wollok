@@ -356,13 +356,6 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void remUsingNull() {
-		'''
-		assert.throwsExceptionWithMessage("Operation rem doesn't support null parameters", { => 2.rem(null) })
-		'''.test
-	}
-	
-	@Test
 	def void remainder() {
 		'''
 		const remainder = 17.rem(7)
