@@ -13,6 +13,7 @@ class WollokTestContainer {
 	var List<WollokTestResult> tests = newArrayList
 	var List<WollokTestResult> allTests = newArrayList
 	var boolean processingManyFiles = false
+	long millisecondsElapsed = 0
 	
 	override toString(){
 		mainResource.toString

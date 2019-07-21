@@ -16,7 +16,6 @@ import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
-import org.uqbar.project.wollok.sdk.WollokSDK
 import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -275,13 +274,25 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static getOwnVariableDeclaration(WMethodContainer it, String name) {
 		variableDeclarations.findFirst [ variable?.name.equals(name) ]
 	}
-	
+
 	def static findMethod(WMethodContainer c, WMemberFeatureCall it) {
 		c.allUntypedMethods.findFirst [ m | m.matches(feature, memberCallArguments) ]	
 	}
 	
 	def static findMethodIgnoreCase(WMethodContainer c, String methodName, int argumentsSize) {
 		c.allUntypedMethods.findMethodIgnoreCase(methodName, argumentsSize) 
+	}
+
+	def static hasEqualsMethod(WollokObject o) {
+		o.behavior.methods.hasMethodIgnoreCase(EQUALITY, 1) || o.behavior.methods.hasMethodIgnoreCase("equals", 1)  
+	}
+	
+	def static hasGreaterThanMethod(WollokObject o) {
+		o.behavior.methods.hasMethodIgnoreCase(GREATER_THAN, 1)  
+	}
+
+	def static hasMethodIgnoreCase(Iterable<WMethodDeclaration> methods, String methodName, int argumentsSize) {
+		methods.findMethodIgnoreCase(methodName, argumentsSize) !== null 
 	}
 
 	def static findMethodIgnoreCase(Iterable<WMethodDeclaration> methods, String methodName, int argumentsSize) {
@@ -373,8 +384,8 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static boolean inheritsFromLibClass(WMethodContainer it) { parent.isCoreObject }
 
 	def static dispatch boolean inheritsFromObject(EObject e) { false }
-	def static dispatch boolean inheritsFromObject(WClass c) { c.parent.fqn.equals(WollokSDK.OBJECT) }
-	def static dispatch boolean inheritsFromObject(WNamedObject o) { o.parent.fqn.equals(WollokSDK.OBJECT) }
+	def static dispatch boolean inheritsFromObject(WClass c) { c.parent.fqn.equals(OBJECT) }
+	def static dispatch boolean inheritsFromObject(WNamedObject o) { o.parent.fqn.equals(OBJECT) }
 	def static dispatch boolean inheritsFromObject(WObjectLiteral o) { true }
 
 	def static dispatch WClass parent(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
@@ -434,7 +445,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		for (chunk : hierarchy) {
 			val method = chunk.methods.findFirst[ (!it.abstract || acceptsAbstract) && matches(message, params)]
 			if (method !== null)
-				return method;
+				return method
 		}
 		null
 	}

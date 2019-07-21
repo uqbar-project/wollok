@@ -36,6 +36,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 		if (main !== null)
 			main.eval
 		else {
+			val time = System.currentTimeMillis
 			val _isASuite = isASuite
 			var testsToRun = tests
 			var String suiteName = null
@@ -54,7 +55,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 					}
 				]
 			} finally {
-				wollokTestsReporter.finished
+				wollokTestsReporter.finished(System.currentTimeMillis - time)
 			}
 		}
 	}
@@ -87,9 +88,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	override dispatch evaluate(WTest test) {
 		try {
 			test.elements.forEach [ expr |
-				interpreter.performOnStack(expr, currentContext) [ |
-					expr.eval
-				]
+				interpreter.performOnStack(expr, currentContext) [ | expr.eval ]
 			]
 			wollokTestsReporter.reportTestOk(test)
 			null
@@ -97,7 +96,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 			handleExceptionInTest(e, test)
 		}
 	}
-	
+
 	protected def WollokObject handleExceptionInTest(Exception e, WTest test) {
 		if (e.isAssertionException) {
 			wollokTestsReporter.reportTestAssertError(test, e.generateAssertionError, e.lineNumber, e.URI)
@@ -139,7 +138,7 @@ class SuiteBuilder {
 		if (test !== null) {
 			// Now, declaring test local variables as suite wko instance variables
 			test.variableDeclarations.forEach[ variable |
-				suiteObject.addMember(variable)
+				suiteObject.addMember(variable, false)
 			]
 		}
 		suiteObject

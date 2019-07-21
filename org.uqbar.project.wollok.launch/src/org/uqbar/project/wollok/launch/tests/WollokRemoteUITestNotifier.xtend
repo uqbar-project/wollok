@@ -18,7 +18,7 @@ interface WollokRemoteUITestNotifier {
 	
 	def void error(String testName, String exceptionAsString, StackTraceElementDTO[] stackTrace, int lineNumber, String resource)
 	
-	def void testsResult(List<WollokResultTestDTO> resultTests)
+	def void testsResult(List<WollokResultTestDTO> resultTests, long millisecondsElapsed)
 
 	def void showFailuresAndErrorsOnly(boolean showFailuresAndErrors)
 	

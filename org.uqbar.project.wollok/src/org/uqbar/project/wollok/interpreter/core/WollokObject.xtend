@@ -57,8 +57,12 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	def dispatch void addMember(WMethodDeclaration method) { /** Nothing to do */ }
 
 	def dispatch void addMember(WVariableDeclaration declaration) {
+		declaration.addMember(true)
+	}
+
+	def void addMember(WVariableDeclaration declaration, boolean initializeIt) {
 		instanceVariables.put(declaration.variable.name, interpreter.performOnStack(declaration, this) [|
-			declaration.right?.eval
+			if (initializeIt) declaration.right?.eval else null
 		])
 		if (declaration.property) {
 			properties.add(declaration.variable.name)

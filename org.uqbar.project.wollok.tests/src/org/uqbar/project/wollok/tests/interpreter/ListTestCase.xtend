@@ -191,5 +191,20 @@ class ListTestCase extends CollectionTestCase {
 		}
 		'''.interpretPropagatingErrors
 	}	
+
+	@Test
+	def void elementsToStringForLongLists() {
+		'''
+		const unList = []
+		(1..70).forEach { i => unList.add(i) }
+		assert.equals("[...70 elements]", unList.toString())
+		'''.test
+	}
 	
+	@Test
+	def void maxSentToEmptyList() {
+		'''
+		assert.throwsExceptionWithMessage("Message max sent to an empty collection. It must have at least one element.", { [].max() })
+		'''.test
+	}	
 }

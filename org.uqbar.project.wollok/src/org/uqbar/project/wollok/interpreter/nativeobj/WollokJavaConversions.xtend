@@ -53,17 +53,17 @@ class WollokJavaConversions {
 		if (t == Object) return o
 
 		if (o.isNativeType(CLOSURE) && t == Function1)
-			return [Object a|((o as WollokObject).getNativeObject(CLOSURE) as Function1).apply(a)]
+			return [Object a|((o as WollokObject).getNativeObject(CLOSURE) as Function1<Object, Object>).apply(a)]
 		if (o.isNativeType(NUMBER) && (t == BigDecimal || t == Double.TYPE))
 			return ((o as WollokObject).getNativeObject(NUMBER) as JavaWrapper<BigDecimal>).wrapped.adaptValue
 		if (o.isNativeType(STRING) && t == String)
 			return ((o as WollokObject).getNativeObject(STRING) as JavaWrapper<String>).wrapped
 		if (o.isNativeType(LIST) && (t == Collection || t == List))
-			return ((o as WollokObject).getNativeObject(LIST) as JavaWrapper<List<?>>).wrapped
+			return ((o as WollokObject).getNativeObject(LIST) as JavaWrapper<List<WollokObject>>).wrapped
 		if (o.isNativeType(DICTIONARY) && (t == Collection || t == Map))
-			return ((o as WollokObject).getNativeObject(DICTIONARY) as JavaWrapper<Map<?,?>>).wrapped
+			return ((o as WollokObject).getNativeObject(DICTIONARY) as JavaWrapper<Map<WollokObject, WollokObject>>).wrapped
 		if (o.isNativeType(SET) && (t == Collection || t == Set))
-			return ((o as WollokObject).getNativeObject(SET) as JavaWrapper<Set<?>>).wrapped
+			return ((o as WollokObject).getNativeObject(SET) as JavaWrapper<Set<WollokObject>>).wrapped
 		if (o.isNativeType(BOOLEAN) && (t == Boolean || t == Boolean.TYPE))
 			return ((o as WollokObject).getNativeObject(BOOLEAN) as JavaWrapper<Boolean>).wrapped
 		if (o.isNativeType(DATE)) {
@@ -89,7 +89,7 @@ class WollokJavaConversions {
 
 	def static WollokObject javaToWollok(Object o) {
 		if (o === null) return null
-		convertJavaToWollok(o)
+		o.convertJavaToWollok
 	}
 
 	def static dispatch WollokObject convertJavaToWollok(BigInteger o) { evaluator.getOrCreateNumber(o.toString) }

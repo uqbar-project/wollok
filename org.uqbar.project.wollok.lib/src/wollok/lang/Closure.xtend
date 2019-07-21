@@ -32,7 +32,7 @@ class Closure implements NodeAware<WClosure>, Function1<WollokObject, Object> {
 		this.container = interpreter.currentContext
 	}
 	
-	def closure() { 
+	def closure() {
 		EObject
 	}
 	

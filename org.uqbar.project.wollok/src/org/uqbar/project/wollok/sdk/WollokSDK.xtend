@@ -55,7 +55,7 @@ class WollokSDK {
 	public static val STACK_OVERFLOW_EXCEPTION = "wollok.lang.StackOverflowException"
 
 	public static val KEY = "wollok.game.Key"
-	
+
 	// ************************************************************************
 	// ** SDK Objects
 	// ************************************************************************
@@ -65,7 +65,13 @@ class WollokSDK {
 	public static val GAME = "wollok.game.game"
 	public static val KEYBOARD = "wollok.game.keyboard"
 	public static val RUNTIME = "wollok.vm.runtime"
-	
+
+	// ************************************************************************
+	// ** Special Messages
+	// ************************************************************************
+	public static val EQUALITY = "=="
+	public static val GREATER_THAN = ">"
+		
 	public static val INITIALIZE_METHOD = "initialize"
 	
 	def static WollokObject getVoid(WollokInterpreter i, EObject context) {

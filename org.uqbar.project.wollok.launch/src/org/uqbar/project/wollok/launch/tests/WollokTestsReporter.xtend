@@ -24,7 +24,7 @@ interface WollokTestsReporter {
 	/**
 	 * Tells this reporter that the execution has finished
 	 */	
-	def void finished()
+	def void finished(long millisecondsElapsed)
 	
 	/** Just for processing many files */
 	def void initProcessManyFiles(String folder)

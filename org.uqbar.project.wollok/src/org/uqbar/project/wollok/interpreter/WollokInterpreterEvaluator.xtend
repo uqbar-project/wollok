@@ -381,9 +381,13 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		]
 	}
 
-	def dispatch WollokObject evaluate(WListLiteral it) { createCollection(LIST, elements) }
+	def dispatch WollokObject evaluate(WListLiteral it) { 
+		createCollection(LIST, elements)
+	}
 
-	def dispatch WollokObject evaluate(WSetLiteral it) { createCollection(SET, elements) }
+	def dispatch WollokObject evaluate(WSetLiteral it) {
+		createCollection(SET, elements)
+	}
 
 	def createCollection(String collectionName, List<WExpression> elements) {
 		newInstance(collectionName) => [
