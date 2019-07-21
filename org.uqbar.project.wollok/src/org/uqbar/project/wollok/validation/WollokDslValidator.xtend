@@ -69,6 +69,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 import org.uqbar.project.wollok.scoping.WollokResourceCache
+import static extension org.uqbar.project.wollok.libraries.WollokLibExtensions.*
 
 /**
  * Custom validation rules.
@@ -981,11 +982,11 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	}
 	
 	@Check
-	@DefaultSeverity(ERROR)
+	@DefaultSeverity(WARN)
 	def classNameCannotBeCoreReservedWord(WClass c) {
-		if(WollokResourceCache.allCoreClasses.map[name].toList.contains(c.name)){
+		if(WollokResourceCache.allCoreClasses.map[name].toList.contains(c.name) || isCoreLib(c.fqn)){
 			report(NLS.bind(WollokDslValidator_CANNOT_USE_CORE_NAME,c.name),c,WNAMED__NAME)
-		}		
+		}	
 	}
 
 	@Check

@@ -10,6 +10,8 @@ import org.eclipse.xtext.resource.IResourceDescription.Manager
  * 
  */
 class WollokLibExtensions {
+	
+	private static val libsFqn = #["wollok.lang","wollok.lib","wollok.vm","wollok.game","wollok.mirror"]
 
 	/**
 	 * loads the objects without cache
@@ -44,6 +46,12 @@ class WollokLibExtensions {
 			return newPath.substring(0, newPath.indexOf("/"))
 		}	
 	
+	}
+	
+	static def boolean isCoreLib(String fqn){
+		if(fqn === null) return false
+		val fqnMatches = libsFqn.filter[ String lib | fqn.startsWith(lib)]
+		return fqnMatches.size() >= 1
 	}
 	
 	
