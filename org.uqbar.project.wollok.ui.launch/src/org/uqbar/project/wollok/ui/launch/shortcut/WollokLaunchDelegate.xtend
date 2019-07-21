@@ -23,8 +23,9 @@ import org.uqbar.project.wollok.ui.preferences.WollokNumbersConfigurationBlock
 import static org.uqbar.project.wollok.launch.io.IOUtils.*
 
 import static extension org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
-import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.LauncherExtensions.*
+import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
+import static extension org.uqbar.project.wollok.ui.launch.extensions.WollokConsoleExtensions.*
 
 /**
  * Launches the process to execute the interpreter.
@@ -58,6 +59,7 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 
 		if (configuration.hasRepl) {
 			val consoleManager = ConsolePlugin.getDefault().consoleManager
+			consoleManager.consoles.forEach [ shutdown ]
 			consoleManager.removeConsoles(consoleManager.consoles)
 			val console = new WollokReplConsole
 			consoleManager.addConsoles(#[console])

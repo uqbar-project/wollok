@@ -18,7 +18,6 @@ import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 import org.uqbar.project.wollok.interpreter.natives.DefaultNativeObjectFactory
-import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -26,12 +25,13 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilder.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
+import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * A wollok user defined (dynamic) object.
@@ -57,8 +57,12 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	def dispatch void addMember(WMethodDeclaration method) { /** Nothing to do */ }
 
 	def dispatch void addMember(WVariableDeclaration declaration) {
+		declaration.addMember(true)
+	}
+
+	def void addMember(WVariableDeclaration declaration, boolean initializeIt) {
 		instanceVariables.put(declaration.variable.name, interpreter.performOnStack(declaration, this) [|
-			declaration.right?.eval
+			if (initializeIt) declaration.right?.eval else null
 		])
 		if (declaration.property) {
 			properties.add(declaration.variable.name)
@@ -114,11 +118,6 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		}
 	}
 
-	def messageNotUnderstood(String message) {
-		val e = evaluator.newInstance(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, message.javaToWollok)
-		new WollokProgramExceptionWrapper(e)
-	}
-
 	// ahh repetido ! no son polimorficos metodos y constructores! :S
 	def invokeConstructor(WollokObject... objects) {
 		behavior.resolveConstructor(objects)?.evaluateConstructor(objects)
@@ -132,6 +131,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 			val delegatedConstructor = constructor.wollokClass.resolveConstructorReference(other)
 			var EList<? extends EObject> arguments = ECollections.emptyEList
 			if (other.hasNamedParameters) {
+				println("initialize de " + behavior)
 				arguments = ECollections.asEList(delegatedConstructor.parameters.map [ name ].map [ 
 					argName | other.argumentList.getArgument(argName)					
 				])
@@ -167,8 +167,9 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	override resolve(String variableName) {
 		if (variableName == SELF)
 			this
-		else if (instanceVariables.containsKey(variableName))
+		else if (instanceVariables.containsKey(variableName)) {
 			instanceVariables.get(variableName)
+		}
 		else
 			parentContext.resolve(variableName)
 	}
@@ -217,7 +218,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 
 	def getKind() { behavior }
 
-	def isVoid() { this == WollokDSK.getVoid(interpreter as WollokInterpreter, behavior) }
+	def isVoid() { this == getVoid(interpreter as WollokInterpreter, behavior) }
 
 	def isKindOf(WMethodContainer c) { behavior.isKindOf(c) }
 

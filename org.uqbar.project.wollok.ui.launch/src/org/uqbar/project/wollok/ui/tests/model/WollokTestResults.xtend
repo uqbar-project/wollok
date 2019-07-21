@@ -79,7 +79,7 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		RunInUI.runInUI[super.notifyObservers(arg)]
 	}
 	
-	override testsResult(List<WollokResultTestDTO> tests) {
+	override testsResult(List<WollokResultTestDTO> tests, long millisecondsElapsed) {
 		tests.forEach [
 			val test = testByName(testName)
 			if (ok()) {
@@ -93,6 +93,7 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 			}
 		]
 		this.container.filterTestByState(this.shouldShowOnlyFailuresAndErrors)
+		this.container.millisecondsElapsed = millisecondsElapsed
 		this.setChanged
 		this.notifyObservers
 	}

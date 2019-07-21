@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.tests.parser
 
 import org.junit.Test
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
-import org.junit.Ignore
 
 /** 
  * Test representative error messages for methods
@@ -87,5 +86,5 @@ class MethodParserTest extends AbstractWollokInterpreterTestCase {
 		}
 		'''.expectsNoSyntaxError
 	}
-	
+
 }

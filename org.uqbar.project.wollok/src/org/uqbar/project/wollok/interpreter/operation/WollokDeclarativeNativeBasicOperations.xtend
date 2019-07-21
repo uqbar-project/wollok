@@ -9,10 +9,10 @@ import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.LazyWollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import static org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * WollokBasicBinaryOperations implementations which includes native
@@ -120,7 +120,7 @@ class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperati
 
 	@BinaryOperation('==')
 	def equalsOperation(WollokObject a, ()=>WollokObject eb) {
-		val b = eb.apply 
+		val b = eb.apply
 		if (bothNull(a,b)) evaluator.theTrue		// Two nulls => they are equal
 		else if (noneAreNull(a,b)) a.call("==", b) 	// Two not nulls => they can handle => dispatch
 		else evaluator.theFalse						// Only one is null => they aren't equal

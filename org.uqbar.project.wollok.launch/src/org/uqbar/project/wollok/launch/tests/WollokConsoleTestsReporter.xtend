@@ -11,6 +11,7 @@ import wollok.lib.AssertionException
 import static org.fusesource.jansi.Ansi.*
 import static org.fusesource.jansi.Ansi.Color.*
 
+import static extension org.uqbar.project.wollok.utils.StringUtils.*
 import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 
 /**
@@ -66,7 +67,7 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 		)
 	}
 
-	override finished() {
+	override finished(long millisecondsElapsed) {
 		val STATUS = if (processWasOK) GREEN else RED
 		println(ansi
 			.fg(STATUS)
@@ -74,6 +75,8 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 			.a(totalTests).a(" tests, ")
 			.a(testsFailed).a(if (testsFailed == 1) " failure and " else " failures and ")
 			.a(testsErrored).a(if (testsErrored == 1) " error" else " errors")
+			.a("\n")
+			.a("Total time: ").a(millisecondsElapsed.asSeconds).a(" seconds")
 			.a("\n")
 			.reset
 		)

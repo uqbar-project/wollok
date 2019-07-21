@@ -8,13 +8,6 @@ import org.junit.Test
 class ListTestCase extends CollectionTestCase {
 	
 	@Test
-	def void listConstructor() {
-		'''
-		assert.equals([22,2,3], new List(22,2,3))
-		'''.test
-	}
-
-	@Test
 	def void subList() {
 		'''
 		«instantiateCollectionAsNumbersVariable»
@@ -168,7 +161,7 @@ class ListTestCase extends CollectionTestCase {
 	def void getUnhappyPath() {
 		'''
 		«instantiateCollectionAsNumbersVariable»
-		assert.throwsExceptionWithMessage("-1.00000 must be a positive integer value", { numbers.get(-1) })
+		assert.throwsExceptionWithMessage("-1 must be a positive integer value", { numbers.get(-1) })
 		'''.test
 	}		
 
@@ -198,5 +191,20 @@ class ListTestCase extends CollectionTestCase {
 		}
 		'''.interpretPropagatingErrors
 	}	
+
+	@Test
+	def void elementsToStringForLongLists() {
+		'''
+		const unList = []
+		(1..70).forEach { i => unList.add(i) }
+		assert.equals("[...70 elements]", unList.toString())
+		'''.test
+	}
 	
+	@Test
+	def void maxSentToEmptyList() {
+		'''
+		assert.throwsExceptionWithMessage("Message max sent to an empty collection. It must have at least one element.", { [].max() })
+		'''.test
+	}	
 }

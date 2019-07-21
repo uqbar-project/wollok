@@ -194,4 +194,74 @@ class SetTestCase extends CollectionTestCase {
 		'''.interpretPropagatingErrors
 	}
 
+	@Test
+	def void elementsToStringForLongSets() {
+		'''
+		const unSet = #{}
+		(1..70).forEach { i => unSet.add(i) }
+		assert.equals("#{...70 elements}", unSet.toString())
+		'''.test
+	}
+
+	@Test
+	def void maxSentToEmptySet() {
+		'''
+		assert.throwsExceptionWithMessage("Message max sent to an empty collection. It must have at least one element.", { #{}.max() })
+		'''.test
+	}
+
+	@Test
+	def void equalsForObjectsOverridingEquals() {
+		'''
+		class AveLoca {
+			var property energia = 0
+			var property nombre = "pepita"
+			
+			method volar() {
+				energia -= 50
+			}
+			
+			method comer(gramos) {
+				energia += gramos * 2
+			}
+		
+			override method ==(otraAve) {
+				return energia == otraAve.energia()
+			}
+		
+		}
+		
+		test "two sets are equals because of the definition of their objects" {
+			const pepita = new AveLoca()
+			const unSet = #{ pepita }
+			const otroSet = #{ new AveLoca() }
+			assert.equals(unSet, otroSet)
+		}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void equalsForObjectsNotOverridingEquals() {
+		'''
+		class AveLoca {
+			var property energia = 0
+			var property nombre = "pepita"
+			
+			method volar() {
+				energia -= 50
+			}
+			
+			method comer(gramos) {
+				energia += gramos * 2
+			}
+		}
+		
+		test "two sets are different because of the definition of their objects" {
+			const pepita = new AveLoca()
+			const unSet = #{ pepita }
+			const otroSet = #{ new AveLoca() }
+			assert.notThat(unSet == otroSet)
+		}
+		'''.interpretPropagatingErrors
+	}	
 }

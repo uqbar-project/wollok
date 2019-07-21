@@ -17,7 +17,6 @@ import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
-import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.visitors.ParameterUsesVisitor
 import org.uqbar.project.wollok.visitors.VariableAssignmentsVisitor
 import org.uqbar.project.wollok.visitors.VariableUsesVisitor
@@ -75,6 +74,7 @@ import static org.uqbar.project.wollok.WollokConstants.*
 import static extension org.uqbar.project.wollok.model.ResourceUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
+import org.uqbar.project.wollok.sdk.WollokSDK
 
 /**
  * Extension methods to Wollok semantic model.
@@ -859,7 +859,7 @@ class WollokModelExtensions {
 	}
 
 	def static dispatch boolean isAssertWKO(EObject e) { false }
-	def static dispatch boolean isAssertWKO(WNamedObject wko) { wko.fqn == WollokDSK.ASSERT }
+	def static dispatch boolean isAssertWKO(WNamedObject wko) { wko.fqn == WollokSDK.ASSERT }
 	def static dispatch boolean isAssertWKO(WVariableReference ref) { ref.ref.isAssertWKO }
 
 	// ************************************************************************

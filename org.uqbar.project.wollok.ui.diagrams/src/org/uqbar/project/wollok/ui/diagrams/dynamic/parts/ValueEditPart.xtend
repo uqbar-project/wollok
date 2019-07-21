@@ -25,6 +25,8 @@ import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagram
 /**
  * 
  * @author jfernandes
+ * @author dodain
+ * 
  */
 class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeListener, NodeEditPart {
 	ConnectionAnchor anchor
@@ -78,8 +80,14 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 		else if (model.isNumeric)
 			StaticDiagramColors.OBJECTS_VALUE_NUMERIC_BACKGROUND
 		else if (model.isCollection)
-			StaticDiagramColors.OBJECTS_VALUE_LIST_BACKGROUND
-		else 
+			StaticDiagramColors.OBJECTS_VALUE_COLLECTION_BACKGROUND
+		else if (model.isString)
+			StaticDiagramColors.OBJECTS_VALUE_STRING_BACKGROUND
+		else if (model.isNative)
+			StaticDiagramColors.OBJECTS_VALUE_NATIVE_BACKGROUND
+		else if (model.isUserDefined)
+			StaticDiagramColors.OBJECT_USER_DEFINED_BACKGROUND
+		else
 			StaticDiagramColors.CLASS_BACKGROUND
 	}
 	

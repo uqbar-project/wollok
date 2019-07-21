@@ -6,10 +6,9 @@ import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.WollokInterpreterException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
-
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
-import static org.uqbar.project.wollok.WollokConstants.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * Extension methods for handling Wollok errors.
@@ -17,6 +16,47 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
  * @author dodain
  */
 class WollokExceptionExtensions {
+
+	/**
+	 * Factory methods for Wollok well-known exceptions
+	 */
+	def static WollokProgramExceptionWrapper messageNotUnderstood(String message) {
+		new WollokProgramExceptionWrapper(MESSAGE_NOT_UNDERSTOOD_EXCEPTION.instantiateException(message))
+	}
+	
+	def static WollokProgramExceptionWrapper throwMessageNotUnderstood(Object nativeObject, String name, Object[] parameters) {
+		newException(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, nativeObject.createMessage(name, parameters))
+	}
+	
+	def static WollokProgramExceptionWrapper newException(String exceptionClassName, String message) {
+		new WollokProgramExceptionWrapper(exceptionClassName.instantiateException(message))
+	}
+
+	def static WollokProgramExceptionWrapper newWollokExceptionAsJava(String message) {
+		new WollokProgramExceptionWrapper(newWollokException(message))
+	}
+
+	def static instantiateException(String type, String message) {
+		getEvaluator.newInstance(type) => [
+			setReference("message", message.javaToWollok)
+		]
+	}
+	
+	def static WollokObject newWollokException(String message) {
+		EXCEPTION.instantiateException(message)
+	}
+
+	def static WollokObject newWollokException(String message, WollokObject cause) {
+		newWollokException(message) => [
+			setReference("cause", cause)
+		]
+	}
+
+	def static newWollokAssertionException(String message) {
+		ASSERTION_EXCEPTION_FQN.instantiateException(message)
+	}	
+
+	/** **************************************************************************************************** */
 
 	/**
 	 * Converts a StackTraceElementDTO to a List of parseable Strings for a RMI call

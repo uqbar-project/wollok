@@ -22,6 +22,7 @@ import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess
 import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WSuite
 
 import static org.eclipse.xtext.diagnostics.Diagnostic.*
 import static org.uqbar.project.wollok.WollokConstants.*
@@ -121,9 +122,12 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 		if (specificMessage === null && context.currentContext !== null && context.grammarRule !== null) {
 			specificMessage = changeParserMessage(context.currentContext, context.grammarRule, exception)
 		}
+		if (specificMessage === null && declaringContext instanceof WSuite) {
+			specificMessage = new SpecialMessage(token, Messages.SYNTAX_DIAGNOSIS_CODE_NOT_ALLOWED_IN_DESCRIBE)
+		}
 		if (specificMessage === null) {
 			return super.getSyntaxErrorMessage(context)
-		}
+		}		
 
 		new SyntaxErrorMessage(specificMessage.message, SYNTAX_DIAGNOSTIC)
 	}

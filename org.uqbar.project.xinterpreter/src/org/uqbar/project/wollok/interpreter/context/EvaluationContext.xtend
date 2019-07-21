@@ -35,7 +35,6 @@ interface EvaluationContext<O> extends Serializable {
  * 
  * @author jfernandes
  */
- //TODO: move to another file
 class EvaluationContextExtensions {
 	
 	def static <O> createEvaluationContext(String name, O value) {

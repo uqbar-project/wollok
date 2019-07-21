@@ -1,6 +1,6 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 
-// XPECT errors ---> "Program must not be empty" at "program abc { 	 }"
+// XPECT warnings ---> "Program should not be empty" at "program abc { 	 }"
 program abc {
 	
 }

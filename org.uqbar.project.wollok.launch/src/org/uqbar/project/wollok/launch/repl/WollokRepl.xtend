@@ -43,7 +43,7 @@ class WollokRepl {
 		this.injector = injector
 		this.launcher = launcher
 		this.interpreter = interpreter
-		this.interpreter.interactive = true
+		this.interpreter.init(true)
 		this.mainFile = mainFile
 		this.parsedMainFile = parsedMainFile
 		this.formatter = formatter

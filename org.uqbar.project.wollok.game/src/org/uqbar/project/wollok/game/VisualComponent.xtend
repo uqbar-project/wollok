@@ -66,7 +66,6 @@ abstract class VisualComponent {
 			this.addMessage(end, color)
 			return 
 		}
-		
 		balloonMessages.add(new BalloonMessage(message, color))
 	}
 

@@ -7,90 +7,90 @@ class A {
 		
 		// TRUE
 		
-		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "true"
+		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "true"
 		cond = condA == true
 		
-		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "true"
+		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "true"
 		cond = condA === true
 		
-		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "true"
+		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "true"
 		cond = condA != true
 		
-		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "true"
+		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "true"
 		cond = condA !== true
 		
-		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "true"
+		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "true"
 		cond = true == condA
 		
-		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "true"
+		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "true"
 		cond = true === condA
 		
-		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "true"
+		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "true"
 		cond = true != condA
 		
-		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "true"
+		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "true"
 		cond = true !== condA
 		
 		// FALSE
 		
-		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "false"
+		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "false"
 		cond = condA == false
 		
-		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "false"
+		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "false"
 		cond = condA === false
 		
-		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "false"
+		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "false"
 		cond = condA != false
 		
-		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "false"
+		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "false"
 		cond = condA !== false
 		
-		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "false"
+		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "false"
 		cond = false == condA
 		
-		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "false"
+		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "false"
 		cond = false === condA
 		
-		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "false"
+		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "false"
 		cond = false != condA
 		
-		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "false"
+		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "false"
 		cond = false !== condA
 		
 		// IF
 		
-		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "true"
+		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "true"
 		if (cond == true)
-			throw new Exception("Blah")
+			throw new Exception(message = "Blah")
 
-		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "false"
+		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "false"
 		if (cond == false)
-			throw new Exception("Blah")
+			throw new Exception(message = "Blah")
 			
-		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "true"
+		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "true"
 		if (cond != true)
-			throw new Exception("Blah")
+			throw new Exception(message = "Blah")
 
-		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "false"
+		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "false"
 		if (cond != false)
-			throw new Exception("Blah")
+			throw new Exception(message = "Blah")
 			
-		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "true"
+		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "true"
 		if (cond !== true)
-			throw new Exception("Blah")
+			throw new Exception(message = "Blah")
 
-		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "false"
+		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "false"
 		if (cond !== false)
-			throw new Exception("Blah")		
+			throw new Exception(message = "Blah")		
 			
 		// if as left side
 		
-		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "true"
+		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "true"
 		if (true == cond)
-			throw new Exception("Blah")
+			throw new Exception(message = "Blah")
 
-		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "false"
+		// XPECT warnings --> "Don't compare with booleans. Use not or just the expression instead" at "false"
 		if (false == cond)
-			throw new Exception("Blah")
+			throw new Exception(message = "Blah")
 	}
 }

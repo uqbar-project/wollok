@@ -117,7 +117,7 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 			try {
 				pepita.energia(10)
 			} catch e : Exception {
-				assert.equals("Cannot modify constant property energia", e.getMessage())
+				assert.equals("Cannot modify constant property energia", e.message())
 			}
 		}
 		'''.interpretPropagatingErrorsWithoutStaticChecks
@@ -133,7 +133,7 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 			try {
 				pepita.energia(10, "hola")
 			} catch e : Exception {
-				assert.equals("pepita[energia=0] does not understand energia(param1, param2)", e.getMessage())
+				assert.equals("pepita[energia=0] does not understand energia(param1, param2)", e.message())
 			}
 		}
 		'''.interpretPropagatingErrorsWithoutStaticChecks
@@ -150,7 +150,8 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 			try {
 				pepita.energia(10)
 			} catch e : Exception {
-				assert.equals("Cannot modify constant property energia", e.getMessage())
+				console.println(e.message())
+				assert.equals("Cannot modify constant property energia", e.message())
 			}
 		}
 		'''.interpretPropagatingErrorsWithoutStaticChecks
@@ -182,7 +183,7 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 			try {
 				pepita.energia(10, [21, 1])
 			} catch e : Exception {
-				assert.equals("a Ave[energia=0] does not understand energia(param1, param2)", e.getMessage())
+				assert.equals("a Ave[energia=0] does not understand energia(param1, param2)", e.message())
 			}
 		}
 		'''.interpretPropagatingErrorsWithoutStaticChecks

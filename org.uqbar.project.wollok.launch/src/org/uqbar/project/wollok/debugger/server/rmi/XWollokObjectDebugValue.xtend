@@ -1,13 +1,13 @@
 package org.uqbar.project.wollok.debugger.server.rmi
 
 import org.uqbar.project.wollok.interpreter.core.WollokObject
-import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
+import org.eclipse.xtend.lib.annotations.Accessors
 
 import static extension org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrame.debugVariables
 import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilder.shortLabel
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
 import static extension org.uqbar.project.wollok.utils.WollokObjectUtils.*
+import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * A stack frame variable's value that holds a wollok object.
@@ -16,7 +16,7 @@ import static extension org.uqbar.project.wollok.utils.WollokObjectUtils.*
  * @author jfernandes
  */
 class XWollokObjectDebugValue extends XDebugValue {
-	String typeName
+	@Accessors(PUBLIC_GETTER) String typeName
 	String varName
 
 	new(String varName, WollokObject obj) {

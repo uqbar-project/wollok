@@ -81,8 +81,10 @@ class Window {
 		var plusWidth = 0	
 		glyphLayout.reset
 		this.setText(newText, baseWidth, color)
-		
-		while (glyphLayout.height > 29) {
+
+		var previousHeight = 0f
+		while (glyphLayout.height > 29 && previousHeight !== glyphLayout.height) {
+			previousHeight = glyphLayout.height
 			glyphLayout.reset
 			plusWidth += 10
 			this.setText(newText, baseWidth + plusWidth, color)
@@ -103,6 +105,7 @@ class Window {
 			patchIndex++
 			textX = 5
 		}
+		
 		val x = xInPixels + (DELTA_TO_VISUAL_COMPONENT * adjustmentX)
 		var adjustmentY = 1
 		var textY = 0

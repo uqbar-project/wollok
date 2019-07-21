@@ -6,9 +6,9 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 @Accessors
 class WPosition extends Position {
@@ -36,7 +36,10 @@ class WPosition extends Position {
 	}
 
 	def buildPosition(int newX, int newY) {
-		((interpreter.evaluator as WollokInterpreterEvaluator).newInstance(POSITION, newX.javaToWollok, newY.javaToWollok))
+		(interpreter.evaluator as WollokInterpreterEvaluator).newInstance(POSITION) => [
+			setReference("x", newX.javaToWollok)
+			setReference("y", newY.javaToWollok) 
+		]
 	}
 	
 }

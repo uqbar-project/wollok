@@ -31,6 +31,7 @@ public class Messages extends NLS {
 	public static String WollokInterpreter_visualObjectWithoutPosition;
 	public static String WollokInterpreter_illegalOperationEmptyCollection;
 	public static String WollokDslInterpreter_native_class_not_found;
+	public static String WollokInterpreter_referenceAlreadyDefined;
 
 	public static String WollokScopeProvider_unresolvedImport;
 	
@@ -137,6 +138,8 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR;
 	public static String WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_DELEGATED_CONSTRUCTOR;
 	
+	public static String WollokRuntime_WrongMessage_EMPTY_LIST;
+	
 	public static String TestLauncher_CompilationErrorTitle;
 	public static String TestLauncher_SeeProblemTab;
 	public static String TestLauncher_LauncherError_Title;
@@ -209,6 +212,7 @@ public class Messages extends NLS {
 	public static String SYNTAX_DIAGNOSIS_BAD_CHARACTER_IN_METHOD;
 	public static String SYNTAX_DIAGNOSIS_BAD_MESSAGE;
 	public static String SYNTAX_DIAGNOSIS_CONSTRUCTOR_WITH_BOTH_INITIALIZERS_AND_VALUES;
+	public static String SYNTAX_DIAGNOSIS_CODE_NOT_ALLOWED_IN_DESCRIBE;
 	
 	// ****************************
 	// ** Conversions

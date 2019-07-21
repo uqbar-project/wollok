@@ -11,9 +11,9 @@ class NullTestCase extends AbstractWollokInterpreterTestCase {
 				try {
 					closure.apply()
 				} catch e: Exception {
-					var message = e.getMessage()
-					if (e.getCause() != null) {
-						message = e.getCause().getMessage()
+					var message = e.message()
+					if (e.cause() != null) {
+						message = e.cause().message()
 					}
 					assert.equals(msg, message)
 				}
@@ -112,7 +112,7 @@ class NullTestCase extends AbstractWollokInterpreterTestCase {
 				assert.fail("Null Expression didn't fail!")
 			}
 		} catch e: Exception {
-			mensajeError = e.getMessage()
+			mensajeError = e.message()
 		}
 		assert.equals("Cannot use null in 'if' expression", mensajeError)
 		'''.test

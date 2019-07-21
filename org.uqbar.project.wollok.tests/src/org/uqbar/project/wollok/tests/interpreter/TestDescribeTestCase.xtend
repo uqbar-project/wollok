@@ -270,5 +270,19 @@ class TestDescribeTestCase extends AbstractWollokInterpreterTestCase {
 			
 		}
 		'''.interpretPropagatingErrors
-	}			
+	}
+	
+	@Test
+	def void failingTestWhenInitializingAllVariablesAtOnce() {
+		'''
+		describe "hola" {
+			test "hola" {
+				const unSet = #{}
+				unSet.add(1)
+				const seed = unSet.anyOne()
+				console.println(seed)
+			}
+		}
+		'''.interpretPropagatingErrors
+	}	
 }

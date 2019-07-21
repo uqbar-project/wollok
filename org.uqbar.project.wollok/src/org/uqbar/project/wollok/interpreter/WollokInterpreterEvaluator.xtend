@@ -25,7 +25,6 @@ import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeBas
 import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeUnaryOperations
 import org.uqbar.project.wollok.interpreter.stack.ReturnValueException
 import org.uqbar.project.wollok.scoping.WollokQualifiedNameProvider
-import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -66,7 +65,6 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static org.uqbar.project.wollok.WollokConstants.*
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
@@ -74,6 +72,8 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
+import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * It's the real "interpreter".
@@ -161,7 +161,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		} else {
 			interpreter.currentContext.addReference(variable.variableName, right?.eval)
 		}
-		WollokDSK.getVoid(interpreter as WollokInterpreter, it)
+		getVoid(interpreter as WollokInterpreter, it)
 	}
 
 	def dispatch WollokObject evaluate(WVariableReference it) {
@@ -235,11 +235,12 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def dispatch WollokObject evaluate(WNumberLiteral it) { value.getOrCreateNumber }
 
 	def getOrCreateNumber(String value) {
-		if (numbersCache.containsKey(value) && numbersCache.get(value).get !== null) {
-			numbersCache.get(value).get
+		val roundedValue = "" + new BigDecimal(value).adaptValue
+		if (numbersCache.containsKey(roundedValue) && numbersCache.get(roundedValue).get !== null) {
+			numbersCache.get(roundedValue).get
 		} else {
-			val n = instantiateNumber(value)
-			numbersCache.put(value, new WeakReference(n))
+			val n = instantiateNumber(roundedValue)
+			numbersCache.put(roundedValue, new WeakReference(n))
 			n
 		}
 	}
@@ -290,8 +291,17 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			if (l.hasParentParameterInitializers) {
 				wo.initializeObject(l.parentParameters.initializers)
 			}
-
+			
+			wo.callInitIfDefined
 		]
+	}
+
+	def static callInitIfDefined(WollokObject wo) {
+		val clazz = wo.behavior
+		val initMethod = clazz.initMethod
+		if (initMethod !== null) {
+			wo.call(initMethod, #[])
+		}
 	}
 
 	def addObjectMembers(WMethodContainer it, WollokObject wo) {
@@ -317,21 +327,25 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		if (call.classRef.eResource === null) {
 			throw newWollokExceptionAsJava(Messages.LINKING_COULD_NOT_RESOLVE_REFERENCE + call.classNameWhenInvalid)
 		}
+		var WollokObject wollokObject
 		if (call.hasNamedParameters) {
-			return newInstance(call.classRef, call.initializers)
+			wollokObject = newInstance(call.classRef, call.initializers)
+		} else {
+			val values = call.values.evalEach
+			if (call.mixins.empty)
+				wollokObject = newInstance(call.classRef, values)
+			else {
+				val container = new MixedMethodContainer(call.classRef, call.mixins)
+				wollokObject = new WollokObject(interpreter, container) => [ wo |
+					// mixins first
+					call.mixins.forEach[addMembersTo(wo)]
+					call.classRef.addInheritsMembers(wo)
+					wo.invokeConstructor(values.toArray(newArrayOfSize(values.size)))
+				]
+			}
 		}
-		val values = call.values.evalEach
-		if (call.mixins.empty)
-			newInstance(call.classRef, values)
-		else {
-			val container = new MixedMethodContainer(call.classRef, call.mixins)
-			new WollokObject(interpreter, container) => [ wo |
-				// mixins first
-				call.mixins.forEach[addMembersTo(wo)]
-				call.classRef.addInheritsMembers(wo)
-				wo.invokeConstructor(values.toArray(newArrayOfSize(values.size)))
-			]
-		}
+		wollokObject.callInitIfDefined
+		wollokObject
 	}
 
 	def newInstance(String classFQN, WollokObject... arguments) {
@@ -367,9 +381,13 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		]
 	}
 
-	def dispatch WollokObject evaluate(WListLiteral it) { createCollection(LIST, elements) }
+	def dispatch WollokObject evaluate(WListLiteral it) { 
+		createCollection(LIST, elements)
+	}
 
-	def dispatch WollokObject evaluate(WSetLiteral it) { createCollection(SET, elements) }
+	def dispatch WollokObject evaluate(WSetLiteral it) {
+		createCollection(SET, elements)
+	}
 
 	def createCollection(String collectionName, List<WExpression> elements) {
 		newInstance(collectionName) => [
@@ -382,7 +400,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	// other expressions
 	def dispatch WollokObject evaluate(WBlockExpression b) {
 		if (b.expressions.isEmpty)
-			return WollokDSK.getVoid(interpreter as WollokInterpreter, b)
+			return getVoid(interpreter as WollokInterpreter, b)
 
 		b.expressions.evalAll
 	}
@@ -390,7 +408,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def dispatch WollokObject evaluate(WAssignment a) {
 		val newValue = a.value.eval
 		interpreter.currentContext.setReference(a.feature.ref.name, newValue)
-		WollokDSK.getVoid(interpreter as WollokInterpreter, a)
+		getVoid(interpreter as WollokInterpreter, a)
 	}
 
 	// ********************************************************************************************
@@ -447,7 +465,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		val newValue = operator.asBinaryOperation.apply(reference.eval, rightPart).javaToWollok
 
 		interpreter.currentContext.setReference(variableName, newValue)
-		WollokDSK.getVoid(interpreter as WollokInterpreter, reference)
+		getVoid(interpreter as WollokInterpreter, reference)
 	}
 
 	def dispatch WollokObject evaluate(WUnaryOperation oper) {
@@ -528,6 +546,8 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 				if (namedObject.hasParentParameterInitializers)
 					wollokObject.initializeObject(namedObject.parentParameters.initializers)
 
+				wollokObject.callInitIfDefined
+				
 			} catch (RuntimeException e) {
 				// if init failed remove it !
 				interpreter.currentContext.removeGlobalReference(qualifiedName)
@@ -560,4 +580,3 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def dispatch isVoid(WollokObject object, EObject context) { object === getVoid(interpreter, context) }
 	def dispatch isVoid(CallableSuper call, EObject context) { false }
 }
-	

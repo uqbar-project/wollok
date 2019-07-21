@@ -25,7 +25,7 @@ object o {
 	}
 	method bar() {
 		self.foo()
-		// XPECT errors --> "Method does not exist or invalid number of arguments" at "foobar"
+		// XPECT warnings --> "Method does not exist or invalid number of arguments" at "foobar"
 		self.foobar()
 	}
 }

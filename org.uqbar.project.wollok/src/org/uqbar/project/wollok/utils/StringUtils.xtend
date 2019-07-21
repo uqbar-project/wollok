@@ -1,5 +1,7 @@
 package org.uqbar.project.wollok.utils
 
+import java.text.DecimalFormat
+
 /**
  * 
  * @author jfernandes
@@ -46,4 +48,10 @@ class StringUtils {
 	static def safeLength(String value) {
 		(value ?: "").length
 	}
+	
+	static def asSeconds(long milliseconds) {
+		val float seconds = milliseconds / 1000f
+		new DecimalFormat("##########.###").format(seconds)
+	}
+		
 }
