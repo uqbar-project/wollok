@@ -137,6 +137,8 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR;
 	public static String WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_DELEGATED_CONSTRUCTOR;
 	
+	public static String WollokRuntime_WrongMessage_EMPTY_LIST;
+	
 	public static String TestLauncher_CompilationErrorTitle;
 	public static String TestLauncher_SeeProblemTab;
 	public static String TestLauncher_LauncherError_Title;

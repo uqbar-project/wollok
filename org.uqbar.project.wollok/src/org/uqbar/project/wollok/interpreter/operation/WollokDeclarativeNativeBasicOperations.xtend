@@ -120,7 +120,7 @@ class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperati
 
 	@BinaryOperation('==')
 	def equalsOperation(WollokObject a, ()=>WollokObject eb) {
-		val b = eb.apply 
+		val b = eb.apply
 		if (bothNull(a,b)) evaluator.theTrue		// Two nulls => they are equal
 		else if (noneAreNull(a,b)) a.call("==", b) 	// Two not nulls => they can handle => dispatch
 		else evaluator.theFalse						// Only one is null => they aren't equal

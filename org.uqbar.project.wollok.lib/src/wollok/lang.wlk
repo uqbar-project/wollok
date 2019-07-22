@@ -730,8 +730,16 @@ class Collection {
 	method flatten() = self.flatMap { e => e }
 	
 	/** @private */
-	override method internalToSmartString(alreadyShown) =
-		self.toStringPrefix() + self.map{ e => e.toSmartString(alreadyShown) }.join(', ') + self.toStringSuffix()
+	/*
+	 * Optimized version for long collections
+	 *  
+	 * @see Object#toString()
+	 */
+	override method internalToSmartString(alreadyShown) {
+		const size = self.size()
+		const internalCollection = if (size > 50) "..." + size + " elements" else self.map{ e => e.toSmartString(alreadyShown) }.join(", ")
+		return self.toStringPrefix() + internalCollection + self.toStringSuffix()
+	}
 	
 	/** @private */
 	method toStringPrefix()
@@ -945,6 +953,17 @@ class Set inherits Collection {
 	override method fold(initialValue, closure) native
 	
 	/**
+	 * @see Collection#filter(closure)
+	 */
+	override method filter(closure) native
+	
+	
+	/**
+	 * @see Collection#max()
+	 */
+	override method max() native
+	
+	/**
 	 * Tries to find an element in a collection (based on a closure) or
 	 * applies a continuation closure.
 	 *
@@ -1013,6 +1032,12 @@ class Set inherits Collection {
 	override method join() native
 	
 	/**
+	 *
+	 * @see List#contains(other)
+	 */
+	override method contains(other) native
+	
+	/**
 	 * Two sets are equals if they have the same elements
 	 *
 	 * Examples:
@@ -1032,6 +1057,7 @@ class Set inherits Collection {
 	 * @see Object#==
 	 */
 	override method ==(other) native
+	
 }
 
 /**
@@ -1214,6 +1240,21 @@ class List inherits Collection {
 	 */
 	method reverse() = self.subList(self.size() - 1, 0)
 
+	/**
+	 * @see Collection#filter(closure)
+	 */
+	override method filter(closure) native
+
+	/**
+	 * @see Collection#contains(obj)
+	 */
+	override method contains(obj) native
+	
+	/**
+	 * @see Collection#max()
+	 */
+	override method max() native
+	
 	// REFACTORME: DUP METHODS
 	/** 
 	 * Reduce a collection to a certain value, beginning with a seed or initial value

@@ -30,12 +30,13 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	@Inject
 	var WollokLauncherParameters parameters
 
-	var Client client
+	Client client
 	var callHandler = new CallHandler
-	var WollokRemoteUITestNotifier remoteTestNotifier
+	WollokRemoteUITestNotifier remoteTestNotifier
 	val testsResult = new LinkedList<WollokResultTestDTO>
-	var boolean processingManyFiles
-	var String folder
+	boolean processingManyFiles
+	String folder
+	long initialTime
 	
 	String suiteName
 	List<WollokTestInfo> testFiles
@@ -80,21 +81,22 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 				resource?.toString))
 	}
 
-	override finished() {
+	override finished(long timeElapsedInMilliseconds) {
 		if (!processingManyFiles) {
-			remoteTestNotifier.testsResult(testsResult)
+			remoteTestNotifier.testsResult(testsResult, timeElapsedInMilliseconds)
 		}
 	}
 
 	override initProcessManyFiles(String folder) {
 		this.processingManyFiles = true
 		this.folder = folder
+		this.initialTime = System.currentTimeMillis
 	}
 	
 	override endProcessManyFiles() {
 		remoteTestNotifier => [
 			testsToRun(suiteName, "", this.testFiles, true)
-			testsResult(testsResult)
+			testsResult(testsResult, (System.currentTimeMillis - this.initialTime))
 		]
 		processingManyFiles = false
 	}

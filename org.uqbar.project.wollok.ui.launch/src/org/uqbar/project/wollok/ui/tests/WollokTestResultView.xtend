@@ -13,6 +13,7 @@ import org.eclipse.jface.viewers.ITreeSelection
 import org.eclipse.jface.viewers.LabelProvider
 import org.eclipse.jface.viewers.TreeViewer
 import org.eclipse.jface.viewers.Viewer
+import org.eclipse.osgi.util.NLS
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.SashForm
 import org.eclipse.swt.custom.ScrolledComposite
@@ -27,6 +28,7 @@ import org.eclipse.swt.graphics.RGB
 import org.eclipse.swt.layout.FillLayout
 import org.eclipse.swt.layout.GridData
 import org.eclipse.swt.layout.GridLayout
+import org.eclipse.swt.widgets.Button
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Display
 import org.eclipse.swt.widgets.Label
@@ -49,6 +51,7 @@ import org.uqbar.project.wollok.ui.tests.model.WollokTestState
 import org.uqbar.project.wollok.ui.tests.shortcut.WollokAllTestsLaunchShortcut
 import org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut
 
+import static extension org.uqbar.project.wollok.utils.StringUtils.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**
@@ -63,19 +66,20 @@ class WollokTestResultView extends ViewPart implements Observer {
 	// closing tag "</a>]\n"
 	public static String STACK_TRACE_LINK_CLOSING_TAG = "<(?:\"[^\"]*\"['\"]*|'[^']*'['\"]*|[^'\">])+>\\]"
 
-	var TreeViewer testTree
-	var Link textOutput
-	var Text totalTextBox
-	var Text failedTextBox
-	var Text errorTextBox
+	TreeViewer testTree
+	Link textOutput
+	Text totalTextBox
+	Text failedTextBox
+	Text errorTextBox
 	// bar
-	var Label bar
+	Label bar
 	Color noResultColor
 	Color pendingColor
 	Color successColor
 	Color failedColor
 	Color erroredColor
-	var ResourceManager resManager
+	ResourceManager resManager
+
 	public val static BAR_COLOR_NO_RESULT = new RGB(200, 200, 200)
 	public val static BAR_COLOR_PENDING = new RGB(239, 222, 205)
 	public val static BAR_COLOR_SUCCESS = new RGB(99, 184, 139)
@@ -83,9 +87,9 @@ class WollokTestResultView extends ViewPart implements Observer {
 	public val static BAR_COLOR_ERRORED = new RGB(237, 17, 18)
 
 	@Inject
-	var WollokTestResults results
+	WollokTestResults results
 	@Inject
-	var GlobalURIEditorOpener opener
+	GlobalURIEditorOpener opener
 
 	@Inject
 	WollokTestLaunchShortcut testLaunchShortcut
@@ -100,9 +104,9 @@ class WollokTestResultView extends ViewPart implements Observer {
 //	ToolItem debugAgain
 
 	// Second toolbar
-	ToolBar toolbarTextOutput
-	ToolItem copyTextOutputToClipboard
-	
+	Label lblMilliseconds
+	Button copyTextOutputToClipboard
+
 //	static IViewPart previousActivePart
 
 	def static activate() {
@@ -146,6 +150,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 		totalTextBox.text = ""
 		failedTextBox.text = ""
 		errorTextBox.text = ""
+		lblMilliseconds.text = ""
 		runAgain.enabled = false
 		//debugAgain.enabled = false
 		(testTree.contentProvider as WTestTreeContentProvider).results.container = new WollokTestContainer() {
@@ -378,17 +383,28 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def createToolbarForTextOutput(Composite parent) {
-		toolbarTextOutput = new ToolBar(parent, SWT.RIGHT)
+		val parentToolbar = new Composite(parent, SWT.NONE) => [
+			layout = new GridLayout => [
+				numColumns = 2
+				makeColumnsEqualWidth = false
+			]
+		]
 
-		GridDataFactory.fillDefaults().align(SWT.END, SWT.END).grab(false, false).applyTo(toolbarTextOutput)
-
-		copyTextOutputToClipboard = new ToolItem(toolbarTextOutput, SWT.PUSH) => [
+		copyTextOutputToClipboard = new Button(parentToolbar, SWT.PUSH) => [
 			toolTipText = Messages.WollokTestResultView_copySelectedResultToClipboard
 			val pathImage = Activator.getDefault.getImageDescriptor(
 				"platform:/plugin/org.eclipse.compare/icons/full/elcl16/copycont_r_co.gif")
 			image = resManager.createImage(pathImage)
 			addListener(SWT.Selection)[this.copySelectedTextOutputToClipboard]
 			enabled = true
+			layoutData = new GridData
+		]
+
+		lblMilliseconds = new Label(parentToolbar, SWT.LEFT) => [
+			text = ""
+			layoutData = new GridData => [
+				widthHint = 250
+			]
 		]
 	}
 
@@ -418,6 +434,11 @@ class WollokTestResultView extends ViewPart implements Observer {
 	override update(Observable o, Object arg) {
 		testTree.refresh(true)
 		testTree.expandAll
+
+		val millisecondsElapsed = results.container.millisecondsElapsed
+		if (millisecondsElapsed > 0) {
+			lblMilliseconds.text = NLS.bind(Messages.WollokTestResultView_timeTestsElapsed, millisecondsElapsed.asSeconds)	
+		}
 		
 		if (results.container !== null) {
 			val runningCount = count[state == WollokTestState.RUNNING]
