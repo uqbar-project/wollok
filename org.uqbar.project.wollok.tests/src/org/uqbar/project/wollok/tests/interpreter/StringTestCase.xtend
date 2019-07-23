@@ -5,6 +5,7 @@ import org.junit.Test
 
 /**
  * @author tesonep
+ * @author dodain
  */
 class StringTestCase extends AbstractWollokInterpreterTestCase {
 	
@@ -13,6 +14,20 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		const x = "Hola, wollok!".substring(0, 3)
 		assert.equals("Hol", x)
+		'''.test
+	}
+
+	@Test
+	def void greaterThanUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation > doesn't support null parameters", { "hola" > null })
+		'''.test
+	}
+
+	@Test
+	def void lessThanUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation < doesn't support null parameters", { "hola" < null })
 		'''.test
 	}
 
@@ -98,14 +113,21 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void testEqualsIgnoreCase() {
+	def void testEqualsIgnoreCaseOk() {
 		'''
 		assert.that("mARejaDA".equalsIgnoreCase("MAREJADA"))
 		'''.test
 	}
 
 	@Test
-	def void testSplit() {
+	def void splitUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation split doesn't support null parameters", { "hola".split(null) })
+		'''.test
+	}
+
+	@Test
+	def void split() {
 		'''
 		const result = "Esto Es una prueba".split(" ")
 		const result2 = "Esto|Es|una|prueba".split("|")
@@ -134,11 +156,25 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 	}	
 
 	@Test
+	def void takeUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation take doesn't support null parameters", { "hola".take(null) })
+		'''.test
+	}
+	
+	@Test
 	def void take() {
 		'''
 		assert.equals("cl", "clearly".take(2))
 		assert.equals("clearly", "clearly".take(8))
 		assert.equals("", "clearly".take(0))
+		'''.test
+	}
+
+	@Test
+	def void dropUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation drop doesn't support null parameters", { "hola".drop(null) })
 		'''.test
 	}
 	
@@ -356,7 +392,7 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void equalsIgnoreCaseNull() {
 		'''
-		assert.throwsExceptionWithMessage("Reference aString is not initialized", { "hola".equalsIgnoreCase(null) })
+		assert.throwsExceptionWithMessage("Operation equalsIgnoreCase doesn't support null parameters", { "hola".equalsIgnoreCase(null) })
 		'''.test
 	}
 	

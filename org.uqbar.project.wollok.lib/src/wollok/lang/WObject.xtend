@@ -13,8 +13,9 @@ import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtil
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.sdk.WollokSDK
+import static extension org.uqbar.project.wollok.utils.WollokObjectUtils.*
 import static org.uqbar.project.wollok.sdk.WollokSDK.*
+import org.uqbar.project.wollok.utils.WollokObjectUtils
 
 /**
  * Wollok Object class. It's the native part
@@ -60,6 +61,7 @@ class WObject {
 	}
 
 	def instanceVariableFor(String name) {
+		name.checkNotNull("instanceVariableFor")
 		variableMirror(name)
 	}
 
@@ -71,6 +73,7 @@ class WObject {
 	}
 
 	def resolve(String instVarName) {
+		instVarName.checkNotNull("resolve")
 		obj.resolve(instVarName)
 	}
 
@@ -80,11 +83,15 @@ class WObject {
 	}
 
 	def newList(Collection<WollokObject> elements) {
-		val list = newInstance(WollokSDK.LIST)
+		val list = newInstance(LIST)
 		elements.forEach [
 			list.call("add", it.javaToWollok)
 		]
 		list
+	}
+
+	def checkNotNull(WollokObject o, String operation) {
+		WollokObjectUtils.checkNotNull(o, operation)
 	}
 
 }

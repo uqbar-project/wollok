@@ -13,6 +13,7 @@ import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
+import static extension org.uqbar.project.wollok.utils.WollokObjectUtils.*
 
 /**
  * @author jfernandes
@@ -22,6 +23,7 @@ class WCollection<T extends Collection<WollokObject>> {
 	protected extension WollokInterpreterAccess = new WollokInterpreterAccess
 	
 	def Object fold(WollokObject acc, WollokObject proc) {
+		proc.checkNotNull("fold")
 		val c = proc.asClosure
 		val Collection<WollokObject> iterable = new ArrayList(wrapped.toArray())
 		iterable.fold(acc) [i, e|
@@ -36,6 +38,7 @@ class WCollection<T extends Collection<WollokObject>> {
 	 * in a much better performance ratio. 
 	 */
 	def filter(WollokObject objClosure) {
+		objClosure.checkNotNull("filter")
 		val closure = objClosure.asClosure
 		val wrappedAsList = wrapped.toArray
 		val Collection<WollokObject> result = newArrayList
@@ -62,12 +65,14 @@ class WCollection<T extends Collection<WollokObject>> {
 	}
 	
 	def Object findOrElse(WollokObject _predicate, WollokObject _continuation) {
+		_predicate.checkNotNull("findOrElse")
+		_continuation.checkNotNull("findOrElse")
 		val predicate = _predicate.asClosure
 		val continuation = _continuation.asClosure
 
-		for(Object x : wrapped) {
-			if(predicate.doApply(x as WollokObject).wollokToJava(Boolean) as Boolean) {
-				return x
+		for(Object element : wrapped) {
+			if(predicate.doApply(element as WollokObject).wollokToJava(Boolean) as Boolean) {
+				return element
 			}
 		}
 		continuation.doApply()
@@ -89,6 +94,7 @@ class WCollection<T extends Collection<WollokObject>> {
 	def join() { join(",") }
 	
 	def join(String separator) {
+		separator.checkNotNull("join")
 		wrapped.map[ if (it instanceof WCallable) call("toString") else toString ].join(separator)
 	}
 	
@@ -97,6 +103,8 @@ class WCollection<T extends Collection<WollokObject>> {
 	
 	@NativeMessage("equals")
 	def wollokEquals(WollokObject other) {
+		other.checkNotNull("equals")
+		
 		other.hasNativeType &&
 		verifySizes(wrapped, other.getNativeCollection) &&
 		verifyWollokElementsContained(wrapped, other.getNativeCollection) &&

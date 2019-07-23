@@ -138,7 +138,7 @@ class Object {
 	 * @private
 	 */
 	method kindName() native
-	
+
 	/** 
 	 * Full name of Wollok object class
 	 * @private 
@@ -243,6 +243,9 @@ class Object {
 	method error(aMessage) {
 		throw new Exception(message = aMessage)
 	}
+	
+	/** @private */
+	method checkNotNull(value, message) native
 }
 
 /** Representation for methods that only have side effects */
@@ -282,7 +285,10 @@ class Collection {
 	  *       [].max({ e => e.length() })                       
 	  *            => Throws error, list must not be empty            
 	  */
-	method max(closure) = self.maxIfEmpty(closure, { throw new ElementNotFoundException(message = "collection is empty") })
+	method max(closure) {
+		self.checkNotNull(closure, "max")
+		return self.maxIfEmpty(closure, { throw new ElementNotFoundException(message = "collection is empty") })
+	}
 
 	/**
 	  * Answers the element that represents the maximum value in the collection.
@@ -311,7 +317,11 @@ class Collection {
 	  *       [].maxIfEmpty({ e => e.length() }, { "default" })
 	  *            => Answers "default"
 	  */
-	method maxIfEmpty(toComparableClosure, emptyCaseClosure) = self.absolute(toComparableClosure, { a, b => a > b }, emptyCaseClosure)
+	method maxIfEmpty(toComparableClosure, emptyCaseClosure) {
+		self.checkNotNull(toComparableClosure, "maxIfEmpty")
+		self.checkNotNull(emptyCaseClosure, "maxIfEmpty")
+		return self.absolute(toComparableClosure, { a, b => a > b }, emptyCaseClosure)
+	}
 
 	/**
 	  * Answers the element that is considered to be/have the maximum value,
@@ -339,7 +349,10 @@ class Collection {
 	  *       [].min({ e => e.length() })
 	  *             => Throws error, list must not be empty
 	  */
-	method min(closure) = self.absolute(closure, { a, b => a < b }, { throw new ElementNotFoundException(message = "collection is empty") })
+	method min(closure) {
+		self.checkNotNull(closure, "min")
+		return self.absolute(closure, { a, b => a < b }, { throw new ElementNotFoundException(message = "collection is empty") })
+	}
 
 	/**
 	  * Answers the element that represents the minimum value in the 
@@ -368,7 +381,11 @@ class Collection {
 	  *       [].minIfEmpty({ e => e.length() }, { "default" })
 	  *             => Answers "default"
 	  */
-	method minIfEmpty(toComparableClosure, emptyCaseClosure) = self.absolute(toComparableClosure, { a, b => a < b }, emptyCaseClosure)
+	method minIfEmpty(toComparableClosure, emptyCaseClosure) {
+		self.checkNotNull(toComparableClosure, "minIfEmpty")
+		self.checkNotNull(emptyCaseClosure, "minIfEmpty")
+		return self.absolute(toComparableClosure, { a, b => a < b }, emptyCaseClosure)
+	}
 
 	/**
 	  * Answers the element that is considered to be/have the minimum value,
@@ -381,12 +398,19 @@ class Collection {
 	  *       [11, 1, 4, 8, 3, 15, 6].minIfEmpty({ 99 })  => Answers 1
 	  *       [].minIfEmpty({ 99 })                       => Answers 99
 	  */
-	method minIfEmpty(emptyCaseClosure) = self.minIfEmpty({it => it}, emptyCaseClosure)
+	method minIfEmpty(emptyCaseClosure) {
+		self.checkNotNull(emptyCaseClosure, "minIfEmpty")
+		return self.minIfEmpty({it => it}, emptyCaseClosure)
+	}
 
 	/** @private */
 	method absolute(closure, criteria, emptyCaseClosure) {
-		if (self.isEmpty())
+		self.checkNotNull(closure, "absolute")
+		self.checkNotNull(criteria, "absolute")
+		self.checkNotNull(emptyCaseClosure, "absolute")
+		if (self.isEmpty()) {
 			return emptyCaseClosure.apply()
+		}
 		const result = self.fold(null, { acc, e =>
 			const n = closure.apply(e) 
 			if (acc == null)
@@ -427,7 +451,10 @@ class Collection {
 	  *		const list = []
 	  *     list.addAll(#{2, 4})  => list == [2, 4], always pointing to a list
 	  */
-	method addAll(elements) { elements.forEach { e => self.add(e) } }
+	method addAll(elements) {
+		self.checkNotNull(elements, "addAll")
+		elements.forEach { e => self.add(e) }
+	}
 	
 	/**
 	  * Removes all elements of the given collection parameter from self collection. 
@@ -437,7 +464,8 @@ class Collection {
 	  *		const list = [1, 6, 5]
 	  *     list.removeAll([6]) => list == [1, 5]
 	  */
-	method removeAll(elements) { 
+	method removeAll(elements) {
+		self.checkNotNull(elements, "removeAll")
 		elements.forEach { e => self.remove(e) } 
 	}
 	
@@ -451,6 +479,7 @@ class Collection {
 	  *     list.removeAllSuchThat { e => e.even() } => list == [1, 5]
 	  */
 	 method removeAllSuchThat(closure) {
+		self.checkNotNull(closure, "removeAllSuchThat")	 
 	 	self.removeAll( self.filter(closure) )
 	 }
 
@@ -472,7 +501,10 @@ class Collection {
 	 * Example:
 	 *      plants.forEach { plant => plant.takeSomeWater() }
 	 */
-	method forEach(closure) { self.fold(null, { acc, e => closure.apply(e) }) }
+	method forEach(closure) {
+		self.checkNotNull(closure, "forEach")	
+		self.fold(null, { acc, e => closure.apply(e) })
+	}
 	
 	/**
 	 * Answers whether all the elements of self collection satisfy a given
@@ -486,7 +518,10 @@ class Collection {
 	 *      [1, 3, 5].all { number => number.odd() }    => Answers true
 	 *      [].all { number => number.odd() }           => Answers true
 	 */
-	method all(predicate) = self.fold(true, { acc, e => if (!acc) acc else predicate.apply(e) })
+	method all(predicate) {
+		self.checkNotNull(predicate, "all")	
+		return self.fold(true, { acc, e => if (!acc) acc else predicate.apply(e) })
+	}
 	
 	/**
 	 * Tells whether at least one element of self collection satisfies a
@@ -499,7 +534,10 @@ class Collection {
 	 *      [1, 2, 3].any { number => number.even() }   ==> Answers true
 	 *      [].any { number => number.even() }   ==> Answers false
 	 */
-	method any(predicate) = self.fold(false, { acc, e => if (acc) acc else predicate.apply(e) })
+	method any(predicate) {
+		self.checkNotNull(predicate, "any")	
+		return self.fold(false, { acc, e => if (acc) acc else predicate.apply(e) })
+	}
 	
 	/**
 	 * Answers the element of self collection that satisfies a given condition.
@@ -515,9 +553,12 @@ class Collection {
 	 *      #{1, 3}.find { number => number.even() }     => Throws ElementNotFoundException
 	 *      #{}.find { number => number.even() }         => Throws ElementNotFoundException
 	 */
-	method find(predicate) = self.findOrElse(predicate, { 
-		throw new ElementNotFoundException(message = "there is no element that satisfies the predicate")
-	})
+	method find(predicate) {
+		self.checkNotNull(predicate, "find")	
+		return self.findOrElse(predicate, { 
+			throw new ElementNotFoundException(message = "there is no element that satisfies the predicate")
+		})
+	}
 
 	/**
 	 * Answers the element of self collection that satisfies a given condition, 
@@ -561,8 +602,11 @@ class Collection {
 	 *      #{1, 2, 3, 4, 5}.count { number => number.odd() }  => Answers 3
 	 *      #{}.count { number => number.odd() }               => Answers 0
 	 */
-	method count(predicate) = self.fold(0, { acc, e => if (predicate.apply(e)) acc+1 else acc  })
-
+	method count(predicate) {
+		self.checkNotNull(predicate, "count")
+		return self.fold(0, { acc, e => if (predicate.apply(e)) acc+1 else acc  })
+	}
+	
 	/**
 	 * Counts the occurrences of a given element in self collection.
 	 * @returns an integer number
@@ -586,7 +630,10 @@ class Collection {
 	 *      const totalNumberOfFlowers = plants.sum{ plant => plant.numberOfFlowers() }
 	 *      [].sum { employee => employee.salary() }   => Answers 0
 	 */
-	method sum(closure) = self.fold(0, { acc, e => acc + closure.apply(e) })
+	method sum(closure) {
+		self.checkNotNull(closure, "sum")
+		return self.fold(0, { acc, e => acc + closure.apply(e) })
+	}
 	
 	/**
 	 * Sums all elements in the collection.
@@ -610,10 +657,13 @@ class Collection {
 	 *      [1, 2, 3].map { number => number.odd() }  => Answers [true, false, true]
 	 *      [].map { number => number.odd() }         => Answers []
 	 */
-	method map(closure) = self.fold([], { acc, e =>
-		 acc.add(closure.apply(e))
-		 acc
-	})
+	method map(closure) {
+		self.checkNotNull(closure, "map")
+		return self.fold([], { acc, e =>
+			acc.add(closure.apply(e))
+			acc
+		})
+	}
 	
 	/**
 	 * Map + flatten operation
@@ -633,10 +683,13 @@ class Collection {
 	 * 		[klaus, fritz].flatMap({ person => person.languages() })
 	 *			=> Answers ["c", "cobol", "pascal", "java", "perl"]
 	 */
-	method flatMap(closure) = self.fold(self.newInstance(), { acc, e =>
-		acc.addAll(closure.apply(e))
-		acc
-	})
+	method flatMap(closure) {
+		self.checkNotNull(closure, "flatMap")
+		return self.fold(self.newInstance(), { acc, e =>
+			acc.addAll(closure.apply(e))
+			acc
+		})
+	}
 
 	/**
 	 * Answers a new collection that contains the elements that 
@@ -649,11 +702,14 @@ class Collection {
 	 *      #{1, 2, 3, 4, 5}.filter { number => number.even() }   => Answers #{2, 4}
 	 *      #{}.filter { number => number.even() }                => Answers #{}
 	 */
-	 method filter(closure) = self.fold(self.newInstance(), { acc, e =>
-		 if (closure.apply(e))
-		 	acc.add(e)
-		 acc
-	})
+	method filter(closure) {
+		self.checkNotNull(closure, "filter")
+	 	return self.fold(self.newInstance(), { acc, e =>
+			if (closure.apply(e))
+		 		acc.add(e)
+		 	acc
+		})
+	}
 
 	/**
 	 * Answers whether this collection contains the specified element.
@@ -707,7 +763,7 @@ class Collection {
 	 *      const usersCopy = users.copy() 
 	 */
 	method copy() {
-		var copy = self.newInstance()
+		const copy = self.newInstance()
 		copy.addAll(self)
 		return copy
 	}
@@ -729,7 +785,7 @@ class Collection {
 	 *
 	 */
 	method sortedBy(closure) {
-		var copy = self.copy().asList()
+		const copy = self.copy().asList()
 		copy.sortBy(closure)
 		return copy
 	}
@@ -1116,7 +1172,9 @@ class List inherits Collection {
 	 *      [].subList(1, 2)                 => Answers [] 
 	 */
 	method subList(start, end) {
-		if(self.isEmpty())
+		self.checkNotNull(start, "subList")
+		self.checkNotNull(end, "subList")
+		if (self.isEmpty())
 			return self.newInstance()
 		
 		const newList = self.newInstance()
@@ -1149,11 +1207,10 @@ class List inherits Collection {
 	 *  	[1,9,2,3].take(-2) ==> Answers []
 	 *      [].take(2)         ==> Answers []		 
 	 */
-	method take(n) =
-		if(n <= 0)
-			self.newInstance()
-		else
-			self.subList(0, n - 1)
+	method take(n) {
+		self.checkNotNull(n, "take")
+		return if (n <= 0) self.newInstance() else self.subList(0, n - 1)
+	}
 		
 	/**
 	 * Answers a new list dropping first n elements of a list. 
@@ -1165,11 +1222,10 @@ class List inherits Collection {
 	 * 		[1, 9, 2, 3].drop(-2) ==> Answers [1, 9, 2, 3]
 	 *      [].drop(2)            ==> Answers []
 	 */
-	method drop(n) = 
-		if(n >= self.size())
-			self.newInstance()
-		else
-			self.subList(n, self.size() - 1)
+	method drop(n) {
+	 	self.checkNotNull(n, "drop")
+		return if (n >= self.size()) self.newInstance() else self.subList(n, self.size() - 1)
+	}
 		
 	/**
 	 * Answers a new list reversing the elements, 
@@ -1490,7 +1546,7 @@ class Dictionary {
 
 /**
  *
- * In Wollok we have numbers as immutable representation. You can customize
+ * In Wollok we have numbers as an immutable representation. You can customize
  * how many decimals you want to work with, and printing strategies. So
  * number two could be printed as "2", "2,00000", "2,000", etc.
  *
@@ -1514,9 +1570,6 @@ class Number {
 	
 	/** @private */
 	override method internalToSmartString(alreadyShown) { return self.stringValue() }
-	
-	/** @private */
-	method checkNotNull(value, operation) native
 	
 	/** 
 	 * @private
@@ -1578,7 +1631,10 @@ class Number {
 	 * Example:
 	 * 		1..4   		Answers ==> a new Range object from 1 to 4
 	 */
-	method ..(_end) = new Range(start = self, end = _end)
+	method ..(end) {
+		self.checkNotNull(end, "..")
+		return new Range(start = self, end = end)
+	}
 	
 	method >(other) native
 	method <(other) native
@@ -1639,11 +1695,16 @@ class Number {
 	 * 4.limitBetween(1, 2)  ==> Answers 2, because 4 is not in range 1..2, but 2 is nearest value to 4
 	 *
 	 */   
-	method limitBetween(limitA,limitB) = if(limitA <= limitB) 
-											limitA.max(self).min(limitB) 
-										 else 
-										 	limitB.max(self).min(limitA)
-
+	method limitBetween(limitA, limitB) {
+		self.checkNotNull(limitA, "limitBetween")
+		self.checkNotNull(limitB, "limitBetween")
+		return 
+			if (limitA <= limitB) 
+				limitA.max(self).min(limitB) 
+			else 
+			 	limitB.max(self).min(limitA)
+	}
+	
 	/** 
 	  * Answers whether self is between min and max 
 	  *
@@ -1696,7 +1757,10 @@ class Number {
 	 *     5.rem(3) 	==> Answers 2
 	 *     5.5.rem(3) 	==> Answers 2
 	 */
-	method rem(other) = self % other
+	method rem(other) {
+		self.checkNotNull(other, "rem")
+		return self % other
+	}
 	
 	/*
 	 * Self as String value. Equivalent: toString()
@@ -1986,7 +2050,10 @@ class String {
 	 * Example:
 	 *		"WoRD".equalsIgnoreCase("Word")  ==> Answers true
 	 */
-	method equalsIgnoreCase(aString) = self.toUpperCase() == aString.toUpperCase()
+	method equalsIgnoreCase(aString) {
+		self.checkNotNull(aString, "equalsIgnoreCase")
+		return self.toUpperCase() == aString.toUpperCase()
+	}
 	
 	/**
 	 * Answers a substring of this string beginning from
@@ -2020,6 +2087,7 @@ class String {
 	 *          ==> Answers ["this", "could", "be", "a", "list"]
 	 */
 	method split(expression) {
+		self.checkNotNull(expression, "split")
 		const result = []
 		var me = self.toString() + expression
 		var first = 0
@@ -2073,7 +2141,10 @@ class String {
 	 *     "lowercase".take(-1) ==> Throws error
 	 *     "".take(2)           ==> Answers "" 
 	 */
-	method take(n) = self.substring(0, n.min(self.size()))
+	method take(n) {
+		self.checkNotNull(n, "take")
+		return self.substring(0, n.min(self.size()))
+	}
 	
 	/** 
 	 * Answers a new string dropping 
@@ -2086,7 +2157,10 @@ class String {
 	 *      "caption".drop(-1)   ==> Throws error 
 	 *      "".drop(2)           ==> Answers "" 
 	 */
-	method drop(n) = self.substring(n.min(self.size()), self.size())
+	method drop(n) {
+		self.checkNotNull(n, "drop")
+		return self.substring(n.min(self.size()), self.size())
+	}
 	
 	/** 
 	 * Splits this strings into several words.
@@ -2165,17 +2239,17 @@ class Boolean {
  * @since 1.3
  */
 class Range {
-	const property start
-	const property end
-	var step = null
+	var start
+	var end
+	var property step = null
 	
 	/**
 	  * Instantiates a Range. 
 	  * Both start and end must be integer values.
 	  */
 	method initialize() {
-		start.coerceToInteger()
-		end.coerceToInteger()
+		start = start.coerceToInteger()
+		end = end.coerceToInteger()
 		if (step == null) {
 			if (start > end) { 
 				step = -1 
@@ -2184,9 +2258,23 @@ class Range {
 			}
 		}
 	}
-
+	
+	/**
+	 * Getter for start attribute
+	 */
+	method start() = start
+	
+	/**
+	 * Getter for end attribute
+	 */
+	method end() = end
+	
+	/**
+	 * Setter for step attribute.
+	 */
 	method step(_step) {
-		step = _step
+		self.checkNotNull(_step, "step")
+		step = _step.coerceToInteger()
 	}
 	
 	/** 
@@ -2211,8 +2299,9 @@ class Range {
 	 *      (1..10).map({ n => n * 2}) ==> Answers [2, 4, 6, 8, 10, 12, 14, 16, 18, 20] 
 	 */
 	method map(closure) {
+		self.checkNotNull(closure, "map")
 		const l = []
-		self.forEach{e=> l.add(closure.apply(e)) }
+		self.forEach { e => l.add(closure.apply(e)) }
 		return l
 	}
 
@@ -2224,10 +2313,13 @@ class Range {
 	 * Example:
 	 *      (1..4).flatMap({ n => 1 .. n }) ==> Answers [1, 1, 2, 1, 2, 3, 1, 2, 3, 4] 
 	 */
-	method flatMap(closure) = self.fold([], { acc, e =>
-		acc.addAll(closure.apply(e))
-		acc
-	})
+	method flatMap(closure) {
+		self.checkNotNull(closure, "flatMap")
+		return self.fold([], { acc, e =>
+			acc.addAll(closure.apply(e))
+			acc
+		})
+	}
 	
 	/** @private */
 	method asList() {
@@ -2241,7 +2333,7 @@ class Range {
 	method isEmpty() = self.size() == 0
 
 	/** @see List#fold(seed, foldClosure) */
-	method fold(seed, foldClosure) { return self.asList().fold(seed, foldClosure) }
+	method fold(seed, foldClosure) = self.asList().fold(seed, foldClosure)
 	
 	/** 
 	 * Answers the number of elements
