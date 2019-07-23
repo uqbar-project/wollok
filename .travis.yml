@@ -23,8 +23,8 @@ script:
 - export MAVEN_OPTS=-Xmx2048m
 - mvn -e -Darguments='-Dtycho.disableP2Mirrors=true' -Dtycho.disableP2Mirrors=true -U -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean install
   jacoco:report coveralls:report -P $PROFILES
-- chmod 777 ./scripts/*
-- export PATH=$PATH:./scripts/
+- chmod 777 ./wollok/scripts/*
+- export PATH=$PATH:./wollok/scripts/
 - generateWollokDoc.sh
 
 # I will delete the org.uqbar.wollok in the .m2 repo, as it is generated in every run, and is useless
