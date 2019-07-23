@@ -23,13 +23,17 @@ script:
 - export MAVEN_OPTS=-Xmx2048m
 - mvn -e -Darguments='-Dtycho.disableP2Mirrors=true' -Dtycho.disableP2Mirrors=true -U -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean install
   jacoco:report coveralls:report -P $PROFILES
+- chmod 777 ./scripts/*
+- export PATH=$PATH:./scripts/
+- generateWollokDoc.sh
+
 # I will delete the org.uqbar.wollok in the .m2 repo, as it is generated in every run, and is useless
 - rm -rf /home/travis/.m2/repository/org/uqbar-project
 # Moved from before_deploy, because it runs for each deploy, not only once
 # I list the used space if there is a problem with the size of the build
 - df -h
-# Previously it was `du -h -d 4 ..` but since there are no longer any build problems, we use a deep level of 2
-- du -h -d 2 ..
+# Previously it was `du -h -d 4 ..` but since there are no longer any build problems, we use root deep level
+- du -h -d 1 ..
 # Generating the release
 - cd ..
 - mkdir results-server
