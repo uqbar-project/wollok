@@ -9,23 +9,23 @@ class WollokLibExtensionsTest  {
 	
 	public static class IsCoreLibTest{
 		@Test()
-		def void WhenPassALangFqnResponseTrue() {
+		def void whenPassALangFqnResponseTrue() {
 			val String exceptionFqn = "wollok.lang.Exception"
 			assertTrue(WollokLibExtensions.isCoreLib(exceptionFqn))
 		}
 		
 		@Test()
-		def void WhenPassALibFqnResponseTrue() {
+		def void whenPassALibFqnResponseTrue() {
 			val String libFqn = "wollok.lib"
 			assertTrue(WollokLibExtensions.isCoreLib(libFqn))
 		}
 		
 		@Test()
-		def void WhenPassANullResponseFalse() {
+		def void whenPassANullResponseFalse() {
 			assertFalse(WollokLibExtensions.isCoreLib(null))
 		}
 		@Test()
-		def void WhenPassAFqnIsNotCoreLibResponseFalse() {
+		def void whenPassAFqnIsNotCoreLibResponseFalse() {
 			val String randomFqn = "randomfqn.aClass"
 			assertFalse(WollokLibExtensions.isCoreLib(randomFqn))
 		}
