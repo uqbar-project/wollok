@@ -15,7 +15,7 @@ class WollokCachedTypeSystemPreferences {
 	@Accessors boolean typeSystemEnabled
 		
 	private new() {
-		typeSystemEnabled = false
+		typeSystemEnabled = true
 		typeSystemSeverity = CheckSeverity.WARN
 	}
 	

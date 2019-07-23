@@ -8,7 +8,7 @@ import org.uqbar.project.wollok.validation.CheckSeverity
 class DefaultWollokTypeSystemPreferences implements WollokTypeSystemPreference {
 	
 	override isTypeSystemEnabled(EObject file) {
-		false
+		enebledDefault
 	}
 	
 	override getSelectedTypeSystem(EObject file) {
@@ -20,11 +20,13 @@ class DefaultWollokTypeSystemPreferences implements WollokTypeSystemPreference {
 	}
 	
 	override isTypeSystemEnabled(IProject file) {
-		false
+		enebledDefault
 	}
 	
 	override getTypeSystemSeverity() {
-		CheckSeverity.ERROR
+		CheckSeverity.WARN
 	}
+	
+	def enebledDefault() { true }
 	
 }
