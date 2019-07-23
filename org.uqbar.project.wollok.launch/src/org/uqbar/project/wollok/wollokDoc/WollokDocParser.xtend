@@ -79,6 +79,7 @@ class WollokDocParser extends WollokChecker {
 	}
 
 	override launch(String folder, WollokLauncherParameters parameters) {
+		println("Looking Wollok library in folder " + folder)
         new DirExplorer(filterWollokElements, launchWollokDocGeneration) => [
         	explore(new File(folder))
         	writeNavbar

@@ -17,3 +17,6 @@ eclipse
 .project
 .recommenders
 .history
+scripts/libs
+scripts/jars
+scripts/wollok-site
