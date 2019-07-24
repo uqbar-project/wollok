@@ -10,8 +10,8 @@ before_install:
 after_success:
 - cd ..
 - chmod 777 ./scripts/*
-- export PATH=$PATH:./scripts/
-- generateWollokDoc
+- cd ./scripts
+- ./updateRestOfWollokRepos
 
 
 script:

@@ -20,3 +20,4 @@ eclipse
 scripts/libs
 scripts/jars
 scripts/wollok-site
+scripts/wollok-cli

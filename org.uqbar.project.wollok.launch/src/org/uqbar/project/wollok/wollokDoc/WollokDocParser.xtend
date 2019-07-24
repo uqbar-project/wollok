@@ -89,7 +89,8 @@ class WollokDocParser extends WollokChecker {
 	def void writeNavbar() {
 		val path = URI.createFileURI(outputFolder).segmentsList
 		val parentOutputFolder = path.subList(0, path.length - 1)
-		val file = new File(File.separator + parentOutputFolder.join(File.separator) + File.separator + "wollokDoc.md")
+		println("Writing " + parentOutputFolder.join(File.separator) + File.separator + "wollokDoc.md")
+		val file = new File(parentOutputFolder.join(File.separator) + File.separator + "wollokDoc.md")
 		wollokDocFile = Files.newWriter(file, Charsets.UTF_8) => [
 			write('''
 				---

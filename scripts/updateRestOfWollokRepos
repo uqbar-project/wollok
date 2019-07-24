@@ -1,0 +1,22 @@
+echo "Cloning wollok-cli repo..."
+git clone https://github.com/uqbar-project/wollok-cli
+echo "Updating jars to wollok-cli"
+cd ./wollok-cli
+ls
+./generateCI.sh ../..
+cd ..
+
+echo "Copying Wollok library files into libs folder"
+mkdir -p ./libs
+cp ../org.uqbar.project.wollok.lib/src/wollok/*.wlk ./libs
+
+git clone https://github.com/uqbar-project/wollok-site
+rm -rf ./wollok-site/documentacion/wollokdoc
+mkdir -p ./wollok-site/documentacion/wollokdoc
+java -cp "./wollok-cli/jars/*" org.uqbar.project.wollok.wollokDoc.WollokDocParser "./libs" -folder "./wollok-site/documentacion/wollokdoc"
+
+cd ..
+ls
+
+echo "...done"
+exit 0
