@@ -29,10 +29,12 @@ cp -rf ./wollok-site/documentacion/wollokdoc ./wollok-site/en/documentation/woll
 echo "****************************************************************************"
 
 echo "List of wollok-cli files updated"
+cd wollok-cli
 git status
 
 echo "Pushing wollok-cli files"
-cd wollok-cli
+git config --global user.email "fernando.dodino@gmail.com"
+git config --global user.name "Fernando Dodino"
 git add .
 git commit -m "Updating Wollok JAR files from Travis Job $TRAVIS_JOB_ID"
 git push origin master
