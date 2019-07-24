@@ -7,6 +7,12 @@ before_install:
 - df -h
 - openssl aes-256-cbc -K $encrypted_1cc7b892dc78_key -iv $encrypted_1cc7b892dc78_iv -in settings.xml.enc -out settings.xml -d
 - mv settings.xml ~/.m2/settings.xml
+after_success:
+- cd ..
+- chmod 777 ./scripts/*
+- export PATH=$PATH:./scripts/
+- generateWollokDoc
+
 
 script:
 # Creates the correct profile to run
@@ -23,9 +29,6 @@ script:
 - export MAVEN_OPTS=-Xmx2048m
 - mvn -e -Darguments='-Dtycho.disableP2Mirrors=true' -Dtycho.disableP2Mirrors=true -U -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean install
   jacoco:report coveralls:report -P $PROFILES
-- chmod 777 ./scripts/*
-- export PATH=$PATH:./scripts/
-- generateWollokDoc
 
 # I will delete the org.uqbar.wollok in the .m2 repo, as it is generated in every run, and is useless
 - rm -rf /home/travis/.m2/repository/org/uqbar-project
