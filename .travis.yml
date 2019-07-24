@@ -9,7 +9,6 @@ before_install:
 - mv settings.xml ~/.m2/settings.xml
 after_success:
 - cd scripts
-- ls
 - chmod 777 ./updateRestOfWollokRepos
 - ./updateRestOfWollokRepos
 
