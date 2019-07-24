@@ -2,7 +2,6 @@ echo "Cloning wollok-cli repo..."
 git clone https://github.com/uqbar-project/wollok-cli
 echo "Updating jars to wollok-cli"
 cd ./wollok-cli
-ls
 ./generateCI.sh ../..
 cd ..
 
@@ -15,8 +14,10 @@ rm -rf ./wollok-site/documentacion/wollokdoc
 mkdir -p ./wollok-site/documentacion/wollokdoc
 java -cp "./wollok-cli/jars/*" org.uqbar.project.wollok.wollokDoc.WollokDocParser "./libs" -folder "./wollok-site/documentacion/wollokdoc"
 
-cd ..
-ls
+# copiamos la documentación también al inglés
+# no copiamos el wollokDoc.md, si hay nuevos archivos o se elimina alguno hay que 
+# ajustarlo manualmente
+cp -rf ./wollok-site/documentacion/wollokdoc ./wollok-site/en/documentation/wollokdoc
 
 echo "...done"
 exit 0
