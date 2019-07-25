@@ -9,9 +9,12 @@ before_install:
   -in settings.xml.enc -out settings.xml -d
 - mv settings.xml ~/.m2/settings.xml
 after_success:
-- cd scripts
-- chmod 777 ./updateRestOfWollokRepos
-- "./updateRestOfWollokRepos"
+- |
+  if [ $TRAVIS_PULL_REQUEST == "false" -a $TRAVIS_BRANCH == "master" ] ; then 
+    cd scripts
+    chmod 777 ./updateRestOfWollokRepos;
+    "./updateRestOfWollokRepos" 
+  fi
 script:
 - cd org.uqbar.project.wollok.releng/
 - export PROFILES=normalProfile
