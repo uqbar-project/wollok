@@ -13,6 +13,7 @@ before_install:
 - openssl aes-256-cbc -K $encrypted_4399729fe888_key -iv $encrypted_4399729fe888_iv -in public_key.enc -out public_key -d
 - echo "Host github.com" > ~/.ssh/config
 - echo "  IdentityFile  $(pwd)/travis_key" >> ~/.ssh/config
+- public_key=`cat public_key`
 - echo "github.com ssh-rsa $public_key" > ~/.ssh/known_hosts 
 - chmod 400 travis_key
 - cd scripts
