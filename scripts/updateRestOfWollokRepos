@@ -34,15 +34,17 @@ cd wollok-site
 git status
 
 echo "Pushing wollok-cli files"
-touch wollok-site.txt
-git add wollok-site.txt
-git commit -m "Updating Wollokdoc files from Travis Job $TRAVIS_JOB_ID"
-git push origin master
-
 cd ../wollok-cli
 touch wollok-cli.txt
 git add wollok-cli.txt
 git commit -m "Updating Wollok JARs library from Travis Job $TRAVIS_JOB_ID"
+git push origin master
+
+echo "Pushing wollok-site files"
+alias ssh='ssh -F <(cat .ssh/config /tmp/wolloksite_key)'
+touch wollok-site.txt
+git add wollok-site.txt
+git commit -m "Updating Wollokdoc files from Travis Job $TRAVIS_JOB_ID"
 git push origin master
 
 echo "...done"

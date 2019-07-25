@@ -15,7 +15,7 @@ after_success:
   -out /tmp/wollokcli_key
 - chmod 600 /tmp/wolloksite_key
 - chmod 600 /tmp/wollokcli_key
-# - cp ssh_config ~/.ssh/config
+- cp ssh_config ~/.ssh/config
 - eval `ssh-agent -s`
 - ssh-add /tmp/wolloksite_key
 - ssh-add /tmp/wollokcli_key

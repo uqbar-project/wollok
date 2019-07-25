@@ -1,2 +1,2 @@
 Host *
- IdentityFile /tmp/travis_key
+ IdentityFile /tmp/wollokcli_key
