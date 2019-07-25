@@ -47,9 +47,13 @@ echo "List of wollok-cli files updated"
 cd ../wollok-site
 git status
 
+echo ""
 cp ../ssh_config_for_site ~/.ssh/config
 git remote remove origin
 git remote add origin git@github.com:uqbar-project/wollok-site.git
+git remote -v
+
+echo ""
 echo "Pushing wollok-site files"
 alias ssh='ssh -F <(cat .ssh/config /tmp/wolloksite_key)'
 git 
