@@ -38,7 +38,7 @@ script:
   $PROFILES
 - rm -rf /home/travis/.m2/repository/org/uqbar-project
 - df -h
-- du -h -d 1 ..
+- du -h -d 2 ..
 - cd ..
 - mkdir results-server
 - mv org.uqbar.project.wollok.launch/target/org.uqbar.project.wollok.launch-*-wdk.zip

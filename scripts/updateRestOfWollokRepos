@@ -16,9 +16,6 @@ rm  ./wollok-site/documentacion/wollokdoc/*.html
 rm  ./wollok-site/documentacion/wollokDoc.md
 mkdir -p ./wollok-site/documentacion/wollokdoc
 
-echo "Cloning Wollok CLI repo"
-git clone git@github.com:uqbar-project/wollok-cli.git
-
 echo "Updating WollokDoc files"
 java -cp "./wollok-cli/jars/*" org.uqbar.project.wollok.wollokDoc.WollokDocParser "./libs" -folder "./wollok-site/documentacion/wollokdoc"
 
@@ -35,17 +32,19 @@ echo "**************************************************************************
 
 echo "List of wollok-cli files updated"
 cd wollok-cli
+touch wollok-cli.lastUpdated
 git status
-
+echo ""
+git remote -v
+echo ""
 echo "Pushing wollok-cli files"
-touch wollok-cli.txt
-git add wollok-cli.txt
+git add wollok-cli.lastUpdated
 git commit -m "Updating Wollok JARs library from Travis Job $TRAVIS_JOB_ID"
 git push origin master
 
-echo "List of wollok-cli files updated"
+echo "****************************************************************************"
+echo "List of wollok-site files updated"
 cd ../wollok-site
-git status
 
 echo ""
 cp ../ssh_config_for_site ~/.ssh/config
@@ -53,13 +52,16 @@ git remote remove origin
 git remote add origin git@github.com:uqbar-project/wollok-site.git
 git remote -v
 
+alias ssh='ssh -F <(cat .ssh/config /tmp/wolloksite_key)'
+touch wollok-site.lastUpdated
+echo "List of wollok-site files updated"
+git status
+
+git add wollok-site.lastUpdated
+git commit -m "Updating Wollokdoc files from Travis Job $TRAVIS_JOB_ID"
+
 echo ""
 echo "Pushing wollok-site files"
-alias ssh='ssh -F <(cat .ssh/config /tmp/wolloksite_key)'
-git 
-touch wollok-site.txt
-git add wollok-site.txt
-git commit -m "Updating Wollokdoc files from Travis Job $TRAVIS_JOB_ID"
 git push origin master
 
 echo "...done"
