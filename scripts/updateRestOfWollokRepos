@@ -32,11 +32,13 @@ echo "**************************************************************************
 
 echo "List of wollok-cli files updated"
 cd wollok-cli
-touch wollok-cli.lastUpdated
+echo $TRAVIS_JOB_ID > wollok-cli.lastUpdated
 git status
 echo ""
 git remote -v
 echo ""
+ssh -T git@github.com
+echo "============================================================================"
 echo "Pushing wollok-cli files"
 git add wollok-cli.lastUpdated
 git commit -m "Updating Wollok JARs library from Travis Job $TRAVIS_JOB_ID"
@@ -47,13 +49,13 @@ echo "List of wollok-site files updated"
 cd ../wollok-site
 
 echo ""
-cp ../ssh_config_for_site ~/.ssh/config
+cp ../../ssh_config_for_site ~/.ssh/config
 git remote remove origin
 git remote add origin git@github.com:uqbar-project/wollok-site.git
 git remote -v
 
 alias ssh='ssh -F <(cat .ssh/config /tmp/wolloksite_key)'
-touch wollok-site.lastUpdated
+echo $TRAVIS_JOB_ID > wollok-site.lastUpdated
 echo "List of wollok-site files updated"
 git status
 
