@@ -9,17 +9,6 @@ before_install:
   -in settings.xml.enc -out settings.xml -d
 - mv settings.xml ~/.m2/settings.xml
 after_success:
-- openssl aes-256-cbc -k "$travis_key_password" -d -md sha256 -a -in wolloksite_key.enc
-  -out /tmp/wolloksite_key
-- openssl aes-256-cbc -k "$travis_key_password" -d -md sha256 -a -in wollokcli_key.enc
-  -out /tmp/wollokcli_key
-- chmod 600 /tmp/wolloksite_key
-- chmod 600 /tmp/wollokcli_key
-- cp ssh_config ~/.ssh/config
-# - ssh-add /tmp/wolloksite_key
-# - ssh-add /tmp/wollokcli_key
-- eval `ssh-agent -s`
-- cd scripts
 - chmod 777 ./updateRestOfWollokRepos
 - "./updateRestOfWollokRepos"
 script:
