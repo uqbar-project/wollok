@@ -14,7 +14,6 @@ after_success:
 - echo "Host github.com" > ~/.ssh/config
 - echo "  IdentityFile  $(pwd)/travis_key" >> ~/.ssh/config
 - chmod 400 travis_key
-- echo "github.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCrBPXZ5sqPZBItSqehtMn+zljkSyWFcrd0sNBEA9/wG9BZGD2YM4mlBVP6cjuRHb+hIXBblo7HfI/RtHa9pG/M1AL+rmeAG578LiyeN5zN8CYiDZxMek03qJ8ZDDM53FiHIsvSz+KqVw9cofYIN6/essGpfoH361LYimbvKGcKI+FadrFPFu0SqMLhGvbVcNEgHV0lYO/MM1sKuXaQiV45rI/hVunI2IGS414HHnXqnTTlqHRHKhoNJTv0E8UmpuQGiNwJt/JmAg8YSxy8uDw7dVpDRWiiC9O0RHvqaWRG07dKOCdFaOddIBo3IdOj/O087N4qdqku+AAaB1YJt956uyzTTvDKfQYcLox4Wz7f3uiR0Rw0C+1AZSszz2ylc/bU1yA9H6LnoUzBxJ2bLqMSd99nloiPFyn3JtEKuuo5xWCt/8RbJBL4rjSjjVLGk1GGS193JoN5fYIVUfWDDZxAAvWcVJqRUgxiMBbMWqzZdu97KuTTdLgDtp/uSUfs4uBy13k1esorPnYNSaD83GXbU6ctjHhGSpOa6nWpmCDt+olZRh8EHeZ4raT2vzYvfawkNB/IZBd8aCuP5pGVAL5t3M+KvkoC8RfNfm70oxEjkKbDjlf55lKJAG2q87e5rD0kvLEQKXRQUGziSVTDDzCDQSXS8N6J2ctz/FIeSdFnFw==" > ~/.ssh/known_hosts 
 - chmod 777 ./updateRestOfWollokRepos
 - ./updateRestOfWollokRepos
 
