@@ -29,13 +29,13 @@ cp -rf ./wollok-site/documentacion/wollokdoc ./wollok-site/en/documentation/woll
 echo "****************************************************************************"
 
 echo "List of wollok-cli files updated"
-cd wollok-cli
+cd wollok-site
 git status
 
 echo "Pushing wollok-cli files"
 touch test.txt
 git add test.txt
-git commit -m "Updating Wollok JAR files from Travis Job $TRAVIS_JOB_ID"
+git commit -m "Updating Wollok library from Travis Job $TRAVIS_JOB_ID"
 git push origin master
 
 echo "...done"
