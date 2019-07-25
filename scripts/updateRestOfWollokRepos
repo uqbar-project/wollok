@@ -4,7 +4,6 @@ chmod 600 /tmp/wolloksite_key
 chmod 600 /tmp/wollokcli_key
 cp ssh_config ~/.ssh/config
 eval `ssh-agent -s`
-cd scripts
 
 echo "Cloning wollok-cli repo..."
 git clone git@wollok_cli:uqbar-project/wollok-cli.git
@@ -45,7 +44,7 @@ git status
 echo ""
 echo "============================================================================"
 echo "Pushing wollok-cli files"
-git add wollok-cli.lastUpdated
+git add .
 git commit -m "Updating Wollok JARs library from Travis Job $TRAVIS_JOB_ID"
 git push -v origin master
 echo "****************************************************************************"
@@ -58,7 +57,7 @@ git status
 echo ""
 echo "============================================================================"
 echo "Pushing wollok-site files"
-git add wollok-site.lastUpdated
+git add .
 git commit -m "Updating Wollokdoc files from Travis Job $TRAVIS_JOB_ID"
 git push -v origin master
 echo "****************************************************************************"
