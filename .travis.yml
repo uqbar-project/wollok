@@ -12,7 +12,7 @@ after_success:
 - |
   if [ $TRAVIS_PULL_REQUEST == "false" -a $TRAVIS_BRANCH == "master" ] ; then 
     cd scripts
-    chmod 777 ./updateRestOfWollokRepos;
+    chmod 777 ./updateRestOfWollokRepos
     "./updateRestOfWollokRepos" 
   fi
 script:
