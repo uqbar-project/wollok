@@ -34,7 +34,7 @@ git status
 
 echo "Pushing wollok-cli files"
 touch test.txt
-git add .
+git add test.txt
 git commit -m "Updating Wollok JAR files from Travis Job $TRAVIS_JOB_ID"
 git push origin master
 
