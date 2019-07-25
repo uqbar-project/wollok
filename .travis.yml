@@ -14,7 +14,7 @@ before_install:
 - echo "Host github.com" > ~/.ssh/config
 - echo "  IdentityFile  $(pwd)/travis_key" >> ~/.ssh/config
 - public_key=`cat public_key`
-- echo "github.com ssh-rsa 85:f7:70:40:52:8c:e0:1e:c9:be:4f:11:d3:e0:d7:37" > ~/.ssh/known_hosts 
+- echo "github.com ssh-rsa 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48" > ~/.ssh/known_hosts 
 - chmod 400 travis_key
 - cd scripts
 - chmod 777 ./updateRestOfWollokRepos
