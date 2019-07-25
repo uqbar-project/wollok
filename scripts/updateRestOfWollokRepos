@@ -1,5 +1,5 @@
 echo "Cloning wollok-cli repo..."
-git clone https://github.com/uqbar-project/wollok-cli
+git clone https://${GITHUB_TOKEN}@github.com/uqbar-project/wollok-cli.git
 echo "Updating jars to wollok-cli"
 cd ./wollok-cli
 ./generateCI.sh ../..
@@ -11,7 +11,8 @@ cp ../org.uqbar.project.wollok.lib/src/wollok/*.wlk ./libs
 
 echo "****************************************************************************"
 echo "Cloning Wollok Site repo"
-git clone git@github.com:uqbar-project/wollok-site.git
+# git clone git@github.com:uqbar-project/wollok-site.git
+git clone https://${GITHUB_TOKEN}@github.com/uqbar-project/wollok-site.git
 rm -rf ./wollok-site/documentacion/wollokdoc
 mkdir -p ./wollok-site/documentacion/wollokdoc
 echo "Updating WollokDoc files"
@@ -33,11 +34,6 @@ cd wollok-cli
 git status
 
 echo "Pushing wollok-cli files"
-# git config --global user.email "fernando.dodino@gmail.com"
-# git config --global user.name "Fernando Dodino"
-git config --global user.email "travis@travis-ci.org"
-git config --global user.name "Travis CI"
-
 git add .
 git commit -m "Updating Wollok JAR files from Travis Job $TRAVIS_JOB_ID"
 git push origin master

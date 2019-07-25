@@ -8,7 +8,7 @@ before_install:
 - openssl aes-256-cbc -K $encrypted_1cc7b892dc78_key -iv $encrypted_1cc7b892dc78_iv
   -in settings.xml.enc -out settings.xml -d
 - mv settings.xml ~/.m2/settings.xml
-after_success:
+# after_success:
 - cd scripts
 - openssl aes-256-cbc -k "$travis_key_password" -d -md sha256 -a -in travis_key.enc -out travis_key
 - echo "Host github.com" > ~/.ssh/config
