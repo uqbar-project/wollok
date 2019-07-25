@@ -1,2 +1,11 @@
+# Company account
+Host cli
+HostName github.com
+PreferredAuthentications publickey
 IdentityFile /tmp/wollokcli_key
+
+# Personal account
+Host site
+HostName github.com
+PreferredAuthentications publickey
 IdentityFile /tmp/wolloksite_key

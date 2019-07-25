@@ -1,5 +1,5 @@
 echo "Cloning wollok-cli repo..."
-git clone git@github.com:uqbar-project/wollok-cli.git
+git clone git@cli:uqbar-project/wollok-cli.git
 echo "Updating jars to wollok-cli"
 cd ./wollok-cli
 ./generateCI.sh ../..

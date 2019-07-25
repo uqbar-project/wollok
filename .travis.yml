@@ -35,7 +35,7 @@ script:
 - export MAVEN_OPTS=-Xmx2048m
 - mvn -e -Darguments='-Dtycho.disableP2Mirrors=true' -Dtycho.disableP2Mirrors=true
   -U -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean install jacoco:report coveralls:report -P
-  $PROFILES -o -Dmaven.test.skip=true # OJO!!!! SOLO PARA PROBAR
+  $PROFILES
 - rm -rf /home/travis/.m2/repository/org/uqbar-project
 - df -h
 - du -h -d 2 ..
