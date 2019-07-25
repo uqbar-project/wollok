@@ -1,0 +1,4 @@
+Host *
+ AddKeysToAgent yes
+ UseKeychain yes
+ IdentityFile /tmp/travis_key

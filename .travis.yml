@@ -11,6 +11,7 @@ before_install:
 # after_success:
 - openssl aes-256-cbc -k "$travis_key_password" -d -md sha256 -a -in travis_key.enc -out /tmp/travis_key
 - chmod 600 /tmp/travis_key
+- cp /tmp/travis_key ~/.ssh/config
 - eval `ssh-agent -s`
 - ssh-add /tmp/travis_key
 - cd scripts
