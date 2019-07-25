@@ -37,7 +37,7 @@ git status
 echo ""
 git remote -v
 echo ""
-ssh -T git@github.com
+ssh -vT git@github.com
 echo "============================================================================"
 echo "Pushing wollok-cli files"
 git add wollok-cli.lastUpdated

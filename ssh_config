@@ -1,2 +1,2 @@
-Host *
- IdentityFile /tmp/wollokcli_key
+IdentityFile /tmp/wollokcli_key
+IdentityFile /tmp/wolloksite_key
