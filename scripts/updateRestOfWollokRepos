@@ -12,7 +12,8 @@ cp ../org.uqbar.project.wollok.lib/src/wollok/*.wlk ./libs
 echo "****************************************************************************"
 echo "Cloning Wollok Site repo"
 git clone git@github.com:uqbar-project/wollok-site.git
-rm -rf ./wollok-site/documentacion/wollokdoc
+rm  ./wollok-site/documentacion/wollokdoc/*.html
+rm  ./wollok-site/documentacion/wollokDoc.md
 mkdir -p ./wollok-site/documentacion/wollokdoc
 echo "Updating WollokDoc files"
 java -cp "./wollok-cli/jars/*" org.uqbar.project.wollok.wollokDoc.WollokDocParser "./libs" -folder "./wollok-site/documentacion/wollokdoc"
@@ -25,7 +26,7 @@ ls   ./wollok-site/documentacion/wollokdoc
 # no copiamos el wollokDoc.md, si hay nuevos archivos o se elimina alguno hay que 
 # ajustarlo manualmente
 echo "Copying WollokDoc files to english version"
-cp -rf ./wollok-site/documentacion/wollokdoc ./wollok-site/en/documentation/wollokdoc
+cp   ./wollok-site/documentacion/wollokdoc/*.html ./wollok-site/en/documentation/wollokdoc
 echo "****************************************************************************"
 
 echo "List of wollok-cli files updated"
@@ -33,9 +34,15 @@ cd wollok-site
 git status
 
 echo "Pushing wollok-cli files"
-touch test.txt
-git add test.txt
-git commit -m "Updating Wollok library from Travis Job $TRAVIS_JOB_ID"
+touch wollok-site.txt
+git add wollok-site.txt
+git commit -m "Updating Wollokdoc files from Travis Job $TRAVIS_JOB_ID"
+git push origin master
+
+cd ../wollok-cli
+touch wollok-cli.txt
+git add wollok-cli.txt
+git commit -m "Updating Wollok JARs library from Travis Job $TRAVIS_JOB_ID"
 git push origin master
 
 echo "...done"
