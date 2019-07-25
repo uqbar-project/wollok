@@ -1,11 +1,11 @@
-# Company account
-Host cli
-HostName github.com
-PreferredAuthentications publickey
-IdentityFile /tmp/wollokcli_key
+Host wollok_cli
+    HostName github.com
+    PreferredAuthentications publickey
+    IdentityFile             /tmp/wollokcli_key
+    IdentitiesOnly           yes
 
-# Personal account
-Host site
-HostName github.com
-PreferredAuthentications publickey
-IdentityFile /tmp/wolloksite_key
+Host wollok_site
+    HostName github.com
+    PreferredAuthentications publickey
+    IdentityFile             /tmp/wolloksite_key
+    IdentitiesOnly           yes    
