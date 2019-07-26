@@ -10,7 +10,7 @@ before_install:
 - mv settings.xml ~/.m2/settings.xml
 after_success:
 - |
-  if [ $TRAVIS_PULL_REQUEST == "true" -a $TRAVIS_BRANCH != "master" ] ; then 
+  if [ $TRAVIS_PULL_REQUEST != "false" -a $TRAVIS_BRANCH != "master" ] ; then 
     cd scripts
     chmod 777 ./updateRestOfWollokRepos
     "./updateRestOfWollokRepos" 
