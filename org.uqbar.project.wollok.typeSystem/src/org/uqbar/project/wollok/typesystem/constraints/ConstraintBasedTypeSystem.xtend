@@ -54,6 +54,7 @@ import static org.uqbar.project.wollok.scoping.WollokResourceCache.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.fqn
 import static extension org.uqbar.project.wollok.typesystem.annotations.TypeDeclarations.*
 import org.uqbar.project.wollok.sdk.WollokSDK
+import org.apache.log4j.Level
 
 /**
  * @author npasserini
@@ -97,6 +98,8 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	// ** Analysis
 	// ************************************************************************
 	override initialize(EObject program) {
+		Logger.getLogger("org.uqbar.project.wollok.typesystem.constraints").level = Level.DEBUG
+		
 		registry = new TypeVariablesRegistry(this)
 		programs = newArrayList
 		constraintGenerator = new ConstraintGenerator(this)
