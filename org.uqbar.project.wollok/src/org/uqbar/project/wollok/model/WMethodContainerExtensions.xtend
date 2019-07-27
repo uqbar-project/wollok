@@ -463,6 +463,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			chain.addAll(parent.linearizeHierarchy)
 		chain
 	}
+	
+	def static matches(WMethodDeclaration m1, WMethodDeclaration m2) {
+		m1.name.equals(m2.name) && m1.parameters.length === m2.parameters.length 
+	}
 
 	def static matches(WMethodDeclaration it, String message, List<?> params) { 
 		matches(message, params.size)
