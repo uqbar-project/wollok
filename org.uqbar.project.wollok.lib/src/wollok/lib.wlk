@@ -19,6 +19,7 @@ object console {
 	 */
 	method newline() native
 }
+
 /**
  * Exception to handle other values expected in assert.throwsException... methods
  */
@@ -46,6 +47,7 @@ object assert {
 	 *		assert.that(8.even())   ==> ok, nothing happens	
 	 */
 	method that(value) {
+		self.checkNotNull(value, "that")
 		if (!value) throw new AssertionException(message = "Value was not true")
 	}
 	
@@ -53,6 +55,7 @@ object assert {
 	 * @see assert#that(value) 
 	 */
 	method notThat(value) {
+		self.checkNotNull(value, "notThat")
 		if (value) throw new AssertionException(message = "Value was not false")
 	}
 	
@@ -98,6 +101,7 @@ object assert {
 	 *         ==> throws an exception "Block should have failed"
 	 */
 	method throwsException(block) {
+		self.checkNotNull(block, "throwsException")
 		var failed = false
 		try {
 			block.apply()
@@ -125,6 +129,8 @@ object assert {
 	 *            => Doesn't work. Messages matches but they are instances of different exceptions.
 	 */	 
 	method throwsExceptionLike(exceptionExpected, block) {
+		self.checkNotNull(exceptionExpected, "throwsExceptionLike")
+		self.checkNotNull(block, "throwsExceptionLike")
 		try 
 		{
 			self.throwsExceptionByComparing(block, {a => a.equals(exceptionExpected)})
@@ -150,6 +156,8 @@ object assert {
 	 *           => Doesn't work. Both are instances of BusinessException but their messages differ.
 	 */	 
 	method throwsExceptionWithMessage(errorMessage, block) {
+		self.checkNotNull(errorMessage, "throwsExceptionWithMessage")
+		self.checkNotNull(block, "throwsExceptionWithMessage")
 		try 
 		{
 			self.throwsExceptionByComparing(block, {a => errorMessage.equals(a.message())})
@@ -175,6 +183,8 @@ object assert {
 	 *          => Doesn't work. Exception classes differ although they contain the same message.
 	 */	 	
 	method throwsExceptionWithType(exceptionExpected, block) {
+		self.checkNotNull(exceptionExpected, "throwsExceptionWithType")
+		self.checkNotNull(block, "throwsExceptionWithType")
 		try 
 		{
 			self.throwsExceptionByComparing(block,{a => exceptionExpected.className().equals(a.className())})
@@ -202,6 +212,8 @@ object assert {
 	 *          => Doesn't work. The block evaluation resolves to a false value.
 	 */		
 	method throwsExceptionByComparing(block, comparison){
+		self.checkNotNull(block, "throwsExceptionByComparing")
+		self.checkNotNull(comparison, "throwsExceptionByComparing")
 		var continue = false
 		try 
 			{
@@ -222,16 +234,20 @@ object assert {
 	 * Throws an exception with a custom message. 
 	 * Useful when you reach code that should not be reached.
 	 */
-	method fail(aMessage) {
-		throw new AssertionException(message = aMessage)
+	method fail(message) {
+		self.checkNotNull(message, "fail")
+		throw new AssertionException(message = message)
 	}
 	
 }
 
 class StringPrinter {
 	var buffer = ""
+	
 	method println(obj) {
-		buffer += obj.toString() + console.newline()
+		const objAsString = if (obj === null) "null" else obj.toString()
+		buffer += objAsString + console.newline()
 	}
+	
 	method getBuffer() = buffer
 }	

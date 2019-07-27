@@ -12,6 +12,7 @@ import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
+import static extension org.uqbar.project.wollok.utils.WollokObjectUtils.*
 
 /**
  * Native part of the wollok.lang.List class
@@ -25,11 +26,13 @@ class WList extends WCollection<List<WollokObject>> implements JavaWrapper<List<
 	}
 	
 	def get(BigDecimal index) {
+		index.checkNotNull("get")
 		val convertedIndex = index.coerceToPositiveInteger
 		wrapped.get(convertedIndex)
 	}
 
 	def sortBy(WollokObject predicate) {
+		predicate.checkNotNull("sortBy")
 		val closure = predicate.asClosure
 		/*Convert the closure into a comparator to use the standard sort*/
 		val comparator = new Comparator {

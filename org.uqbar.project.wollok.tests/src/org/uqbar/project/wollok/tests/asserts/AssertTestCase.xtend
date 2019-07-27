@@ -78,5 +78,54 @@ class AssertTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals(1, "hola")
 		'''.test
 	}
-		
+
+	@Test
+	def void thatUsingNullMustFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation that doesn't support null parameters", { => assert.that(null) })
+		'''.test
+	}
+
+	@Test
+	def void notThatUsingNullMustFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation notThat doesn't support null parameters", { => assert.notThat(null) })
+		'''.test
+	}
+	
+	@Test
+	def void throwsExceptionUsingNullMustFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation throwsException doesn't support null parameters", { => assert.throwsException(null) })
+		'''.test
+	}
+	
+	@Test
+	def void throwsExceptionLikeUsingNullMustFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation throwsExceptionLike doesn't support null parameters", { => assert.throwsExceptionLike(null, null) })
+		'''.test
+	}
+
+	@Test
+	def void throwsExceptionWithMessageUsingNullMustFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation throwsExceptionWithMessage doesn't support null parameters", { => assert.throwsExceptionWithMessage(null, null) })
+		'''.test
+	}
+
+	@Test
+	def void throwsExceptionWithTypeUsingNullMustFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation throwsExceptionWithType doesn't support null parameters", { => assert.throwsExceptionWithType(null, null) })
+		'''.test
+	}
+	
+	@Test
+	def void throwsExceptionByComparingUsingNullMustFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation throwsExceptionByComparing doesn't support null parameters", { => assert.throwsExceptionByComparing(null, null) })
+		'''.test
+	}
+	
 }

@@ -113,9 +113,9 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		R.basicCollection(Number)
 		R.sumableCollection(Number)
 		R.basicComparableCollection(Number)
-		R.variable("start", Number)
-		R.variable("end", Number)
 		R.variable("step", Number)
+		R >> "start" === #[] => Number
+		R >> "end" === #[] => Number
 		R >> "initialize" === #[] => Void
 		R >> "step" === #[Number] => Void
 		R >> "filter" === #[predicate(Number)] => List.of(Number);
