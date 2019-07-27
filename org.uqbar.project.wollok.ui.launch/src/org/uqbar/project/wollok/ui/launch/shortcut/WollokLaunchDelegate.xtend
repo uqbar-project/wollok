@@ -99,13 +99,13 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 
 	def configureLaunchParameters(ILaunchConfiguration config, int requestPort, int eventPort) {
 		val parameters = new WollokLauncherParameters
-		parameters.validate = false
 		parameters.eventsPort = eventPort
 		parameters.requestsPort = requestPort
 		parameters.wollokFiles += config.wollokFile
 		parameters.severalFiles = config.severalFiles
 		parameters.folder = config.folder
 		parameters.hasRepl = config.hasRepl
+		parameters.validate = config.hasRepl // Validate when the user enters code in the REPL.
 		parameters.dynamicDiagramActivated = preferenceStoreAccess.dynamicDiagramActivated
 		parameters.libraries = config.libraries
 
