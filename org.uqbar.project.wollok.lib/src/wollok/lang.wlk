@@ -769,7 +769,7 @@ class Collection {
 	}
 	
 	method without(elementToRemove) {
-		return [1,2,4,5]
+		return self.filter{ element => element != elementToRemove }
 	}
 	/**
 	 * Answers a new List that contains the elements of self collection 

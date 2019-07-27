@@ -104,4 +104,13 @@ class CollectionTest extends AbstractWollokInterpreterTestCase {
 		'''.test
 	}
 	
+	@Test
+	def void whenPassAStringAtWithoutMethodReturnANewListWithoutThisString() {
+		'''
+		const unList = ["hola","como","estas"]
+		const newList = unList.without("como")
+		assert.equals(newList, ["hola","estas"])
+		'''.test
+	}
+	
 }
