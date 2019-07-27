@@ -268,9 +268,10 @@ class Position {
 	 * Returns the distance between given position and self.
 	 */	
 	method distance(position) {
-	    const deltaX = x - position.x()
-	    const deltaY = y - position.y()
-	    return (deltaX.square() + deltaY.square()).squareRoot() 
+		self.checkNotNull(position, "distance")
+		const deltaX = x - position.x()
+		const deltaY = y - position.y()
+		return (deltaX.square() + deltaY.square()).squareRoot() 
 	}
 
 	/**
@@ -419,9 +420,9 @@ class Key {
 	/**
 	 * Adds a block that will be executed always self is pressed.
 	 *
-	 * Examples:
-     *     keyboard.i().onPressDo { game.say(pepita, "hola!") } 
-     *         => when user hits "i" key, pepita will say "hola!"
+	 * Example:
+     	 *     keyboard.i().onPressDo { game.say(pepita, "hola!") } 
+     	 *         => when user hits "i" key, pepita will say "hola!"
 	 */	
 	method onPressDo(action) {
 		keyCodes.forEach{ key => game.whenKeyPressedDo(key, action) } //TODO: Implement native

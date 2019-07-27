@@ -8,6 +8,7 @@ import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 
+import static extension org.uqbar.project.wollok.utils.WollokObjectUtils.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 /**
@@ -85,12 +86,14 @@ class WString extends AbstractJavaWrapper<String> {
 
 	@NativeMessage("<")
 	def lessThan(WollokObject other) {
+		other.checkNotNull("<")
 		val wString = other.getNativeObject(WString)
 		wrapped < wString.wrapped
 	}
 
 	@NativeMessage(">")
 	def greaterThan(WollokObject other) {
+		other.checkNotNull(">")
 		val wString = other.getNativeObject(WString)
 		wrapped > wString.wrapped
 	}
