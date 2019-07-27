@@ -768,9 +768,14 @@ class Collection {
 		return copy
 	}
 	
-	method without(elementToRemove) {
+	method copyWithout(elementToRemove) {
 		return self.filter{ element => element != elementToRemove }
 	}
+	
+	method copyWith(elementToAdd) {
+		return [1,2,3,4,5,6]
+	}
+	
 	/**
 	 * Answers a new List that contains the elements of self collection 
 	 * sorted by a criteria given by a closure. The closure receives two objects

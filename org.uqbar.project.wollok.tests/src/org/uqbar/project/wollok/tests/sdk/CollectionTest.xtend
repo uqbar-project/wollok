@@ -96,20 +96,29 @@ class CollectionTest extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void whenPassANumberAtWithoutMethodReturnANewListWithoutThisNumber() {
+	def void whenPassANumberAtCopyWithoutMethodReturnANewCollectionWithoutThisNumber() {
 		'''
 		const unList = [1,2,3,4,5]
-		const newList = unList.without(3)
+		const newList = unList.copyWithout(3)
 		assert.equals(newList, [1,2,4,5])
 		'''.test
 	}
 	
 	@Test
-	def void whenPassAStringAtWithoutMethodReturnANewListWithoutThisString() {
+	def void whenPassAStringAtCopyWithoutMethodReturnANewCollectionWithoutThisString() {
 		'''
 		const unList = ["hola","como","estas"]
-		const newList = unList.without("como")
+		const newList = unList.copyWithout("como")
 		assert.equals(newList, ["hola","estas"])
+		'''.test
+	}
+	
+	@Test
+	def void whenPassANumberAtCopyWithMethodReturnANewCollectionWithThisNumber() {
+		'''
+		const unList = [1,2,3,4,5]
+		const newList = unList.copyWith(6)
+		assert.equals(newList, [1,2,3,4,5,6])
 		'''.test
 	}
 	
