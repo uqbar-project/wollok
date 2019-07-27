@@ -95,4 +95,58 @@ class CollectionTest extends AbstractWollokInterpreterTestCase {
 		}'''.interpretPropagatingErrors
 	}
 	
+	@Test
+	def void copyWithoutDontMutateTheCollection(){
+		'''
+		const unList = [1,2,3,4,5]
+		const newList = unList.copyWithout(3)
+		assert.equals(unList, [1,2,3,4,5])
+		'''.test
+	}
+	
+	@Test
+	def void whenPassANumberAtCopyWithoutMethodReturnANewCollectionWithoutThisNumber() {
+		'''
+		const unList = [1,2,3,4,5]
+		const newList = unList.copyWithout(3)
+		assert.equals(newList, [1,2,4,5])
+		'''.test
+	}
+	
+	@Test
+	def void whenPassAStringAtCopyWithoutMethodReturnANewCollectionWithoutThisString() {
+		'''
+		const unList = ["hola","como","estas"]
+		const newList = unList.copyWithout("como")
+		assert.equals(newList, ["hola","estas"])
+		'''.test
+	}
+	
+	@Test
+	def void copyWithDontMutateTheCollection(){
+		'''
+		const unList = [1,2,3,4,5]
+		const newList = unList.copyWith(3)
+		assert.equals(unList, [1,2,3,4,5])
+		'''.test
+	}
+	
+	@Test
+	def void whenPassANumberAtCopyWithMethodReturnANewCollectionWithThisNumber() {
+		'''
+		const unList = [1,2,3,4,5]
+		const newList = unList.copyWith(6)
+		assert.equals(newList, [1,2,3,4,5,6])
+		'''.test
+	}
+	
+	@Test
+	def void whenPassAStringAtCopyWithMethodReturnANewCollectionWithThisString() {
+		'''
+		const unList = ["hola","como"]
+		const newList = unList.copyWith("estas")
+		assert.equals(newList, ["hola","como","estas"])
+		'''.test
+	}
+	
 }
