@@ -193,11 +193,13 @@ class WollokDocParser extends WollokChecker {
 		if (m.originalComment.contains(PRIVATE)) {
 			privateMethods.add(m)
 		} else {
+			writeFile(TABLE_ROW_ON)
 			val abstractDescription = if (m.abstract) badge("abstract", "light-blue") + SPACE else ""
 			val nativeDescription = if (m.native) badge("native", "indigo") else ""
 			writeFile("<td width=\"30%\"id=\"" + m.anchor + "\">" + BOLD_ON + m.name + BOLD_OFF + SPACE + m.parametersAsString + SPACE + SPACE +
 				abstractDescription + SPACE + SPACE + nativeDescription + SPACE + TABLE_DATA_OFF +
 				TABLE_DATA_ON +	comment + TABLE_DATA_OFF)
+			writeFile(TABLE_ROW_OFF)
 		}
 	}
 	
@@ -222,9 +224,7 @@ class WollokDocParser extends WollokChecker {
 			tableHeader("Method", "Description")
 			writeFile(TABLE_BODY_ON)
 			mc.methods.sortBy [ name ].forEach [ 
-				writeFile(TABLE_ROW_ON)
 				generateWollokDoc
-				writeFile(TABLE_ROW_OFF)
 			]
 			writeFile(TABLE_BODY_OFF)
 			writeFile(TABLE_OFF)
