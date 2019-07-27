@@ -769,12 +769,15 @@ class Collection {
 	}
 	
 	/**
-	 * Answers a new collection without element that is passed by parameter
+	 * Answers a new collection without element that is passed by parameter.
+	 * If the element occurs more than once in the collection, all occurrences
+	 * will be removed.
 	 *
 	 * @returns a new Collection
 	 *
 	 * Example:
 	 *      [1, 5, 9, 2, 4].copyWithout(9) => Answers [1, 5, 2, 4]
+	 *      [1, 5, 9, 2, 9].copyWithout(9) => Answers [1, 5, 2]
 	 *
 	 */
 	method copyWithout(elementToRemove) {
@@ -782,7 +785,7 @@ class Collection {
 	}
 	
 	/**
-	 * Answers a new collection with the added element which is received by parameter
+	 * Answers a new collection with the added element which is received by parameter.
 	 *
 	 * @returns a new Collection
 	 *
