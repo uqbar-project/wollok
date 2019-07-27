@@ -196,7 +196,7 @@ class WollokDocParser extends WollokChecker {
 			writeFile(TABLE_ROW_ON)
 			val abstractDescription = if (m.abstract) badge("abstract", "light-blue") + SPACE else ""
 			val nativeDescription = if (m.native) badge("native", "indigo") else ""
-			writeFile("<td width=\"30%\"id=\"" + m.anchor + "\">" + BOLD_ON + m.name + BOLD_OFF + SPACE + m.parametersAsString + SPACE + SPACE +
+			writeFile("<td title=\"" + m.declaringContext.name + "\" width=\"30%\"id=\"" + m.anchor + "\">" + BOLD_ON + m.name + BOLD_OFF + SPACE + m.parametersAsString + SPACE + SPACE +
 				abstractDescription + SPACE + SPACE + nativeDescription + SPACE + TABLE_DATA_OFF +
 				TABLE_DATA_ON +	comment + TABLE_DATA_OFF)
 			writeFile(TABLE_ROW_OFF)
