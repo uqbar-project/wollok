@@ -85,7 +85,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		result
 	}
 
-	def synchronized doImportedObjects(Resource context, Iterable<String> imports) {
+	def doImportedObjects(Resource context, Iterable<String> imports) {
 		val objectsFromManifests = libraryLoader.load(context)
 		objectsFromLocalImport(context, imports, objectsFromManifests)
 	}
