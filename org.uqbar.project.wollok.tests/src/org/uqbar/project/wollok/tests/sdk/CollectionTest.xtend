@@ -96,6 +96,15 @@ class CollectionTest extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
+	def void copyWithoutDontMutateTheCollection(){
+		'''
+		const unList = [1,2,3,4,5]
+		const newList = unList.copyWithout(3)
+		assert.equals(unList, [1,2,3,4,5])
+		'''.test
+	}
+	
+	@Test
 	def void whenPassANumberAtCopyWithoutMethodReturnANewCollectionWithoutThisNumber() {
 		'''
 		const unList = [1,2,3,4,5]
