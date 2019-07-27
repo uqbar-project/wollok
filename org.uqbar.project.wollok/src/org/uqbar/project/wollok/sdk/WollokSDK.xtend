@@ -74,6 +74,11 @@ class WollokSDK {
 		
 	public static val INITIALIZE_METHOD = "initialize"
 	
+	// ************************************************************************
+	// ** Modifiers
+	// ************************************************************************
+	public static val String PRIVATE = "@private"
+	
 	def static WollokObject getVoid(WollokInterpreter i, EObject context) {
 		(i.evaluator as WollokInterpreterEvaluator).getWKObject(VOID, context)
 	}

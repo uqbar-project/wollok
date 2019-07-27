@@ -31,7 +31,7 @@ class DirExplorer {
 	def closeWith(()=>void closure) {
 		closure.apply
 	}
-		
+
 }
 
 interface FileHandler {

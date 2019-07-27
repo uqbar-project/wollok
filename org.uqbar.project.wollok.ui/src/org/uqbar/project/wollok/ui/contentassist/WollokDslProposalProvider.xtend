@@ -33,6 +33,8 @@ import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtil
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
+
 /**
  *
  * @author jfernandes
@@ -44,7 +46,6 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	val extension BasicTypeResolver typeResolver = new BasicTypeResolver
 	val extension WollokClassFinder classFinder = WollokClassFinder.getInstance
-	public static val String PRIVATE = "@private"
 	
 	WollokProposalBuilder builder
 	
@@ -210,7 +211,7 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 		builder.accessorKind = Accessor.SETTER
 		ref.allPropertiesSetters.forEach [ addProposal(it, acceptor) ]
 		builder.accessorKind = Accessor.NONE
-		ref.allMethods.forEach[ addProposal(it, acceptor) ]
+		ref.getInheritedMethods.forEach[ addProposal(it, acceptor) ]
 	}
 
 	def addProposal(EObject o, ICompletionProposalAcceptor acceptor) {

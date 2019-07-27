@@ -1,0 +1,11 @@
+Host wollok_cli
+    HostName github.com
+    PreferredAuthentications publickey
+    IdentityFile             /tmp/wollokcli_key
+    IdentitiesOnly           yes
+
+Host wollok_site
+    HostName github.com
+    PreferredAuthentications publickey
+    IdentityFile             /tmp/wolloksite_key
+    IdentitiesOnly           yes    
