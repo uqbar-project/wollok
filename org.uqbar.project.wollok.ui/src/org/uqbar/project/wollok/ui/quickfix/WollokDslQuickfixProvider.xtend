@@ -420,6 +420,14 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			xtextDocument.replaceWith(e, code)
 		]
 	}
+	
+	@Fix(DONT_USE_WKONAME_WITHIN_IT)
+	def replaceWkoNameWithSelf(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_replace_wkoname_with_self_name,
+			Messages.WollokDslQuickFixProvider_replace_wkoname_with_self_description, null) [ e, it |
+			xtextDocument.replaceWith(e, SELF)
+		]
+	}
 
 	/** 
 	 * ***********************************************************************
