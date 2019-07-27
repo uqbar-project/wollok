@@ -25,7 +25,6 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * 
  * @author tesonep
  * @author jfernandes
-
  */
 class WollokRepl {
 	val Injector injector
@@ -37,6 +36,7 @@ class WollokRepl {
 	var static whiteSpaces = ""
 	val WFile parsedMainFile
 	val extension ReplOutputFormatter formatter
+	val manualImports = <String>newArrayList
 
 	new(WollokLauncher launcher, Injector injector, WollokInterpreter interpreter, File mainFile, WFile parsedMainFile,
 		ReplOutputFormatter formatter) {
@@ -89,25 +89,45 @@ class WollokRepl {
 			input
 	}
 
-	def synchronized createReplExpression(String input) {
+	def synchronized createReplExpression(String input, boolean isImport) {
 		'''
+		import wollok.game.*
 		«FOR a : parsedMainFile.imports.map[importedNamespace]»
-		import «a»
+			import «a»
 		«ENDFOR»
+		«FOR manualImport : manualImports »
+			«manualImport»
+		«ENDFOR»
+		«IF isImport»
+			«input»
+		«ENDIF»
 		import «parsedMainFile.implicitPackage».*
+		
 
 		program repl {
-			«input»
+			«IF !isImport»
+				«input»
+			«ENDIF»
 		}
 		'''
 	}
 	
 
 	def synchronized executeInput(String input) {
+		var isImport = input.startsWith("import") 
+		
 		try {
-			val returnValue = interpreter.interpret(input.createReplExpression.parseRepl(mainFile), true)
-			printReturnValue(returnValue)
+			val returnValue = interpreter.interpret(input.createReplExpression(isImport).parseRepl(mainFile), true)
+			
+			if (isImport ) 
+				// Parsing didn't fail, commit adding manual import to global list.
+				// No need to print nothing
+				manualImports += input 	
+			else
+				printReturnValue(returnValue)				
+			
 		} catch (Exception e) {
+			println(e)
 			resetIndent
 			e.handleException
 		}

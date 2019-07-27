@@ -148,7 +148,7 @@ class WollokLauncher extends WollokChecker {
 	/**
 	 * Depends on parameters
 	 */
-	override shouldValidate() { 
+	override shouldValidate() {
 		parameters.validate
 	}
 }
