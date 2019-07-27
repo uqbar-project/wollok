@@ -768,12 +768,32 @@ class Collection {
 		return copy
 	}
 	
+	/**
+	 * Answers a new collection without element that is passed by parameter
+	 *
+	 * @returns a new Collection
+	 *
+	 * Example:
+	 *      [1, 5, 9, 2, 4].copyWithout(9) => Answers [1, 5, 2, 4]
+	 *
+	 */
 	method copyWithout(elementToRemove) {
 		return self.filter{ element => element != elementToRemove }
 	}
 	
+	/**
+	 * Answers a new collection with the added element which is received by parameter
+	 *
+	 * @returns a new Collection
+	 *
+	 * Example:
+	 *      [1, 5, 9, 2, 4].copyWith(9) => Answers [1, 5, 2, 4, 9]
+	 *
+	 */
 	method copyWith(elementToAdd) {
-		return [1,2,3,4,5,6]
+		const copy = self.copy()
+		copy.add(elementToAdd)
+		return copy
 	}
 	
 	/**

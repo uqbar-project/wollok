@@ -122,4 +122,13 @@ class CollectionTest extends AbstractWollokInterpreterTestCase {
 		'''.test
 	}
 	
+	@Test
+	def void whenPassAStringAtCopyWithMethodReturnANewCollectionWithThisString() {
+		'''
+		const unList = ["hola","como"]
+		const newList = unList.copyWith("estas")
+		assert.equals(newList, ["hola","como","estas"])
+		'''.test
+	}
+	
 }
