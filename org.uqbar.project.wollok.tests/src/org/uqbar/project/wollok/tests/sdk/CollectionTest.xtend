@@ -123,6 +123,15 @@ class CollectionTest extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
+	def void copyWithDontMutateTheCollection(){
+		'''
+		const unList = [1,2,3,4,5]
+		const newList = unList.copyWith(3)
+		assert.equals(unList, [1,2,3,4,5])
+		'''.test
+	}
+	
+	@Test
 	def void whenPassANumberAtCopyWithMethodReturnANewCollectionWithThisNumber() {
 		'''
 		const unList = [1,2,3,4,5]
