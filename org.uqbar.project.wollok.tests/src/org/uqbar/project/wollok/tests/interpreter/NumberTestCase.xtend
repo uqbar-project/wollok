@@ -35,7 +35,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void addWithFailingParameters() {
 		'''
-		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 18, month = 12, year = 2017]", { 3 + new Date(18, 12, 2017) })
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 18, month = 12, year = 2017]", { 3 + new Date(day = 18, month = 12, year = 2017) })
 		assert.throwsExceptionWithMessage("Operation doesn't support parameter pepe", { 3 + "pepe" })
 		'''.test
 	}
@@ -57,7 +57,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void maxFailingParameter() {
 		'''
-		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 21, month = 12, year = 2017]", { 4.min(new Date(21, 12, 2017)) })
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 21, month = 12, year = 2017]", { 4.min(new Date(day = 21, month = 12, year = 2017)) })
 		'''.test
 	}
 
@@ -78,7 +78,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void minFailingParameter() {
 		'''
-		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 21, month = 12, year = 2017]", { 4.min(new Date(21, 12, 2017)) })
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 21, month = 12, year = 2017]", { 4.min(new Date(day = 21, month = 12, year = 2017)) })
 		'''.test
 	}
 	
@@ -246,11 +246,20 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	}
 		
 	@Test
-	def void times() {
+	def void timesUsingPositiveValue() {
 		'''
 		var x = 0
 		6.times { i => x += 1 }
 		assert.equals(6, x)
+		'''.test
+	}
+	
+	@Test
+	def void timesUsingZero() {
+		'''
+		var x = 0
+		0.times { i => x += 1 }
+		assert.equals(0, x)
 		'''.test
 	}
 
@@ -360,7 +369,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void remainderUsingNull() {
 		'''
-		assert.throwsExceptionWithMessage("Operation % doesn't support null parameters", { 2.rem(null) } )
+		assert.throwsExceptionWithMessage("Operation rem doesn't support null parameters", { 2.rem(null) } )
 		'''.test
 	}
 
@@ -409,7 +418,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void gcdForInvalidArguments() {
 		'''
-		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018]", { 4.gcd(new Date(1, 1, 2018)) })
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018]", { 4.gcd(new Date(day = 1, month = 1, year = 2018)) })
 		'''.test
 	}
 	
@@ -463,7 +472,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void lcmForInvalidArguments() {
 		'''
-		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018]", { 4.lcm(new Date(1, 1, 2018)) })
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018]", { 4.lcm(new Date(day = 1, month = 1, year = 2018)) })
 		'''.test
 	}
 	

@@ -55,7 +55,6 @@ class WollokAllTestsLaunchShortcut extends WollokTestLaunchShortcut {
 	}
 
 	def internalLaunch(List<IFile> testFiles, String mode) {
-		activateWollokTestResultView
 		if (testFiles.empty) {
 			MessageDialog.openError(Display.current.activeShell, Messages.TestLauncher_NoTestToRun_Title,
 				Messages.TestLauncher_NoTestToRun_Message)

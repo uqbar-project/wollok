@@ -3,7 +3,7 @@
 	class RangeIterator {
 		var range
 		var current
-		// XPECT warnings --> "Variable is never assigned" at "unassigned"
+		// XPECT warnings --> "Variable could be never assigned" at "unassigned"
 		var unassigned
 		constructor(rang) {
 			range = rang

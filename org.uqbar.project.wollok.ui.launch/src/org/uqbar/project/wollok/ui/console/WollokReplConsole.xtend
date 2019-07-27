@@ -80,12 +80,14 @@ class WollokReplConsole extends TextConsole {
 
 		streamsProxy.outputStreamMonitor.addListener [ text, monitor |
 			runInUI("WollokReplConsole-UpdateText") [
-				page.viewer.textWidget.append(text)
-				outputTextEnd = page.viewer.textWidget.charCount
-				inputBufferStartOffset = page.viewer.textWidget.text.length
-				page.viewer.textWidget.selection = outputTextEnd
-				updateInputBuffer
-				activate
+				if (page !== null && page.viewer !== null && page.viewer.textWidget !== null) {
+					page.viewer.textWidget.append(text)
+					outputTextEnd = page.viewer.textWidget.charCount
+					inputBufferStartOffset = page.viewer.textWidget.text.length
+					page.viewer.textWidget.selection = outputTextEnd
+					updateInputBuffer
+					activate
+				}
 			]
 		]
 	}

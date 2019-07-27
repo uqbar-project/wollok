@@ -16,12 +16,11 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * 
  * This just defines the strings in a single place for easing maintenance.
  * 
- * import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
+ * import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
  * 
  * @author jfernandes
  */
-//TODO: fix typo
-class WollokDSK {
+class WollokSDK {
 	
 	// ************************************************************************
 	// ** SDK Classes
@@ -56,16 +55,29 @@ class WollokDSK {
 	public static val STACK_OVERFLOW_EXCEPTION = "wollok.lang.StackOverflowException"
 
 	public static val KEY = "wollok.game.Key"
+
 	// ************************************************************************
 	// ** SDK Objects
 	// ************************************************************************
-
 	public static val CONSOLE = "wollok.lib.console"
 	public static val ASSERT = "wollok.lib.assert"
 	public static val ERROR = "wollok.lib.error"
 	public static val GAME = "wollok.game.game"
 	public static val KEYBOARD = "wollok.game.keyboard"
 	public static val RUNTIME = "wollok.vm.runtime"
+
+	// ************************************************************************
+	// ** Special Messages
+	// ************************************************************************
+	public static val EQUALITY = "=="
+	public static val GREATER_THAN = ">"
+		
+	public static val INITIALIZE_METHOD = "initialize"
+	
+	// ************************************************************************
+	// ** Modifiers
+	// ************************************************************************
+	public static val String PRIVATE = "@private"
 	
 	def static WollokObject getVoid(WollokInterpreter i, EObject context) {
 		(i.evaluator as WollokInterpreterEvaluator).getWKObject(VOID, context)

@@ -8,12 +8,14 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.ToStringBuilder
 import org.uqbar.project.wollok.interpreter.core.WollokObject
-import org.uqbar.project.wollok.sdk.WollokDSK
 
 import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.utils.WollokObjectUtils.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
+import org.uqbar.project.wollok.utils.WollokObjectUtils
 
 /**
  * Wollok Object class. It's the native part
@@ -59,14 +61,19 @@ class WObject {
 	}
 
 	def instanceVariableFor(String name) {
+		name.checkNotNull("instanceVariableFor")
 		variableMirror(name)
 	}
 
 	def variableMirror(String name) {
-		newInstance("wollok.mirror.InstanceVariableMirror", obj, name)
+		newInstance(INSTANCE_VARIABLE_MIRROR) => [
+			setReference("target", obj)
+			setReference("name", name.javaToWollok)
+		]
 	}
 
 	def resolve(String instVarName) {
+		instVarName.checkNotNull("resolve")
 		obj.resolve(instVarName)
 	}
 
@@ -76,11 +83,15 @@ class WObject {
 	}
 
 	def newList(Collection<WollokObject> elements) {
-		val list = newInstance(WollokDSK.LIST)
+		val list = newInstance(LIST)
 		elements.forEach [
 			list.call("add", it.javaToWollok)
 		]
 		list
+	}
+
+	def checkNotNull(WollokObject o, String operation) {
+		WollokObjectUtils.checkNotNull(o, operation)
 	}
 
 }

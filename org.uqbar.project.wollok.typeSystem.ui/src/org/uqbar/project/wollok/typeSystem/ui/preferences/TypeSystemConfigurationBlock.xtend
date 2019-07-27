@@ -26,7 +26,7 @@ class TypeSystemConfigurationBlock extends OptionsConfigurationBlock {
 	
 	new(IProject project, IPreferenceStore store, IWorkbenchPreferenceContainer container) {
 		super(project, store, container)
-		store.setDefault(WollokTypeSystemUIPreferences.PREF_TYPE_SYSTEM_CHECKS_ENABLED, IPreferenceStore.FALSE)
+		store.setDefault(WollokTypeSystemUIPreferences.PREF_TYPE_SYSTEM_CHECKS_ENABLED, IPreferenceStore.TRUE)
 		store.setDefault(WollokTypeSystemUIPreferences.PREF_TYPE_SYSTEM_IMPL, Constants.TS_CONSTRAINTS_BASED)
 		store.setDefault(WollokTypeSystemUIPreferences.PREF_TYPE_SYSTEM_SEVERITY, CheckSeverity.WARN.toString)
 	}

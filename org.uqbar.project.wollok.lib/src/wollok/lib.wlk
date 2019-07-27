@@ -1,5 +1,3 @@
-import wollok.vm.*
-
 /** 
  * Console is a global wollok object that implements a character-based console device
  * called "standard input/output" stream 
@@ -25,31 +23,16 @@ object console {
 /**
  * Exception to handle other values expected in assert.throwsException... methods
  */
-class OtherValueExpectedException inherits wollok.lang.Exception {
-	constructor(_message) = super(_message)	
-	constructor(_message,_cause) = super(_message,_cause)
-}
+class OtherValueExpectedException inherits wollok.lang.Exception {}
 
 /**
  * Exception to handle difference between current and expected values
  * in assert.throwsException... methods
  */
 class AssertionException inherits Exception {
-
 	const property expected = null
 	const property actual = null
-
-	constructor(message) = super(message)
-	
-	constructor(message, cause) = super(message, cause)
-	
-	constructor(message, _expected, _actual) = self(message) {
-		expected = _expected
-		actual = _actual
-	}
-	
 }
-
 
 /**
  * Assert object simplifies testing conditions
@@ -64,14 +47,23 @@ object assert {
 	 *		assert.that(8.even())   ==> ok, nothing happens	
 	 */
 	method that(value) {
-		if (!value) throw new AssertionException("Value was not true")
+		self.checkNotNull(value, "that")
+		if (!value) throw new AssertionException(message = "Value was not true")
 	}
 	
 	/** Tests whether value is false. Otherwise throws an exception. 
 	 * @see assert#that(value) 
 	 */
 	method notThat(value) {
-		if (value) throw new AssertionException("Value was not false")
+		self.checkNotNull(value, "notThat")
+		if (value) throw new AssertionException(message = "Value was not false")
+	}
+	
+	/*
+	 * This method avoids confusion with equals definition in Object
+	 */
+	override method equals(value) {
+		throw new AssertionException(message = "assert.equals(expected, actual): missing second parameter")
 	}
 	
 	/** 
@@ -83,7 +75,7 @@ object assert {
 	 *		 assert.equals(10.01, 100.div(10)) ==> throws an exception 
 	 */
 	method equals(expected, actual) {
-		if (expected != actual) throw new AssertionException("Expected [" + expected.printString() + "] but found [" + actual.printString() + "]", expected.printString(), actual.printString()) 
+		if (expected != actual) throw new AssertionException(message = "Expected [" + expected.printString() + "] but found [" + actual.printString() + "]")
 	}
 	
 	/** 
@@ -95,7 +87,7 @@ object assert {
 	 *		 assert.notEquals(10, value)     ==> throws an exception
 	 */
 	method notEquals(expected, actual) {
-		if (expected == actual) throw new AssertionException("Expected to be different, but [" + expected.printString() + "] and [" + actual.printString() + "] match")
+		if (expected == actual) throw new AssertionException(message = "Expected to be different, but [" + expected.printString() + "] and [" + actual.printString() + "] match")
 	}
 	
 	/** 
@@ -109,13 +101,14 @@ object assert {
 	 *         ==> throws an exception "Block should have failed"
 	 */
 	method throwsException(block) {
+		self.checkNotNull(block, "throwsException")
 		var failed = false
 		try {
 			block.apply()
 		} catch e {
 			failed = true
 		}
-		if (!failed) throw new AssertionException("Block " + block + " should have failed")
+		if (!failed) throw new AssertionException(message = "Block " + block + " should have failed")
 	}
 	
 	/** 
@@ -136,13 +129,15 @@ object assert {
 	 *            => Doesn't work. Messages matches but they are instances of different exceptions.
 	 */	 
 	method throwsExceptionLike(exceptionExpected, block) {
+		self.checkNotNull(exceptionExpected, "throwsExceptionLike")
+		self.checkNotNull(block, "throwsExceptionLike")
 		try 
 		{
-			self.throwsExceptionByComparing( block,{a => a.equals(exceptionExpected)})
+			self.throwsExceptionByComparing(block, {a => a.equals(exceptionExpected)})
 		}
 		catch ex : OtherValueExpectedException 
 		{
-			throw new AssertionException("The Exception expected was " + exceptionExpected + " but got " + ex.getCause())
+			throw new AssertionException(message = "The Exception expected was " + exceptionExpected + " but got " + ex.cause())
 		} 
 	}
 
@@ -151,23 +146,25 @@ object assert {
 	 * Otherwise an exception is thrown.
 	 *
 	 * Examples:
-	 *		assert.throwsExceptionWithMessage("hola",{ => throw new BusinessException("hola") } 
+	 *		assert.throwsExceptionWithMessage("hola",{ => throw new BusinessException(message = "hola") } 
 	 *           => Works! Both have the same message.
 	 *
-	 *		assert.throwsExceptionWithMessage("hola",{ => throw new OtherException("hola") } 
+	 *		assert.throwsExceptionWithMessage("hola",{ => throw new OtherException(message = "hola") } 
 	 *           => Works! Both have the same message.
 	 *
-	 *		assert.throwsExceptionWithMessage("chau",{ => throw new BusinessException("hola") } 
+	 *		assert.throwsExceptionWithMessage("chau",{ => throw new BusinessException(message = "hola") } 
 	 *           => Doesn't work. Both are instances of BusinessException but their messages differ.
 	 */	 
 	method throwsExceptionWithMessage(errorMessage, block) {
+		self.checkNotNull(errorMessage, "throwsExceptionWithMessage")
+		self.checkNotNull(block, "throwsExceptionWithMessage")
 		try 
 		{
-			self.throwsExceptionByComparing(block,{a => errorMessage.equals(a.getMessage())})
+			self.throwsExceptionByComparing(block, {a => errorMessage.equals(a.message())})
 		}
 		catch ex : OtherValueExpectedException 
 		{
-			throw new AssertionException("The error message expected was " + errorMessage + " but got " + ex.getCause().getMessage())
+			throw new AssertionException(message = "The error message expected was " + errorMessage + " but got " + ex.cause().message())
 		}
 	}
 
@@ -186,13 +183,15 @@ object assert {
 	 *          => Doesn't work. Exception classes differ although they contain the same message.
 	 */	 	
 	method throwsExceptionWithType(exceptionExpected, block) {
+		self.checkNotNull(exceptionExpected, "throwsExceptionWithType")
+		self.checkNotNull(block, "throwsExceptionWithType")
 		try 
 		{
 			self.throwsExceptionByComparing(block,{a => exceptionExpected.className().equals(a.className())})
 		}
 		catch ex : OtherValueExpectedException 
 		{
-			throw new AssertionException("The exception expected was " + exceptionExpected.className() + " but got " + ex.getCause().className())
+			throw new AssertionException(message = "The exception expected was " + exceptionExpected.className() + " but got " + ex.cause().className())
 		}
 	}
 
@@ -203,16 +202,18 @@ object assert {
 	 * returning the result.
 	 *
 	 * Examples:
-	 *		assert.throwsExceptionByComparing({ => throw new BusinessException("hola"),{ex => "hola".equals(ex.getMessage())}} 
+	 *		assert.throwsExceptionByComparing({ => throw new BusinessException("hola"),{ex => "hola".equals(ex.message())}} 
 	 *          => Works!.
 	 *
 	 *		assert.throwsExceptionByComparing({ => throw new BusinessException("hola"),{ex => new BusinessException("lele").className().equals(ex.className())} } 
 	 *          => Works again!
 	 *
-	 *		assert.throwsExceptionByComparing({ => throw new BusinessException("hola"),{ex => "chau!".equals(ex.getMessage())} } 
+	 *		assert.throwsExceptionByComparing({ => throw new BusinessException("hola"),{ex => "chau!".equals(ex.message())} } 
 	 *          => Doesn't work. The block evaluation resolves to a false value.
 	 */		
-	method throwsExceptionByComparing(block,comparison){
+	method throwsExceptionByComparing(block, comparison){
+		self.checkNotNull(block, "throwsExceptionByComparing")
+		self.checkNotNull(comparison, "throwsExceptionByComparing")
 		var continue = false
 		try 
 			{
@@ -224,9 +225,9 @@ object assert {
 				if(comparison.apply(ex))
 					self.that(true)
 				else
-					throw new OtherValueExpectedException("Expected other value", ex)
+					throw new OtherValueExpectedException(message = "Expected other value", cause = ex)
 			}
-		if (continue) throw new AssertionException("Should have thrown an exception")	
+		if (continue) throw new AssertionException(message = "Should have thrown an exception")
 	}
 	
 	/**
@@ -234,28 +235,19 @@ object assert {
 	 * Useful when you reach code that should not be reached.
 	 */
 	method fail(message) {
-		throw new AssertionException(message)
+		self.checkNotNull(message, "fail")
+		throw new AssertionException(message = message)
 	}
 	
 }
 
 class StringPrinter {
 	var buffer = ""
+	
 	method println(obj) {
-		buffer += obj.toString() + console.newline()
+		const objAsString = if (obj === null) "null" else obj.toString()
+		buffer += objAsString + console.newline()
 	}
+	
 	method getBuffer() = buffer
 }	
-
-/** 
- * This object simplifies exception throwing
- */
-object error {
-	/**
-	 * Throws an exception with a given message.
-	 * This action alters the normal flow of the program. 
-	 */
-	method throwWithMessage(aMessage) {
-		throw new Exception(aMessage)
-	}
-}

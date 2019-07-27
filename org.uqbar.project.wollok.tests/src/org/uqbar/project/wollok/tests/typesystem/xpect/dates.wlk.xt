@@ -5,15 +5,8 @@ object dateTests {
 	// XPECT methodType at m1 --> () => Date
 	method m1() = new Date()
 
-	// XPECT methodType at m2 --> (Number) => Date
-	method m2(day) = new Date(day, day, 2018)
-
-	// XPECT methodType at m3 --> (Number) => Date
-	method m3(day) {
-		const fecha = new Date()
-		fecha.initialize(day, day, 2018)
-		return fecha
-	}
+	// X PECT methodType at m2 --> (Number) => Date
+	// method m2(aDay) = new Date(day = aDay, month = 1, year = 2018)
 
 	// XPECT methodType at m4 --> (Number) => Date
 	method m4(days) = new Date().plusDays(days)
@@ -31,10 +24,7 @@ object dateTests {
 	method m9(_date) = _date.isLeapYear()
 
 	// XPECT methodType at m10 --> (Date) => Number
-	method m10(_date) = _date.day() + _date.dayOfWeek() + _date.month() + _date.year()
-
-	// XPECT methodType at m10 --> (Date) => Number
-	method m10(_date) = _date - new Date()
+	method m10(_date) = _date.day() + _date.internalDayOfWeek() + _date.month() + _date.year()
 
 	// XPECT methodType at m11 --> (Date) => Date
 	method m11(_date) = _date.minusYears(1)
@@ -62,5 +52,8 @@ object dateTests {
 
 	// XPECT methodType at m19 --> (List<Object>) => String
 	method m19(b) = new Date().toSmartString(b)
+
+	// XPECT methodType at m20 --> (Date) => Number
+	method m20(_date) = _date.day() + _date.internalDayOfWeek() + _date.month() + _date.year()
 
 }

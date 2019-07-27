@@ -18,7 +18,7 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 		WollokConventionExtensions.POSITION_CONVENTIONS.asParameters
 	}
 
-	var position = "new Position(0,0)"
+	var position = "new Position(x = 0, y = 0)"
 	var gameboard = Gameboard.getInstance
 	
 	@Before
@@ -36,7 +36,7 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 	@Test
 	def void equalityByCoordinates() {
 		'''
-		assert.equals(new Position(0,0), «position»)
+		assert.equals(new Position(x = 0, y = 0), «position»)
 		'''.test
 	}
 	
@@ -48,9 +48,16 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 	}
 	
 	@Test
+	def void distanceUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation distance doesn't support null parameters", { => new Position(x = 1, y = 2).distance(null) })
+		'''.test
+	}
+	
+	@Test
 	def void testDistance() {
 		'''
-		assert.equals(5, «position».distance(new Position(3,4)))
+		assert.equals(5, «position».distance(new Position(x = 3, y = 4)))
 		'''.test
 	}
 
@@ -139,7 +146,7 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 		
 		program p {
 			2.times{ i => «position».drawElement(new Visual()) }
-			new Position(1,1).drawElement(new Visual())
+			new Position(x = 1, y = 1).drawElement(new Visual())
 		}'''.interpretPropagatingErrors
 		
 		assertEquals(3, gameboard.components.size)

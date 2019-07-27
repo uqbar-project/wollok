@@ -58,5 +58,5 @@ class MapBasedEvaluationContext<O> implements EvaluationContext<O> {
 	override showableInDynamicDiagram(String name) {
 		false
 	}
-	
+
 }

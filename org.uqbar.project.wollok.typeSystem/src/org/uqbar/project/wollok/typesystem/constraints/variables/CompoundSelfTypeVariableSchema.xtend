@@ -24,7 +24,7 @@ class CompoundSelfTypeVariableSchema extends TypeVariableSchema {
 
 	override instanceFor(ConcreteType concreteReceiver, MessageSend message) {
 		val typeSchema = new GenericTypeSchema((concreteReceiver as GenericTypeInstance).rawType, schema.typeParameters)
-		registry.newSealed(owner, typeSchema.instanceFor(concreteReceiver, message))
+		registry.newSealed(createCompoundOwner, typeSchema.instanceFor(concreteReceiver, message))
 	}
 
 	// ************************************************************************

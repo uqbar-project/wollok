@@ -138,6 +138,8 @@ public class Messages extends NLS {
 	public static String WollokDslQuickFixProvider_remove_method_name; 
 	public static String WollokDslQuickFixProvider_remove_method_description; 
 	public static String WollokDslQuickFixProvider_initialize_value_name; 
+	public static String WollokDslQuickFixProvider_replace_wkoname_with_self_name;
+	public static String WollokDslQuickFixProvider_replace_wkoname_with_self_description; 
 	public static String WollokDslQuickFixProvider_remove_initialization_name; 
 	public static String WollokDslQuickFixProvider_remove_initialization_description;
 	public static String WollokDslQuickFixProvider_remove_attribute_initialization_name;
@@ -222,6 +224,9 @@ public class Messages extends NLS {
 	public static String WollokTestResultView_runAgain;
 	public static String WollokTestResultView_showOnlyFailuresAndErrors;
 	public static String WollokTestResultView_debugAgain;
+	public static String WollokTestResultView_copySelectedResultToClipboard;
+	public static String WollokTestResultView_runningTests;
+	public static String WollokTestResultView_timeTestsElapsed;
 	
 	// **************************************
 	// ** Wollok proposals (autocomplete)

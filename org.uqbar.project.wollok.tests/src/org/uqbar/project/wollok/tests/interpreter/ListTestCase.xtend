@@ -8,13 +8,6 @@ import org.junit.Test
 class ListTestCase extends CollectionTestCase {
 	
 	@Test
-	def void listConstructor() {
-		'''
-		assert.equals([22,2,3], new List(22,2,3))
-		'''.test
-	}
-
-	@Test
 	def void subList() {
 		'''
 		«instantiateCollectionAsNumbersVariable»
@@ -33,6 +26,21 @@ class ListTestCase extends CollectionTestCase {
 		assert.equals([22,2,10], numbers.subList(0,25))
 		assert.equals([2,10], numbers.subList(1,2))
 		assert.equals([2], numbers.subList(1,1))
+		'''.test
+	}
+	
+	@Test
+	def void subListUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation subList doesn't support null parameters", { => [1, 2].subList(null, 1) })
+		assert.throwsExceptionWithMessage("Operation subList doesn't support null parameters", { => [1, 2].subList(1, null) })
+		'''.test
+	}
+	
+	@Test
+	def void takeUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation take doesn't support null parameters", { => [1, 2].take(null) })
 		'''.test
 	}
 	
@@ -146,6 +154,13 @@ class ListTestCase extends CollectionTestCase {
 	}	
 	
 	@Test
+	def void sortByUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation sortBy doesn't support null parameters", { => [1, 2].sortBy(null) })
+		'''.test
+	}
+	
+	@Test
 	def void sortBy() {
 		'''
 		«instantiateCollectionAsNumbersVariable»
@@ -155,6 +170,13 @@ class ListTestCase extends CollectionTestCase {
 		assert.equals([2,10,22], numbers)
 		'''.test
 	}		
+
+	@Test
+	def void getUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation get doesn't support null parameters", { => [1, 2].get(null) })
+		'''.test
+	}
 
 	@Test
 	def void getHappyPath() {
@@ -168,7 +190,7 @@ class ListTestCase extends CollectionTestCase {
 	def void getUnhappyPath() {
 		'''
 		«instantiateCollectionAsNumbersVariable»
-		assert.throwsExceptionWithMessage("-1.00000 must be a positive integer value", { numbers.get(-1) })
+		assert.throwsExceptionWithMessage("-1 must be a positive integer value", { numbers.get(-1) })
 		'''.test
 	}		
 
@@ -198,5 +220,20 @@ class ListTestCase extends CollectionTestCase {
 		}
 		'''.interpretPropagatingErrors
 	}	
+
+	@Test
+	def void elementsToStringForLongLists() {
+		'''
+		const unList = []
+		(1..70).forEach { i => unList.add(i) }
+		assert.equals("[...70 elements]", unList.toString())
+		'''.test
+	}
 	
+	@Test
+	def void maxSentToEmptyList() {
+		'''
+		assert.throwsExceptionWithMessage("Message max sent to an empty collection. It must have at least one element.", { [].max() })
+		'''.test
+	}	
 }

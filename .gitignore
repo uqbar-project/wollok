@@ -16,3 +16,8 @@ eclipse
 .classpath
 .project
 .recommenders
+.history
+scripts/libs
+scripts/jars
+scripts/wollok-site
+scripts/wollok-cli

@@ -28,6 +28,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
 /**
  * Provides labels for EObjects.
@@ -143,7 +144,7 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 		if(method.actuallyOverrides) 'annotation_override.gif' else 'wollok-icon-method_16.png'
 	}
 
-	def text(WMemberFeatureCall ele) { ele.feature + '(' + ele.memberCallArguments.map[doGetText(it)].join(',') + ')' }
+	def text(WMemberFeatureCall ele) { ele.feature + '(' + ele.memberCallArguments.map[ astNode.text ].join(',') + ')' }
 
 	def image(WMemberFeatureCall ele) { 'wollok-icon-message_16.png' }
 

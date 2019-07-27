@@ -1,8 +1,12 @@
 package org.uqbar.project.wollok.utils
 
+import org.eclipse.osgi.util.NLS
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
-import static extension org.uqbar.project.wollok.sdk.WollokDSK.* 
+
+import static org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 class WollokObjectUtils {
 
@@ -13,7 +17,13 @@ class WollokObjectUtils {
 
 	/** calls any method and cast the result to a string */
 	def static asString(WollokObject o, String method) {
-		((o.call(method) as WollokObject).getNativeObject(STRING) as JavaWrapper<String>)?.wrapped
+		(o.call(method).getNativeObject(STRING) as JavaWrapper<String>)?.wrapped
+	}
+	
+	def static checkNotNull(Object o, String operation) {
+		if (o === null) {
+			throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_OPERATION_NULL_PARAMETER, operation)) 	
+		}
 	}
 	
 }

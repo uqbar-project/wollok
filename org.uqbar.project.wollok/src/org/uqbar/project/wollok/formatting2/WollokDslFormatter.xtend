@@ -3,13 +3,11 @@
  */
 package org.uqbar.project.wollok.formatting2
 
-import com.google.inject.Inject
 import java.util.regex.Pattern
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.IFormattableDocument
 import org.uqbar.project.wollok.WollokConstants
-import org.uqbar.project.wollok.services.WollokDslGrammarAccess
 import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
@@ -28,10 +26,12 @@ import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WMixin
+import org.uqbar.project.wollok.wollokDsl.WNamedArgumentsList
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WParameter
+import org.uqbar.project.wollok.wollokDsl.WPositionalArgumentsList
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
@@ -50,12 +50,8 @@ import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WNamedArgumentsList
-import org.uqbar.project.wollok.wollokDsl.WPositionalArgumentsList
 
 class WollokDslFormatter extends AbstractFormatter2 {
-	
-	@Inject extension WollokDslGrammarAccess
 	
 	def dispatch void format(WFile file, extension IFormattableDocument document) {
 		file => [
@@ -114,7 +110,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	def dispatch void format(WNamedArgumentsList l, extension IFormattableDocument document) {
 		l.prepend [ noSpace ]
 		l.initializers.forEach [ initializer, i |
-			initializer.format(document, i)
+			initializer.doFormat(document, i)
 		]
 		l.append [ noSpace ]
 	}
@@ -369,7 +365,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		c.argumentList?.format
 	}
 
-	def void format(WInitializer init, extension IFormattableDocument document, int i) {
+	def void doFormat(WInitializer init, extension IFormattableDocument document, int i) {
 		if (i != 0) {
 			init.initializer.surround [ oneSpace ]
 		} else {

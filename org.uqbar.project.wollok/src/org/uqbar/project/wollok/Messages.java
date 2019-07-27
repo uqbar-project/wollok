@@ -31,6 +31,7 @@ public class Messages extends NLS {
 	public static String WollokInterpreter_visualObjectWithoutPosition;
 	public static String WollokInterpreter_illegalOperationEmptyCollection;
 	public static String WollokDslInterpreter_native_class_not_found;
+	public static String WollokInterpreter_referenceAlreadyDefined;
 
 	public static String WollokScopeProvider_unresolvedImport;
 	
@@ -82,6 +83,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_DUPLICATED_CLASS_IN_PACKAGE;
 	public static String WollokDslValidator_DUPLICATED_CLASS_IN_FILE;
 	public static String WollokDslValidator_DUPLICATED_PACKAGE;
+	public static String WollokDslValidator_CANNOT_USE_CORE_NAME;
 	public static String WollokDslValidator_PROGRAM_IN_FILE;
 	public static String WollokDslValidator_PROGRAM_CANNOT_BE_EMPTY;
 	public static String WollokDslValidator_CLASSES_IN_FILE;
@@ -123,7 +125,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_METHOD_DOES_NOT_RETURN_A_VALUE_ON_EVERY_POSSIBLE_FLOW;
 	public static String WollokDslValidator_INVALID_EFFECTLESS_EXPRESSION_IN_SEQUENCE;
 	public static String WollokDslValidator_VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE;
-	public static String WollokDslValidator_REFERENCE_UNITIALIZED;
+	public static String WollokDslValidator_REFERENCE_UNINITIALIZED;
 	public static String WollokDslValidator_DONT_MIX_NAMED_AND_POSITIONAL_PARAMETERS;
 	public static String WollokDslValidator_NAMED_PARAMETERS_NOT_ALLOWED;
 	
@@ -135,6 +137,8 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_OVERRIDING_A_METHOD_SHOULD_DO_SOMETHING_DIFFERENT;
 	public static String WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR;
 	public static String WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_DELEGATED_CONSTRUCTOR;
+	
+	public static String WollokRuntime_WrongMessage_EMPTY_LIST;
 	
 	public static String TestLauncher_CompilationErrorTitle;
 	public static String TestLauncher_SeeProblemTab;
@@ -208,6 +212,7 @@ public class Messages extends NLS {
 	public static String SYNTAX_DIAGNOSIS_BAD_CHARACTER_IN_METHOD;
 	public static String SYNTAX_DIAGNOSIS_BAD_MESSAGE;
 	public static String SYNTAX_DIAGNOSIS_CONSTRUCTOR_WITH_BOTH_INITIALIZERS_AND_VALUES;
+	public static String SYNTAX_DIAGNOSIS_CODE_NOT_ALLOWED_IN_DESCRIBE;
 	
 	// ****************************
 	// ** Conversions

@@ -16,7 +16,6 @@ import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
-import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -34,6 +33,7 @@ import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WMixin
+import org.uqbar.project.wollok.wollokDsl.WNamed
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
@@ -56,7 +56,7 @@ import static extension org.eclipse.xtext.EcoreUtil2.*
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.notNullAnd
-import org.uqbar.project.wollok.wollokDsl.WNamed
+import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * Extension methods for WMethodContainers.
@@ -274,13 +274,25 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static getOwnVariableDeclaration(WMethodContainer it, String name) {
 		variableDeclarations.findFirst [ variable?.name.equals(name) ]
 	}
-	
+
 	def static findMethod(WMethodContainer c, WMemberFeatureCall it) {
 		c.allUntypedMethods.findFirst [ m | m.matches(feature, memberCallArguments) ]	
 	}
 	
 	def static findMethodIgnoreCase(WMethodContainer c, String methodName, int argumentsSize) {
 		c.allUntypedMethods.findMethodIgnoreCase(methodName, argumentsSize) 
+	}
+
+	def static hasEqualsMethod(WollokObject o) {
+		o.behavior.methods.hasMethodIgnoreCase(EQUALITY, 1) || o.behavior.methods.hasMethodIgnoreCase("equals", 1)  
+	}
+	
+	def static hasGreaterThanMethod(WollokObject o) {
+		o.behavior.methods.hasMethodIgnoreCase(GREATER_THAN, 1)  
+	}
+
+	def static hasMethodIgnoreCase(Iterable<WMethodDeclaration> methods, String methodName, int argumentsSize) {
+		methods.findMethodIgnoreCase(methodName, argumentsSize) !== null 
 	}
 
 	def static findMethodIgnoreCase(Iterable<WMethodDeclaration> methods, String methodName, int argumentsSize) {
@@ -299,13 +311,14 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		methods.filter [ m | m.name.equals(methodName) && !m.overrides ].toList
 	}
 	
+	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(EObject o) { newArrayList }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WMixin it) { methods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WNamedObject it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WObjectLiteral it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(MixedMethodContainer it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WClass it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WSuite it) { methods }
-
+	
 	def static allVariables(WMethodContainer it) {
 		allVariableDeclarations.map [ variable ]
 	}
@@ -371,8 +384,8 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static boolean inheritsFromLibClass(WMethodContainer it) { parent.isCoreObject }
 
 	def static dispatch boolean inheritsFromObject(EObject e) { false }
-	def static dispatch boolean inheritsFromObject(WClass c) { c.parent.fqn.equals(WollokDSK.OBJECT) }
-	def static dispatch boolean inheritsFromObject(WNamedObject o) { o.parent.fqn.equals(WollokDSK.OBJECT) }
+	def static dispatch boolean inheritsFromObject(WClass c) { c.parent.fqn.equals(OBJECT) }
+	def static dispatch boolean inheritsFromObject(WNamedObject o) { o.parent.fqn.equals(OBJECT) }
 	def static dispatch boolean inheritsFromObject(WObjectLiteral o) { true }
 
 	def static dispatch WClass parent(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
@@ -432,7 +445,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		for (chunk : hierarchy) {
 			val method = chunk.methods.findFirst[ (!it.abstract || acceptsAbstract) && matches(message, params)]
 			if (method !== null)
-				return method;
+				return method
 		}
 		null
 	}
@@ -449,6 +462,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		if (parent !== null && !parent.hasCyclicHierarchy)
 			chain.addAll(parent.linearizeHierarchy)
 		chain
+	}
+	
+	def static matches(WMethodDeclaration m1, WMethodDeclaration m2) {
+		m1.name.equals(m2.name) && m1.parameters.length === m2.parameters.length 
 	}
 
 	def static matches(WMethodDeclaration it, String message, List<?> params) { 
@@ -650,6 +667,12 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			// accumulate requirements
 			if (e instanceof WMixin) scm.addAll(e.superCallingMethods)
 			scm
+		]
+	}
+	
+	def static WMethodDeclaration getInitMethod(WMethodContainer it) {
+		methods.findFirst [ m |
+			m.name.equals(INITIALIZE_METHOD) && m.arguments.isEmpty
 		]
 	}
 	

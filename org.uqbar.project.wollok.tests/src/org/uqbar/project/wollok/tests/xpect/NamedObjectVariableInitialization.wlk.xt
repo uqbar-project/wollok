@@ -1,7 +1,7 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 
 object withUninitializedVariables {
-	// XPECT warnings --> "Variable is never assigned" at "x"
+	// XPECT warnings --> "Variable could be never assigned" at "x"
 	var x
 	// XPECT errors --> "Variable is never assigned" at "y"
 	const y

@@ -9,7 +9,6 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
-import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.typesystem.ClassInstanceType
 import org.uqbar.project.wollok.typesystem.ClosureType
 import org.uqbar.project.wollok.typesystem.Constants
@@ -54,6 +53,8 @@ import static org.uqbar.project.wollok.scoping.WollokResourceCache.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.fqn
 import static extension org.uqbar.project.wollok.typesystem.annotations.TypeDeclarations.*
+import org.uqbar.project.wollok.sdk.WollokSDK
+import org.apache.log4j.Level
 
 /**
  * @author npasserini
@@ -97,6 +98,8 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	// ** Analysis
 	// ************************************************************************
 	override initialize(EObject program) {
+		Logger.getLogger("org.uqbar.project.wollok.typesystem.constraints").level = Level.DEBUG
+		
 		registry = new TypeVariablesRegistry(this)
 		programs = newArrayList
 		constraintGenerator = new ConstraintGenerator(this)
@@ -242,7 +245,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	 * Otherwise create a simple class type. 
 	 */
 	override classType(EObject context, String classFQN) {
-		if (classFQN == WollokDSK.CLOSURE) 
+		if (classFQN == WollokSDK.CLOSURE) 
 			throw new IllegalArgumentException(Messages.RuntimeTypeSystemException_WRONG_WAY_CLOSURE_TYPE)
 
 		if (genericTypes.containsKey(classFQN)) {
@@ -256,7 +259,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	 * Build a generic type and save it, so that we know which concrete types are known to be generic.
 	 */
 	override genericType(EObject context, String classFQN, String... typeParameterNames) {
-		if (classFQN == WollokDSK.CLOSURE) 
+		if (classFQN == WollokSDK.CLOSURE) 
 			throw new IllegalArgumentException(Messages.RuntimeTypeSystemException_WRONG_WAY_CLOSURE_TYPE)
 
 		finder.getCachedClass(context, classFQN).genericType(typeParameterNames) => [
@@ -291,7 +294,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		if (allTypes === null) {
 			// Initialize with core classes and wkos, then type system will add own classes incrementally.
 			allTypes = newHashSet
-			allTypes.addAll(allCoreClasses.reject[fqn == WollokDSK.CLOSURE].map[typeOrFactory])
+			allTypes.addAll(allCoreClasses.reject[fqn == WollokSDK.CLOSURE].map[typeOrFactory])
 			allTypes.addAll(allCoreWKOs.map[objectType])
 		}
 		

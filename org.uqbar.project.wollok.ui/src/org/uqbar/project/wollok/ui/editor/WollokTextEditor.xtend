@@ -1,7 +1,6 @@
 package org.uqbar.project.wollok.ui.editor
 
 import org.eclipse.xtext.ui.editor.XtextEditor
-import org.eclipse.core.runtime.IProgressMonitor
 
 /**
  * I had to subclass the editor to add breakpoints.

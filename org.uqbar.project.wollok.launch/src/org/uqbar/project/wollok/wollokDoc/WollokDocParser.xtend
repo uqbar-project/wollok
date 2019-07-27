@@ -7,6 +7,7 @@ import java.io.BufferedWriter
 import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.List
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.documentation.impl.MultiLineCommentDocumentationProvider
@@ -18,6 +19,8 @@ import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
@@ -37,8 +40,6 @@ class WollokDocParser extends WollokChecker {
 	val static HORIZONTAL_LINE = "<hr>"
 	val static BOLD_ON = "<b>"
 	val static BOLD_OFF = "</b>"
-	val static ITALIC_ON = "<i>"
-	val static ITALIC_OFF = "</i>"
 	val static PARAGRAPH_ON = "<p>"
 	val static PARAGRAPH_OFF = "</p>"
 	val static SPACE = " "
@@ -61,7 +62,9 @@ class WollokDocParser extends WollokChecker {
 	var String outputFolder
 			
 	@Inject MultiLineCommentDocumentationProvider multilineProvider
-	
+
+	val List<WMethodDeclaration> privateMethods = newArrayList
+		
 	def static void main(String[] args) {
 		new WollokDocParser().doMain(args)
 	}
@@ -69,6 +72,11 @@ class WollokDocParser extends WollokChecker {
 	override String processName() {
 		"WollokDoc Parser"
 	}
+
+	/**
+	 * By default WollokChecker never validates
+	 */
+	override shouldValidate() { true }
 	
 	override doConfigureParser(WollokLauncherParameters parameters) {
 		injector.injectMembers(this)
@@ -76,6 +84,7 @@ class WollokDocParser extends WollokChecker {
 	}
 
 	override launch(String folder, WollokLauncherParameters parameters) {
+		println("Looking Wollok library in folder " + folder)
         new DirExplorer(filterWollokElements, launchWollokDocGeneration) => [
         	explore(new File(folder))
         	writeNavbar
@@ -84,8 +93,13 @@ class WollokDocParser extends WollokChecker {
 	
 	def void writeNavbar() {
 		val path = URI.createFileURI(outputFolder).segmentsList
-		val parentOutputFolder = path.subList(0, path.length - 1)
-		val file = new File(File.separator + parentOutputFolder.join(File.separator) + File.separator + "wollokDoc.md")
+		var parentOutputFolder = path.subList(0, path.length - 1)
+		var mainFile = parentOutputFolder.join(File.separator) + File.separator + "wollokDoc.md"
+		if (outputFolder.startsWith(File.separator)) {
+			mainFile = File.separator + mainFile
+		}
+		println("Writing " + mainFile)
+		val file = new File(mainFile)
 		wollokDocFile = Files.newWriter(file, Charsets.UTF_8) => [
 			write('''
 				---
@@ -126,6 +140,7 @@ class WollokDocParser extends WollokChecker {
 		file => [
 			allFiles.add(mainFile)
 			val htmlFile = mainFile.name.toHtmlFile
+			println("Generating " + outputFolder + File.separator + htmlFile)
 			wollokDocFile = Files.newWriter(new File(outputFolder + File.separator + htmlFile), Charsets.UTF_8)
 			wollokDocFile
 				.write('''
@@ -175,11 +190,17 @@ class WollokDocParser extends WollokChecker {
 	
 	def dispatch void generateWollokDoc(WMethodDeclaration m) {
 		val comment = m.comment
-		val abstractDescription = if (m.abstract) badge("abstract", "light-blue") + SPACE else ""
-		val nativeDescription = if (m.native) badge("native", "indigo") else ""
-		writeFile("<td width=\"30%\"id=\"" + m.anchor + "\">" + BOLD_ON + m.name + BOLD_OFF + SPACE + m.parametersAsString + SPACE + SPACE +
-			abstractDescription + SPACE + SPACE + nativeDescription + SPACE + TABLE_DATA_OFF +
-			TABLE_DATA_ON +	comment + TABLE_DATA_OFF)
+		if (m.originalComment.contains(PRIVATE)) {
+			privateMethods.add(m)
+		} else {
+			writeFile(TABLE_ROW_ON)
+			val abstractDescription = if (m.abstract) badge("abstract", "light-blue") + SPACE else ""
+			val nativeDescription = if (m.native) badge("native", "indigo") else ""
+			writeFile("<td title=\"" + m.declaringContext.name + "\" width=\"30%\"id=\"" + m.anchor + "\">" + BOLD_ON + m.name + BOLD_OFF + SPACE + m.parametersAsString + SPACE + SPACE +
+				abstractDescription + SPACE + SPACE + nativeDescription + SPACE + TABLE_DATA_OFF +
+				TABLE_DATA_ON +	comment + TABLE_DATA_OFF)
+			writeFile(TABLE_ROW_OFF)
+		}
 	}
 	
 	def dispatch getDefinedConstructors(WMethodContainer mc) { newArrayList }
@@ -203,9 +224,7 @@ class WollokDocParser extends WollokChecker {
 			tableHeader("Method", "Description")
 			writeFile(TABLE_BODY_ON)
 			mc.methods.sortBy [ name ].forEach [ 
-				writeFile(TABLE_ROW_ON)
 				generateWollokDoc
-				writeFile(TABLE_ROW_OFF)
 			]
 			writeFile(TABLE_BODY_OFF)
 			writeFile(TABLE_OFF)
@@ -260,9 +279,17 @@ class WollokDocParser extends WollokChecker {
 		}
 		val currentMc = mc.parent
 		val methodsOverriden = mc.methods.filter [ overrides ].map [ name ].toList
-		val inheritedMethods = currentMc.methods.filter [ !methodsOverriden.contains(it.name) ].map [ 
-			linkToMethod(messageName, anchor, currentMc.declaringContext.file.URI.lastSegment)
-		].sort.join(", ")
+		val inheritedMethods = currentMc
+			.methods
+			.filter [ 
+				currentMethod | !methodsOverriden.contains(currentMethod.name) 
+				&& !privateMethods.exists [ privateMethod | privateMethod.matches(currentMethod) ]
+			]
+			.map [ 
+				linkToMethod(messageName, anchor, currentMc.declaringContext.file.URI.lastSegment)
+			]
+			.sort
+			.join(", ")
 		card("Methods inherited from " + currentMc.name, inheritedMethods)
 		writeInheritedMethods(currentMc)
 	}
@@ -310,6 +337,10 @@ class WollokDocParser extends WollokChecker {
 		''')
 	}
 	
+	def String originalComment(EObject o) {
+		multilineProvider.getDocumentation(o) ?: ""
+	}
+	
 	def String comment(EObject o) {
 		val comment = (multilineProvider.getDocumentation(o) ?: "")
 			.replace(System.lineSeparator, LINE_BREAK)
@@ -327,7 +358,7 @@ class WollokDocParser extends WollokChecker {
 	def FileHandler launchWollokDocGeneration() {
 		[ int level, String path, File file | 
 			log.debug("Parsing program...")
-			WollokDocParser.this.generateWollokDocFile(file.parse(false, null), file)
+			generateWollokDocFile(file.parse(null), file)
 		]
 	}
 	

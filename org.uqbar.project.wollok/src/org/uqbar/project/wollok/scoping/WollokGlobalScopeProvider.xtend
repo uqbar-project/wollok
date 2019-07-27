@@ -48,7 +48,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	@Inject
 	WollokImportedNamespaceAwareLocalScopeProvider localScopeProvider
 
-	override synchronized IScope getScope(IScope parent, Resource context, boolean ignoreCase, EClass type,
+	override IScope getScope(IScope parent, Resource context, boolean ignoreCase, EClass type,
 		Predicate<IEObjectDescription> filter) {
 			var explicitImportedObjects = context.importedObjects
 			if (filter !== null)
@@ -60,7 +60,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	/**
 	 * Loads all imported elements from a context
 	 */
-	def synchronized importedObjects(Resource context) {
+	def importedObjects(Resource context) {
 		if (context === null || context.contents === null) {
 			return #{}
 		}
@@ -72,7 +72,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	 * Calculates the explicit imports using the import construction and all the objects that are accessed through a FQN
 	 * It caches the values to modifications
 	 */
-	def synchronized calculateImports(Resource context) {
+	def calculateImports(Resource context) {
 		val importsCache = new OnChangeEvictingCache().getOrCreate(context)
 		var result = importsCache.get("ImportsInResource")
 		
@@ -85,7 +85,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		result
 	}
 
-	def synchronized doImportedObjects(Resource context, Iterable<String> imports) {
+	def doImportedObjects(Resource context, Iterable<String> imports) {
 		val objectsFromManifests = libraryLoader.load(context)
 		objectsFromLocalImport(context, imports, objectsFromManifests)
 	}
