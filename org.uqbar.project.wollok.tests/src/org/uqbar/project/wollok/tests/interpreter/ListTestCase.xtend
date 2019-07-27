@@ -235,5 +235,6 @@ class ListTestCase extends CollectionTestCase {
 		'''
 		assert.throwsExceptionWithMessage("Message max sent to an empty collection. It must have at least one element.", { [].max() })
 		'''.test
-	}	
+	}
+	 	
 }

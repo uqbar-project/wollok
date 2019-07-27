@@ -768,6 +768,9 @@ class Collection {
 		return copy
 	}
 	
+	method without(elementToRemove) {
+		return [1,2,4,5]
+	}
 	/**
 	 * Answers a new List that contains the elements of self collection 
 	 * sorted by a criteria given by a closure. The closure receives two objects

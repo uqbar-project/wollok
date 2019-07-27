@@ -95,4 +95,13 @@ class CollectionTest extends AbstractWollokInterpreterTestCase {
 		}'''.interpretPropagatingErrors
 	}
 	
+	@Test
+	def void whenPassANumberAtWithoutMethodReturnANewListWithoutThisNumber() {
+		'''
+		const unList = [1,2,3,4,5]
+		const newList = unList.without(3)
+		assert.equals(newList, [1,2,4,5])
+		'''.test
+	}
+	
 }
