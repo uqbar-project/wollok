@@ -139,6 +139,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val INITIALIZATION_VALUE_NEVER_USED = "INITIALIZATION_VALUE_NEVER_USED"
 	public static val VARIABLE_NEVER_ASSIGNED = "VARIABLE_NEVER_ASSIGNED"
 	public static val RETURN_FORGOTTEN = "RETURN_FORGOTTEN"
+	public static val DONT_USE_WKONAME_WITHIN_IT = "DONT_USE_WKONAME_WITHIN_IT"
 	public static val CANT_USE_RETURN_EXPRESSION_IN_ARGUMENT = "CANT_USE_RETURN_EXPRESSION_IN_ARGUMENT"
 	public static val VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE = "VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE"
 	public static val PROPERTY_ONLY_ALLOWED_IN_CERTAIN_METHOD_CONTAINERS = "PROPERTY_ONLY_ALLOWED_IN_CERTAIN_METHOD_CONTAINERS"
@@ -452,7 +453,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@CheckGroup(WollokCheckGroup.GLOBAL_REFERENCE)
 	def dontUseWKONameOnWKOUseSelfInstead(WVariableReference it) {
 		if (ref == declaringContext)
-			report(WollokDslValidator_DONT_USE_WKONAME_WITHIN_IT, it)
+			report(WollokDslValidator_DONT_USE_WKONAME_WITHIN_IT, it, null, DONT_USE_WKONAME_WITHIN_IT)
 	}
 
 	@Check
