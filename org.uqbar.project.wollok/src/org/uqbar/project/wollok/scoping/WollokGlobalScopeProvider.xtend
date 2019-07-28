@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.scoping
 import com.google.common.base.Predicate
 import com.google.inject.Inject
 import com.google.inject.Singleton
+import java.util.Set
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.resource.Resource
@@ -90,10 +91,13 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		objectsFromLocalImport(context, imports, objectsFromManifests)
 	}
 
-	def synchronized objectsFromLocalImport(Resource context, Iterable<String> importsEntry,
+	def objectsFromLocalImport(Resource context, Iterable<String> importsEntry,
 		Iterable<IEObjectDescription> objectsFromManifests) {
-		val imports = (importsEntry.map[#[it] + localScopeProvider.allRelativeImports(it, context.implicitPackage)].
-			flatten).toSet
+		var Set<String> imports
+		synchronized (this) {
+			imports = (importsEntry.map[#[it] + localScopeProvider.allRelativeImports(it, context.implicitPackage)].
+				flatten).toSet
+		}
 
 		val importedObjects = imports.filter [
 			it !== null && !objectsFromManifests.exists[o|o.matchesImport(it)]
