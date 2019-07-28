@@ -9,6 +9,8 @@ import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 
 import static extension org.uqbar.project.wollok.utils.WollokObjectUtils.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 /**
  * Native implementation of the date wollok class
@@ -17,6 +19,8 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
  * @author dodain
  */
 class WDate extends AbstractJavaWrapper<LocalDate> {
+	
+	var public static FORMATTER = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
 
 	new(WollokObject obj, WollokInterpreter interpreter) {
 		super(obj, interpreter)
@@ -107,6 +111,10 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 	def wollokIdentityEquals(WollokObject other) {
 		val wDate = other.getNativeObject(WDate) as WDate
 		wDate !== null && getWrapped == wDate.getWrapped
+	}
+	
+	def shortDescription() {
+		getWrapped.format(FORMATTER)
 	}
 	
 }
