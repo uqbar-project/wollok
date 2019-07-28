@@ -14,12 +14,13 @@ import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.ui.editor.syntaxcoloring.TextAttributeProvider
 import org.uqbar.project.wollok.launch.WollokChecker
 import org.uqbar.project.wollok.ui.launch.Activator
+import org.eclipse.jface.text.TextAttribute
 
+import static extension org.uqbar.project.wollok.WollokConstants.*
 import static extension org.uqbar.project.wollok.ui.console.highlight.AnsiUtils.*
 import static extension org.uqbar.project.wollok.ui.console.highlight.WTextExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import org.eclipse.jface.text.TextAttribute
 
 /**
  * A line style listener for the console to highlight code
@@ -60,14 +61,21 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 	override lineGetStyle(LineStyleEvent event) {
 		if (event === null || event.lineText === null || event.lineText.length == 0 || !event.isCodeInputLine)
             return;
-            
+        
         val originalText = (event.widget as StyledText).text
 		val escaped = escape(event.lineText)
 
-		val resource = parseIt(programHeader + escaped + programFooter)
+		var resource = parseIt(programHeader + escaped + programFooter)
+		println("escaped " + escaped)
+		if (escaped.trim().startsWith(IMPORT)) {
+			println("ajaaaaa!!")
+			resource = parseIt(escaped + System.lineSeparator + System.lineSeparator + programHeader + programFooter)
+		}
 
 		val footerOffset = programHeader.length + escaped.length
 
+		println("errores: " + resource.errors.map [ it.toString ])
+		
 		// original highlights (from other listeners)
 		val List<StyleRange> styles = event.styles.filter[length > 0].sortBy[start].toList
 		
