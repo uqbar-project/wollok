@@ -13,10 +13,16 @@ class DateTestCase extends AbstractWollokInterpreterTestCase {
 	def void defaultDateCreationInitializesItsAttributesOk() {
 		'''
 		const now = new Date()
-		const otroNow = new Date(day = 1, month = 2, year = 2019)
-		assert.notThat(otroNow.day() === null)
 		assert.equals(now.day(), «LocalDate.now().dayOfMonth»)
 		assert.notThat(now.day() === null)
+		'''.test
+	}
+	
+	@Test
+	def void initializedDateCreationInitializesItsAttributesOk() {
+		'''
+		const otroNow = new Date(day = 1, month = 2, year = 2019)
+		assert.notThat(otroNow.day() === null)
 		assert.equals(otroNow.day(), 1)
 		'''.test
 	}
