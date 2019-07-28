@@ -1,6 +1,6 @@
 package org.uqbar.project.wollok.tests.interpreter
 
-import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
+import java.time.LocalDate
 import org.junit.Test
 
 /**
@@ -8,6 +8,18 @@ import org.junit.Test
  * @author dodain
  */
 class DateTestCase extends AbstractWollokInterpreterTestCase {
+
+	@Test
+	def void defaultDateCreationInitializesItsAttributesOk() {
+		'''
+		const now = new Date()
+		const otroNow = new Date(day = 1, month = 2, year = 2019)
+		assert.notThat(otroNow.day() === null)
+		assert.equals(now.day(), «LocalDate.now().dayOfMonth»)
+		assert.notThat(now.day() === null)
+		assert.equals(otroNow.day(), 1)
+		'''.test
+	}
 	
 	@Test
 	def void twoDatesAreEqualsBecauseTheyHaveNoTime() {
@@ -326,5 +338,6 @@ class DateTestCase extends AbstractWollokInterpreterTestCase {
 		assert.throwsExceptionWithMessage("Cannot convert parameter \"a\" to type wollok.lang.Number", { new Date(day = 28, month = 2, year = 2017).minusYears("a") })
 		'''.test
 	}
+
 
 }
