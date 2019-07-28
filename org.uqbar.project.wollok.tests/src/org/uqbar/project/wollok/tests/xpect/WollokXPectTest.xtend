@@ -1,15 +1,17 @@
 package org.uqbar.project.wollok.tests.xpect
 
+import java.time.format.DateTimeFormatter
 import org.eclipse.xtext.testing.InjectWith
 import org.junit.runner.RunWith
 import org.junit.runner.Runner
 import org.junit.runner.notification.RunNotifier
 import org.junit.runners.model.InitializationError
+import org.uqbar.project.wollok.tests.injectors.WollokTestInjectorProvider
 import org.xpect.runner.XpectRunner
 import org.xpect.xtext.lib.tests.XtextTests
-import org.uqbar.project.wollok.tests.injectors.WollokTestInjectorProvider
 import wollok.lang.WDate
-import java.time.format.DateTimeFormatter
+
+import static wollok.lang.WDate.*
 
 /**
  * @author jfernandes
