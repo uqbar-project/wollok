@@ -106,7 +106,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		
 	}
 
-	def synchronized matchesImport(IEObjectDescription o, String importedNamespace) {
+	def matchesImport(IEObjectDescription o, String importedNamespace) {
 		if (importedNamespace.endsWith(".*")) {
 			val pattern = importedNamespace.substring(0, importedNamespace.length - 2)
 			o.qualifiedName.toString.startsWith(pattern)

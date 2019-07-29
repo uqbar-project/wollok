@@ -21,6 +21,7 @@ import static extension org.uqbar.project.wollok.ui.console.highlight.AnsiUtils.
 import static extension org.uqbar.project.wollok.ui.console.highlight.WTextExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import static extension org.uqbar.project.wollok.ui.console.highlight.WollokConsoleHighlighter.*
 
 /**
  * A line style listener for the console to highlight code
@@ -45,7 +46,9 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 	val programHeader = "program repl {" + System.lineSeparator
 	val programFooter =  System.lineSeparator + "}"
 	val headerLength = programHeader.length
-	
+
+	val static DEFAULT_BACKGROUND_COLOR = newColor(255, 255, 255)
+		
 	@Inject ISemanticHighlightingCalculator calculator
 	@Inject TextAttributeProvider stylesProvider
 	@Inject XtextResourceSet resourceSet
@@ -64,63 +67,49 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
         
         val originalText = (event.widget as StyledText).text
 		val escaped = escape(event.lineText)
-
-		var resource = parseIt(programHeader + escaped + programFooter)
-		println("escaped " + escaped)
-		if (escaped.trim().startsWith(IMPORT)) {
-			println("ajaaaaa!!")
-			resource = parseIt(escaped + System.lineSeparator + System.lineSeparator + programHeader + programFooter)
-		}
-
 		val footerOffset = programHeader.length + escaped.length
-
-		println("errores: " + resource.errors.map [ it.toString ])
-		
 		// original highlights (from other listeners)
 		val List<StyleRange> styles = event.styles.filter[length > 0].sortBy[start].toList
-		
-		// add custom highlights
-		calculator.provideHighlightingFor(resource, [ offset, length, styleIds |
-			
-			val styleId = styleIds.get(0) // just get the first one ??
-			
-			val TextAttribute style = stylesProvider.getAttribute(styleId)
 
-			val s = new StyleRange(event.lineOffset + offset - headerLength, length, style.foreground, style.background)
-			s.underline = (style.style.bitwiseAnd(TextAttribute.UNDERLINE)) !== 0
-			s.data = styleId
+		if (escaped.trim().startsWith(IMPORT)) {
+			styles.merge(new StyleRange(event.lineOffset + PROMPT_ANSI.length, IMPORT.length, KEYWORD_COLOR, DEFAULT_BACKGROUND_COLOR) => [
+				fontStyle = SWT.BOLD 
+			])
+		} else {
+			val resource = parseIt(programHeader + escaped + programFooter)
 			
-			if (s.start <= originalText.length && s.end <= originalText.length) {
-				styles.merge(s)
-			}
-
-			] , [ | false ] ) 
-		
-		// try to imitate some styles as the editor "manually"
-		val stylesEditor = newArrayList
-		
-		resource.contents.get(0).node.asTreeIterable
-			.filter[offset > programHeader.length && offset < footerOffset ]
-			.forEach [n |
-				// Hack - Dodain: to avoid several times to pass
-				// and also there are nodes with leading spaces that causes everything to go mad
-				if (!stylesEditor.contains(n.text + n.offset) && !n.text.startsWith(" ")) {
-					highlighter.processASTNode(styles, n, n.grammarElement, event, headerLength)
+			// add custom highlights
+			calculator.provideHighlightingFor(resource, [ offset, length, styleIds |
+				val styleId = styleIds.get(0) // just get the first one ??
+				val TextAttribute style = stylesProvider.getAttribute(styleId)
+				val s = new StyleRange(event.lineOffset + offset - headerLength, length, style.foreground, style.background)
+				s.underline = (style.style.bitwiseAnd(TextAttribute.UNDERLINE)) !== 0
+				s.data = styleId
+				if (s.start <= originalText.length && s.end <= originalText.length) {
+					styles.merge(s)
 				}
-			]
-		 	
-		// highlight errors
-		resource.parseResult.syntaxErrors
-							.filter[offset > programHeader.length && offset < footerOffset]
-							.map[ parserError(event, offset, Math.min(length, footerOffset)) ]
-							.forEach [ styles.merge(it) ]
-		
-		// validations (checks)
-		// I HAVE TO DISABLE THIS AFTER FIXING THE WAY IT PARSES THE INPUT (because of linking errors like trying to set Object to object literals)
-//		checker.validate(Activator.getDefault.injector, resource, [], [issues |
-//			issues.filter[ severity != Severity.WARNING ].forEach[ checkerError(event, offset, length) ]
-//		])
-		
+			] , [ | false ] ) 
+
+			// try to imitate some styles as the editor "manually"
+			val stylesEditor = newArrayList
+			
+			resource.contents.get(0).node.asTreeIterable
+				.filter[offset > programHeader.length && offset < footerOffset ]
+				.forEach [n |
+					// Hack - Dodain: to avoid several times to pass
+					// and also there are nodes with leading spaces that causes everything to go mad
+					if (!stylesEditor.contains(n.text + n.offset) && !n.text.startsWith(" ")) {
+						highlighter.processASTNode(styles, n, n.grammarElement, event, headerLength)
+					}
+				]
+
+			// highlight errors
+			resource.parseResult.syntaxErrors
+								.filter[offset > programHeader.length && offset < footerOffset]
+								.map[ parserError(event, offset, Math.min(length, footerOffset)) ]
+								.forEach [ styles.merge(it) ]
+		}
+
 		// REVIEW: I think this is not needed since we touch the original list
 		event.styles = styles.sortBy[start].toList 
 		
