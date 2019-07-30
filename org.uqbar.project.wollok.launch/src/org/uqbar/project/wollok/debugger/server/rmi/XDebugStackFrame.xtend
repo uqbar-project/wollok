@@ -23,20 +23,18 @@ class XDebugStackFrame implements Serializable {
 	List<XDebugStackFrameVariable> variables
 	public static Map<WVariable, WollokObject> allValues
 	public static List<WVariable> allVariables
+	
+	public static val UNWANTED_OBJECTS = #[WollokConstants.SELF, WollokSDK.VOID, WollokSDK.CONSOLE, WollokSDK.ASSERT, WollokSDK.OBJECT, WollokSDK.GAME, WollokSDK.DAYS_OF_WEEK]
 
 	new(XStackFrame<WollokObject> frame) {
 		sourceLocation = frame.currentLocation
 		variables = frame.context.debugVariables
 	}
 
-	def static unwantedObjects() {
-		#[WollokConstants.SELF, WollokSDK.VOID, WollokSDK.CONSOLE]
-	}
-
 	def static List<XDebugStackFrameVariable> debugVariables(EvaluationContext<WollokObject> context) {
-		val vars = Lists.newArrayList(context.allReferenceNames.filter [
-			!local && context.showableInDynamicDiagram(name) && !unwantedObjects.exists [ unwanted |
-				name.toLowerCase.contains(unwanted)
+		val vars = Lists.newArrayList(context.allReferenceNamesForDynamicDiagram.filter [
+			!local && context.variableShowableInDynamicDiagram(name) && !UNWANTED_OBJECTS.exists [ unwanted |
+				name.contains(unwanted)
 			]
 		])
 		Lists.newArrayList(vars.map [

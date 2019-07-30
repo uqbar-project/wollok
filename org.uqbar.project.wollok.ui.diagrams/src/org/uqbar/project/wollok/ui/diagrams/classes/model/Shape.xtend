@@ -103,11 +103,11 @@ public abstract class Shape extends ModelElement {
 	}
 
 	def getSourceConnections() {
-		sourceConnections.clone
+		sourceConnections.clone as List<Connection>
 	}
 
 	def getTargetConnections() {
-		targetConnections.clone
+		targetConnections.clone as List<Connection>
 	}
 
 	def removeConnection(Connection conn) {

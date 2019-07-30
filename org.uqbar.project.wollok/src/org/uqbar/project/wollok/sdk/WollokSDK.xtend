@@ -65,6 +65,7 @@ class WollokSDK {
 	public static val GAME = "wollok.game.game"
 	public static val KEYBOARD = "wollok.game.keyboard"
 	public static val RUNTIME = "wollok.vm.runtime"
+	public static val DAYS_OF_WEEK = "wollok.lang.daysOfWeek"
 
 	// ************************************************************************
 	// ** Special Messages

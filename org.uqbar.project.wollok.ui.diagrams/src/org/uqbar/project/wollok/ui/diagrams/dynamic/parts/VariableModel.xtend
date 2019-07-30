@@ -114,8 +114,22 @@ class VariableModel extends Shape {
 	}
 	
 	def void createConnections(Map<IVariable, VariableModel> context) {
-		variable?.value?.variables?.forEach[v| 
-			new Connection(v.name, this, get(context, v), RelationType.ASSOCIATION) 
+		if (variable === null || variable.value === null || variable.value.variables === null) return;
+		val allVariables = variable.value.variables.toList
+		val sameReferences = newHashMap
+		allVariables.forEach [ v |
+			val destination = get(context, v)
+			val variables = sameReferences.get(destination)
+			if (variables === null) {
+				sameReferences.put(destination, newArrayList(v.name))
+			} else {
+				variables.add(v.name)
+				sameReferences.put(destination, variables)
+			}
+		]
+		allVariables.toList.forEach [v| 
+			val destination = get(context, v)
+			new Connection(sameReferences.get(destination).join(", "), this, destination, RelationType.ASSOCIATION) 
 		]
 	}
 	

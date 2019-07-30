@@ -189,6 +189,16 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		instanceVariables.keySet.map[ new WVariable(it, System.identityHashCode(instanceVariables.get(it)), false)] + #[SELF_VAR]
 	}
 
+	def simplifiedReferences() { behavior.fqn.equals(DATE) }
+	
+	override allReferenceNamesForDynamicDiagram() {
+		if (simplifiedReferences) {
+			newArrayList	
+		} else {
+			this.allReferenceNames.toList
+		}	
+	}
+	
 	def getProperties() {
 		properties
 	}
@@ -279,10 +289,8 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	}
 
 	override showableInStackTrace() { true }
-	
-	override showableInDynamicDiagram(String name) {
-		true
-	}
+
+	override variableShowableInDynamicDiagram(String name) { true }
 	
 }
 

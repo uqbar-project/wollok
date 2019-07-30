@@ -22,6 +22,10 @@ class MapBasedEvaluationContext<O> implements EvaluationContext<O> {
 		values.keySet.map[new WVariable(it, null, true)]
 	}
 
+	override allReferenceNamesForDynamicDiagram() {
+		this.allReferenceNames.toList
+	}
+
 	override resolve(String variableName) {
 		if (!values.containsKey(variableName))
 			// I18N !
@@ -55,8 +59,6 @@ class MapBasedEvaluationContext<O> implements EvaluationContext<O> {
 
 	override showableInStackTrace() { true }
 	
-	override showableInDynamicDiagram(String name) {
-		false
-	}
+	override variableShowableInDynamicDiagram(String name) { false }
 
 }
