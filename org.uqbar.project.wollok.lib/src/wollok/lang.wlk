@@ -2478,10 +2478,10 @@ class Date {
 	  *
 	  * Example:
 	  *     new Date(day = 12, month = 5, year = 2018).plusDays(1) 
-	  *        ==> Answers 13/5/18, a day forward
+	  *        ==> Answers 13/5/2018, a day forward
 	  *     
 	  *     new Date(day = 12, month = 5, year = 2018).plusDays(-1)
-	  *        ==> Answers 11/5/18, a day back
+	  *        ==> Answers 11/5/2018, a day back
 	  */
 	method plusDays(_days) native
 	
@@ -2492,10 +2492,10 @@ class Date {
 	  *
 	  * Example:
 	  *     new Date(day = 31, month = 1, year = 2018).plusMonths(1)
-      *        ==> Answers 28/2/18, a month forward 
+      *        ==> Answers 28/2/2018, a month forward
 	  *     
 	  *     new Date(day = 12, month = 5, year = 2018).plusMonths(-1)
-	  *        ==> Answers 12/4/18, a month back
+	  *        ==> Answers 12/4/2018, a month back
 	  */
 	method plusMonths(_months) native
 	
@@ -2506,10 +2506,10 @@ class Date {
 	  *
 	  * Example:
 	  *     new Date(day = 31, month = 1, year = 2018).plusYears(1)
-      *        ==> Answers 31/1/19, a year forward 
+      *        ==> Answers 31/1/2019, a year forward
 	  *     
 	  *     new Date(day = 12, month = 5, year = 2018).plusYears(-1)
-	  *        ==> Answers 12/5/17, a year back
+	  *        ==> Answers 12/5/2017, a year back
 	  */
 	method plusYears(_years) native
 	
@@ -2558,10 +2558,10 @@ class Date {
      *
 	 * Examples:
 	 * 		new Date(day = 1, month = 1, year = 2009).minusDays(1) 
-	 *          ==> Answers 31/12/08, a day back 
+	 *          ==> Answers 31/12/2008, a day back
 	 *
 	 * 		new Date(day = 1, month = 1, year = 2009).minusDays(-1) 
-	 *          ==> Answers 2/1/09, a day forward 
+	 *          ==> Answers 2/1/2009, a day forward
 	 */
 	method minusDays(_days) native
 	
@@ -2572,10 +2572,10 @@ class Date {
 	  *
 	  * Examples:
 	  * 		new Date(day = 1, month = 1, year = 2009).minusMonths(1) 
-	  *             ==> Answers 1/12/08, a month back
+	  *             ==> Answers 1/12/2008, a month back
 	  *
 	  * 		new Date(day = 1, month = 1, year = 2009).minusMonths(-1) 
-	  *             ==> Answers 1/2/09, a month forward
+	  *             ==> Answers 1/2/2009, a month forward
 	  */
 	method minusMonths(_months) native
 	
@@ -2586,10 +2586,10 @@ class Date {
 	  *
 	  * Examples:
 	  * 		new Date(day = 1, month = 1, year = 2009).minusYears(1) 
-	  *             ==> Answers 1/1/08, a year back
+	  *             ==> Answers 1/1/2008, a year back
 	  *
 	  * 		new Date(day = 1, month = 1, year = 2009).minusYears(-1) 
-	  *             ==> Answers 1/1/10, a year forward
+	  *             ==> Answers 1/1/2010, a year forward
 	  */
 	method minusYears(_years) native
 	
