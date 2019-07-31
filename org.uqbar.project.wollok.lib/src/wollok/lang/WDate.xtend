@@ -2,8 +2,11 @@ package wollok.lang
 
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.chrono.IsoChronology
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatterBuilder
 import java.time.format.FormatStyle
+import java.util.Locale
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
@@ -19,7 +22,7 @@ import static extension org.uqbar.project.wollok.utils.WollokObjectUtils.*
  */
 class WDate extends AbstractJavaWrapper<LocalDate> {
 	
-	var public static FORMATTER = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
+	var public static FORMATTER = DateTimeFormatter.ofPattern(WDate.getLocalizedFormat(Locale.^default))
 
 	new(WollokObject obj, WollokInterpreter interpreter) {
 		super(obj, interpreter)
@@ -116,4 +119,9 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 		getWrapped.format(FORMATTER)
 	}
 	
+	def static getLocalizedFormat(Locale locale) {
+		return DateTimeFormatterBuilder
+			.getLocalizedDateTimePattern(FormatStyle.SHORT, null, IsoChronology.INSTANCE, locale)
+			.replaceFirst("/yy$", "/yyyy")
+	}
 }
