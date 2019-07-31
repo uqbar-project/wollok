@@ -264,6 +264,9 @@ class Pair {
 	}
 	method key() = x
 	method value() = y
+
+	/** String representation of a Pair */
+	override method toString() = x.toString() + " -> " + y.toString()
 }
 
 /**
