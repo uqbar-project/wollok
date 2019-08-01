@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.ui.contentassist
 
+import java.util.List
 import org.eclipse.core.runtime.Platform
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.Assignment
@@ -27,13 +28,14 @@ import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WVariable
+import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
+
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-
-import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  *
@@ -180,6 +182,23 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 			builder.reference = method.methodContainer.nameWithPackage
 			addProposal(method, acceptor)
 		]
+		if (o instanceof WMethodContainer) {
+			val container = o as WMethodContainer
+			val List<WVariableDeclaration> properties = container.allProperties.toList 
+			properties.forEach [ variable | 
+				if (variable.isWriteable) {
+					builder.accessorKind = Accessor.SETTER
+					builder.model = variable
+					builder.reference = variable.declaringContext.nameWithPackage
+					addProposal(variable, acceptor)
+				}
+				builder.accessorKind = Accessor.GETTER
+				builder.model = variable
+				builder.reference = variable.declaringContext.nameWithPackage
+				addProposal(variable, acceptor)
+				builder.accessorKind = Accessor.NONE
+			]
+		}
 	}
 
 	// message to WKO's (shows the object's methods)
@@ -203,9 +222,9 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	}
 	
 	def methodsAsProposals(WMethodContainer ref, ICompletionProposalAcceptor acceptor) {
-		builder.model = ref
+		builder.model = ref	
 		builder.reference = ref.nameWithPackage
-		// @Dodain - kind of hack to retrieve getters and setters from properties 
+		// @Dodain - kind of hack to retrieve getters and setters from properties
 		builder.accessorKind = Accessor.GETTER
 		ref.allPropertiesGetters.forEach [ addProposal(it, acceptor) ]
 		builder.accessorKind = Accessor.SETTER
