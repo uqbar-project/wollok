@@ -2496,6 +2496,9 @@ class Date {
 	const property month
 	const property year
 	
+	/** @private */
+	method initialize() native
+	
 	/** String representation of a date */
 	override method toString() = self.toSmartString(false) 
 	

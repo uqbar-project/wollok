@@ -28,62 +28,59 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 		super(obj, interpreter)
 	}
 
-	override getWrapped() {
-		if (wrapped === null) {
-			val today = LocalDate.now
-			val day = "day".solveOr(today.dayOfMonth)
-			val month = "month".solveOr(today.monthValue)
-			val year = "year".solveOr(today.year)
-			wrapped = LocalDate.of(year, month, day)
-		}
-		wrapped
+	def void initialize() {
+		val today = LocalDate.now
+		val day = "day".solveOrAssign(today.dayOfMonth)
+		val month = "month".solveOrAssign(today.monthValue)
+		val year = "year".solveOrAssign(today.year)
+		wrapped = LocalDate.of(year, month, day)
 	}
-	
+
 	def plusDays(BigDecimal days) {
 		days.checkNotNull("plusDays") 
-		getWrapped.plusDays(days.coerceToInteger)
+		wrapped.plusDays(days.coerceToInteger)
 	}
 
 	def plusMonths(BigDecimal months) {
 		months.checkNotNull("plusMonths")
-		getWrapped.plusMonths(months.coerceToInteger)
+		wrapped.plusMonths(months.coerceToInteger)
 	}
 
 	def plusYears(BigDecimal years) {
 		years.checkNotNull("plusYears") 
-		getWrapped.plusYears(years.coerceToInteger) 
+		wrapped.plusYears(years.coerceToInteger) 
 	}
 
-	def isLeapYear() { getWrapped.isLeapYear }
+	def isLeapYear() { wrapped.isLeapYear }
 	
-	def wollokToString() { getWrapped.toString }
+	def wollokToString() { wrapped.toString }
 	
 	@NativeMessage("==")
 	def wollokEquals(WollokObject other) {
-		other.hasNativeType(this.class.name) && (other.getNativeObject(this.class).getWrapped.equals(this.getWrapped))
+		other.hasNativeType(this.class.name) && (other.getNativeObject(this.class).wrapped.equals(this.wrapped))
 	}
 
 	@NativeMessage("-")
 	def minus(LocalDate aDate) { 
-		getWrapped.toEpochDay - aDate.toEpochDay
+		wrapped.toEpochDay - aDate.toEpochDay
 	}
 	
 	def minusDays(BigDecimal days) {
 		days.checkNotNull("minusDays") 
-		getWrapped.minusDays(days.coerceToInteger)
+		wrapped.minusDays(days.coerceToInteger)
 	}
 	
 	def minusMonths(BigDecimal months) { 
 		months.checkNotNull("minusMonths") 
-		getWrapped.minusMonths(months.coerceToInteger)
+		wrapped.minusMonths(months.coerceToInteger)
 	}
 	
 	def minusYears(BigDecimal years) {
 		years.checkNotNull("minusYears") 
-		getWrapped.minusYears(years.coerceToInteger)
+		wrapped.minusYears(years.coerceToInteger)
 	}
 	
-	def internalDayOfWeek() { getWrapped.dayOfWeek.value }
+	def internalDayOfWeek() { wrapped.dayOfWeek.value }
 	
 	@NativeMessage("<")
 	def lessThan(LocalDate aDate) {
@@ -98,21 +95,21 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 	}
 	 
 	def compareTo(LocalDate aDate) { 
-		getWrapped.compareTo(aDate)
+		wrapped.compareTo(aDate)
 	}
 	
 	override hashCode() { 
-		getWrapped.hashCode
+		wrapped.hashCode
 	}
 	
 	override toString() {
-		"Date[" + getWrapped.toString + "]"
+		"Date[" + wrapped.toString + "]"
 	}
 
 	@NativeMessage("==")
 	def wollokIdentityEquals(WollokObject other) {
 		val wDate = other.getNativeObject(WDate) as WDate
-		wDate !== null && getWrapped == wDate.getWrapped
+		wDate !== null && wrapped == wDate.wrapped
 	}
 	
 	def shortDescription() {
