@@ -28,9 +28,10 @@ class StringUtils {
 		return String.format("%1$-" + n + "s", s);
 	}
 
-	def static String truncate(String s, int max) {
-		if(s.length < max) return s
-		s.substring(0, max) + "..."
+	def static String truncate(String value, int max) {
+		if (value === null) return ""
+		if (value.length < max) return value
+		value.substring(0, max) + "..."
 	}
 
 	/**

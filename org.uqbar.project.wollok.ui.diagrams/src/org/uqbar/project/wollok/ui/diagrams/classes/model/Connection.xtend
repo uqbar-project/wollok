@@ -33,7 +33,7 @@ class Connection extends ModelElement {
 	@Accessors RelationType relationType
 
 	new(String name, Shape source, Shape target, RelationType relationType) {
-		this.name = name.split("\\.").last
+		this.name = if (name === null) "" else name.split("\\.").last
 		this.identifier = source?.toString + this.name + target.toString
 		this.relationType = relationType
 		reconnect(source, target, relationType)
