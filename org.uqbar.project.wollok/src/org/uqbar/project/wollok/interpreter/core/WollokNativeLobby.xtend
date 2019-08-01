@@ -42,7 +42,11 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 			new WVariable(variableName, System.identityHashCode(allVariables.get(variableName)), false)
 		]
 	}
-
+	
+	override allReferenceNamesForDynamicDiagram() {
+		this.allReferenceNames.toList
+	}
+	
 	override resolve(String variableName) throws UnresolvableReference {
 		if (localProgramVariables.containsKey(variableName))
 			localProgramVariables.get(variableName)
@@ -92,8 +96,6 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 
 	override showableInStackTrace() { !interpreter.isRootFile }
 	
-	override showableInDynamicDiagram(String name) {
-		true
-	}
+	override variableShowableInDynamicDiagram(String name) { true }
 	
 }

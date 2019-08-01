@@ -818,4 +818,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		o.parentParameters.values.size
 	}
 
+	def static dispatch isCustom(WMethodContainer o) { !o.fqn.startsWith("wollok.") }
+	def static dispatch isCustom(EObject o) { false }
 }

@@ -24,8 +24,10 @@ interface EvaluationContext<O> extends Serializable {
 	/** Returns an iterable with all available references names from this context */
 	def Iterable<WVariable> allReferenceNames()
 	
+	def List<WVariable> allReferenceNamesForDynamicDiagram()
+	
 	def O getThisObject()
-	def boolean showableInDynamicDiagram(String name)
+	def boolean variableShowableInDynamicDiagram(String name)
 	def boolean showableInStackTrace()
 }
 

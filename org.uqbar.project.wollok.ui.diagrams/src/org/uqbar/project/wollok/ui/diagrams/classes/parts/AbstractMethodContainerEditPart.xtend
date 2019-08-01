@@ -81,8 +81,8 @@ abstract class AbstractMethodContainerEditPart extends AbstractLanguageElementEd
 		installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new CreateAssociationEditPolicy)
 	}
 	
-	override getModelSourceConnections() { castedModel.sourceConnections }
-	override getModelTargetConnections() { castedModel.targetConnections }
+	override List<Connection> getModelSourceConnections() { castedModel.sourceConnections }
+	override List<Connection> getModelTargetConnections() { castedModel.targetConnections }
 	
 	override getSourceConnectionAnchor(ConnectionEditPart connection) {
 		connection.mappedConnectionAnchor
@@ -142,7 +142,7 @@ abstract class AbstractMethodContainerEditPart extends AbstractLanguageElementEd
 		(parent as GraphicalEditPart).setLayoutConstraint(this, figure, castedModel.bounds)
 	}
 
-	override getModelChildren() {
+	override List<WMember> getModelChildren() {
 		// avoiding getters & setters
 		val variables = doGetModelChildren
 			.filter [ member | member.isVariable ]

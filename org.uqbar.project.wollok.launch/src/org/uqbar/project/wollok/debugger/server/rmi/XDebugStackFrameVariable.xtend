@@ -20,7 +20,7 @@ class XDebugStackFrameVariable implements Serializable {
 
 	new(WVariable variable, WollokObject value) {
 		this.variable = variable
-		this.value = if(value === null) null else value.asRemoteValue
+		this.value = if (value === null) null else value.asRemoteValue
 	}
 
 	def asRemoteValue(WollokObject object) {
@@ -59,4 +59,7 @@ class XDebugStackFrameVariable implements Serializable {
 		}
 	}
 	
+	def isCustom() {
+		!this.variable.name.startsWith("wollok.")	
+	}
 }

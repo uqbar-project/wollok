@@ -29,6 +29,10 @@ class CompositeEvaluationContext<O> implements EvaluationContext<O> {
 		outer.allReferenceNames + inner.allReferenceNames 
 	}
 
+	override allReferenceNamesForDynamicDiagram() {
+		this.allReferenceNames.toList
+	}
+
 	override resolve(String variableName) {
 		try
 			inner.resolve(variableName)
@@ -66,9 +70,7 @@ class CompositeEvaluationContext<O> implements EvaluationContext<O> {
 	def dispatch asText(EvaluationContext<O> it) { class.simpleName }
 	
 	override showableInStackTrace() { true }
-	
-	override showableInDynamicDiagram(String name) {
-		false		
-	}
+
+	override variableShowableInDynamicDiagram(String name) { false }
 
 }
