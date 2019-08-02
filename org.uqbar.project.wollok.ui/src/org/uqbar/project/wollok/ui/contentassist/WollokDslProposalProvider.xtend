@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.ui.contentassist
 
-import java.util.List
 import org.eclipse.core.runtime.Platform
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.Assignment
@@ -28,7 +27,6 @@ import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WVariable
-import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static org.uqbar.project.wollok.sdk.WollokSDK.*
@@ -55,39 +53,12 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	WollokTypeSystemLabelExtension labelExtension = null
 	boolean labelExtensionResolved = false
 
-	def obtainLabelExtension() {
-		if (!labelExtensionResolved) {
-			labelExtension = resolveLabelExtension
-			labelExtensionResolved = true
-		}
-		labelExtension
-	}
-	
-	def getAllMethods(EObject obj) {
-		val untypedMethods = obj.allUntypedMethods
-		if (!obj.isTypeSystemEnabled) {
-			untypedMethods
-		} else {
-			val typedMethods = obtainLabelExtension?.allMethods(obj)
-			if (typedMethods !== null && !typedMethods.isEmpty) typedMethods else untypedMethods
-		}
-	}
-
-	def boolean isTypeSystemEnabled(EObject obj) {
-		obtainLabelExtension.isTypeSystemEnabled(obj)
-	}
-
-	def resolveLabelExtension() {
-		val configPoints = Platform.getExtensionRegistry.getConfigurationElementsFor(
-			"org.uqbar.project.wollok.ui.wollokTypeSystemLabelExtension")
-
-		if (configPoints.empty)
-			null
-		else
-			configPoints.get(0).createExecutableExtension("class") as WollokTypeSystemLabelExtension
-	}
-	
-	
+	/**
+	 *
+	 ****************************************************************************************** 
+	 * CONSTRUCTOR CALLS
+	 ****************************************************************************************** 
+	 */ 
 	override complete_WConstructorCall(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		if (model instanceof WConstructorCall) {
 			val initializations = (model as WConstructorCall).createInitializersForNamedParametersInConstructor
@@ -95,7 +66,13 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 		}
 		super.complete_WConstructorCall(model, ruleCall, context, acceptor)
 	}
-	
+
+	/**
+	 *
+	 ****************************************************************************************** 
+	 * FEATURE CALL => sending a message
+	 ****************************************************************************************** 
+	 */ 
 	override completeWMemberFeatureCall_Feature(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		val call = model as WMemberFeatureCall
 		builder = new WollokProposalBuilder
@@ -152,7 +129,7 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 			memberProposalsForTarget(referencedElement, assignment, acceptor)
 	}
 
-	// any referenciable shows all messages that you already sent to it
+	// any referenciable: shows all messages that you already sent to it
 	def dispatch void memberProposalsForTarget(WReferenciable ref, Assignment assignment, ICompletionProposalAcceptor acceptor) {
 		if (ref.isTypeSystemEnabled)
 			completeProposalsFor(ref, acceptor)
@@ -175,32 +152,6 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 		}
 	}
 	
-	protected def void completeProposalsFor(EObject o, ICompletionProposalAcceptor acceptor) {
-		val allMessages = o.allMethods
-		allMessages.forEach [ method | 
-			builder.model = method
-			builder.reference = method.methodContainer.nameWithPackage
-			addProposal(method, acceptor)
-		]
-		if (o instanceof WMethodContainer) {
-			val container = o as WMethodContainer
-			val List<WVariableDeclaration> properties = container.allProperties.toList 
-			properties.forEach [ variable | 
-				if (variable.isWriteable) {
-					builder.accessorKind = Accessor.SETTER
-					builder.model = variable
-					builder.reference = variable.declaringContext.nameWithPackage
-					addProposal(variable, acceptor)
-				}
-				builder.accessorKind = Accessor.GETTER
-				builder.model = variable
-				builder.reference = variable.declaringContext.nameWithPackage
-				addProposal(variable, acceptor)
-				builder.accessorKind = Accessor.NONE
-			]
-		}
-	}
-
 	// message to WKO's (shows the object's methods)
 	def dispatch void memberProposalsForTarget(WNamedObject ref, Assignment assignment, ICompletionProposalAcceptor acceptor) {
 		ref.methodsAsProposals(acceptor)
@@ -212,51 +163,12 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 		mySelf.declaringContext.methodsAsProposals(acceptor)
 	}
 
-	// *****************************
-	// ** proposing methods and how they are completed
-	// *****************************
-
-	def messageSentAsProposals(WReferenciable ref, ICompletionProposalAcceptor acceptor) {
-		builder.reference = ref.methodContainer.nameWithPackage
-		ref.allMessageSent.filter[feature !== null].forEach[ addProposal( it, acceptor) ]
-	}
 	
-	def methodsAsProposals(WMethodContainer ref, ICompletionProposalAcceptor acceptor) {
-		builder.model = ref	
-		builder.reference = ref.nameWithPackage
-		// @Dodain - kind of hack to retrieve getters and setters from properties
-		builder.accessorKind = Accessor.GETTER
-		ref.allPropertiesGetters.forEach [ addProposal(it, acceptor) ]
-		builder.accessorKind = Accessor.SETTER
-		ref.allPropertiesSetters.forEach [ addProposal(it, acceptor) ]
-		builder.accessorKind = Accessor.NONE
-		ref.getInheritedMethods.forEach[ addProposal(it, acceptor) ]
-	}
-
-	def addProposal(EObject o, ICompletionProposalAcceptor acceptor) {
-		builder.member = o
-		builder.assignPriority
-		acceptor.addProposal(builder.proposal)
-	}
-
-	// *****************************
-	// ** generic extension methods
-	// *****************************
-
-	def addProposal(ICompletionProposalAcceptor acceptor, WollokProposal aProposal) {
-		if (aProposal === null) return;
-		val proposal = createCompletionProposal(aProposal.methodName, aProposal.displayMessage, aProposal.image, aProposal.priority, aProposal.prefix, aProposal.context)
-		var shouldShow = true
-		if (proposal instanceof ConfigurableCompletionProposal) {
-			proposal.additionalProposalInfo = WollokActivator.getInstance.multilineProvider.getDocumentation(aProposal.member)
-			shouldShow = proposal.additionalProposalInfo === null || !proposal.additionalProposalInfo.contains(PRIVATE)
-		}
-		if (shouldShow) acceptor.accept(proposal)
-	}
-	
-	// ****************************************
-	// ** imports
-	// ****************************************
+	/**
+	 *****************************************************************************************
+	 * IMPORTS
+	 *****************************************************************************************
+	 */
 
 	override completeImport_ImportedNamespace(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		val alreadyImported = model.file.importedDefinitions
@@ -276,4 +188,104 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 		lookupCrossReference((assignment.terminal as CrossReference), context, new ConstructorCallAcceptorDelegate(acceptor))
 	}
 
+	/**
+	 *****************************************************************************************
+	 * INTERNAL METHODS
+	 *****************************************************************************************
+	 */
+	// extension methods - messages and methods proposals
+	private def messageSentAsProposals(WReferenciable ref, ICompletionProposalAcceptor acceptor) {
+		builder.reference = ref.methodContainer.nameWithPackage
+		ref.allMessageSent.filter[feature !== null].forEach[ addProposal( it, acceptor) ]
+	}
+
+	private def getAllMethods(EObject obj) {
+		val untypedMethods = obj.allUntypedMethods
+		if (!obj.isTypeSystemEnabled) {
+			untypedMethods
+		} else {
+			val typedMethods = obtainLabelExtension?.allMethods(obj)
+			if (typedMethods !== null && !typedMethods.isEmpty) typedMethods else untypedMethods
+		}
+	}
+
+	private def methodsAsProposals(WMethodContainer ref, ICompletionProposalAcceptor acceptor) {
+		builder.model = ref	
+		builder.reference = ref.nameWithPackage
+		// @Dodain - kind of hack to retrieve getters and setters from properties
+		builder.accessorKind = Accessor.GETTER
+		ref.allPropertiesGetters.forEach [ addProposal(it, acceptor) ]
+		builder.accessorKind = Accessor.SETTER
+		ref.allPropertiesSetters.forEach [ addProposal(it, acceptor) ]
+		builder.accessorKind = Accessor.NONE
+		ref.getInheritedMethods.forEach[ addProposal(it, acceptor) ]
+	}
+
+	private def void completeProposalsFor(EObject o, ICompletionProposalAcceptor acceptor) {
+		val allMessages = o.allMethods
+		allMessages.forEach [ method | 
+			builder.model = method
+			builder.reference = method.methodContainer.nameWithPackage
+			addProposal(method, acceptor)
+		]
+		o.completePropertiesFor(acceptor, Accessor.GETTER)
+		o.completePropertiesFor(acceptor, Accessor.SETTER)
+	}
+	
+	private def dispatch void completePropertiesFor(WMethodContainer c, ICompletionProposalAcceptor acceptor, Accessor typeOfAccessor) {
+		val properties = if (typeOfAccessor === Accessor.GETTER) c.allPropertiesGetters else c.allPropertiesSetters  
+		builder.accessorKind = typeOfAccessor
+		properties.forEach [ variable | 
+			if (variable.isWriteable) {
+				builder.model = variable
+				builder.reference = variable.declaringContext.nameWithPackage
+				addProposal(variable, acceptor)
+			}
+		]
+		builder.accessorKind = Accessor.NONE
+	}
+
+	private def dispatch void completePropertiesFor(EObject o, ICompletionProposalAcceptor acceptor, boolean writable) {}
+	
+	// extension methods - adding a proposal
+	def addProposal(EObject o, ICompletionProposalAcceptor acceptor) {
+		builder.member = o
+		builder.assignPriority
+		acceptor.addProposal(builder.proposal)
+	}
+
+	def addProposal(ICompletionProposalAcceptor acceptor, WollokProposal aProposal) {
+		if (aProposal === null) return;
+		val proposal = createCompletionProposal(aProposal.methodName, aProposal.displayMessage, aProposal.image, aProposal.priority, aProposal.prefix, aProposal.context)
+		var shouldShow = true
+		if (proposal instanceof ConfigurableCompletionProposal) {
+			proposal.additionalProposalInfo = WollokActivator.getInstance.multilineProvider.getDocumentation(aProposal.member)
+			shouldShow = proposal.additionalProposalInfo === null || !proposal.additionalProposalInfo.contains(PRIVATE)
+		}
+		if (shouldShow) acceptor.accept(proposal)
+	}
+
+	// initialization methods
+	private def boolean isTypeSystemEnabled(EObject obj) {
+		obtainLabelExtension.isTypeSystemEnabled(obj)
+	}
+
+	private def resolveLabelExtension() {
+		val configPoints = Platform.getExtensionRegistry.getConfigurationElementsFor(
+			"org.uqbar.project.wollok.ui.wollokTypeSystemLabelExtension")
+
+		if (configPoints.empty)
+			null
+		else
+			configPoints.get(0).createExecutableExtension("class") as WollokTypeSystemLabelExtension
+	}
+
+	private def obtainLabelExtension() {
+		if (!labelExtensionResolved) {
+			labelExtension = resolveLabelExtension
+			labelExtensionResolved = true
+		}
+		labelExtension
+	}
+	
 }
