@@ -42,7 +42,7 @@ class WollokDocParser extends WollokChecker {
 	val static BOLD_OFF = "</b>"
 	val static PARAGRAPH_ON = "<p>"
 	val static PARAGRAPH_OFF = "</p>"
-	val static SPACE = " "
+	val static SPACE = "&nbsp;"
 	val static TABLE_ON = "<div class=\"container\"><table class=\"table table-striped table-hover table-sm w-auto\">"
 	val static TABLE_OFF = "</table></div>"
 	val static TABLE_HEADING_CONF_ON = "<thead>"
@@ -56,6 +56,8 @@ class WollokDocParser extends WollokChecker {
 	val static TABLE_ROW_ON = "<tr>"
 	val static TABLE_ROW_OFF = "</tr>"
 	val static LINE_BREAK = "<br>"
+	val static CODE_ON = "<code>"
+	val static CODE_OFF = "</code>"
 	val static wollokDocTokens = #["author", "since", "param", "see", "See", "private", "returns", "return", "throws", "noInstantiate"]
 	var BufferedWriter wollokDocFile
 	val allFiles = <File>newArrayList
@@ -196,7 +198,7 @@ class WollokDocParser extends WollokChecker {
 			writeFile(TABLE_ROW_ON)
 			val abstractDescription = if (m.abstract) badge("abstract", "light-blue") + SPACE else ""
 			val nativeDescription = if (m.native) badge("native", "indigo") else ""
-			writeFile("<td title=\"" + m.declaringContext.name + "\" width=\"30%\"id=\"" + m.anchor + "\">" + BOLD_ON + m.name + BOLD_OFF + SPACE + m.parametersAsString + SPACE + SPACE +
+			writeFile("<td title=\"" + m.declaringContext.name + "\" width=\"30%\"id=\"" + m.anchor + "\">" + CODE_ON + BOLD_ON + m.name + BOLD_OFF + m.parametersAsString + CODE_OFF + SPACE +
 				abstractDescription + SPACE + SPACE + nativeDescription + SPACE + TABLE_DATA_OFF +
 				TABLE_DATA_ON +	comment + TABLE_DATA_OFF)
 			writeFile(TABLE_ROW_OFF)
@@ -257,7 +259,7 @@ class WollokDocParser extends WollokChecker {
 	
 	def String linkToMethod(String messageName, String anchor, String fileName) {
 		'''
-		<a href="javascript:selectFile('«fileName.libraryName»', '«anchor»')">«messageName»</a>
+		<a href="javascript:selectFile('«fileName.libraryName»', '«anchor»')">«CODE_ON + messageName + CODE_OFF»</a>
 		'''
 	}
 	
@@ -289,7 +291,7 @@ class WollokDocParser extends WollokChecker {
 				linkToMethod(messageName, anchor, currentMc.declaringContext.file.URI.lastSegment)
 			]
 			.sort
-			.join(", ")
+			.join(SPACE + SPACE + "|" + SPACE + SPACE)
 		card("Methods inherited from " + currentMc.name, inheritedMethods)
 		writeInheritedMethods(currentMc)
 	}
