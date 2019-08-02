@@ -82,7 +82,7 @@ class WString extends AbstractJavaWrapper<String> {
 	
 	@NativeMessage("toString")
 	def wollokToString() { wrapped.toString }
-	def toSmartString(Object alreadyShown) { wollokToString }
+	def toSmartString(Object alreadyShown) { '"' + wollokToString + '"' }
 
 	@NativeMessage("<")
 	def lessThan(WollokObject other) {

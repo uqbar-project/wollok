@@ -2153,7 +2153,7 @@ class String {
 	override method printString() = '"' + self.toString() + '"'
 	
 	/** @private */
-	override method toSmartString(alreadyShown) = return self.printString()
+	override method toSmartString(alreadyShown) native
 	
 	/** Compares this string to the specified object. 
 	 * The result is true if and only if the
