@@ -2,7 +2,7 @@
 <feature
       id="org.uqbar.project.wollok.product.ui.feature"
       label="Wollok Product UI Feature"
-      version="1.8.0"
+      version="1.8.1"
       provider-name="Uqbar Project">
 
    <description url="http://www.example.com/description">
