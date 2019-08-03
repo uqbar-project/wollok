@@ -90,7 +90,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		objectsFromLocalImport(context, imports, objectsFromManifests)
 	}
 
-	def synchronized objectsFromLocalImport(Resource context, Iterable<String> importsEntry,
+	def objectsFromLocalImport(Resource context, Iterable<String> importsEntry,
 		Iterable<IEObjectDescription> objectsFromManifests) {
 		val imports = (importsEntry.map[#[it] + localScopeProvider.allRelativeImports(it, context.implicitPackage)].
 			flatten).toSet
@@ -106,7 +106,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		
 	}
 
-	def synchronized matchesImport(IEObjectDescription o, String importedNamespace) {
+	def matchesImport(IEObjectDescription o, String importedNamespace) {
 		if (importedNamespace.endsWith(".*")) {
 			val pattern = importedNamespace.substring(0, importedNamespace.length - 2)
 			o.qualifiedName.toString.startsWith(pattern)

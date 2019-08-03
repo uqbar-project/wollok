@@ -412,8 +412,10 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 			return
 		}
 		variableValues = newHashMap
-		variables.forEach[variable|variable.collectValues(variableValues)]
+		variables.forEach[ variable | variable.collectValues(variableValues) ]
 		this.currentVariables = variables
+			.filter [ isCustom ]
+			.toList
 		this.refreshView
 	}
 

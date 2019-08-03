@@ -264,6 +264,9 @@ class Pair {
 	}
 	method key() = x
 	method value() = y
+
+	/** String representation of a Pair */
+	override method toString() = x.toString() + " -> " + y.toString()
 }
 
 /**
@@ -2493,6 +2496,9 @@ class Date {
 	const property month
 	const property year
 	
+	/** @private */
+	method initialize() native
+	
 	/** String representation of a date */
 	override method toString() = self.toSmartString(false) 
 	
@@ -2506,10 +2512,10 @@ class Date {
 	  *
 	  * Example:
 	  *     new Date(day = 12, month = 5, year = 2018).plusDays(1) 
-	  *        ==> Answers a Date[day = 13, month = 5, year = 2018], a day forward
+	  *        ==> Answers 13/5/2018, a day forward
 	  *     
 	  *     new Date(day = 12, month = 5, year = 2018).plusDays(-1)
-	  *        ==> Answers a Date[day = 11, month = 5, year = 2018], a day back
+	  *        ==> Answers 11/5/2018, a day back
 	  */
 	method plusDays(_days) native
 	
@@ -2520,10 +2526,10 @@ class Date {
 	  *
 	  * Example:
 	  *     new Date(day = 31, month = 1, year = 2018).plusMonths(1)
-      *        ==> Answers a Date[day = 28, month = 2, year = 2018], a month forward 
+      *        ==> Answers 28/2/2018, a month forward
 	  *     
 	  *     new Date(day = 12, month = 5, year = 2018).plusMonths(-1)
-	  *        ==> Answers a Date[day = 12, month = 4, year = 2018], a month back
+	  *        ==> Answers 12/4/2018, a month back
 	  */
 	method plusMonths(_months) native
 	
@@ -2534,10 +2540,10 @@ class Date {
 	  *
 	  * Example:
 	  *     new Date(day = 31, month = 1, year = 2018).plusYears(1)
-      *        ==> Answers a Date[day = 31, month = 1, year = 2019], a year forward 
+      *        ==> Answers 31/1/2019, a year forward
 	  *     
 	  *     new Date(day = 12, month = 5, year = 2018).plusYears(-1)
-	  *        ==> Answers a Date[day = 12, month = 5, year = 2017], a year back
+	  *        ==> Answers 12/5/2017, a year back
 	  */
 	method plusYears(_years) native
 	
@@ -2586,10 +2592,10 @@ class Date {
      *
 	 * Examples:
 	 * 		new Date(day = 1, month = 1, year = 2009).minusDays(1) 
-	 *          ==> Answers a Date[day = 31, month = 12, year = 2008], a day back 
+	 *          ==> Answers 31/12/2008, a day back
 	 *
 	 * 		new Date(day = 1, month = 1, year = 2009).minusDays(-1) 
-	 *          ==> Answers a Date[day = 2, month = 1, year = 2009], a day forward 
+	 *          ==> Answers 2/1/2009, a day forward
 	 */
 	method minusDays(_days) native
 	
@@ -2600,10 +2606,10 @@ class Date {
 	  *
 	  * Examples:
 	  * 		new Date(day = 1, month = 1, year = 2009).minusMonths(1) 
-	  *             ==> Answers a Date[day = 1, month = 12, year = 2008], a month back
+	  *             ==> Answers 1/12/2008, a month back
 	  *
 	  * 		new Date(day = 1, month = 1, year = 2009).minusMonths(-1) 
-	  *             ==> Answers a Date[day = 1, month = 2, year = 2009], a month forward
+	  *             ==> Answers 1/2/2009, a month forward
 	  */
 	method minusMonths(_months) native
 	
@@ -2614,10 +2620,10 @@ class Date {
 	  *
 	  * Examples:
 	  * 		new Date(day = 1, month = 1, year = 2009).minusYears(1) 
-	  *             ==> Answers a Date[day = 1, month = 1, year = 2008], a year back
+	  *             ==> Answers 1/1/2008, a year back
 	  *
 	  * 		new Date(day = 1, month = 1, year = 2009).minusYears(-1) 
-	  *             ==> Answers a Date[day = 1, month = 1, year = 2010], a year forward
+	  *             ==> Answers 1/1/2010, a year forward
 	  */
 	method minusYears(_years) native
 	
@@ -2637,16 +2643,16 @@ class Date {
 
 	/** Shows nicely an internal representation of a date **/
 	override method toSmartString(alreadyShown) =
-		"a Date[day = " + day + ", month = " + month + ", year = " + year + "]"
+		self.shortDescription()
 
 	/** 
 	  * Shows a short, internal representation of a date 
+	  * (the result varies depending on user's locale)
 	  * 
 	  * Example:
 	  *     new Date(day = 2, month = 4, year = 2018).shortDescription()
-	  *         ==> Answers "2/4/2018"
+	  *         ==> Answers 2/4/2018
 	  */
-	override method shortDescription() =
-		"" + day + "/" + month + "/" + year
+	override method shortDescription() native
 
 }

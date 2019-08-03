@@ -3,8 +3,8 @@ package org.uqbar.project.wollok.tests.base
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
-import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 import org.uqbar.project.wollok.tests.injectors.WollokTestInjectorProvider
+import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 
 /**
  * Helper class to allow parameterized interpreter tests

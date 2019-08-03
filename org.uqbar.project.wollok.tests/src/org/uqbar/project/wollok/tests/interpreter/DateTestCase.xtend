@@ -1,6 +1,6 @@
 package org.uqbar.project.wollok.tests.interpreter
 
-import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
+import java.time.LocalDate
 import org.junit.Test
 
 /**
@@ -8,6 +8,26 @@ import org.junit.Test
  * @author dodain
  */
 class DateTestCase extends AbstractWollokInterpreterTestCase {
+
+	@Test
+	def void defaultDateCreationInitializesItsAttributesOk() {
+		'''
+		const now = new Date()
+		assert.equals(now.day(), «LocalDate.now().dayOfMonth»)
+		assert.equals(now.month(), «LocalDate.now().monthValue»)
+		assert.equals(now.year(), «LocalDate.now().year»)		
+		'''.test
+	}
+	
+	@Test
+	def void initializedDateCreationInitializesItsAttributesOk() {
+		'''
+		const otroNow = new Date(day = 1, month = 2, year = 2019)
+		assert.equals(otroNow.day(), 1)
+		assert.equals(otroNow.month(), 2)
+		assert.equals(otroNow.year(), 2019)
+		'''.test
+	}
 	
 	@Test
 	def void twoDatesAreEqualsBecauseTheyHaveNoTime() {
@@ -201,8 +221,8 @@ class DateTestCase extends AbstractWollokInterpreterTestCase {
 	def void toStringDefaultTest() {
 		'''
 		const aDay = new Date(day = 28, month = 12, year = 2016)
-		assert.equals("a Date[day = 28, month = 12, year = 2016]", aDay.toString())
-		assert.equals("a Date[day = 28, month = 12, year = 2016]", aDay.toSmartString(false))
+		assert.equals("28/12/16", aDay.toString())
+		assert.equals("28/12/16", aDay.toSmartString(false))
 		'''.test
 	}
 	
@@ -210,8 +230,8 @@ class DateTestCase extends AbstractWollokInterpreterTestCase {
 	def void toStringWithA1DigitMonthTest() {
 		'''
 		const aDay = new Date(day = 28, month = 2, year = 2016)
-		assert.equals("a Date[day = 28, month = 2, year = 2016]", aDay.toString())
-		assert.equals("a Date[day = 28, month = 2, year = 2016]", aDay.toSmartString(false))
+		assert.equals("28/2/16", aDay.toString())
+		assert.equals("28/2/16", aDay.toSmartString(false))
 		'''.test
 	}
 
@@ -326,5 +346,6 @@ class DateTestCase extends AbstractWollokInterpreterTestCase {
 		assert.throwsExceptionWithMessage("Cannot convert parameter \"a\" to type wollok.lang.Number", { new Date(day = 28, month = 2, year = 2017).minusYears("a") })
 		'''.test
 	}
+
 
 }

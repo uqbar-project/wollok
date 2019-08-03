@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.tests.interpreter
 import com.google.inject.Inject
 import java.io.File
 import java.io.FileInputStream
+import java.time.format.DateTimeFormatter
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.testing.InjectWith
@@ -15,6 +16,7 @@ import org.junit.runner.RunWith
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.tests.injectors.WollokTestInjectorProvider
+import wollok.lang.WDate
 
 /**
  * Abstract base class for all interpreter tests cases.
@@ -35,6 +37,9 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	@Before
 	def void setUp() {
 		interpreter.classLoader = AbstractWollokInterpreterTestCase.classLoader
+
+		// This makes the Date string representation independent of the current user's locale
+		WDate.FORMATTER = DateTimeFormatter.ofPattern("d/M/yy")
 
 		new File("target/test-files").mkdirs
 		new File("target/test-files/WOLLOK.ROOT").createNewFile

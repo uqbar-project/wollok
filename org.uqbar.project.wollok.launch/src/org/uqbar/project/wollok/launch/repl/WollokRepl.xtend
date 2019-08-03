@@ -127,7 +127,6 @@ class WollokRepl {
 				printReturnValue(returnValue)				
 			
 		} catch (Exception e) {
-			println(e)
 			resetIndent
 			e.handleException
 		}

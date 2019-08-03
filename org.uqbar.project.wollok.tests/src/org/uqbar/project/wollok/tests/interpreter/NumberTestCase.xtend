@@ -35,7 +35,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void addWithFailingParameters() {
 		'''
-		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 18, month = 12, year = 2017]", { 3 + new Date(day = 18, month = 12, year = 2017) })
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter 18/12/17", { 3 + new Date(day = 18, month = 12, year = 2017) })
 		assert.throwsExceptionWithMessage("Operation doesn't support parameter pepe", { 3 + "pepe" })
 		'''.test
 	}
@@ -57,7 +57,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void maxFailingParameter() {
 		'''
-		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 21, month = 12, year = 2017]", { 4.min(new Date(day = 21, month = 12, year = 2017)) })
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter 21/12/17", { 4.min(new Date(day = 21, month = 12, year = 2017)) })
 		'''.test
 	}
 
@@ -78,7 +78,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void minFailingParameter() {
 		'''
-		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 21, month = 12, year = 2017]", { 4.min(new Date(day = 21, month = 12, year = 2017)) })
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter 21/12/17", { 4.min(new Date(day = 21, month = 12, year = 2017)) })
 		'''.test
 	}
 	
@@ -418,7 +418,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void gcdForInvalidArguments() {
 		'''
-		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018]", { 4.gcd(new Date(day = 1, month = 1, year = 2018)) })
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter 1/1/18", { 4.gcd(new Date(day = 1, month = 1, year = 2018)) })
 		'''.test
 	}
 	
@@ -472,7 +472,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void lcmForInvalidArguments() {
 		'''
-		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018]", { 4.lcm(new Date(day = 1, month = 1, year = 2018)) })
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter 1/1/18", { 4.lcm(new Date(day = 1, month = 1, year = 2018)) })
 		'''.test
 	}
 	

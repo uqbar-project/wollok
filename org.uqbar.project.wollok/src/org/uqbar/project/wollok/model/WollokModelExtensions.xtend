@@ -123,7 +123,7 @@ class WollokModelExtensions {
 	def static getMethodContainer(EObject it) {
 		method.declaringContext
 	}
-
+	
 	def static getPackageName(WMethodContainer it) { implicitPackage + if(package !== null) "." + package.name else "" }
 
 	def static getNameWithPackage(WMethodContainer it) {

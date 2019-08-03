@@ -36,9 +36,12 @@ class AbstractJavaWrapper<T> implements JavaWrapper<T> {
 		obj.resolve(fieldName).coerceToInteger.intValue
 	}
 
-	def solveOr(String property, int value) {
+	def solveOrAssign(String property, int value) {
 		val solvedProperty = obj.resolve(property)
-		if (solvedProperty === null) return value
+		if (solvedProperty === null) {
+			obj.setReference(property, value.convertJavaToWollok)
+			return value
+		}
 		solvedProperty.coerceToInteger
 	}
 	
