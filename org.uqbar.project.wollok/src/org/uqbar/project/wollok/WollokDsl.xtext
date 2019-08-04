@@ -38,7 +38,7 @@ WSuite:
 		(members+=WVariableDeclaration ';'?)*
 		(fixture=WFixture)?
 		(members+=WMethodDeclaration ';'?)*
-		(tests+=WTest)+	
+		(tests+=WTest)*	
 	'}'
 ;
 

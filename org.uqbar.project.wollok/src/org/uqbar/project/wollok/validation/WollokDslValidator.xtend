@@ -70,6 +70,7 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 import org.uqbar.project.wollok.scoping.WollokResourceCache
 import static extension org.uqbar.project.wollok.libraries.WollokLibExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WSuite
 
 /**
  * Custom validation rules.
@@ -1326,6 +1327,16 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (elements.isEmpty) {
 			report(WollokDslValidator_FIXTURE_CANNOT_BE_EMPTY, it, WFIXTURE__ELEMENTS)
 		}
-	}	
+	}
+	
+	@Check
+	@DefaultSeverity(WARN)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_DESIGN_PROBLEM)	
+	def emptyDescribe(WSuite it) {
+		if (tests.isEmpty()) {
+			report(WollokDslValidator_DESCRIBE_CANNOT_BE_EMPTY, it, WSUITE__NAME)
+		}
+	}
+		
 
 }
