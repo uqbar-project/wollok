@@ -28,8 +28,10 @@ class XWollokObjectDebugValue extends XDebugValue {
 	}
 	
 	def static description(WollokObject obj) {
-		if (obj.isBasicType)
-			obj.asString
+		if (obj.isBasicType) {
+			if (obj.hasNativeType(STRING)) '"' + obj.asString + '"'
+			else obj.asString
+		}
 		else {
 			if (obj.hasShortDescription)
 				obj.asString("shortDescription")
