@@ -1659,6 +1659,9 @@ class Number {
 	/** String representation of self number */
 	override method toString() native
 	
+	/** @private */
+	override method toSmartString(alreadyShown) = self.toString()
+	
 	/** 
 	 * Builds a Range between self and end
 	 * 

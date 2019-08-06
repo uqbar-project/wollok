@@ -16,8 +16,8 @@ class WollokObjectUtils {
 	}
 
 	/** calls any method and cast the result to a string */
-	def static asString(WollokObject o, String method) {
-		(o.call(method).getNativeObject(STRING) as JavaWrapper<String>)?.wrapped
+	def static asString(WollokObject o, String method, WollokObject... parameters) {
+		(o.call(method,parameters).getNativeObject(STRING) as JavaWrapper<String>)?.wrapped
 	}
 	
 	def static checkNotNull(Object o, String operation) {
