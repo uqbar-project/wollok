@@ -26,8 +26,8 @@ class ObjectTest extends AbstractWollokInterpreterTestCase {
 			program p {
 				const perro = new Perro()
 				
-				assert.equals("a Perro[nombre=Colita, edad=7]", perro.toString())
-				assert.equals("casa[direccion=San Juan 1234, ambientes=3]", casa.toString())
+				assert.equals('a Perro[nombre="Colita", edad=7]', perro.toString())
+				assert.equals('casa[direccion="San Juan 1234", ambientes=3]', casa.toString())
 				
 				const anonymousObject = object {
 					var edad = 23
