@@ -71,13 +71,7 @@ class GameObject {
 		action.checkNotNull("whenKeyPressedDo")
 		var num = key.coerceToInteger
 		val function = action.asClosure
-		addListener(new KeyboardListener(num, [
-			try {
-				function.doApply
-			} catch (WollokProgramExceptionWrapper e) {
-				board.errorReporter?.scream(e.wollokMessage)
-			} 
-		]))
+		addListener(new KeyboardListener(num, [ function.doApply ]))
 	}
 
 	def whenKeyPressedSay(WollokObject key, WollokObject functionObj) {
@@ -91,14 +85,7 @@ class GameObject {
 		action.checkNotNull("whenCollideDo")
 		var visualObject = board.findVisual(visual)
 		val function = action.asClosure
-		addListener(new CollisionListener(visualObject, [
-			try {
-				function.doApply((it as WVisual).wObject)
-			} catch (WollokProgramExceptionWrapper e) {
-				board.errorReporter?.scream(e.wollokMessage)
-				null
-			}
-		]))
+		addListener(new CollisionListener(visualObject, [ function.doApply((it as WVisual).wObject) ]))
 	}
 	
 	def getObjectsIn(WollokObject position) {

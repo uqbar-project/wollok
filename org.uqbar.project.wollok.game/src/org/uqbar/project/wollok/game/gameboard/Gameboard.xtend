@@ -78,12 +78,11 @@ class Gameboard {
 			try
 				listeners.get(i).notify(this)
 			catch (WollokProgramExceptionWrapper e) {
-				var Object message = e.wollokMessage
+				var message = e.wollokMessage
 				if (message === null)
 					message = Messages.WollokGame_NoMessage
 				
-				if (character !== null)
-					character.scream(message.toString())
+				errorReporter()?.scream(message)
 				
 				log.error(message, e)	
 			}
