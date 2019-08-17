@@ -32,6 +32,8 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		game >> "addVisualCharacter" === #[Any] => Void
 		game >> "addVisualCharacterIn" === #[Any, Position] => Void
 		game >> "removeVisual" === #[Any] => Void
+		game >> "hasVisual" === #[Any] => Boolean
+		game >> "getAllVisuals" === #[] => List.of(T)
 		game >> "whenKeyPressedDo" === #[Number, closure(#[], Void)] => Void
 		game >> "whenCollideDo" === #[Any, closure(#[T], Void)] => Void
 		game >> "onTick" === #[Number, String, closure(#[], Void)] => Void

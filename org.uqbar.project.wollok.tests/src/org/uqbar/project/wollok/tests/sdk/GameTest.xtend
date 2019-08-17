@@ -93,5 +93,78 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 		assert.throwsExceptionWithMessage("Operation whenKeyPressedDo doesn't support null parameters", { => game.whenKeyPressedDo(null, null) })
 		'''.test
 	}
-	
+
+	@Test
+	def void whenAddingAnObjectAndCheckingIfItIsInTheBoardItReturnsTrue() {
+		'''
+		import wollok.game.*
+
+		object myVisual { }
+
+		program a {
+			game.addVisualIn(myVisual, game.at(0, 0))
+			assert.that(game.hasVisual(myVisual))
+		}
+		'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void whenAddingAnObjectAndCheckingIfOtherIsInTheBoardItReturnsFalse() {
+		'''
+		import wollok.game.*
+
+		object myVisual { }
+		object myVisual2 { }
+
+		program a {
+			game.addVisualIn(myVisual, game.at(0, 0))
+			assert.notThat(game.hasVisual(myVisual2))
+		}
+		'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void whenNoObjectIsAddedAndGetAllVisualsItReturnsNoElement() {
+		'''
+		import wollok.game.*
+
+		program a {
+			assert.equals(0, game.getAllVisuals().size())
+		}
+		'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void whenAddingAnObjectAndGettingAllVisualsItReturnsOneElement() {
+		'''
+		import wollok.game.*
+
+		object myVisual { }
+
+		program a {
+			game.addVisualIn(myVisual, game.at(0, 0))
+			assert.equals(1, game.getAllVisuals().size())
+			assert.equals(myVisual, game.getAllVisuals().get(0))
+		}
+		'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void whenAddingSomeObjectAndGettingAllVisualsItReturnsAllTheAddedElements() {
+		'''
+		import wollok.game.*
+
+		object myVisual { }
+		object myVisual2 { }
+		object myVisual3 { }
+
+		program a {
+			game.addVisualIn(myVisual, game.at(0, 0))
+			game.addVisualIn(myVisual2, game.at(0, 0))
+			game.addVisualIn(myVisual3, game.at(0, 0))
+			assert.equals(3, game.getAllVisuals().size())
+			assert.equals([myVisual, myVisual2, myVisual3].asSet(), game.getAllVisuals().asSet())
+		}
+		'''.interpretPropagatingErrors
+	}
 }

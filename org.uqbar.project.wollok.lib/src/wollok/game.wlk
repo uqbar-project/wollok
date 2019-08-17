@@ -52,6 +52,22 @@ object game {
 	method removeVisual(visual) native
 	
 	/**
+	 * Verifies if an object is currently in the board.
+	 *
+	 * Example:
+	 *     game.hasVisual(pepita)
+	 */
+	method hasVisual(visual) native
+
+	/**
+	 * Returns all visual objects added to the board.
+	 *
+	 * Example:
+	 *     game.getAllVisuals()
+	 */
+	method getAllVisuals() native
+
+	/**
 	 * Adds a block that will be executed each time a specific key is pressed
 	 * @see keyboard.onPressDo()
 	 */	
