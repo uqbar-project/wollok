@@ -72,6 +72,13 @@ class StackOverflowException inherits Exception {}
 class ElementNotFoundException inherits Exception {}
 
 /**
+ * An exception that is thrown for domain propose
+ */
+class DomainException inherits Exception {
+	const property source = null
+}
+
+/**
  * An exception that is thrown when an object cannot understand a certain message
  */
 class MessageNotUnderstoodException inherits Exception {
@@ -241,7 +248,7 @@ class Object {
 	
 	/** Builds an exception with a message */		
 	method error(aMessage) {
-		throw new Exception(message = aMessage)
+		throw new DomainException(message = aMessage, source = self)
 	}
 	
 	/** @private */
