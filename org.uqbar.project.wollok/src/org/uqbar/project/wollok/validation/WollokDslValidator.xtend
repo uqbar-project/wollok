@@ -10,12 +10,15 @@ import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.osgi.util.NLS
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.naming.IQualifiedNameConverter
+import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.validation.Check
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
 import org.uqbar.project.wollok.scoping.WollokImportedNamespaceAwareLocalScopeProvider
+import org.uqbar.project.wollok.scoping.WollokResourceCache
 import org.uqbar.project.wollok.scoping.root.WollokRootLocator
 import org.uqbar.project.wollok.validation.rules.DontCompareEqualityOfWKORule
 import org.uqbar.project.wollok.wollokDsl.Import
@@ -46,6 +49,7 @@ import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
+import org.uqbar.project.wollok.wollokDsl.WSuite
 import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
@@ -58,6 +62,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static org.uqbar.project.wollok.Messages.*
 import static org.uqbar.project.wollok.WollokConstants.*
+import static org.uqbar.project.wollok.libraries.WollokLibExtensions.*
 import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
@@ -68,9 +73,6 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
-import org.uqbar.project.wollok.scoping.WollokResourceCache
-import static extension org.uqbar.project.wollok.libraries.WollokLibExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WSuite
 
 /**
  * Custom validation rules.
@@ -1332,11 +1334,15 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(WARN)
 	@CheckGroup(WollokCheckGroup.POTENTIAL_DESIGN_PROBLEM)	
-	def emptyDescribe(WSuite it) {
+	def emptyDescribe(WSuite it) {	
 		if (tests.isEmpty()) {
+			var errors = (eResource as XtextResource).parseResult.syntaxErrors.toList
+			var syntaxErrors = errors.filter[ error |
+				error.syntaxErrorMessage !== null ].toList
+		if(syntaxErrors.size() === 0){
 			report(WollokDslValidator_DESCRIBE_CANNOT_BE_EMPTY, it, WSUITE__NAME)
+			}
 		}
-	}
-		
+	}	
 
 }
