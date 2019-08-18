@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.launch
 
 import com.google.inject.Inject
 import java.util.List
+import org.eclipse.emf.common.util.ECollections
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
@@ -41,15 +42,18 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 			var testsToRun = tests
 			var String suiteName = null
 			if (_isASuite) {
-				suiteName = suite.name
-				testsToRun = suite.tests
+				suiteName = "describe 1"
+				testsToRun = suites.fold(ECollections.emptyEList) [ total, suite | 
+					total.addAll(suite.tests)
+					total
+				]
 			}
 			wollokTestsReporter.testsToRun(suiteName, it, testsToRun)
 			try {
 				testsToRun.fold(null) [ a, _test |
 					resetGlobalState
 					if (_isASuite) {
-						_test.evalInSuite(suite)
+						_test.evalInSuite(suites.get(0))
 					} else {
 						_test.eval
 					}

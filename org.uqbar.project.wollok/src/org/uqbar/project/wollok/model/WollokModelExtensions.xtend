@@ -832,7 +832,7 @@ class WollokModelExtensions {
 	// ************************************************************************
 	def static dispatch isASuite(EObject o) { false }
 
-	def static dispatch isASuite(WFile it) { tests.empty && suite !== null }
+	def static dispatch isASuite(WFile it) { tests.empty && !suites.empty }
 
 	def static dispatch boolean sendsMessageToAssert(Void e) { false }
 	def static dispatch boolean sendsMessageToAssert(EObject e) { false }
