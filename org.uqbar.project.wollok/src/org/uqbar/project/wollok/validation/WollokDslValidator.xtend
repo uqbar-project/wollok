@@ -1337,20 +1337,20 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@CheckGroup(WollokCheckGroup.POTENTIAL_DESIGN_PROBLEM)	
 	def emptyDescribe(WSuite it) {	
 		if (tests.isEmpty()) {
-			var errors = syntaxErrorsOf(eResource)		 
-			if(!errors.isEmpty()){
-				var errorsInSuite = errors.filter[ error | error.parent.semanticElement == it ].toList
+			val errors = syntaxErrorsOf(eResource)		 
+			if(errors.isEmpty()){
+				report(WollokDslValidator_DESCRIBE_CANNOT_BE_EMPTY, it, WSUITE__NAME)
+			}else{
+				val errorsInSuite = errors.filter[ error | error.parent.semanticElement == it ].toList
 				if(errorsInSuite.isEmpty){
 					report(WollokDslValidator_DESCRIBE_CANNOT_BE_EMPTY, it, WSUITE__NAME)
 				}
-			}else{
-				report(WollokDslValidator_DESCRIBE_CANNOT_BE_EMPTY, it, WSUITE__NAME)
 			}
 		}
 	}
 	
 	def syntaxErrorsOf(Resource resource) {
-		var errors = (resource as XtextResource).parseResult.syntaxErrors.toList
+		val errors = (resource as XtextResource).parseResult.syntaxErrors.toList
 		return errors.filter[ error | error.syntaxErrorMessage !== null ].toList
 	}
 	
