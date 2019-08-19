@@ -39,11 +39,15 @@ class WollokProgramExceptionWrapper extends RuntimeException {
 	}
 	
 	def boolean isMessageNotUnderstood() {
-		wollokException.call("className").wollokToJava(String) != WollokSDK.MESSAGE_NOT_UNDERSTOOD_EXCEPTION
+		exceptionClassName != WollokSDK.MESSAGE_NOT_UNDERSTOOD_EXCEPTION
 	}
 	
 	def boolean isAssertion(){
-		wollokException.call("className").wollokToJava(String) == WollokSDK.ASSERTION_EXCEPTION_FQN		
+		exceptionClassName == WollokSDK.ASSERTION_EXCEPTION_FQN		
+	}
+	
+	def boolean isDomain(){
+		exceptionClassName == WollokSDK.DOMAIN_EXCEPTION
 	}
 	
 	def exceptionClassName() {
@@ -56,5 +60,9 @@ class WollokProgramExceptionWrapper extends RuntimeException {
 	
 	def getWollokMessage() {
 		wollokException.call("message").wollokToJava(String) as String
+	}
+	
+	def getWollokSource() {
+		if (isDomain) wollokException.call("source") else null
 	}
 }
