@@ -75,6 +75,12 @@ class Gameboard {
 	}
 	
 	def void draw(Window window) {
+		update
+		background.draw(window)
+		components.forEach[it.draw(window)]
+	}
+	
+	def void update() {
 		// NO UTILIZAR FOREACH PORQUE HAY UN PROBLEMA DE CONCURRENCIA AL MOMENTO DE VACIAR LA LISTA
 		for (var i = 0; i < listeners.size(); i++) {
 			try
@@ -86,9 +92,6 @@ class Gameboard {
 				if (!e.domain) e.logError() 
 			}
 		}
-
-		background.draw(window)
-		components.forEach[it.draw(window)]
 	}
 	
 	def findComponentFor(WollokObject it) {
