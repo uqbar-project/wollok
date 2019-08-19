@@ -58,7 +58,7 @@ object game {
 	method whenKeyPressedDo(key, action) native
 
 	/**
-	 * Adds a block that will be executed when the given object collides with other. 
+	 * Adds a block that will be executed while the given object collides with other. 
 	 * Two objects collide when are in the same position.
 	 *
 	 * The block should expect the other object as parameter.
@@ -68,6 +68,17 @@ object game {
 	 */	
 	method whenCollideDo(visual, action) native
 
+	/**
+	 * Adds a block that will be executed exactly when the given object collides with other. 
+	 * Two objects collide when are in the same position.
+	 *
+	 * The block should expect the other object as parameter.
+	 *
+	 * Example:
+	 *     game.onCollideDo(pepita, { comida => pepita.comer(comida) })
+	 */	
+	method onCollideDo(visual, action) native
+	
 	/**
 	 * Adds a block with a specific name that will be executed every n milliseconds.
 	 * Block expects no argument.

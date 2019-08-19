@@ -6,6 +6,7 @@ import org.uqbar.project.wollok.game.WPosition
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.listeners.CollisionListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
+import org.uqbar.project.wollok.game.listeners.InstantCollisionListener
 import org.uqbar.project.wollok.game.listeners.KeyboardListener
 import org.uqbar.project.wollok.game.listeners.TimeListener
 import org.uqbar.project.wollok.interpreter.core.WollokObject
@@ -85,6 +86,14 @@ class GameObject {
 		var visualObject = board.findVisual(visual)
 		val function = action.asClosure
 		addListener(new CollisionListener(visualObject, [ function.doApply(it.WObject) ]))
+	}
+	
+	def onCollideDo(WollokObject visual, WollokObject action) {
+		visual.checkNotNull("onCollideDo")
+		action.checkNotNull("onCollideDo")
+		var visualObject = board.findVisual(visual)
+		val function = action.asClosure
+		addListener(new InstantCollisionListener(visualObject, [ function.doApply(it.WObject) ]))
 	}
 	
 	def getObjectsIn(WollokObject position) {
