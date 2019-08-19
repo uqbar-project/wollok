@@ -42,18 +42,21 @@ class CollisionListenerTest {
 	@Test
 	def void nothing_happens_when_components_dont_collide_with_itself(){
 		listener.notify(gameboard)
-		verify(block, never).apply(mario)
+		verifyZeroInteractions(block)
 	}
 	
 	@Test
-	def void when_no_components_are_colliding_with_mario_then_nothing_happens(){
+	def void block_is_called_on_each_notify(){
+		aCoin.position = mario.position
+		
 		listener.notify(gameboard)
-		verify(block, never).apply(aCoin)
-		verify(block, never).apply(otherCoin)
+		listener.notify(gameboard)
+		
+		verify(block, times(2)).apply(aCoin)
 	}
 	
 	@Test
-	def void when_components_are_colliding_with_mario_then_block_is_called_with_each(){
+	def void block_is_called_with_each_colliding_component(){
 		aCoin.position = mario.position
 		otherCoin.position = mario.position
 		
@@ -64,7 +67,7 @@ class CollisionListenerTest {
 	}
 	
 	@Test
-	def void when_components_are_colliding_but_anyone_is_mario_then_nothing_happens(){
+	def void nothing_happens_when_non_observed_components_are_colliding(){
 		aCoin.position = otherCoin.position
 		
 		listener.notify(gameboard)
@@ -73,11 +76,10 @@ class CollisionListenerTest {
 	}
 	
 	@Test
-	def void should_remove_listener_from_board_when_mario_is_removed(){
+	def void should_keep_board_listener_when_observed_component_is_removed(){
 		gameboard.addListener(listener)
-		assertTrue(containsListener)
 		gameboard.remove(mario)
-		assertFalse(containsListener)
+		assertTrue(containsListener)
 	}
 	
 	def containsListener() {
