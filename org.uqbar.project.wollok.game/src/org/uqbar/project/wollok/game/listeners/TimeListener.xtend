@@ -1,8 +1,7 @@
 package org.uqbar.project.wollok.game.listeners
 
-import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.VisualComponent
-import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+import org.uqbar.project.wollok.game.gameboard.Gameboard
 
 class TimeListener extends GameboardListener {
 
@@ -21,10 +20,9 @@ class TimeListener extends GameboardListener {
 		if (shouldRun) {
 			try {
 				block.apply
-			} catch (WollokProgramExceptionWrapper e) {
-				gameboard.errorReporter?.scream(e.wollokMessage)
+			} finally {				
+				timeSinceLastRun = System.currentTimeMillis
 			}
-			timeSinceLastRun = System.currentTimeMillis
 		}
 	}
 	

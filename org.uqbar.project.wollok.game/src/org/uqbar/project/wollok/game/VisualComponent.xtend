@@ -45,7 +45,7 @@ class VisualComponent {
 	}
 
 	def void setPosition(Position position) {
-		wPosition = objectPosition.copyFrom(position)
+		wPosition = objectPosition.copyFrom(position) //FIXME: If wPosition not exist should use position setter in wObject
 	}
 
 	def getObjectPosition() {
