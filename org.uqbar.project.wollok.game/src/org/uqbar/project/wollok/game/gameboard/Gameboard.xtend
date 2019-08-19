@@ -152,7 +152,6 @@ class Gameboard {
 	
 	def remove(VisualComponent component) {
 		components.remove(component)
-		listeners.removeIf[it.isObserving(component)]
 	}
 
 	def VisualComponent somebody() {
