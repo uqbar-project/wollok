@@ -83,6 +83,7 @@ class Gameboard {
 				val message = e.wollokMessage ?: Messages.WollokGame_NoMessage
 				val source = findComponentFor(e.wollokSource) ?: errorReporter()
 				source?.scream(message)
+				if (!e.domain) e.logError() 
 			}
 		}
 

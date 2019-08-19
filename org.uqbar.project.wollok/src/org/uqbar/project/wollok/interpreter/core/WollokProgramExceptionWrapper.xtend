@@ -65,4 +65,9 @@ class WollokProgramExceptionWrapper extends RuntimeException {
 	def getWollokSource() {
 		if (isDomain) wollokException.call("source") else null
 	}
+	
+	def logError() {
+		wollokException.interpreter.printStackTraceInConsole(this)
+	}
+	
 }
