@@ -21,9 +21,13 @@ class TimeListener extends GameboardListener {
 			try {
 				block.apply
 			} finally {				
-				timeSinceLastRun = System.currentTimeMillis
+				gameboard.afterRun
 			}
 		}
+	}
+	
+	def void afterRun(Gameboard gameboard) {
+		timeSinceLastRun = System.currentTimeMillis
 	}
 	
 	override isObserving(VisualComponent component) { false }
@@ -34,4 +38,16 @@ class TimeListener extends GameboardListener {
 		System.currentTimeMillis - timeSinceLastRun > millisecondsEvery
 	}
 
+}
+
+class ScheduleListener extends TimeListener {
+	
+	new(String name, int millisecondsEvery, ()=>Object block) {
+		super(name, millisecondsEvery, block)
+	}
+	
+	override afterRun(Gameboard gameboard) {
+		gameboard.removeListener(this)
+	}
+	
 }

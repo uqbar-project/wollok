@@ -147,6 +147,10 @@ class Gameboard {
 				setReference("message", NLS.bind(Messages.WollokGame_ListenerNotFound, listenerName).javaToWollok) 
 			])
 		}
+		removeListener(listener)
+	}
+
+	def removeListener(GameboardListener listener) {		
 		listeners.remove(listener)
 	}
 	
