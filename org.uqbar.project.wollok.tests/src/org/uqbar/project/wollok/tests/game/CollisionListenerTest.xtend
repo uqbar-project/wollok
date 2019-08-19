@@ -4,20 +4,19 @@ import org.eclipse.xtext.xbase.lib.Functions.Function1
 import org.junit.Before
 import org.junit.Test
 import org.uqbar.project.wollok.game.Image
+import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.WGPosition
 import org.uqbar.project.wollok.game.WGVisualComponent
-import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.listeners.CollisionListener
+import org.uqbar.project.wollok.game.listeners.InstantCollisionListener
 
-import static org.mockito.Mockito.*
 import static org.junit.Assert.*
+import static org.mockito.Mockito.*
 
-/**
- * @author ? 
- */
 class CollisionListenerTest {
 	CollisionListener listener
+	InstantCollisionListener instantListener
 	Gameboard gameboard
 	VisualComponent mario
 	VisualComponent aCoin
@@ -37,6 +36,7 @@ class CollisionListenerTest {
 		
 		block = mock(Function1)
 		listener = new CollisionListener(mario, block)
+		instantListener = new InstantCollisionListener(mario, block)
 	}
 	
 	@Test
@@ -81,6 +81,32 @@ class CollisionListenerTest {
 		gameboard.remove(mario)
 		assertTrue(containsListener)
 	}
+	
+	@Test
+	def void instant_block_is_called_once(){
+		aCoin.position = mario.position
+		
+		instantListener.notify(gameboard)
+		instantListener.notify(gameboard)
+		
+		verify(block, only).apply(aCoin)
+	}
+	
+	@Test
+	def void instant_block_is_called_when_components_stop_colliding_and_collide_again(){
+		aCoin.position = mario.position
+		instantListener.notify(gameboard) // Collide
+		
+		aCoin.position = otherCoin.position
+		instantListener.notify(gameboard)
+		
+		aCoin.position = mario.position
+		instantListener.notify(gameboard) // Collide again
+		
+		verify(block, times(2)).apply(aCoin)
+	}
+	
+	
 	
 	def containsListener() {
 		gameboard.listeners.contains(listener)
