@@ -42,8 +42,8 @@ class TimeListener extends GameboardListener {
 
 class ScheduleListener extends TimeListener {
 	
-	new(String name, int millisecondsEvery, ()=>Object block) {
-		super(name, millisecondsEvery, block)
+	new(int milliseconds, ()=>Object block) {
+		super("", milliseconds, block)
 	}
 	
 	override afterRun(Gameboard gameboard) {

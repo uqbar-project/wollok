@@ -8,6 +8,7 @@ import org.uqbar.project.wollok.game.listeners.CollisionListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
 import org.uqbar.project.wollok.game.listeners.InstantCollisionListener
 import org.uqbar.project.wollok.game.listeners.KeyboardListener
+import org.uqbar.project.wollok.game.listeners.ScheduleListener
 import org.uqbar.project.wollok.game.listeners.TimeListener
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
@@ -59,6 +60,13 @@ class GameObject {
 		action.checkNotNull("onTick")
 		val function = action.asClosure
 		addListener(new TimeListener(name.asString, milliseconds.coerceToInteger, [ function.doApply ]))
+	}
+	
+	def schedule(WollokObject milliseconds, WollokObject action) {
+		milliseconds.checkNotNull("schedule")
+		action.checkNotNull("schedule")
+		val function = action.asClosure
+		addListener(new ScheduleListener(milliseconds.coerceToInteger, [ function.doApply ]))
 	}
 	
 	def removeTickEvent(WollokObject name) {

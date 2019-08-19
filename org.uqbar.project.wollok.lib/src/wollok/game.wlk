@@ -88,7 +88,16 @@ object game {
 	 *     	game.onTick(5000, "pepitaMoving", { => pepita.position().x(0.randomUpTo(4)) })
 	 */
 	method onTick(milliseconds, name, action) native
-	 
+	
+	/**
+	 * Adds a block that will be executed in n milliseconds.
+	 * Block expects no argument.
+	 *
+	 * Example:
+	 *     	game.schedule(5000, { => pepita.position().x(0.randomUpTo(4)) })
+	 */
+	method schedule(milliseconds, action) native
+	 	 
 	/**
 	 * Remove a tick event created with onTick message
 	 *
