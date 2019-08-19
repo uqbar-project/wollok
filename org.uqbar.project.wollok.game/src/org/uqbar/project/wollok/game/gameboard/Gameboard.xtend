@@ -14,10 +14,12 @@ import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.helpers.Application
 import org.uqbar.project.wollok.game.listeners.ArrowListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
-import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static org.uqbar.project.wollok.sdk.WollokSDK.*
+
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 @Accessors
 class Gameboard {
@@ -78,18 +80,23 @@ class Gameboard {
 			try
 				listeners.get(i).notify(this)
 			catch (WollokProgramExceptionWrapper e) {
-				var message = e.wollokMessage
-				if (message === null)
-					message = Messages.WollokGame_NoMessage
-				
-				errorReporter()?.scream(message)
-				
-				log.error(message, e)	
+				val message = e.wollokMessage ?: Messages.WollokGame_NoMessage
+				val source = findComponentFor(e.wollokSource) ?: errorReporter()
+				source?.scream(message)
 			}
 		}
 
 		background.draw(window)
 		components.forEach[it.draw(window)]
+	}
+	
+	def findComponentFor(WollokObject it) {
+		if (it === null) return null
+		for (component : components) {
+			if (component.WObject == it)
+				return component
+		}
+		null
 	}
 
 	def pixelHeight() {	height * CELLZISE }
@@ -119,7 +126,7 @@ class Gameboard {
 		addComponent(character)
 		addListener(new ArrowListener(character))
 	}
-
+	
 	def void addComponent(VisualComponent component) {
 		components.add(component)
 	}

@@ -2,10 +2,12 @@ package org.uqbar.project.wollok.tests.game
 
 import org.junit.Before
 import org.junit.Test
+import org.uqbar.project.wollok.game.Image
 import org.uqbar.project.wollok.game.Messages
 import org.uqbar.project.wollok.game.Position
 import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.WGPosition
+import org.uqbar.project.wollok.game.WGVisualComponent
 import org.uqbar.project.wollok.game.gameboard.Background
 import org.uqbar.project.wollok.game.gameboard.CellsBackground
 import org.uqbar.project.wollok.game.gameboard.FullBackground
@@ -14,6 +16,7 @@ import org.uqbar.project.wollok.game.gameboard.Window
 import org.uqbar.project.wollok.game.helpers.Application
 import org.uqbar.project.wollok.game.helpers.Keyboard
 import org.uqbar.project.wollok.game.listeners.GameboardListener
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 import static org.junit.Assert.*
@@ -104,7 +107,7 @@ class GameboardTest {
 		
 		gameboard.draw(window)
 
-		verify(character).scream("ERROR")
+		verifyErrorReporter(character)
 	}
 
 	@Test
@@ -116,7 +119,17 @@ class GameboardTest {
 			draw(window)
 		]
 
-		verify(component).scream("ERROR")
+		verifyErrorReporter(component)
+	}
+
+	@Test
+	def report_error_with_source() {
+		component.WObject = mock(WollokObject)
+		listenerThrowErrorFrom(component.WObject)
+		
+		gameboard.draw(window)
+		
+		verifyErrorReporter(component)
 	}
 	
 	@Test
@@ -126,7 +139,7 @@ class GameboardTest {
 		gameboard.character = null
 		gameboard.draw(window)
 
-		verify(character).scream("ERROR")
+		verifyErrorReporter(character)
 	}
 	
 	@Test
@@ -140,11 +153,15 @@ class GameboardTest {
 	
 	@Test
 	def report_error_without_message() {
-		listenerThrowErrorWithMessage(null)
+		listenerThrowErrorWithMessage(newWollokException(null, null))
 		
 		gameboard.draw(window)
 
 		verify(character).scream(Messages.WollokGame_NoMessage)
+	}
+	
+	def verifyErrorReporter(VisualComponent component) {
+		verify(component).scream("ERROR")
 	}
 
 	def position(int x, int y) {
@@ -156,16 +173,21 @@ class GameboardTest {
 	}
 
 	def newComponent(Position p) {
-		mock(VisualComponent) => [
-			when(position).thenReturn(p)
-		]
+		spy(new WGVisualComponent(p, new Image("")) => [ hideAttributes ])
 	}
 	
-	def listenerThrowError() { listenerThrowErrorWithMessage("ERROR") }
+	def listenerThrowError() { listenerThrowErrorWithMessage(newWollokException("ERROR", null)) }
 	
-	def listenerThrowErrorWithMessage(String message) {
+	def listenerThrowErrorFrom(WollokObject source) { listenerThrowErrorWithMessage(newWollokException("ERROR", source)) }
+	
+	def listenerThrowErrorWithMessage(WollokProgramExceptionWrapper exception) {
+		doThrow(exception).when(listener).notify(gameboard)
+	}
+	
+	def newWollokException(String message, WollokObject source) {
 		val exception = mock(WollokProgramExceptionWrapper)
 		when(exception.wollokMessage).thenReturn(message)
-		doThrow(exception).when(listener).notify(gameboard)
+		when(exception.wollokSource).thenReturn(source)
+		exception
 	}
 }

@@ -1,8 +1,8 @@
 package wollok.game
 
 import org.eclipse.osgi.util.NLS
-
 import org.uqbar.project.wollok.Messages
+import org.uqbar.project.wollok.game.WPosition
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.listeners.CollisionListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
@@ -10,14 +10,13 @@ import org.uqbar.project.wollok.game.listeners.KeyboardListener
 import org.uqbar.project.wollok.game.listeners.TimeListener
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
-import org.uqbar.project.wollok.lib.WPosition
-import org.uqbar.project.wollok.lib.WVisual
 
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
+import static extension org.uqbar.project.wollok.game.helpers.WollokConventionExtensions.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
 import static extension org.uqbar.project.wollok.utils.WollokObjectUtils.checkNotNull
-import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * 
@@ -85,15 +84,14 @@ class GameObject {
 		action.checkNotNull("whenCollideDo")
 		var visualObject = board.findVisual(visual)
 		val function = action.asClosure
-		addListener(new CollisionListener(visualObject, [ function.doApply((it as WVisual).wObject) ]))
+		addListener(new CollisionListener(visualObject, [ function.doApply(it.WObject) ]))
 	}
 	
 	def getObjectsIn(WollokObject position) {
 		position.checkNotNull("getObjectsIn")
 		board
 			.getComponentsInPosition(new WPosition(position))
-			.map[ it as WVisual ]
-			.map [ it.wObject ]
+			.map [ it.WObject ]
 			.toList.javaToWollok
 	}
 	
@@ -101,9 +99,8 @@ class GameObject {
 		visual.checkNotNull("colliders")
 		val visualObject = board.findVisual(visual)
 		board.getComponentsInPosition(visualObject.position)
-			.map[ it as WVisual ]
 			.filter [ !it.equals(visualObject)]
-			.map [ it.wObject ]
+			.map [ it.WObject ]
 			.toList.javaToWollok
 	}
 		
@@ -144,9 +141,7 @@ class GameObject {
 	}
 	
 	def findVisual(Gameboard it, WollokObject visual) {
-		val result = components
-			.map[it as WVisual]
-			.findFirst[ wObject.equals(visual)]
+		val result = components.findFirst[ WObject.equals(visual)]
 		
 		if (result === null)
 			throw new WollokProgramExceptionWrapper(evaluator.newInstance(EXCEPTION) => [
