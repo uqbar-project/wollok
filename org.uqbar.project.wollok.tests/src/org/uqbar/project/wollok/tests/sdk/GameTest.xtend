@@ -49,6 +49,17 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
+	def void movingCharacterShouldSetObjectPosition() {
+		'''
+		game.addVisualCharacter(pepita)
+		'''.gameTest
+		gameboard.components.head.up
+		'''
+		assert.equals(1, game.at(0,1).allElements().size())
+		'''.test
+	}
+	
+	@Test
 	def void addSameObjectToGameShouldFail() {
 		'''
 		«position(0,0)».drawElement(myVisual)
@@ -97,6 +108,10 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 		
 		object myVisual { }
 		class Visual { }
+		
+		object pepita {
+			var property position = game.origin()
+		}
 		
 		program a {
 			«test»

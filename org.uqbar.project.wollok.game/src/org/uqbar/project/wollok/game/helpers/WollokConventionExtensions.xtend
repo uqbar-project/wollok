@@ -25,6 +25,11 @@ class WollokConventionExtensions {
 		POSITION_CONVENTIONS + IMAGE_CONVENTIONS
 	}
 	
+	def static setPosition(WollokObject it, WollokObject position) {
+		call("position", position)	
+	}
+	
+
 	def static getPosition(WollokObject it) {
 		findConvention(POSITION_CONVENTIONS)
 		.orElseThrow([new WollokRuntimeException(NLS.bind(Messages.WollokInterpreter_visualObjectWithoutPosition, it.toString))])

@@ -29,7 +29,7 @@ class VisualComponent {
 
 	new(WollokObject object, WollokObject position) {
 		wObject = object
-		this.wPosition = position
+		wPosition = position
 	}
 
 	def getAttributes() {
@@ -45,7 +45,10 @@ class VisualComponent {
 	}
 
 	def void setPosition(Position position) {
-		wPosition = objectPosition.copyFrom(position) //FIXME: If wPosition not exist should use position setter in wObject
+		if (wPosition === null)
+			wObject.position = objectPosition.copyFrom(position)
+		else
+			wPosition = objectPosition.copyFrom(position)
 	}
 
 	def getObjectPosition() {
