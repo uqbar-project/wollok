@@ -53,7 +53,7 @@ class ImageTest extends AbstractWollokParameterizedInterpreterTest {
 		import wollok.game.*
 		
 		object visual {
-			var «convention» = «image»
+			var property «convention» = «image»
 		}
 
 		program p {
@@ -61,6 +61,22 @@ class ImageTest extends AbstractWollokParameterizedInterpreterTest {
 		}'''.interpretPropagatingErrors
 		
 		validateImage
+	}
+
+	@Test
+	def void imageCannotBeAccessedByAttribute() {
+		'''
+		import wollok.game.*
+		
+		object visual {
+			var «convention» = «image»
+		}
+
+		program p {
+			new Position(x = 0, y = 0).drawElement(visual)
+		}'''.interpretPropagatingErrors
+		
+		validateDefaultImage
 	}
 
 	@Test
