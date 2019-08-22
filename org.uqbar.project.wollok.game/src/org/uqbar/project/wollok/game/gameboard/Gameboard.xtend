@@ -17,9 +17,8 @@ import org.uqbar.project.wollok.game.listeners.GameboardListener
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
+import static org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 import static org.uqbar.project.wollok.sdk.WollokSDK.*
-
-import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 @Accessors
 class Gameboard {
@@ -118,9 +117,11 @@ class Gameboard {
 	}
 	
 	def getComponentsInPosition(Position p) {
-		this.getComponents.filter [
-			position == p
-		]
+		this.getComponents.filter [ position == p ]
+	}
+	
+	def alreadyInGame(WollokObject wObject) {
+		findComponentFor(wObject) !== null
 	}
 
 	// Getters & Setters
@@ -132,11 +133,14 @@ class Gameboard {
 	}
 	
 	def void addComponent(VisualComponent component) {
+		if (alreadyInGame(component.WObject)) {
+			throw newException(EXCEPTION, NLS.bind(Messages.WollokGame_ObjectAlreadyInGame, component.WObject.toWollokString))
+		}
 		components.add(component)
 	}
 	
 	def void addComponents(Collection<VisualComponent> it) {
-		components.addAll(it)
+		forEach[addComponent]
 	}
 
 	def void addListener(GameboardListener aListener){
@@ -146,9 +150,7 @@ class Gameboard {
 	def removeListener(String listenerName) {
 		val listener = listeners.findFirst([ name.equals(listenerName) ])
 		if (listener === null) {
-			throw new WollokProgramExceptionWrapper(evaluator.newInstance(EXCEPTION) => [
-				setReference("message", NLS.bind(Messages.WollokGame_ListenerNotFound, listenerName).javaToWollok) 
-			])
+			throw newException(EXCEPTION, NLS.bind(Messages.WollokGame_ListenerNotFound, listenerName))
 		}
 		removeListener(listener)
 	}
