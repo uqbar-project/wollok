@@ -29,10 +29,13 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 	}
 
 	def void initialize() {
-		val today = LocalDate.now
-		val day = "day".solveOrAssign(today.dayOfMonth)
-		val month = "month".solveOrAssign(today.monthValue)
-		val year = "year".solveOrAssign(today.year)
+		this.setWrapped(LocalDate.now)
+	}
+	
+	override void setWrapped(LocalDate originalDate) {
+		val day = "day".solveOrAssign(originalDate.dayOfMonth)
+		val month = "month".solveOrAssign(originalDate.monthValue)
+		val year = "year".solveOrAssign(originalDate.year)
 		wrapped = LocalDate.of(year, month, day)
 	}
 
