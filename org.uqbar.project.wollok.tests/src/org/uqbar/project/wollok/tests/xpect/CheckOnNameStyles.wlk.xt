@@ -1,6 +1,6 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 
-const LOTI = 2
+	const LOTI = 2
 
 	// XPECT warnings --> "Object name should start with lowercase" at "Juancete"
 	object Juancete { }
