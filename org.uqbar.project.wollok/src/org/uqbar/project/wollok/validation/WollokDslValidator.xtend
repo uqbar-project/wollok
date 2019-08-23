@@ -214,7 +214,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(WARN)
 	@CheckGroup(WollokCheckGroup.NAMING_CONVENTION)
 	def referenciableNameMustStartWithLowerCase(WVariable c) {
-		if(Character.isUpperCase(c.name.charAt(0)) && c.container instanceof WMethodContainer) report(WollokDslValidator_VARIABLE_NAME_MUST_START_LOWERCASE, c,
+		if(Character.isUpperCase(c.name.charAt(0)) && !c.isGlobal) report(WollokDslValidator_VARIABLE_NAME_MUST_START_LOWERCASE, c,
 			WNAMED__NAME, VARIABLE_NAME_MUST_START_LOWERCASE)
 	}
 
