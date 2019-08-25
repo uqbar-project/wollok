@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Wollok Type System UI
 Bundle-SymbolicName: org.uqbar.project.wollok.typeSystem.ui;singleton:=true
-Bundle-Version: 1.8.2.qualifier
+Bundle-Version: 1.8.3.qualifier
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.uqbar.project.wollok.ui,
