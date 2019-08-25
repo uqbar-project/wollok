@@ -65,6 +65,8 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static org.uqbar.project.wollok.WollokConstants.*
+import static org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
@@ -72,8 +74,6 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
-import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * It's the real "interpreter".

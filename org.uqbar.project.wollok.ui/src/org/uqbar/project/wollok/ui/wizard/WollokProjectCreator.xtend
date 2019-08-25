@@ -9,13 +9,17 @@ import org.uqbar.project.wollok.WollokConstants
  * @author jfernandes
  */
 class WollokProjectCreator extends AbstractWollokProjectCreator {
+	public static val ITEMIS = "de.itemis.xtext.antlr"
+	public static val MWE2 = "org.eclipse.emf.mwe2.launch"
 	
 	override protected getRequiredBundles() {
-		super.requiredBundles => [
+		(super.requiredBundles => [
 			add(org.uqbar.project.wollok.ui.wizard.AbstractWollokProjectCreator.DSL_GENERATOR_PROJECT_NAME + ".launch")
 			add(org.uqbar.project.wollok.ui.wizard.AbstractWollokProjectCreator.DSL_GENERATOR_PROJECT_NAME + ".lib")
 			add("org.eclipse.xtext.ui")
-		]
+		]).filter [
+			!startsWith(ITEMIS) && !startsWith(MWE2)
+		].toList
 	}
 	
 	override protected getProjectNatures() {
