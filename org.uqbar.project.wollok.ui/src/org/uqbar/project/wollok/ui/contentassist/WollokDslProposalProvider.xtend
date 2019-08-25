@@ -233,14 +233,12 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	}
 	
 	private def dispatch void completePropertiesFor(WMethodContainer c, ICompletionProposalAcceptor acceptor, Accessor typeOfAccessor) {
-		val properties = if (typeOfAccessor === Accessor.GETTER) c.allPropertiesGetters else c.allPropertiesSetters  
+		val properties = if (typeOfAccessor === Accessor.GETTER) c.allPropertiesGetters else c.allPropertiesSetters
 		builder.accessorKind = typeOfAccessor
 		properties.forEach [ variable | 
-			if (variable.isWriteable) {
-				builder.model = variable
-				builder.reference = variable.declaringContext.nameWithPackage
-				addProposal(variable, acceptor)
-			}
+			builder.model = variable
+			builder.reference = variable.declaringContext.nameWithPackage
+			addProposal(variable, acceptor)
 		]
 		builder.accessorKind = Accessor.NONE
 	}

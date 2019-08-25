@@ -14,9 +14,10 @@ import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.helpers.Application
 import org.uqbar.project.wollok.game.listeners.ArrowListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
-import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import static org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 @Accessors
@@ -73,24 +74,32 @@ class Gameboard {
 	}
 	
 	def void draw(Window window) {
+		update
+		background.draw(window)
+		components.forEach[it.draw(window)]
+	}
+	
+	def void update() {
 		// NO UTILIZAR FOREACH PORQUE HAY UN PROBLEMA DE CONCURRENCIA AL MOMENTO DE VACIAR LA LISTA
 		for (var i = 0; i < listeners.size(); i++) {
 			try
 				listeners.get(i).notify(this)
 			catch (WollokProgramExceptionWrapper e) {
-				var Object message = e.wollokMessage
-				if (message === null)
-					message = Messages.WollokGame_NoMessage
-				
-				if (character !== null)
-					character.scream(message.toString())
-				
-				log.error(message, e)	
+				val message = e.wollokMessage ?: Messages.WollokGame_NoMessage
+				val source = findComponentFor(e.wollokSource) ?: errorReporter()
+				source?.scream(message)
+				if (!e.domain) e.logError() 
 			}
 		}
-
-		background.draw(window)
-		components.forEach[it.draw(window)]
+	}
+	
+	def findComponentFor(WollokObject it) {
+		if (it === null) return null
+		for (component : components) {
+			if (component.WObject == it)
+				return component
+		}
+		null
 	}
 
 	def pixelHeight() {	height * CELLZISE }
@@ -108,9 +117,11 @@ class Gameboard {
 	}
 	
 	def getComponentsInPosition(Position p) {
-		this.getComponents.filter [
-			position == p
-		]
+		this.getComponents.filter [ position == p ]
+	}
+	
+	def alreadyInGame(WollokObject wObject) {
+		findComponentFor(wObject) !== null
 	}
 
 	// Getters & Setters
@@ -120,13 +131,16 @@ class Gameboard {
 		addComponent(character)
 		addListener(new ArrowListener(character))
 	}
-
+	
 	def void addComponent(VisualComponent component) {
+		if (alreadyInGame(component.WObject)) {
+			throw newException(EXCEPTION, NLS.bind(Messages.WollokGame_ObjectAlreadyInGame, component.WObject.toWollokString))
+		}
 		components.add(component)
 	}
 	
 	def void addComponents(Collection<VisualComponent> it) {
-		components.addAll(it)
+		forEach[addComponent]
 	}
 
 	def void addListener(GameboardListener aListener){
@@ -136,16 +150,17 @@ class Gameboard {
 	def removeListener(String listenerName) {
 		val listener = listeners.findFirst([ name.equals(listenerName) ])
 		if (listener === null) {
-			throw new WollokProgramExceptionWrapper(evaluator.newInstance(EXCEPTION) => [
-				setReference("message", NLS.bind(Messages.WollokGame_ListenerNotFound, listenerName).javaToWollok) 
-			])
+			throw newException(EXCEPTION, NLS.bind(Messages.WollokGame_ListenerNotFound, listenerName))
 		}
+		removeListener(listener)
+	}
+
+	def removeListener(GameboardListener listener) {		
 		listeners.remove(listener)
 	}
 	
 	def remove(VisualComponent component) {
 		components.remove(component)
-		listeners.removeIf[it.isObserving(component)]
 	}
 
 	def VisualComponent somebody() {

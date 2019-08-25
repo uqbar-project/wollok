@@ -23,7 +23,4 @@ class WollokSDKExtensions {
 	def static asList(WollokObject it) { getNativeObject(LIST) as WList }
 	def static asSet(WollokObject it) { getNativeObject(SET) as WSet }
 	
-	def static asVisual(WollokObject it) { new WVisual(it) }
-	def static asVisualIn(WollokObject it, WollokObject position) { new WVisual(it, position) }
-
 }

@@ -92,10 +92,27 @@ class DateTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void yesterdayIsLessThanToday() {
 		'''
-		var yesterday = new Date()
-		yesterday = yesterday.minusDays(1)
+		var yesterday = new Date().minusDays(1)
 		const today = new Date()
-		assert.that(yesterday < today) 
+		assert.that(yesterday < today)
+		'''.test
+	}
+	
+	@Test
+	def void allOperationsReturningADateAreCorrectWollokDates() {
+		'''
+		assert.that(new Date().minusDays(1).day() !== null)
+		assert.that(new Date().minusDays(1).month() !== null)
+		assert.that(new Date().minusDays(1).year() !== null)
+		assert.that(new Date().plusDays(1).day() !== null)
+		assert.that(new Date().plusDays(1).month() !== null)
+		assert.that(new Date().plusDays(1).year() !== null)
+		assert.that(new Date().minusYears(1).day() !== null)
+		assert.that(new Date().minusYears(1).month() !== null)
+		assert.that(new Date().minusYears(1).year() !== null)
+		assert.that(new Date().plusYears(1).day() !== null)
+		assert.that(new Date().plusYears(1).month() !== null)
+		assert.that(new Date().plusYears(1).year() !== null)
 		'''.test
 	}
 

@@ -103,7 +103,7 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 		import wollok.game.*
 		
 		object visual {
-			var «convention» = «position»
+			var property «convention» = «position»
 			«imageMethod»
 		}
 		
@@ -112,6 +112,21 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 		}'''.interpretPropagatingErrors
 		
 		validatePosition
+	}
+
+	@Test
+	def void positionCannotBeAccessedByAttribute() {
+		'''
+		import wollok.game.*
+		
+		object visual {
+			var «convention» = «position»
+			«imageMethod»
+		}
+		
+		program p {
+			assert.throwsExceptionWithMessage("visual[position=a Position[x=0, y=0]] does not understand position()", { game.addVisual(visual) })
+		}'''.interpretPropagatingErrors
 	}
 
 	@Test

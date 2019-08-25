@@ -157,7 +157,7 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 				assert.throwsExceptionLike(new BusinessException("chau"), { => throw new BusinessException("hola") })
 			}
 			catch ex {
-				assert.equals(ex.message(), "The Exception expected was a BusinessException[message=chau, cause=null] but got a BusinessException[message=hola, cause=null]")
+				assert.equals(ex.message(), 'The Exception expected was a BusinessException[message="chau", cause=null] but got a BusinessException[message="hola", cause=null]')
 			}
 		}
 		'''.interpretPropagatingErrors
