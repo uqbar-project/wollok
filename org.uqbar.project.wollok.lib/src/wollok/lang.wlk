@@ -915,11 +915,11 @@ class Set inherits Collection {
 	}
 	
 	/**
-	 * Converts an object to a Set. No effect on Sets.
+	 * Returns a new copy of current Set.
 	 *
 	 * Examples
-	 *		#{1, 2, 3}.asSet() => Answers #{1, 2, 3}
-	 * 		#{}.asSet()        => Answers #{} 
+	 *		#{1, 2, 3}.asSet() => Answers #{1, 2, 3}, which is a copy of original set
+	 * 		#{}.asSet()        => Answers #{}, also a copy of original #{}
 	 */
 	override method asSet() native
 
