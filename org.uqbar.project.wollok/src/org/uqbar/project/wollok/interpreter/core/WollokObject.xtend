@@ -208,13 +208,17 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		else
 			behavior.methods
 	}
+	
+	def toWollokString() {
+		val string = call("toString", #[])
+		(string.getNativeObject(STRING) as JavaWrapper<String>).wrapped //TODO: Usar las conversion extensions
+	}
 
 	override toString() {
 		try {
 			// TODO: java string shouldn't call wollok string
 			// it should be a low-lever WollokVM debugging method
-			val string = call("toString", #[])
-			(string.getNativeObject(STRING) as JavaWrapper<String>).wrapped
+			toWollokString
 		} // this is a hack while literal objects are not inheriting from wollok.lang.Object therefore
 		// they don't understand the toString() message
 		catch (WollokProgramExceptionWrapper e) {
