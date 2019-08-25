@@ -915,13 +915,13 @@ class Set inherits Collection {
 	}
 	
 	/**
-	 * Converts an object to a Set. No effect on Sets.
+	 * Returns a new copy of current Set.
 	 *
 	 * Examples
-	 *		#{1, 2, 3}.asSet() => Answers #{1, 2, 3}
-	 * 		#{}.asSet()        => Answers #{} 
+	 *		#{1, 2, 3}.asSet() => Answers #{1, 2, 3}, which is a copy of original set
+	 * 		#{}.asSet()        => Answers #{}, also a copy of original #{}
 	 */
-	override method asSet() = self
+	override method asSet() native
 
 	/**
 	 * Answers any element of a non-empty collection
@@ -1188,11 +1188,7 @@ class List inherits Collection {
 	 *
 	 * @see Set
 	 */
-	override method asSet() { 
-		const result = #{}
-		result.addAll(self)
-		return result
-	}
+	override method asSet() native
 	
 	/** 
 	 * Answers a view of the portion of this list between the specified fromIndex 
