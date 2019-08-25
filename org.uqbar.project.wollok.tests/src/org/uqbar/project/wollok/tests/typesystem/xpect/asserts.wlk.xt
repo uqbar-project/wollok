@@ -17,12 +17,12 @@ object assertsTest {
 		assert.fail(message)
 	}
 	
-	// XPECT methodType at m4 --> (Any) => Void
+	// XPECT methodType at m4 --> (Number) => Void
 	method m4(n) {
 		assert.equals(2, n)
 	}
 	
-	// XPECT methodType at m5 --> (Any) => Void
+	// XPECT methodType at m5 --> (Number) => Void
 	method m5(n) {
 		assert.notEquals(2, n)
 	}
