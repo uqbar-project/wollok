@@ -1,0 +1,21 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+import libForImports.apu
+import libForImports.flanders.mod
+import libForImports.Burns
+
+// XPECT warnings --> "There is already an imported instance variable with this name" at "apu"
+object apu {
+	// XPECT warnings --> "There is already an imported instance variable with this name" at "mod"
+	var mod = 20
+
+	method getMod() = mod
+}
+
+// XPECT warnings --> "There is already an imported instance variable with this name" at "Burns"
+class Burns {
+	// XPECT warnings --> "There is already an imported instance variable with this name" at "mod"
+	const mod = 5
+	
+	method getMod() = mod
+}
