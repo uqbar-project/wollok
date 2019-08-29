@@ -1,23 +1,24 @@
 package wollok.game
 
 import org.eclipse.osgi.util.NLS
-
 import org.uqbar.project.wollok.Messages
+import org.uqbar.project.wollok.game.WPosition
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.listeners.CollisionListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
+import org.uqbar.project.wollok.game.listeners.InstantCollisionListener
 import org.uqbar.project.wollok.game.listeners.KeyboardListener
+import org.uqbar.project.wollok.game.listeners.ScheduleListener
 import org.uqbar.project.wollok.game.listeners.TimeListener
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
-import org.uqbar.project.wollok.lib.WPosition
-import org.uqbar.project.wollok.lib.WVisual
 
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
+import static extension org.uqbar.project.wollok.game.helpers.WollokConventionExtensions.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
 import static extension org.uqbar.project.wollok.utils.WollokObjectUtils.checkNotNull
-import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * 
@@ -58,10 +59,9 @@ class GameObject {
 		return board.findIfExistsVisual(it) !== null
 	}
 
-	def getAllVisuals() {
+	def allVisuals() {
 		return board.components
-			.map[ it as WVisual ]
-			.map [ it.wObject ]
+			.map [ it.WObject ]
 			.toList.javaToWollok
 	}
 	
@@ -71,6 +71,13 @@ class GameObject {
 		action.checkNotNull("onTick")
 		val function = action.asClosure
 		addListener(new TimeListener(name.asString, milliseconds.coerceToInteger, [ function.doApply ]))
+	}
+	
+	def schedule(WollokObject milliseconds, WollokObject action) {
+		milliseconds.checkNotNull("schedule")
+		action.checkNotNull("schedule")
+		val function = action.asClosure
+		addListener(new ScheduleListener(milliseconds.coerceToInteger, [ function.doApply ]))
 	}
 	
 	def removeTickEvent(WollokObject name) {
@@ -83,13 +90,7 @@ class GameObject {
 		action.checkNotNull("whenKeyPressedDo")
 		var num = key.coerceToInteger
 		val function = action.asClosure
-		addListener(new KeyboardListener(num, [
-			try {
-				function.doApply
-			} catch (WollokProgramExceptionWrapper e) {
-				board.errorReporter?.scream(e.wollokMessage)
-			} 
-		]))
+		addListener(new KeyboardListener(num, [ function.doApply ]))
 	}
 
 	def whenKeyPressedSay(WollokObject key, WollokObject functionObj) {
@@ -103,22 +104,22 @@ class GameObject {
 		action.checkNotNull("whenCollideDo")
 		var visualObject = board.findVisual(visual)
 		val function = action.asClosure
-		addListener(new CollisionListener(visualObject, [
-			try {
-				function.doApply((it as WVisual).wObject)
-			} catch (WollokProgramExceptionWrapper e) {
-				board.errorReporter?.scream(e.wollokMessage)
-				null
-			}
-		]))
+		addListener(new CollisionListener(visualObject, [ function.doApply(it.WObject) ]))
+	}
+	
+	def onCollideDo(WollokObject visual, WollokObject action) {
+		visual.checkNotNull("onCollideDo")
+		action.checkNotNull("onCollideDo")
+		var visualObject = board.findVisual(visual)
+		val function = action.asClosure
+		addListener(new InstantCollisionListener(visualObject, [ function.doApply(it.WObject) ]))
 	}
 	
 	def getObjectsIn(WollokObject position) {
 		position.checkNotNull("getObjectsIn")
 		board
 			.getComponentsInPosition(new WPosition(position))
-			.map[ it as WVisual ]
-			.map [ it.wObject ]
+			.map [ it.WObject ]
 			.toList.javaToWollok
 	}
 	
@@ -126,9 +127,8 @@ class GameObject {
 		visual.checkNotNull("colliders")
 		val visualObject = board.findVisual(visual)
 		board.getComponentsInPosition(visualObject.position)
-			.map[ it as WVisual ]
 			.filter [ !it.equals(visualObject)]
-			.map [ it.wObject ]
+			.map [ it.WObject ]
 			.toList.javaToWollok
 	}
 		
@@ -181,14 +181,7 @@ class GameObject {
 	
 	def findIfExistsVisual(Gameboard it, WollokObject visual) {
 		return components
-			.map[it as WVisual]
-			.findFirst[ wObject.equals(visual)]
-	}
-
-	def hasVisual(Gameboard it, WollokObject visual) {
-		return components
-			.map[it as WVisual]
-			.exists[ wObject.equals(visual) ]
+			.findFirst[ WObject.equals(visual)]
 	}
 
 	def sound(String audioFile) {

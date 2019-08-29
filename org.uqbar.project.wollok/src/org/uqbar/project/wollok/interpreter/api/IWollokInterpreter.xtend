@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.interpreter.api
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 /**
  * This is the interpreter interface exposed
@@ -28,4 +29,5 @@ interface IWollokInterpreter {
 	
 	def EvaluationContext<WollokObject> getCurrentContext()
 
+	def void printStackTraceInConsole(WollokProgramExceptionWrapper e)
 }

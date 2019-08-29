@@ -27,7 +27,7 @@ class ArrowListenerTest {
 		keyboard = mock(Keyboard)
 		Keyboard.instance = keyboard
 		
-		character = new WGVisualComponent(new WGPosition(0, 0), new Image())
+		character = new WGVisualComponent(new WGPosition(0, 0), new Image(""))
 		
 		arrowListener = new ArrowListener(character)
 	}

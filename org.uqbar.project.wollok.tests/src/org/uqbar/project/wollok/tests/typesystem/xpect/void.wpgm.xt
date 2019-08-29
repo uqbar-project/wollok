@@ -8,7 +8,10 @@ program p {
 	// XPECT warnings --> "An expression is expected at this position." at "nada"
 	const nada = [].add(1)
 	
-	// XPECT warnings --> "An expression is expected at this position." at "nada"
+	/* XPECT! warnings ---
+		"An expression is expected at this position." at "console.println(nada)"
+		"An expression is expected at this position." at "nada"
+	--- */
 	console.println(nada)
 
 	/* X-PECT errors --- 

@@ -13,6 +13,7 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
+import org.uqbar.project.wollok.typesystem.exceptions.CannotBeVoidException
 
 /**
  * @author npasserini
@@ -150,13 +151,19 @@ class UnifyVariables extends AbstractInferenceStrategy {
 	}
 	
 	def dispatch doUnifyWith(GenericTypeInfo t1, VoidTypeInfo t2) {
+		t1.users.forEach[canNotBeVoid]
 		Error
 	}
 
 	def dispatch doUnifyWith(VoidTypeInfo t1, GenericTypeInfo t2) {
+		t2.users.forEach[canNotBeVoid]
 		Error
 	}
-
+	
+	def canNotBeVoid(TypeVariable it) {
+		addError(new CannotBeVoidException(it.owner.errorReportTarget))	
+	}
+	
 	protected def minTypesUnion(GenericTypeInfo t1, GenericTypeInfo t2) {
 		(t1.minTypes.keySet + t2.minTypes.keySet).toSet.toInvertedMap [
 			if(isReadyIn(t1) && isReadyIn(t2))

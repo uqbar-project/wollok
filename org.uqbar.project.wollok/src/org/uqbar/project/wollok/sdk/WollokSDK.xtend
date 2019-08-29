@@ -53,6 +53,7 @@ class WollokSDK {
 	
 	public static val MESSAGE_NOT_UNDERSTOOD_EXCEPTION = "wollok.lang.MessageNotUnderstoodException"
 	public static val STACK_OVERFLOW_EXCEPTION = "wollok.lang.StackOverflowException"
+	public static val DOMAIN_EXCEPTION = "wollok.lang.DomainException"
 
 	public static val KEY = "wollok.game.Key"
 

@@ -63,9 +63,9 @@ object game {
 	 * Returns all visual objects added to the board.
 	 *
 	 * Example:
-	 *     game.getAllVisuals()
+	 *     game.allVisuals()
 	 */
-	method getAllVisuals() native
+	method allVisuals() native
 
 	/**
 	 * Adds a block that will be executed each time a specific key is pressed
@@ -74,7 +74,7 @@ object game {
 	method whenKeyPressedDo(key, action) native
 
 	/**
-	 * Adds a block that will be executed when the given object collides with other. 
+	 * Adds a block that will be executed while the given object collides with other. 
 	 * Two objects collide when are in the same position.
 	 *
 	 * The block should expect the other object as parameter.
@@ -85,6 +85,17 @@ object game {
 	method whenCollideDo(visual, action) native
 
 	/**
+	 * Adds a block that will be executed exactly when the given object collides with other. 
+	 * Two objects collide when are in the same position.
+	 *
+	 * The block should expect the other object as parameter.
+	 *
+	 * Example:
+	 *     game.onCollideDo(pepita, { comida => pepita.comer(comida) })
+	 */	
+	method onCollideDo(visual, action) native
+	
+	/**
 	 * Adds a block with a specific name that will be executed every n milliseconds.
 	 * Block expects no argument.
 	 * Be careful not to set it too often :)
@@ -93,7 +104,16 @@ object game {
 	 *     	game.onTick(5000, "pepitaMoving", { => pepita.position().x(0.randomUpTo(4)) })
 	 */
 	method onTick(milliseconds, name, action) native
-	 
+	
+	/**
+	 * Adds a block that will be executed in n milliseconds.
+	 * Block expects no argument.
+	 *
+	 * Example:
+	 *     	game.schedule(5000, { => pepita.position().x(0.randomUpTo(4)) })
+	 */
+	method schedule(milliseconds, action) native
+	 	 
 	/**
 	 * Remove a tick event created with onTick message
 	 *

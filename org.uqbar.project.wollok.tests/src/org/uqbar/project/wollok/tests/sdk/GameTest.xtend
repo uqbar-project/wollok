@@ -1,9 +1,9 @@
 package org.uqbar.project.wollok.tests.sdk
 
+import org.junit.Before
+import org.junit.Test
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
-import org.junit.Test
-import org.junit.Before
 
 class GameTest extends AbstractWollokInterpreterTestCase {
 	
@@ -40,23 +40,31 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void shouldReturnVisualColliders() {
 		'''
-		import wollok.game.*
+		«position(0,0)».drawElement(myVisual)
+		2.times{ i => «position(0,0)».drawElement(new Visual()) }
+		«position(0,1)».drawElement(new Visual())
 		
-		object myVisual { }
-		class Visual { }
-		
-		program a {
-			«position(0,0)».drawElement(myVisual)
-			2.times{ i => «position(0,0)».drawElement(new Visual()) }
-			«position(0,1)».drawElement(new Visual())
-			
-			assert.equals(2, game.colliders(myVisual).size())
-		}
-		'''.interpretPropagatingErrors
+		assert.equals(2, game.colliders(myVisual).size())
+		'''.gameTest
 	}
 	
-	private def position(int x, int y) {
-		'''new Position(x = «x», y = «y»)'''
+	@Test
+	def void movingCharacterShouldSetObjectPosition() {
+		'''
+		game.addVisualCharacter(pepita)
+		'''.gameTest
+		gameboard.components.head.up
+		'''
+		assert.equals(1, game.at(0,1).allElements().size())
+		'''.test
+	}
+	
+	@Test
+	def void addSameObjectToGameShouldFail() {
+		'''
+		«position(0,0)».drawElement(myVisual)
+		assert.throwsExceptionWithMessage("myVisual[] is already in the game.", { «position(1,1)».drawElement(myVisual) })
+		'''.gameTest
 	}
 	
 	@Test
@@ -129,7 +137,7 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 		import wollok.game.*
 
 		program a {
-			assert.equals(0, game.getAllVisuals().size())
+			assert.equals(0, game.allVisuals().size())
 		}
 		'''.interpretPropagatingErrors
 	}
@@ -143,8 +151,8 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 
 		program a {
 			game.addVisualIn(myVisual, game.at(0, 0))
-			assert.equals(1, game.getAllVisuals().size())
-			assert.equals(myVisual, game.getAllVisuals().get(0))
+			assert.equals(1, game.allVisuals().size())
+			assert.equals(myVisual, game.allVisuals().get(0))
 		}
 		'''.interpretPropagatingErrors
 	}
@@ -162,9 +170,30 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 			game.addVisualIn(myVisual, game.at(0, 0))
 			game.addVisualIn(myVisual2, game.at(0, 0))
 			game.addVisualIn(myVisual3, game.at(0, 0))
-			assert.equals(3, game.getAllVisuals().size())
-			assert.equals([myVisual, myVisual2, myVisual3].asSet(), game.getAllVisuals().asSet())
+			assert.equals(3, game.allVisuals().size())
+			assert.equals([myVisual, myVisual2, myVisual3].asSet(), game.allVisuals().asSet())
 		}
 		'''.interpretPropagatingErrors
+	}
+	
+	def gameTest(CharSequence test) {
+		'''
+		import wollok.game.*
+		
+		object myVisual { }
+		class Visual { }
+		
+		object pepita {
+			var property position = game.origin()
+		}
+		
+		program a {
+			«test»
+		}
+		'''.interpretPropagatingErrors
+	}
+	
+	private def position(int x, int y) {
+		'''new Position(x = «x», y = «y»)'''
 	}
 }

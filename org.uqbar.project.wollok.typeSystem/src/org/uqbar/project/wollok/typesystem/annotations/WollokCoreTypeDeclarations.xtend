@@ -20,13 +20,13 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		// TODO1: should include Object type?
 		// TODO2: should only be declared for Object?
 		allTypes.forEach[ O |
-			(O == Any) => Boolean;
-			(O != Any) => Boolean;
-			(O === Any) => Boolean;
-			(O !== Any) => Boolean;
+			(O == T) => Boolean;
+			(O != T) => Boolean;
+			(O === T) => Boolean;
+			(O !== T) => Boolean;
 			(O -> T) => PairType.instance(#{PKEY.paramName -> O, PVALUE.paramName -> T});
 			O >> "identity" === #[] => Number; 
-			O >> "equals" === #[Any] => Boolean;
+			O >> "equals" === #[T] => Boolean;
 			O >> "toString" === #[] => String;
 			O >> "printString" === #[] => String;
 			O >> "shortDescription" === #[] => String;
@@ -42,7 +42,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 			/* introspection */
 			O >> "instanceVariables" === #[] => List.of(InstanceVariableMirror)
 			O >> "instanceVariableFor" === #[String] => InstanceVariableMirror
-			O >> "resolve" === #[String] => Any //TODO: should return variable type
+			O >> "resolve" === #[String] => T //TODO: should return variable type
 		]
 	}
 }
