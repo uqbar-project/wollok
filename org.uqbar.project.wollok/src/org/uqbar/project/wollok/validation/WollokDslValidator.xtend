@@ -76,7 +76,6 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 import org.eclipse.emf.ecore.resource.Resource
 
-
 /**
  * Custom validation rules.
  * 
