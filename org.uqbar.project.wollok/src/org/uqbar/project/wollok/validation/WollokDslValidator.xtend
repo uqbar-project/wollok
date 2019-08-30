@@ -40,6 +40,7 @@ import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WMixin
+import org.uqbar.project.wollok.wollokDsl.WNamed
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
@@ -74,6 +75,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 import org.eclipse.emf.ecore.resource.Resource
+
 
 /**
  * Custom validation rules.
@@ -651,27 +653,13 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(WARN)
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
-	def duplicatedReferenceFromImports(WMethodContainer m) {
-		duplicatedReferenceFromImports(m, m.variables)
-	}
-
-	@Check
-	@DefaultSeverity(WARN)
-	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
-	def duplicatedReferenceFromImports(WTest wtest) {
-		duplicatedReferenceFromImports(wtest, wtest.variables)
-	}
-
-	def duplicatedReferenceFromImports(EObject e, Iterable<WVariable> variables) {
-		val imports = e.allImports
+	def duplicatedReferenceFromImports(WNamed it) {
+		val imports = it.allImports
 		if (!imports.isEmpty) {
 			val allImportsNames = imports.allImportsNames(scopeProvider).map[i|i.substring(i.lastIndexOf('.') + 1)]
-			if (allImportsNames.contains(e.name)) {
-				report(WollokDslValidator_DUPLICATED_REFERENCE_FROM_IMPORTS, e, WNAMED__NAME)
+			if (allImportsNames.contains(it.name)) {
+				report(WollokDslValidator_DUPLICATED_REFERENCE_FROM_IMPORTS, it, WNAMED__NAME)
 			}
-			variables.filter[v|allImportsNames.exists[i|i == v.name]].forEach [
-				report(WollokDslValidator_DUPLICATED_REFERENCE_FROM_IMPORTS)
-			]
 		}
 	}
 
