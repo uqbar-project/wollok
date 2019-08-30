@@ -650,25 +650,25 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	
 	@Check
 	@DefaultSeverity(WARN)
-	def duplicatedVariableFromImports(WMethodContainer m) {
-		duplicatedVariableFromImports(m, m.variables)
+	def duplicatedReferenceFromImports(WMethodContainer m) {
+		duplicatedReferenceFromImports(m, m.variables)
 	}
 
 	@Check
 	@DefaultSeverity(WARN)
-	def duplicatedVariableFromImports(WTest wtest) {
-		duplicatedVariableFromImports(wtest, wtest.variables)
+	def duplicatedReferenceFromImports(WTest wtest) {
+		duplicatedReferenceFromImports(wtest, wtest.variables)
 	}
 
-	def duplicatedVariableFromImports(EObject e, Iterable<WVariable> variables) {
+	def duplicatedReferenceFromImports(EObject e, Iterable<WVariable> variables) {
 		val imports = e.allImports
 		if (!imports.isEmpty) {
 			val allImportsNames = imports.allImportsNames(scopeProvider).map[i|i.substring(i.lastIndexOf('.') + 1)]
 			if (allImportsNames.contains(e.name)) {
-				report(WollokDslValidator_DUPLICATED_VARIABLE_FROM_IMPORTS, e, WNAMED__NAME)
+				report(WollokDslValidator_DUPLICATED_REFERENCE_FROM_IMPORTS, e, WNAMED__NAME)
 			}
 			variables.filter[v|allImportsNames.exists[i|i == v.name]].forEach [
-				report(WollokDslValidator_DUPLICATED_VARIABLE_FROM_IMPORTS)
+				report(WollokDslValidator_DUPLICATED_REFERENCE_FROM_IMPORTS)
 			]
 		}
 	}

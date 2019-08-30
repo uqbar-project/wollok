@@ -2,10 +2,10 @@
 
 import libForImports.apu
 
-describe "duplicated variables" {
+describe "duplicated references" {
 
 	test "with duplicated variable" {
-		// XPECT warnings --> "There is already an imported instance variable with this name" at "apu"
+		// XPECT warnings --> "There is already an imported reference with this name" at "apu"
 		var apu = 2
 		assert.equals(apu, 2)		
 	}
