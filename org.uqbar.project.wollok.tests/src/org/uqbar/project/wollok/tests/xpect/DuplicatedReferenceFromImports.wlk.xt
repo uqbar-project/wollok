@@ -8,7 +8,10 @@ import libForImports.Burns
 object apu {
 	// XPECT warnings --> "There is already an imported reference with this name" at "mod"
 	var mod = 20
-
+	
+	// XPECT warnings --> "There is already an imported reference with this name" at "mod"
+	method mod() = return 10
+	
 	method getMod() = mod
 }
 
@@ -18,4 +21,9 @@ class Burns {
 	const mod = 5
 	
 	method getMod() = mod
+}
+
+object barney {
+	// XPECT warnings --> "There is already an imported reference with this name" at "mod"
+	method giveMe5(mod) = return 5
 }
