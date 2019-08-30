@@ -488,13 +488,14 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				}
 			}
 			program p {
+				const f = new C()
 				try {
-					const f = new C()
 					f.foo()
 				}
 				catch e {
 					// OK !
 					assert.equals("Gently failing!", e.message())
+					assert.equals(f, e.source())
 				}
 			}
 		'''.interpretPropagatingErrors

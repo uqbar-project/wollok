@@ -240,4 +240,24 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			findByText("number.div(1).isBig(true, 1)", WMemberFeatureCall).assertIssuesInElement("Number does not understand isBig(true, 1)")
 		]
 	}
+	
+	
+	@Test
+	def void badAnyInference() {
+		'''
+			object gimenez {
+				var sueldo = 15000
+			
+				method sueldo(nuevoValor) {
+					sueldo = nuevoValor
+				}
+				
+				method assert() {
+					assert.equals(3, sueldo)
+				}
+			}
+		'''.parseAndInfer.asserting [
+			assertTypeOf(classTypeFor(NUMBER), "sueldo")
+		]
+	}
 }

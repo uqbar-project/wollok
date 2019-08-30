@@ -1,0 +1,10 @@
+/*   XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP   */
+// In this test we are asserting that the validation of empty describe is not triggered, when there is a parse error  
+describe "describe with tests" {
+	//  XPECT errors --> "Code inside describe is not allowed, you should use the fixture for that" at ""hola""	
+	"hola".size()
+				
+	test "nothing to do here" { 
+		assert.equals(1, 1)
+	}
+}

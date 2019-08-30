@@ -137,7 +137,7 @@ class WollokInterpreter implements XInterpreter<EObject, WollokObject>, IWollokI
 			listeners.forEach [ terminated ]
 	}
 
-	def void printStackTraceInConsole(WollokProgramExceptionWrapper e) {
+	override void printStackTraceInConsole(WollokProgramExceptionWrapper e) {
 		println((e.exceptionClassName + ": " + e.wollokMessage))
 		val errorLine = e.wollokException
 			.convertStackTrace

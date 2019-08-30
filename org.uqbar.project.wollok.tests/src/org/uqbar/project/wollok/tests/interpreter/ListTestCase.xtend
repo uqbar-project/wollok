@@ -148,8 +148,8 @@ class ListTestCase extends CollectionTestCase {
 	@Test
 	def void withoutDuplicates() {
 		'''
-		assert.equals([1, 3, 1, 5, 1, 3, 2, 5].withoutDuplicates(), [1, 2, 3, 5])
-		assert.equals([1, 3, 5, 2].withoutDuplicates(), [1, 2, 3, 5])
+		assert.equals([1, 3, 1, 5, 1, 3, 2, 5].withoutDuplicates(), [1, 3, 5, 2])
+		assert.equals([1, 3, 5, 2].withoutDuplicates(), [1, 3, 5, 2])
 		'''.test
 	}	
 	
