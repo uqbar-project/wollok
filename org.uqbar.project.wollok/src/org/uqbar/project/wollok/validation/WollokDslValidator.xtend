@@ -650,14 +650,12 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	
 	@Check
 	@DefaultSeverity(WARN)
-	@NotConfigurable
 	def duplicatedVariableFromImports(WMethodContainer m) {
 		duplicatedVariableFromImports(m, m.variables)
 	}
 
 	@Check
 	@DefaultSeverity(WARN)
-	@NotConfigurable
 	def duplicatedVariableFromImports(WTest wtest) {
 		duplicatedVariableFromImports(wtest, wtest.variables)
 	}
