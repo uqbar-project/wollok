@@ -110,6 +110,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 //	static IViewPart previousActivePart
 
 	def static activate() {
+		println("la ui corriendo ?")
 		RunInUI.runInUI [
 			// issue #1266 - dodain - this fixes the problem
 			// but only when Wollok Tests are in a different tab that Project Explorer 
@@ -196,6 +197,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 	
 	override createPartControl(Composite parent) {
+		println("wtf ?")
 		parent.background = new Color(Display.current, new RGB(220, 220, 220))
 		resManager = new LocalResourceManager(JFaceResources.getResources(), parent)
 		new GridLayout() => [
@@ -286,6 +288,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def createTree(Composite parent) {
+		println("createTree" + results)
 		testTree = new TreeViewer(parent, SWT.V_SCROLL.bitwiseOr(SWT.BORDER).bitwiseOr(SWT.SINGLE))
 		testTree.contentProvider = new WTestTreeContentProvider => [
 			it.results = results
@@ -361,6 +364,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def createResults(Composite parent) {
+		println("creo los resultados")
 		val panel = new Composite(parent, SWT.NONE)
 
 		new GridLayout => [
@@ -547,6 +551,7 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 	var WollokTestResults results
 
 	def dispatch getChildren(WollokTestResults element) {
+		println("holaaaa" + element)
 		if (element.container === null)
 			newArrayOfSize(0)
 		else

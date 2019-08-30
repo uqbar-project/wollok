@@ -57,6 +57,7 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	}
 
 	override testsToRun(String _suiteName, WFile file, List<WTest> tests) {
+		println("i m here ?")
 		this.suiteName = _suiteName
 		val fileURI = file.eResource.URI.toString
 		if (processingManyFiles) {
@@ -65,9 +66,9 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 			} else {
 				this.suiteName = Messages.ALL_TEST_IN_PROJECT
 			}
-			this.testFiles.addAll(getRunnedTestsInfo(tests, fileURI))
+			this.testFiles.addAll(getRunnedTestsInfo(tests, fileURI, suiteName))
 		} else {
-			remoteTestNotifier.testsToRun(suiteName, fileURI, getRunnedTestsInfo(tests, fileURI), false)
+			remoteTestNotifier.testsToRun(suiteName, fileURI, getRunnedTestsInfo(tests, fileURI, suiteName), false)
 		}
 	}
 
@@ -82,6 +83,7 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	}
 
 	override finished(long timeElapsedInMilliseconds) {
+		println("finished")
 		if (!processingManyFiles) {
 			remoteTestNotifier.testsResult(testsResult, timeElapsedInMilliseconds)
 		}
@@ -101,8 +103,8 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 		processingManyFiles = false
 	}
 	
-	protected def List<WollokTestInfo> getRunnedTestsInfo(List<WTest> tests, String fileURI) {
-		new ArrayList(tests.map[new WollokTestInfo(it, fileURI, processingManyFiles)])
+	protected def List<WollokTestInfo> getRunnedTestsInfo(List<WTest> tests, String fileURI, String suiteName) {
+		new ArrayList(tests.map[new WollokTestInfo(it, fileURI, processingManyFiles, suiteName)])
 	}
 	
 }

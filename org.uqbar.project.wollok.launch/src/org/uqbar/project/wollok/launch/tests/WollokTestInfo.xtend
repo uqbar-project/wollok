@@ -15,11 +15,13 @@ class WollokTestInfo implements Serializable{
 	val String name
 	val String resource
 	val int lineNumber
+	val String suiteName
 	
-	new(WTest test, String fileURI, boolean processingManyFiles) {
+	new(WTest test, String fileURI, boolean processingManyFiles, String suite) {
 		lineNumber = NodeModelUtils.findActualNodeFor(test).textRegionWithLineInformation.lineNumber
 		resource =  EcoreUtil2.getURI(test).toString
 		name = test.getFullName(processingManyFiles)
+		suiteName = suite
 	}
 	
 }

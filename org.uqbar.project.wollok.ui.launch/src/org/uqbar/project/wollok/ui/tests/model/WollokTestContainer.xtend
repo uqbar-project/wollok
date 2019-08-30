@@ -28,7 +28,7 @@ class WollokTestContainer {
 	}
 	
 	def void defineTests(List<WollokTestResult> tests, boolean shouldShowOnlyFailuresAndErrors) {
-		this.allTests = tests
+		this.allTests.addAll(tests)
 		filterTestByState(shouldShowOnlyFailuresAndErrors)
 		this.tests.forEach [ test | test.started ]
 	} 

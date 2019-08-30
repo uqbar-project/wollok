@@ -20,7 +20,7 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 	boolean shouldShowOnlyFailuresAndErrors = false
 		
 	@Accessors
-	var WollokTestContainer container
+	var WollokTestContainer container = new WollokTestContainer
 	
 	override assertError(String testName, String message, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {
 		testByName(testName).endedAssertError(message, stackTrace, lineNumber, resource)
@@ -38,12 +38,14 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 	}
 	
 	override testsToRun(String suiteName, String containerResource, List<WollokTestInfo> tests, boolean processingManyFiles) {
-		this.container = new WollokTestContainer
+	//	this.container = new WollokTestContainer
 		this.container.suiteName = suiteName
 		this.container.processingManyFiles = processingManyFiles
 		this.container.mainResource = URI.createURI(containerResource)
-		this.container.defineTests(newArrayList(tests.map[new WollokTestResult(it)]), this.shouldShowOnlyFailuresAndErrors)
-		
+		var newTest = tests.map[new WollokTestResult(it)]
+		this.container.defineTests(newTest, this.shouldShowOnlyFailuresAndErrors)
+		println("suiteName" + suiteName)
+		println(" test to run ?" + tests)
 		this.setChanged
 		this.notifyObservers("testReceived")		
 	}
@@ -91,7 +93,7 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 			if (error()) {
 				test.endedError(message, stackTrace, errorLineNumber, resource)
 			}
-		]
+		]		
 		this.container.filterTestByState(this.shouldShowOnlyFailuresAndErrors)
 		this.container.millisecondsElapsed = millisecondsElapsed
 		this.setChanged
