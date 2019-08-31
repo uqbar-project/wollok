@@ -652,7 +652,18 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(WARN)
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
-	def duplicatedReferenceFromImports(WNamed it) {
+	def duplicatedMethodContainerFromImports(WMethodContainer it) {
+		duplicatedReferenceFromImports(it)
+	}
+	
+	@Check
+	@DefaultSeverity(WARN)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
+	def duplicatedAtributteFromImports(WVariable it) {
+		duplicatedReferenceFromImports(it)
+	}
+	
+	def duplicatedReferenceFromImports(EObject it) {
 		val imports = it.allImports
 		if (!imports.isEmpty) {
 			val allImportsNames = imports.allImportsNames(scopeProvider).map[i|i.substring(i.lastIndexOf('.') + 1)]
