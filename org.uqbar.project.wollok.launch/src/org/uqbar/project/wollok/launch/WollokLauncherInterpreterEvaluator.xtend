@@ -45,6 +45,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 					suiteName = suite.name
 					testsToRun = suite.tests
 				}
+				// tell to somebody, the test i will run
 				wollokTestsReporter.testsToRun(suiteName, it, testsToRun)
 				
 					testsToRun.fold(null) [ a, _test |

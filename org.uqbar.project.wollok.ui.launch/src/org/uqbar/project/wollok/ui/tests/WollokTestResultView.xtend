@@ -48,6 +48,7 @@ import org.uqbar.project.wollok.ui.tests.model.WollokTestContainer
 import org.uqbar.project.wollok.ui.tests.model.WollokTestResult
 import org.uqbar.project.wollok.ui.tests.model.WollokTestResults
 import org.uqbar.project.wollok.ui.tests.model.WollokTestState
+import org.uqbar.project.wollok.ui.tests.model.WollokTestSuperContainer
 import org.uqbar.project.wollok.ui.tests.shortcut.WollokAllTestsLaunchShortcut
 import org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut
 
@@ -146,6 +147,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 	/** this method is invoked between test executions */
 	def cleanView() {
+		println("i m clean the view")
 		bar.background = pendingColor
 		bar.text = Messages.WollokTestResultView_runningTests
 		totalTextBox.text = ""
@@ -154,7 +156,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 		lblMilliseconds.text = ""
 		runAgain.enabled = false
 		//debugAgain.enabled = false
-		(testTree.contentProvider as WTestTreeContentProvider).results.container = new WollokTestContainer() {
+		/*(testTree.contentProvider as WTestTreeContentProvider).results.container = new WollokTestContainer() {
 			override toString() {
 				return ""
 			}
@@ -163,7 +165,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 				return ""
 			}
 		}
-		testTree.refresh(true)
+		testTree.refresh(true)*/
 	}
 
 	def testFile() {
@@ -307,14 +309,6 @@ class WollokTestResultView extends ViewPart implements Observer {
 		testTree.refresh
 		results.addObserver(this)
 
-		new GridData => [
-			grabExcessHorizontalSpace = true
-			grabExcessVerticalSpace = true
-			horizontalAlignment = GridData.FILL
-			verticalAlignment = GridData.FILL
-			verticalSpan = 5
-			testTree.control.layoutData = it
-		]
 	}
 
 	def createTextOutput(Composite parent) {
@@ -364,7 +358,6 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def createResults(Composite parent) {
-		println("creo los resultados")
 		val panel = new Composite(parent, SWT.NONE)
 
 		new GridLayout => [
@@ -436,15 +429,15 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	override update(Observable o, Object arg) {
-		testTree.refresh(true)
+		testTree.refresh(true) // esta linea me borra el describe anterior !
 		testTree.expandAll
 
-		val millisecondsElapsed = results.container.millisecondsElapsed
+		val millisecondsElapsed = results.superContainer.millisecondsElapsed
 		if (millisecondsElapsed > 0) {
 			lblMilliseconds.text = NLS.bind(Messages.WollokTestResultView_timeTestsElapsed, millisecondsElapsed.asSeconds)	
 		}
-		
-		if (results.container !== null) {
+		println("vamos a mostrat ? " +results.superContainer.hasTests)
+		if (results.superContainer.hasTests) {
 			val runningCount = count[state == WollokTestState.RUNNING]
 			val pendingCount = count[state == WollokTestState.PENDING]
 			
@@ -484,11 +477,11 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def count((WollokTestResult)=>Boolean predicate) {
-		results.container.allTests.filter(predicate).size
+		results.superContainer.allTestSize(predicate)
 	}
 
 	def total() {
-		results.container.allTests.size
+		results.superContainer.allTestSize
 	}
 
 	override setFocus() {
@@ -534,6 +527,10 @@ class WTestTreeLabelProvider extends LabelProvider {
 	def dispatch getText(WollokTestContainer element) {
 		return element.asText()
 	}
+	
+	def dispatch getText(WollokTestSuperContainer element) {
+		return element.asText()
+	}
 
 	def dispatch getText(WollokTestResult element) {
 		element.testInfo.name
@@ -555,10 +552,16 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 		if (element.container === null)
 			newArrayOfSize(0)
 		else
-			#[element.container]
+			#[element.superContainer]
 	}
-
+	
+	def dispatch getChildren(WollokTestSuperContainer element) {
+		println("getChildren: WollokTestSuperContainer " + element.containers)
+		element.containers
+	}
+	
 	def dispatch getChildren(WollokTestContainer element) {
+		println("getChildren(WollokTestContainer element)" + element.tests)
 		element.tests
 	}
 
@@ -567,10 +570,10 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 	}
 
 	def dispatch getElements(WollokTestResults inputElement) {
-		if (inputElement.container === null)
-			return newArrayOfSize(0)
+		if (inputElement.superContainer.hasTests)
+			return #[inputElement.superContainer]
 		else
-			return #[inputElement.container]
+			return newArrayOfSize(0)
 	}
 
 	def dispatch getElements(WollokTestContainer inputElement) {
@@ -582,14 +585,18 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 	}
 
 	def dispatch getParent(WollokTestResults element) { null }
+	
+	def dispatch getParent(WollokTestSuperContainer element) { null }
 
-	def dispatch getParent(WollokTestContainer element) { results }
+	def dispatch getParent(WollokTestContainer element) { results.superContainer }
 
-	def dispatch getParent(WollokTestResult element) { results.container }
+	// def dispatch getParent(WollokTestResult element) { results.container }
 
 	def dispatch hasChildren(WollokTestContainer element) { true }
+	
+	def dispatch hasChildren(WollokTestSuperContainer element) { true }
 
-	def dispatch hasChildren(WollokTestResults element) { true }
+	// def dispatch hasChildren(WollokTestResults element) { true }
 
 	def dispatch hasChildren(Object element) { false }
 
