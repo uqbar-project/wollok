@@ -19,9 +19,9 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 
 	boolean shouldShowOnlyFailuresAndErrors = false
 		
-	@Accessors
+	// @Accessors
 	// var WollokTestContainer container = new WollokTestContainer
-	var WollokTestContainer container
+	// var WollokTestContainer container
 	
 	@Accessors
 	var WollokTestSuperContainer superContainer = new WollokTestSuperContainer
@@ -56,7 +56,7 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 	
 	override showFailuresAndErrorsOnly(boolean showFailuresAndErrors) {
 		this.shouldShowOnlyFailuresAndErrors = showFailuresAndErrors
-		this.container.filterTestByState(this.shouldShowOnlyFailuresAndErrors)
+		this.superContainer.filterTestByState(this.shouldShowOnlyFailuresAndErrors)
 
 		this.setChanged
 		this.notifyObservers("testsEnded")		
@@ -70,7 +70,7 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 	}
 
 	def testByName(String testName){
-		this.container.testByName(testName)
+		superContainer.testByName(testName)
 	}
 	
 	override error(String testName, String exceptionAsString, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {
@@ -100,7 +100,6 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		]		
 		// this.container.filterTestByState(this.shouldShowOnlyFailuresAndErrors)
 		// this.container.millisecondsElapsed = millisecondsElapsed
-		// println("this.container.suiteName" + this.container.suiteName )
 		this.setChanged
 		this.notifyObservers
 	}

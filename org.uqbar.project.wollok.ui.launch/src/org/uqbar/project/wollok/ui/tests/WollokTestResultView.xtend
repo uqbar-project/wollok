@@ -111,7 +111,6 @@ class WollokTestResultView extends ViewPart implements Observer {
 //	static IViewPart previousActivePart
 
 	def static activate() {
-		println("la ui corriendo ?")
 		RunInUI.runInUI [
 			// issue #1266 - dodain - this fixes the problem
 			// but only when Wollok Tests are in a different tab that Project Explorer 
@@ -126,7 +125,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def canRelaunch() {
-		results !== null && results.container !== null && results.container.mainResource !== null
+		results !== null && results.superContainer !== null && results.superContainer.mainResource !== null
 	}
 
 	def relaunch() {
@@ -138,7 +137,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def relaunch(String mode) {
-		if (results.container.processingManyFiles) {
+		if (results.superContainer.processingManyFiles) {
 			allTestsLaunchShortcut.launch(results.container.project, mode)
 		} else {
 			testLaunchShortcut.launch(testFile, mode)
@@ -147,7 +146,6 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 	/** this method is invoked between test executions */
 	def cleanView() {
-		println("i m clean the view")
 		bar.background = pendingColor
 		bar.text = Messages.WollokTestResultView_runningTests
 		totalTextBox.text = ""
@@ -156,20 +154,12 @@ class WollokTestResultView extends ViewPart implements Observer {
 		lblMilliseconds.text = ""
 		runAgain.enabled = false
 		//debugAgain.enabled = false
-		/*(testTree.contentProvider as WTestTreeContentProvider).results.container = new WollokTestContainer() {
-			override toString() {
-				return ""
-			}
-
-			override asText() {
-				return ""
-			}
-		}
-		testTree.refresh(true)*/
+		(testTree.contentProvider as WTestTreeContentProvider).results.superContainer = new WollokTestSuperContainer()
+		testTree.refresh(true)
 	}
 
 	def testFile() {
-		results.container.mainResource.toIFile
+		results.superContainer.mainResource.toIFile
 	}
 
 	def toggleShowFailuresAndErrors() {
@@ -199,7 +189,6 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 	
 	override createPartControl(Composite parent) {
-		println("wtf ?")
 		parent.background = new Color(Display.current, new RGB(220, 220, 220))
 		resManager = new LocalResourceManager(JFaceResources.getResources(), parent)
 		new GridLayout() => [
@@ -290,7 +279,6 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def createTree(Composite parent) {
-		println("createTree" + results)
 		testTree = new TreeViewer(parent, SWT.V_SCROLL.bitwiseOr(SWT.BORDER).bitwiseOr(SWT.SINGLE))
 		testTree.contentProvider = new WTestTreeContentProvider => [
 			it.results = results
@@ -429,14 +417,14 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	override update(Observable o, Object arg) {
-		testTree.refresh(true) // esta linea me borra el describe anterior !
+		testTree.refresh(true)
 		testTree.expandAll
 
 		val millisecondsElapsed = results.superContainer.millisecondsElapsed
 		if (millisecondsElapsed > 0) {
 			lblMilliseconds.text = NLS.bind(Messages.WollokTestResultView_timeTestsElapsed, millisecondsElapsed.asSeconds)	
 		}
-		println("vamos a mostrat ? " +results.superContainer.hasTests)
+		
 		if (results.superContainer.hasTests) {
 			val runningCount = count[state == WollokTestState.RUNNING]
 			val pendingCount = count[state == WollokTestState.PENDING]
@@ -548,7 +536,6 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 	var WollokTestResults results
 
 	def dispatch getChildren(WollokTestResults element) {
-		println("holaaaa" + element)
 		if (element.container === null)
 			newArrayOfSize(0)
 		else
@@ -556,12 +543,10 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 	}
 	
 	def dispatch getChildren(WollokTestSuperContainer element) {
-		println("getChildren: WollokTestSuperContainer " + element.containers)
 		element.containers
 	}
 	
 	def dispatch getChildren(WollokTestContainer element) {
-		println("getChildren(WollokTestContainer element)" + element.tests)
 		element.tests
 	}
 
