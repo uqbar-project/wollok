@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.launch.tests
 
 import java.util.List
 import org.uqbar.project.wollok.errorHandling.StackTraceElementDTO
+import org.uqbar.project.wollok.wollokDsl.WFile
 
 /**
  * @author tesonep
@@ -21,5 +22,7 @@ interface WollokRemoteUITestNotifier {
 	def void testsResult(List<WollokResultTestDTO> resultTests, long millisecondsElapsed)
 
 	def void showFailuresAndErrorsOnly(boolean showFailuresAndErrors)
+	
+	def void start()
 	
 }

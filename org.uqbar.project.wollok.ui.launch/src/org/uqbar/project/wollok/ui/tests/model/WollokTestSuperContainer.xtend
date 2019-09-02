@@ -2,9 +2,9 @@ package org.uqbar.project.wollok.ui.tests.model
 
 import java.util.ArrayList
 import java.util.List
-import java.util.stream.Collectors
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.launch.Messages
 
 @Accessors
 class WollokTestSuperContainer {

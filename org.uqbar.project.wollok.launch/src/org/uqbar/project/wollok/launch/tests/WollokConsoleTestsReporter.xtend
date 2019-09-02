@@ -106,4 +106,9 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 	def processWasOK() {
 		testsFailed + testsErrored === 0
 	}
+	
+	override start() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
 }

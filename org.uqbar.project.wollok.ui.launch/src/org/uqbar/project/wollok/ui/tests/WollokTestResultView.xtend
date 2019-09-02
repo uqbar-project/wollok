@@ -45,6 +45,7 @@ import org.uqbar.project.wollok.ui.console.RunInUI
 import org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages
 import org.uqbar.project.wollok.ui.launch.Activator
 import org.uqbar.project.wollok.ui.tests.model.WollokTestContainer
+import org.uqbar.project.wollok.ui.tests.model.WollokTestGlobalContainer
 import org.uqbar.project.wollok.ui.tests.model.WollokTestResult
 import org.uqbar.project.wollok.ui.tests.model.WollokTestResults
 import org.uqbar.project.wollok.ui.tests.model.WollokTestState
@@ -154,7 +155,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 		lblMilliseconds.text = ""
 		runAgain.enabled = false
 		//debugAgain.enabled = false
-		(testTree.contentProvider as WTestTreeContentProvider).results.superContainer = new WollokTestSuperContainer()
+		(testTree.contentProvider as WTestTreeContentProvider).results.globalContainer = new WollokTestGlobalContainer()
 		testTree.refresh(true)
 	}
 
@@ -519,7 +520,11 @@ class WTestTreeLabelProvider extends LabelProvider {
 	def dispatch getText(WollokTestSuperContainer element) {
 		return element.asText()
 	}
-
+	
+	def dispatch getText(WollokTestGlobalContainer element) {
+		return element.asText()
+	}
+	
 	def dispatch getText(WollokTestResult element) {
 		element.testInfo.name
 	}
@@ -536,14 +541,19 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 	var WollokTestResults results
 
 	def dispatch getChildren(WollokTestResults element) {
-		if (element.container === null)
-			newArrayOfSize(0)
+		if(element.globalContainer.hasTests)
+			#[element.globalContainer]
 		else
-			#[element.superContainer]
+			return newArrayOfSize(0)	
+		
 	}
 	
 	def dispatch getChildren(WollokTestSuperContainer element) {
 		element.containers
+	}
+	
+	def dispatch getChildren(WollokTestGlobalContainer globalContainer){
+		globalContainer.testFiles
 	}
 	
 	def dispatch getChildren(WollokTestContainer element) {
@@ -554,9 +564,10 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 		newArrayList(0)
 	}
 
+	
 	def dispatch getElements(WollokTestResults inputElement) {
-		if (inputElement.superContainer.hasTests)
-			return #[inputElement.superContainer]
+		if(inputElement.globalContainer.hasTests)
+			#[inputElement.globalContainer]
 		else
 			return newArrayOfSize(0)
 	}
@@ -571,18 +582,19 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 
 	def dispatch getParent(WollokTestResults element) { null }
 	
-	def dispatch getParent(WollokTestSuperContainer element) { null }
+	def dispatch getParent(WollokTestGlobalContainer element) { results }
+	
+	def dispatch getParent(WollokTestSuperContainer element) { results.globalContainer }
 
 	def dispatch getParent(WollokTestContainer element) { results.superContainer }
 
-	// def dispatch getParent(WollokTestResult element) { results.container }
-
-	def dispatch hasChildren(WollokTestContainer element) { true }
+	
+	def dispatch hasChildren(WollokTestGlobalContainer element) { true }
 	
 	def dispatch hasChildren(WollokTestSuperContainer element) { true }
-
-	// def dispatch hasChildren(WollokTestResults element) { true }
-
+	
+	def dispatch hasChildren(WollokTestContainer element) { true }
+	
 	def dispatch hasChildren(Object element) { false }
 
 	override dispose() {}

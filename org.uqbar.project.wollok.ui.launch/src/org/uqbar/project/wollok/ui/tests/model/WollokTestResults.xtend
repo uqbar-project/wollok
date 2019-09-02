@@ -10,6 +10,7 @@ import org.uqbar.project.wollok.launch.tests.WollokRemoteUITestNotifier
 import org.uqbar.project.wollok.launch.tests.WollokResultTestDTO
 import org.uqbar.project.wollok.launch.tests.WollokTestInfo
 import org.uqbar.project.wollok.ui.console.RunInUI
+import org.uqbar.project.wollok.wollokDsl.WFile
 
 /**
  * This class represents the model of the results of an execution.
@@ -18,14 +19,17 @@ import org.uqbar.project.wollok.ui.console.RunInUI
 class WollokTestResults extends Observable implements WollokRemoteUITestNotifier { 
 
 	boolean shouldShowOnlyFailuresAndErrors = false
-		
-	// @Accessors
-	// var WollokTestContainer container = new WollokTestContainer
-	// var WollokTestContainer container
 	
 	@Accessors
 	var WollokTestSuperContainer superContainer = new WollokTestSuperContainer
 	
+	@Accessors
+	var WollokTestGlobalContainer globalContainer = new WollokTestGlobalContainer
+	
+	override start(){
+		superContainer = new WollokTestSuperContainer
+		globalContainer = new WollokTestGlobalContainer
+	}
 	
 	override assertError(String testName, String message, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {
 		testByName(testName).endedAssertError(message, stackTrace, lineNumber, resource)
@@ -48,8 +52,13 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		container.processingManyFiles = processingManyFiles
 		container.mainResource = URI.createURI(containerResource)
 		container.defineTests(newArrayList(tests.map[new WollokTestResult(it)]), this.shouldShowOnlyFailuresAndErrors)
+		this.superContainer.processingManyFiles = processingManyFiles
 		this.superContainer.mainResource = URI.createURI(containerResource)
 		this.superContainer.add(container)
+		
+		this.globalContainer.add(this.superContainer)
+		this.globalContainer.processingManyFiles = processingManyFiles
+		
 		this.setChanged
 		this.notifyObservers("testReceived")		
 	}
@@ -98,10 +107,11 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 				test.endedError(message, stackTrace, errorLineNumber, resource)
 			}
 		]		
-		// this.container.filterTestByState(this.shouldShowOnlyFailuresAndErrors)
+		this.globalContainer.filterTestByState(this.shouldShowOnlyFailuresAndErrors)
 		// this.container.millisecondsElapsed = millisecondsElapsed
 		this.setChanged
 		this.notifyObservers
 	}
+	
 
 }

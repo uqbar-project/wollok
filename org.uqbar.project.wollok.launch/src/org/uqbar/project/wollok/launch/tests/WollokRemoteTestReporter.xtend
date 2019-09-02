@@ -7,8 +7,6 @@ import java.util.List
 import net.sf.lipermi.handler.CallHandler
 import net.sf.lipermi.net.Client
 import org.eclipse.emf.common.util.URI
-import org.eclipse.osgi.util.NLS
-import org.uqbar.project.wollok.launch.Messages
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WTest
@@ -57,27 +55,22 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	}
 
 	override testsToRun(String _suiteName, WFile file, List<WTest> tests) {
-		println("i m here ?")
 		this.suiteName = _suiteName
 		val fileURI = file.eResource.URI.toString
 		
-		println("i NOT processing and doing suite: "+ suiteName)
-		
-		remoteTestNotifier.testsToRun(suiteName, fileURI, getRunnedTestsInfo(tests, fileURI, suiteName), false)
-			
+		remoteTestNotifier.testsToRun(suiteName, fileURI, getRunnedTestsInfo(tests, fileURI, suiteName), processingManyFiles)
 		/*if (processingManyFiles) {
-		 * 
 			println("i m processing many files ?")
-			if (this.folder !== null) {
+			/*if (this.folder !== null) {
 				this.suiteName = NLS.bind(Messages.ALL_TEST_IN_FOLDER, this.folder)
 			} else {
 				this.suiteName = Messages.ALL_TEST_IN_PROJECT
 			}
-			println("suite name " + suiteName + " or " + this.suiteName)
+					println("suite name " + suiteName + " or " + this.suiteName)
 			this.testFiles.addAll(getRunnedTestsInfo(tests, fileURI, suiteName))
 		} else {
 			println("i NOT processing and doing suite: "+ suiteName)
-			remoteTestNotifier.testsToRun(suiteName, fileURI, getRunnedTestsInfo(tests, fileURI, suiteName), false)
+			
 		}*/
 	}
 
@@ -107,6 +100,7 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	}
 	
 	override endProcessManyFiles() {
+		println("endProcessManyFiles?")
 		remoteTestNotifier => [
 			testsToRun(suiteName, "", this.testFiles, true)
 			testsResult(testsResult, (System.currentTimeMillis - this.initialTime))
@@ -116,6 +110,10 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	
 	protected def List<WollokTestInfo> getRunnedTestsInfo(List<WTest> tests, String fileURI, String suiteName) {
 		new ArrayList(tests.map[new WollokTestInfo(it, fileURI, processingManyFiles, suiteName)])
+	}
+	
+	override start() {
+		remoteTestNotifier.start()
 	}
 	
 }

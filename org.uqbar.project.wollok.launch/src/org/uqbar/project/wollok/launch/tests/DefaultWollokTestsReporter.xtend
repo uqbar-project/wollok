@@ -37,4 +37,8 @@ class DefaultWollokTestsReporter implements WollokTestsReporter {
 	override endProcessManyFiles() {
 	}
 	
+	override start() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
 }

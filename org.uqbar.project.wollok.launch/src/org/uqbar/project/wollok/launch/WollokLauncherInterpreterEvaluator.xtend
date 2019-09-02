@@ -33,11 +33,16 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	// EVALUATIONS (as multimethods)
 	override dispatch evaluate(WFile it) {
 		// Files are not allowed to have both a main program and tests at the same time.
+		println("evaluate >>>?")
+		
+		
+		
 		if (main !== null)
 			main.eval
 		else {
 			val time = System.currentTimeMillis
 			val _isASuite = isASuite
+			wollokTestsReporter.start()
 			suites.forEach [suite |
 				var testsToRun = tests
 				var String suiteName = null
@@ -45,9 +50,9 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 					suiteName = suite.name
 					testsToRun = suite.tests
 				}
-				// tell to somebody, the test i will run
+				// tell to somebody, the tests i will run
 				wollokTestsReporter.testsToRun(suiteName, it, testsToRun)
-				
+				// run these test
 					testsToRun.fold(null) [ a, _test |
 						resetGlobalState
 						if (_isASuite) {
@@ -58,6 +63,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 					]
 				
 			]
+		
 			wollokTestsReporter.finished(System.currentTimeMillis - time)
 			
 			null
