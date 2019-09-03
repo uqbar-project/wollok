@@ -7,7 +7,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.launch.Messages
 
 @Accessors
-class WollokTestSuperContainer {
+class WollokTestFileContainer {
 	var List<WollokTestContainer> containers = new ArrayList
 	var URI mainResource
 	var boolean processingManyFiles = false

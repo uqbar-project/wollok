@@ -21,14 +21,19 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 	boolean shouldShowOnlyFailuresAndErrors = false
 	
 	@Accessors
-	var WollokTestSuperContainer superContainer = new WollokTestSuperContainer
+	var WollokTestFileContainer fileContainer = new WollokTestFileContainer
 	
 	@Accessors
 	var WollokTestGlobalContainer globalContainer = new WollokTestGlobalContainer
 	
 	override start(){
-		superContainer = new WollokTestSuperContainer
 		globalContainer = new WollokTestGlobalContainer
+	}
+	
+	override startFile(String file) {
+		println("initialize " + file)
+		fileContainer = new WollokTestFileContainer
+		fileContainer.mainResource = URI.createURI(file)
 	}
 	
 	override assertError(String testName, String message, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {
@@ -52,11 +57,11 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		container.processingManyFiles = processingManyFiles
 		container.mainResource = URI.createURI(containerResource)
 		container.defineTests(newArrayList(tests.map[new WollokTestResult(it)]), this.shouldShowOnlyFailuresAndErrors)
-		this.superContainer.processingManyFiles = processingManyFiles
-		this.superContainer.mainResource = URI.createURI(containerResource)
-		this.superContainer.add(container)
 		
-		this.globalContainer.add(this.superContainer)
+		this.fileContainer.processingManyFiles = processingManyFiles
+		this.fileContainer.add(container)
+		println("i m running " + this.fileContainer.mainResource)
+		this.globalContainer.add(this.fileContainer)
 		this.globalContainer.processingManyFiles = processingManyFiles
 		
 		this.setChanged
@@ -65,7 +70,7 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 	
 	override showFailuresAndErrorsOnly(boolean showFailuresAndErrors) {
 		this.shouldShowOnlyFailuresAndErrors = showFailuresAndErrors
-		this.superContainer.filterTestByState(this.shouldShowOnlyFailuresAndErrors)
+		this.fileContainer.filterTestByState(this.shouldShowOnlyFailuresAndErrors)
 
 		this.setChanged
 		this.notifyObservers("testsEnded")		
@@ -79,7 +84,7 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 	}
 
 	def testByName(String testName){
-		superContainer.testByName(testName)
+		fileContainer.testByName(testName)
 	}
 	
 	override error(String testName, String exceptionAsString, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {
@@ -112,6 +117,8 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		this.setChanged
 		this.notifyObservers
 	}
+	
+	
 	
 
 }

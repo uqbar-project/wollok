@@ -693,7 +693,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		
 	/* Including file name for multiple tests */
 	def static getFullName(WTest test, boolean processingManyFiles) {
-		(if (processingManyFiles) (test.file.URI.lastSegment ?: "") + " - " else "") + test.name
+		test.name
 	}
 
 	def static dispatch Boolean isVariable(EObject o) { false }

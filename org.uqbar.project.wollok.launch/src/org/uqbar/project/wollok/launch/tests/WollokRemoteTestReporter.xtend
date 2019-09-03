@@ -57,21 +57,7 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	override testsToRun(String _suiteName, WFile file, List<WTest> tests) {
 		this.suiteName = _suiteName
 		val fileURI = file.eResource.URI.toString
-		
 		remoteTestNotifier.testsToRun(suiteName, fileURI, getRunnedTestsInfo(tests, fileURI, suiteName), processingManyFiles)
-		/*if (processingManyFiles) {
-			println("i m processing many files ?")
-			/*if (this.folder !== null) {
-				this.suiteName = NLS.bind(Messages.ALL_TEST_IN_FOLDER, this.folder)
-			} else {
-				this.suiteName = Messages.ALL_TEST_IN_PROJECT
-			}
-					println("suite name " + suiteName + " or " + this.suiteName)
-			this.testFiles.addAll(getRunnedTestsInfo(tests, fileURI, suiteName))
-		} else {
-			println("i NOT processing and doing suite: "+ suiteName)
-			
-		}*/
 	}
 
 	override testStart(WTest test) {
@@ -102,7 +88,6 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	override endProcessManyFiles() {
 		println("endProcessManyFiles?")
 		remoteTestNotifier => [
-			testsToRun(suiteName, "", this.testFiles, true)
 			testsResult(testsResult, (System.currentTimeMillis - this.initialTime))
 		]
 		processingManyFiles = false
@@ -112,8 +97,15 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 		new ArrayList(tests.map[new WollokTestInfo(it, fileURI, processingManyFiles, suiteName)])
 	}
 	
-	override start() {
+	override start(WFile it) {
 		remoteTestNotifier.start()
+		if(!processingManyFiles){
+			startFile(it)	
+		}
+	}
+	
+	override startFile(WFile file) {
+		remoteTestNotifier.startFile(file.eResource.URI.toString)
 	}
 	
 }

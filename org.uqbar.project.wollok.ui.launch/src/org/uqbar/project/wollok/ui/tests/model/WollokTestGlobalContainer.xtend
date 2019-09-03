@@ -7,11 +7,12 @@ import org.uqbar.project.wollok.launch.Messages
 
 @Accessors
 public class WollokTestGlobalContainer {
-	var List<WollokTestSuperContainer> testFiles = new ArrayList
+	var List<WollokTestFileContainer> testFiles = new ArrayList
 	var boolean processingManyFiles = false
 
-	def void add(WollokTestSuperContainer container) {
+	def void add(WollokTestFileContainer container) {
 		val isAlreadyExists = this.testFiles.findFirst[file|file.mainResource == container.mainResource]
+		println(container.mainResource + "isAlreadyExists ? " + isAlreadyExists)
 		if (isAlreadyExists === null) {
 			testFiles.add(container)
 		}

@@ -30,7 +30,9 @@ interface WollokTestsReporter {
 	def void initProcessManyFiles(String folder)
 	def void endProcessManyFiles()
 	
-	def void start()
+	def void start(WFile file)
+	
+	def void startFile(WFile file)
 	
 	
 }

@@ -49,12 +49,12 @@ import org.uqbar.project.wollok.ui.tests.model.WollokTestGlobalContainer
 import org.uqbar.project.wollok.ui.tests.model.WollokTestResult
 import org.uqbar.project.wollok.ui.tests.model.WollokTestResults
 import org.uqbar.project.wollok.ui.tests.model.WollokTestState
-import org.uqbar.project.wollok.ui.tests.model.WollokTestSuperContainer
 import org.uqbar.project.wollok.ui.tests.shortcut.WollokAllTestsLaunchShortcut
 import org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut
 
 import static extension org.uqbar.project.wollok.utils.StringUtils.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import org.uqbar.project.wollok.ui.tests.model.WollokTestFileContainer
 
 /**
  * @author tesonep
@@ -126,7 +126,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def canRelaunch() {
-		results !== null && results.superContainer !== null && results.superContainer.mainResource !== null
+		results !== null && results.getFileContainer !== null && results.getFileContainer.mainResource !== null
 	}
 
 	def relaunch() {
@@ -138,7 +138,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def relaunch(String mode) {
-		if (results.superContainer.processingManyFiles) {
+		if (results.getFileContainer.processingManyFiles) {
 			allTestsLaunchShortcut.launch(results.container.project, mode)
 		} else {
 			testLaunchShortcut.launch(testFile, mode)
@@ -160,7 +160,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def testFile() {
-		results.superContainer.mainResource.toIFile
+		results.getFileContainer.mainResource.toIFile
 	}
 
 	def toggleShowFailuresAndErrors() {
@@ -421,12 +421,12 @@ class WollokTestResultView extends ViewPart implements Observer {
 		testTree.refresh(true)
 		testTree.expandAll
 
-		val millisecondsElapsed = results.superContainer.millisecondsElapsed
+		val millisecondsElapsed = results.getFileContainer.millisecondsElapsed
 		if (millisecondsElapsed > 0) {
 			lblMilliseconds.text = NLS.bind(Messages.WollokTestResultView_timeTestsElapsed, millisecondsElapsed.asSeconds)	
 		}
 		
-		if (results.superContainer.hasTests) {
+		if (results.getFileContainer.hasTests) {
 			val runningCount = count[state == WollokTestState.RUNNING]
 			val pendingCount = count[state == WollokTestState.PENDING]
 			
@@ -466,11 +466,11 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def count((WollokTestResult)=>Boolean predicate) {
-		results.superContainer.allTestSize(predicate)
+		results.getFileContainer.allTestSize(predicate)
 	}
 
 	def total() {
-		results.superContainer.allTestSize
+		results.getFileContainer.allTestSize
 	}
 
 	override setFocus() {
@@ -512,12 +512,22 @@ class WTestTreeLabelProvider extends LabelProvider {
 		var imageDescriptor = Activator.getDefault.getImageDescriptor("icons/w.png")
 		resourceManager.createImage(imageDescriptor)
 	}
+	
+	def dispatch getImage(WollokTestContainer element) {
+		var imageDescriptor = Activator.getDefault.getImageDescriptor("icons/suite.png")
+		resourceManager.createImage(imageDescriptor)
+	}
+	
+	def dispatch getImage(WollokTestFileContainer element) {
+		var imageDescriptor = Activator.getDefault.getImageDescriptor("icons/wollok-icon-test_16.png")
+		resourceManager.createImage(imageDescriptor)
+	}
 
 	def dispatch getText(WollokTestContainer element) {
 		return element.asText()
 	}
 	
-	def dispatch getText(WollokTestSuperContainer element) {
+	def dispatch getText(WollokTestFileContainer element) {
 		return element.asText()
 	}
 	
@@ -548,7 +558,7 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 		
 	}
 	
-	def dispatch getChildren(WollokTestSuperContainer element) {
+	def dispatch getChildren(WollokTestFileContainer element) {
 		element.containers
 	}
 	
@@ -584,14 +594,14 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 	
 	def dispatch getParent(WollokTestGlobalContainer element) { results }
 	
-	def dispatch getParent(WollokTestSuperContainer element) { results.globalContainer }
+	def dispatch getParent(WollokTestFileContainer element) { results.globalContainer }
 
-	def dispatch getParent(WollokTestContainer element) { results.superContainer }
+	def dispatch getParent(WollokTestContainer element) { results.getFileContainer }
 
 	
 	def dispatch hasChildren(WollokTestGlobalContainer element) { true }
 	
-	def dispatch hasChildren(WollokTestSuperContainer element) { true }
+	def dispatch hasChildren(WollokTestFileContainer element) { true }
 	
 	def dispatch hasChildren(WollokTestContainer element) { true }
 	

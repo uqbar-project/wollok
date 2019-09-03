@@ -33,16 +33,13 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	// EVALUATIONS (as multimethods)
 	override dispatch evaluate(WFile it) {
 		// Files are not allowed to have both a main program and tests at the same time.
-		println("evaluate >>>?")
-		
-		
-		
 		if (main !== null)
 			main.eval
 		else {
 			val time = System.currentTimeMillis
 			val _isASuite = isASuite
-			wollokTestsReporter.start()
+			wollokTestsReporter.start(it)
+			
 			suites.forEach [suite |
 				var testsToRun = tests
 				var String suiteName = null
@@ -53,14 +50,14 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 				// tell to somebody, the tests i will run
 				wollokTestsReporter.testsToRun(suiteName, it, testsToRun)
 				// run these test
-					testsToRun.fold(null) [ a, _test |
+				testsToRun.fold(null) [ a, _test |
 						resetGlobalState
 						if (_isASuite) {
 							_test.evalInSuite(suite)
 						} else {
 							_test.eval
 						}
-					]
+					] 
 				
 			]
 		
@@ -71,11 +68,33 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	}
 
 	override evaluateAll(List<EObject> eObjects, String folder) {
+		println("i m a entry point")
 		wollokTestsReporter.initProcessManyFiles(folder)
+	
+		
 		val result = eObjects.fold(null, [ o, eObject |
+			val file = eObject as WFile
 			interpreter.initStack
-			interpreter.generateStack(eObject)		 
-			evaluate(eObject as WFile)
+			interpreter.generateStack(eObject)
+			wollokTestsReporter.startFile(file)	
+			val _isASuite = isASuite(file)	 
+			//evaluate(file)
+			file.suites.forEach [suite |
+			var testsToRun = suite.tests
+				// tell to somebody, the tests i will run
+				wollokTestsReporter.testsToRun(suite.name, file,testsToRun )
+				// run these test
+					testsToRun.fold(null) [ a, _test |
+						resetGlobalState
+						if (_isASuite) {
+							_test.evalInSuite(suite)
+						} else {
+							_test.eval
+						}
+					] 
+				
+			]
+			null
 		])
 		wollokTestsReporter.endProcessManyFiles
 		result

@@ -833,9 +833,8 @@ class WollokModelExtensions {
 	def static dispatch isASuite(EObject o) { false }
 
 	def static dispatch isASuite(WFile it) {
-					println(tests)
-					println(suites)
-		 
+		// println(tests)
+		// println(suites) 
 		tests.empty && !suites.empty
 	}
 

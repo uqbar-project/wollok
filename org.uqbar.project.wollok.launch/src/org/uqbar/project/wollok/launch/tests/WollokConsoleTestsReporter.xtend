@@ -111,4 +111,8 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
+	override startFile(WFile file) {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
 }
