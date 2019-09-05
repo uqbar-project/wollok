@@ -31,7 +31,6 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 	}
 	
 	override startFile(String file) {
-		println("initialize " + file)
 		fileContainer = new WollokTestFileContainer
 		fileContainer.mainResource = URI.createURI(file)
 	}
@@ -58,11 +57,10 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		container.mainResource = URI.createURI(containerResource)
 		container.defineTests(newArrayList(tests.map[new WollokTestResult(it)]), this.shouldShowOnlyFailuresAndErrors)
 		
-		this.fileContainer.processingManyFiles = processingManyFiles
-		this.fileContainer.add(container)
-		println("i m running " + this.fileContainer.mainResource)
-		this.globalContainer.add(this.fileContainer)
-		this.globalContainer.processingManyFiles = processingManyFiles
+		fileContainer.processingManyFiles = processingManyFiles
+		fileContainer.add(container)
+		globalContainer.add(this.fileContainer)
+		globalContainer.processingManyFiles = processingManyFiles
 		
 		this.setChanged
 		this.notifyObservers("testReceived")		
@@ -84,7 +82,7 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 	}
 
 	def testByName(String testName){
-		fileContainer.testByName(testName)
+		globalContainer.testByName(testName)
 	}
 	
 	override error(String testName, String exceptionAsString, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {
@@ -112,8 +110,8 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 				test.endedError(message, stackTrace, errorLineNumber, resource)
 			}
 		]		
-		this.globalContainer.filterTestByState(this.shouldShowOnlyFailuresAndErrors)
-		// this.container.millisecondsElapsed = millisecondsElapsed
+		globalContainer.filterTestByState(this.shouldShowOnlyFailuresAndErrors)
+		globalContainer.millisecondsElapsed = millisecondsElapsed
 		this.setChanged
 		this.notifyObservers
 	}

@@ -38,8 +38,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 		else {
 			val time = System.currentTimeMillis
 			val _isASuite = isASuite
-			wollokTestsReporter.start(it)
-			
+			wollokTestsReporter.start(it)			
 			suites.forEach [suite |
 				var testsToRun = tests
 				var String suiteName = null
@@ -48,18 +47,18 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 					testsToRun = suite.tests
 				}
 				// tell to somebody, the tests i will run
+				
 				wollokTestsReporter.testsToRun(suiteName, it, testsToRun)
 				// run these test
-				testsToRun.fold(null) [ a, _test |
-						resetGlobalState
+				testsToRun.forEach [ test |
+					resetGlobalState
 						if (_isASuite) {
-							_test.evalInSuite(suite)
+							test.evalInSuite(suite)
 						} else {
-							_test.eval
-						}
-					] 
-				
-			]
+							test.eval
+						}	
+					]
+				]
 		
 			wollokTestsReporter.finished(System.currentTimeMillis - time)
 			
@@ -68,31 +67,23 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	}
 
 	override evaluateAll(List<EObject> eObjects, String folder) {
-		println("i m a entry point")
-		wollokTestsReporter.initProcessManyFiles(folder)
-	
-		
+		wollokTestsReporter.initProcessManyFiles(folder)	
 		val result = eObjects.fold(null, [ o, eObject |
 			val file = eObject as WFile
 			interpreter.initStack
 			interpreter.generateStack(eObject)
 			wollokTestsReporter.startFile(file)	
 			val _isASuite = isASuite(file)	 
-			//evaluate(file)
 			file.suites.forEach [suite |
-			var testsToRun = suite.tests
-				// tell to somebody, the tests i will run
-				wollokTestsReporter.testsToRun(suite.name, file,testsToRun )
-				// run these test
-					testsToRun.fold(null) [ a, _test |
-						resetGlobalState
+				var testsToRun = suite.tests
+				wollokTestsReporter.testsToRun(suite.name, file,testsToRun)
+				testsToRun.forEach [ test | 
+					resetGlobalState
 						if (_isASuite) {
-							_test.evalInSuite(suite)
+							test.evalInSuite(suite)
 						} else {
-							_test.eval
-						}
-					] 
-				
+							test.eval
+						}] 
 			]
 			null
 		])

@@ -71,10 +71,7 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	}
 
 	override finished(long timeElapsedInMilliseconds) {
-		println("finished and the testsResult")
-		println(testsResult)
 		if (!processingManyFiles) {
-			println("im not processing many files")
 			remoteTestNotifier.testsResult(testsResult, timeElapsedInMilliseconds)
 		}
 	}
@@ -86,10 +83,7 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	}
 	
 	override endProcessManyFiles() {
-		println("endProcessManyFiles?")
-		remoteTestNotifier => [
-			testsResult(testsResult, (System.currentTimeMillis - this.initialTime))
-		]
+		remoteTestNotifier.testsResult(testsResult, (System.currentTimeMillis - this.initialTime))
 		processingManyFiles = false
 	}
 	
@@ -99,9 +93,7 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	
 	override start(WFile it) {
 		remoteTestNotifier.start()
-		if(!processingManyFiles){
-			startFile(it)	
-		}
+		startFile(it)	
 	}
 	
 	override startFile(WFile file) {

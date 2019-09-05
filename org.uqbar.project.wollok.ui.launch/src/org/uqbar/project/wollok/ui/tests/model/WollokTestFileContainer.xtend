@@ -4,7 +4,6 @@ import java.util.ArrayList
 import java.util.List
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.uqbar.project.wollok.launch.Messages
 
 @Accessors
 class WollokTestFileContainer {
@@ -37,11 +36,7 @@ class WollokTestFileContainer {
 
 	def allTestSize((WollokTestResult)=>Boolean predicate) {
 		return allTest().filter(predicate).size
-	}
-
-	def long getMillisecondsElapsed() {
-		return containers.fold(0l)[seed, container|container.millisecondsElapsed + seed]
-	}
+	}	
 
 	def hasTests() {
 		this.containers.size >= 1

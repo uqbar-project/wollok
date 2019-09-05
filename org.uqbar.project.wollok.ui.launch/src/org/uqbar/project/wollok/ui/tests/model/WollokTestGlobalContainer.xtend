@@ -9,10 +9,10 @@ import org.uqbar.project.wollok.launch.Messages
 public class WollokTestGlobalContainer {
 	var List<WollokTestFileContainer> testFiles = new ArrayList
 	var boolean processingManyFiles = false
+	long millisecondsElapsed = 0
 
 	def void add(WollokTestFileContainer container) {
 		val isAlreadyExists = this.testFiles.findFirst[file|file.mainResource == container.mainResource]
-		println(container.mainResource + "isAlreadyExists ? " + isAlreadyExists)
 		if (isAlreadyExists === null) {
 			testFiles.add(container)
 		}
@@ -26,6 +26,7 @@ public class WollokTestGlobalContainer {
 	}
 
 	def hasTests() {
+		// TODO: seria mejor chequear todos los test children
 		return !testFiles.empty
 	}
 
@@ -33,34 +34,18 @@ public class WollokTestGlobalContainer {
 		this.testFiles.forEach[testFile|testFile.filterTestByState(shouldShowOnlyFailuresAndErrors)]
 	}
 
-/*def testByName(String testName) {
- * 	allTest.findFirst[name == testName]
- * }
+	def allTest() {
+		val allTest = new ArrayList
+		this.testFiles.forEach[file|allTest.addAll(file.allTest())]
+		return allTest
+	}
 
- * def allTest() {
- * 	val allTest = new ArrayList
- * 	var unFlattedTests = this.containers.map[container|container.tests]
- * 	unFlattedTests.forEach[tests|allTest.addAll(tests)]
- * 	return allTest
- * }
+	def allTest((WollokTestResult)=>Boolean predicate) {
+		return allTest().filter(predicate)
+	}
 
- * def allTestSize() {
- * 	return this.allTest().size()
- * }
+	def testByName(String testName) {
+		allTest.findFirst[name == testName]
+	}
 
- * def allTestSize((WollokTestResult)=>Boolean predicate) {
- * 	return allTest().filter(predicate).size
- * }
-
- * def long getMillisecondsElapsed() {
- * 	return containers.fold(0l)[seed, container|container.millisecondsElapsed + seed]
- * }
-
- * def hasTests() {
- * 	this.containers.size >= 1
- * }
-
- * def filterTestByState(boolean shouldShowOnlyFailuresAndErrors) {
- * 	this.containers.forEach[container|container.filterTestByState(shouldShowOnlyFailuresAndErrors)]
- }*/
 }

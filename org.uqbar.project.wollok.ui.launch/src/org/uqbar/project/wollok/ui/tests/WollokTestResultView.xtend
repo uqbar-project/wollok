@@ -45,16 +45,17 @@ import org.uqbar.project.wollok.ui.console.RunInUI
 import org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages
 import org.uqbar.project.wollok.ui.launch.Activator
 import org.uqbar.project.wollok.ui.tests.model.WollokTestContainer
+import org.uqbar.project.wollok.ui.tests.model.WollokTestFileContainer
 import org.uqbar.project.wollok.ui.tests.model.WollokTestGlobalContainer
 import org.uqbar.project.wollok.ui.tests.model.WollokTestResult
 import org.uqbar.project.wollok.ui.tests.model.WollokTestResults
 import org.uqbar.project.wollok.ui.tests.model.WollokTestState
 import org.uqbar.project.wollok.ui.tests.shortcut.WollokAllTestsLaunchShortcut
 import org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut
+import org.uqbar.project.wollok.utils.WEclipseUtils
 
 import static extension org.uqbar.project.wollok.utils.StringUtils.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
-import org.uqbar.project.wollok.ui.tests.model.WollokTestFileContainer
 
 /**
  * @author tesonep
@@ -126,7 +127,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def canRelaunch() {
-		results !== null && results.getFileContainer !== null && results.getFileContainer.mainResource !== null
+		results !== null && results.fileContainer !== null && results.fileContainer.mainResource !== null
 	}
 
 	def relaunch() {
@@ -138,7 +139,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def relaunch(String mode) {
-		if (results.getFileContainer.processingManyFiles) {
+		if (results.globalContainer.processingManyFiles) {
 			allTestsLaunchShortcut.launch(results.container.project, mode)
 		} else {
 			testLaunchShortcut.launch(testFile, mode)
@@ -421,12 +422,12 @@ class WollokTestResultView extends ViewPart implements Observer {
 		testTree.refresh(true)
 		testTree.expandAll
 
-		val millisecondsElapsed = results.getFileContainer.millisecondsElapsed
+		val millisecondsElapsed = results.globalContainer.millisecondsElapsed
 		if (millisecondsElapsed > 0) {
 			lblMilliseconds.text = NLS.bind(Messages.WollokTestResultView_timeTestsElapsed, millisecondsElapsed.asSeconds)	
 		}
 		
-		if (results.getFileContainer.hasTests) {
+		if (results.globalContainer.hasTests) {
 			val runningCount = count[state == WollokTestState.RUNNING]
 			val pendingCount = count[state == WollokTestState.PENDING]
 			
@@ -466,16 +467,24 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def count((WollokTestResult)=>Boolean predicate) {
-		results.getFileContainer.allTestSize(predicate)
+		results.globalContainer.allTest(predicate).size
 	}
 
 	def total() {
-		results.getFileContainer.allTestSize
+		results.globalContainer.allTest.size
 	}
 
 	override setFocus() {
 	}
-
+	
+	def dispatch openElement(WollokTestGlobalContainer container) { }
+	
+	def dispatch openElement(WollokTestFileContainer container) {
+		if (container.mainResource !== null) {
+			opener.open(container.mainResource, true)
+		}
+	}
+	
 	def dispatch openElement(WollokTestContainer container) {
 		// @dodain - in case we are running all tests
 		if (container.mainResource !== null) {
@@ -491,7 +500,11 @@ class WollokTestResultView extends ViewPart implements Observer {
 		opener.open(uri, true)
 	}
 
-	def dispatch getOutputText(WollokTestContainer container) { "" }
+	def dispatch getOutputText(WollokTestContainer container) { container.asText }
+	
+	def dispatch getOutputText(WollokTestGlobalContainer container) { "" }
+
+	def dispatch getOutputText(WollokTestFileContainer container) { container.asText }
 
 	def dispatch getOutputText(WollokTestResult result) {
 		result.state.getOutputText(result)
@@ -597,7 +610,6 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 	def dispatch getParent(WollokTestFileContainer element) { results.globalContainer }
 
 	def dispatch getParent(WollokTestContainer element) { results.getFileContainer }
-
 	
 	def dispatch hasChildren(WollokTestGlobalContainer element) { true }
 	
