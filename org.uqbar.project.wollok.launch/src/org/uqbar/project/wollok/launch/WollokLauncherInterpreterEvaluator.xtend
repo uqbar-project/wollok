@@ -37,58 +37,41 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 			main.eval
 		else {
 			val time = System.currentTimeMillis
-			val _isASuite = isASuite
-			wollokTestsReporter.start(it)			
-			suites.forEach [suite |
-				var testsToRun = tests
-				var String suiteName = null
-				if (_isASuite) {
-					suiteName = suite.name
-					testsToRun = suite.tests
-				}
-				// tell to somebody, the tests i will run
-				
-				wollokTestsReporter.testsToRun(suiteName, it, testsToRun)
-				// run these test
-				testsToRun.forEach [ test |
-					resetGlobalState
-						if (_isASuite) {
-							test.evalInSuite(suite)
-						} else {
-							test.eval
-						}	
-					]
-				]
-		
+			wollokTestsReporter.start(it)
+			runTestFile(it)
 			wollokTestsReporter.finished(System.currentTimeMillis - time)
-			
 			null
 		}
 	}
-
+	def void runTestFile(WFile it){
+		if(!tests.empty){
+			wollokTestsReporter.testsToRun("Test sueltos", it, tests)
+			tests.forEach [ test |
+				resetGlobalState
+				test.eval ]
+		}
+						
+		suites.forEach [suite |
+			var testsToRun = suite.tests
+			var String suiteName = suite.name				
+			wollokTestsReporter.testsToRun(suiteName, it, testsToRun)
+			testsToRun.forEach [ test |
+				resetGlobalState
+				test.evalInSuite(suite)]
+			]
+	}
+	
 	override evaluateAll(List<EObject> eObjects, String folder) {
 		wollokTestsReporter.initProcessManyFiles(folder)	
-		val result = eObjects.fold(null, [ o, eObject |
+		eObjects.forEach [ eObject |
 			val file = eObject as WFile
 			interpreter.initStack
 			interpreter.generateStack(eObject)
 			wollokTestsReporter.startFile(file)	
-			val _isASuite = isASuite(file)	 
-			file.suites.forEach [suite |
-				var testsToRun = suite.tests
-				wollokTestsReporter.testsToRun(suite.name, file,testsToRun)
-				testsToRun.forEach [ test | 
-					resetGlobalState
-						if (_isASuite) {
-							test.evalInSuite(suite)
-						} else {
-							test.eval
-						}] 
-			]
-			null
-		])
+			runTestFile(file)
+		]
 		wollokTestsReporter.endProcessManyFiles
-		result
+		null
 	}
 	
 	def WollokObject evalInSuite(WTest test, WSuite suite) {

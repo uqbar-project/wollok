@@ -10,7 +10,6 @@ import org.uqbar.project.wollok.launch.tests.WollokRemoteUITestNotifier
 import org.uqbar.project.wollok.launch.tests.WollokResultTestDTO
 import org.uqbar.project.wollok.launch.tests.WollokTestInfo
 import org.uqbar.project.wollok.ui.console.RunInUI
-import org.uqbar.project.wollok.wollokDsl.WFile
 
 /**
  * This class represents the model of the results of an execution.
