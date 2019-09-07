@@ -4,11 +4,13 @@ import com.google.inject.Inject
 import java.util.List
 import java.util.Map
 import java.util.Set
+import org.apache.log4j.Level
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
+import org.uqbar.project.wollok.sdk.WollokSDK
 import org.uqbar.project.wollok.typesystem.ClassInstanceType
 import org.uqbar.project.wollok.typesystem.ClosureType
 import org.uqbar.project.wollok.typesystem.Constants
@@ -53,8 +55,6 @@ import static org.uqbar.project.wollok.scoping.WollokResourceCache.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.fqn
 import static extension org.uqbar.project.wollok.typesystem.annotations.TypeDeclarations.*
-import org.uqbar.project.wollok.sdk.WollokSDK
-import org.apache.log4j.Level
 
 /**
  * @author npasserini
@@ -72,7 +72,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	List<EObject> programs = newArrayList
 
 	ConstraintGenerator constraintGenerator
-
+ 
 	/**
 	 * The collection of concrete types that are known to be generic, indexed by its FQN.
 	 */
@@ -166,9 +166,9 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	Iterable<Iterable<Class<? extends AbstractInferenceStrategy>>> stages = #[
 		#[PropagatePendingMinimalTypes],
 		#[OpenMethod],
-		#[UnifyVariables],
 		#[PropagateMaximalTypes, MaxTypesFromMessages],
 		#[PropagatePostponedMinimalTypes],
+		#[UnifyVariables],
 		#[SealVariables],
 		#[GuessMinTypeFromMaxType]
 	]

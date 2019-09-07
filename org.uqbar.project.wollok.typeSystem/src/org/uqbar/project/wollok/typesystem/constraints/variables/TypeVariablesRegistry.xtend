@@ -161,7 +161,7 @@ class TypeVariablesRegistry {
 	}
 	
 	def fullReport() {
-		typeVariables.values.forEach[
+		typeVariables.values.toList.forEach[
 			if (!owner.isCoreObject) log.debug(descriptionForReport)
 		]
 	}

@@ -1,0 +1,14 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+object verde {}
+object naranja {}
+
+object banquito {
+	// XPECT type at _color --> (naranja|verde)
+	var _color = naranja
+	
+	method color() { return _color}
+	method setColor(color) { _color = color }
+	method serVerde() { self.setColor(verde) }	
+}
+

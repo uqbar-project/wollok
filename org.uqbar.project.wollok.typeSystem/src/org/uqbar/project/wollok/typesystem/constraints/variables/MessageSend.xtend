@@ -76,7 +76,7 @@ class MessageSend {
 
 	def isClosureMessage() { selector == "apply" }
 
-	def boolean isValid() { !returnType.hasErrors }
+	def boolean isValid() { !arguments.exists[hasErrors] && !returnType.hasErrors }
 
 	override toString() { returnType.owner.debugInfo }
 	
