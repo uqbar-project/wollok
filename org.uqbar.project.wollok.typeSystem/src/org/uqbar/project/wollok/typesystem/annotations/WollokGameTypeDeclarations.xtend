@@ -36,6 +36,7 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		game >> "allVisuals" === #[] => List.of(T)
 		game >> "whenKeyPressedDo" === #[Number, closure(#[], Void)] => Void
 		game >> "whenCollideDo" === #[U, closure(#[T], Void)] => Void
+		game >> "onCollideDo" === #[U, closure(#[T], Void)] => Void
 		game >> "onTick" === #[Number, String, closure(#[], Void)] => Void
 		game >> "schedule" === #[Number, closure(#[], Void)] => Void
 		game >> "removeTickEvent" === #[String] => Void
@@ -44,6 +45,7 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		game >> "colliders" === #[U] => List.of(T)
 		game >> "stop" === #[] => Void
 		game >> "start" === #[] => Void
+		game >> "doStart" === #[Boolean] => Void
 		game >> "at" === #[Number, Number] => Position
 		game >> "origin" === #[] => Position
 		game >> "center" === #[] => Position

@@ -56,16 +56,18 @@ class ConsoleInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			program p { }
 		'''.parseAndInfer.asserting [
 			val allTypes = WNamedObject.findAll + WClass.findAll
-			allTypes.forEach[methods.allTyped]
+			allTypes
+			.filter[fqn != CLOSURE]
+			.forEach[methods.allTyped]
 		]
 	}
 	
+	// If type declaration doesn't exist for any method throws TypeSystemException
 	def allTyped(Iterable<WMethodDeclaration> methods) {
-		// TODO: Access restriction problem 
 		methods.forEach[
 			(tsystem as ConstraintBasedTypeSystem)
 			.registry
-			.tvarOrParam(it) // If type declaration doesn't exist throws TypeSystemException
+			.tvarOrParam(it) // TODO: Access restriction problem 
 		]
 	}
 }

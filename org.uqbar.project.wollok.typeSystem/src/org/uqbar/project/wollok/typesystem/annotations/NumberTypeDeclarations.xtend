@@ -41,5 +41,6 @@ class NumberTypeDeclarations extends TypeDeclarations {
 		/* privates */
 		Number >> "checkNotNull" === #[T, String] => Void
 		Number >> "coerceToInteger" === #[] => Number
+		Number >> "coerceToPositiveInteger" === #[] => Number
 	}
 }

@@ -170,6 +170,16 @@ abstract class TypeDeclarations {
 	def String() { classTypeAnnotation(STRING) }
 
 	def Date() { classTypeAnnotation(DATE) }
+	
+	def Days() { unionType(
+		objectTypeAnnotation(MONDAY), 
+		objectTypeAnnotation(TUESDAY), 
+		objectTypeAnnotation(WEDNESDAY), 
+		objectTypeAnnotation(THURSDAY), 
+		objectTypeAnnotation(FRIDAY), 
+		objectTypeAnnotation(SATURDAY), 
+		objectTypeAnnotation(SUNDAY)
+	) }
 
 	def List() { genericTypeAnnotation(LIST, GenericTypeInfo.ELEMENT) }
 

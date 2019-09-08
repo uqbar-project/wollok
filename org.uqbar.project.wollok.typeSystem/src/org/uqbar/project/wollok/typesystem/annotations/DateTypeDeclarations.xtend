@@ -11,11 +11,14 @@ class DateTypeDeclarations extends TypeDeclarations {
 		Date >> "plusMonths" === #[Number] => Date
 		Date >> "plusYears" === #[Number] => Date
 		Date >> "isLeapYear" === #[] => Boolean
+		Date >> "dayOfWeek" === #[] => Days
 		Date >> "internalDayOfWeek" === #[] => Number
 		Date >> "minusDays" === #[Number] => Date
 		Date >> "minusMonths" === #[Number] => Date
 		Date >> "minusYears" === #[Number] => Date
 		Date >> "between" === #[Date, Date] => Boolean
+		// Private
+		Date >> "initialize" === #[] => Void;		
 		Date >> "toSmartString" === #[Boolean] => String;
 	}
 }
