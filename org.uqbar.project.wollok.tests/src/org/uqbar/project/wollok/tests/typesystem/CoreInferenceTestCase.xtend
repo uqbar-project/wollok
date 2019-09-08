@@ -1,62 +1,37 @@
 package org.uqbar.project.wollok.tests.typesystem
 
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
+import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
 import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WClass
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * Test cases for type inference related to the console object.
  * 
  * @author npasserini
  */
-class ConsoleInferenceTestCase extends AbstractWollokTypeSystemTestCase {
+class CoreInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 
 	@Parameters(name="{index}: {0}")
 	static def Object[] typeSystems() {
 		#[
-//			SubstitutionBasedTypeSystem,
 			ConstraintBasedTypeSystem
-		]
-	}
-
-	@Test
-	def void typeOfCoreWKO() {
-		'''
-			program p {
-				console
-			}
-		'''.parseAndInfer.asserting [
-			assertTypeOf(objectTypeFor(CONSOLE), 'console')
-		]
-	}
-
-	@Test
-	@Ignore
-	def void coreWKOMethodSignature() {
-		'''
-			program p {
-				console.println("hola")
-			}
-		'''.parseAndInfer.asserting [
-			assertMethodSignature("(Any) => Void", 'console.println')
 		]
 	}
 	
 	@Test
-	def void allLangMethodsHaveTypes() {
+	def void allCoreMethodsTyped() {
 		'''
 			program p { }
 		'''.parseAndInfer.asserting [
-			val allTypes = WNamedObject.findAll + WClass.findAll
-			allTypes
+			(WNamedObject.findAll + WClass.findAll)
 			.filter[fqn != CLOSURE]
 			.forEach[methods.allTyped]
 		]

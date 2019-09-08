@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.tests.typesystem
 
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
@@ -20,6 +21,18 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	static def Object[] typeSystems() {
 		#[
 			ConstraintBasedTypeSystem
+		]
+	}
+
+	@Test
+	@Ignore
+	def void coreWKOMethodSignature() {
+		'''
+			program p {
+				console.println("hola")
+			}
+		'''.parseAndInfer.asserting [
+			assertMethodSignature("(Any) => Void", 'console.println')
 		]
 	}
 
