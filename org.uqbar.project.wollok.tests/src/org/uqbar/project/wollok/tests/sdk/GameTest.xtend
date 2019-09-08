@@ -49,6 +49,17 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
+	def void shouldReturnUniqueCollider() {
+		'''
+		«position(0,0)».drawElement(myVisual)
+		const otherVisual = new Visual()
+		«position(0,0)».drawElement(otherVisual)
+		
+		assert.equals(otherVisual, game.uniqueCollider(myVisual))
+		'''.gameTest
+	}
+	
+	@Test
 	def void movingCharacterShouldSetObjectPosition() {
 		'''
 		game.addVisualCharacter(pepita)

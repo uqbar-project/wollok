@@ -164,6 +164,27 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
+	def void unique() {
+		'''
+		assert.equals(1, [1].unique())
+		'''.test
+	}
+
+	@Test
+	def void uniqueWithEmptyCollection() {
+		'''
+		assert.throwsExceptionWithMessage("Illegal operation 'unique' on empty collection", { => [].unique() })
+		'''.test
+	}	
+
+	@Test
+	def void uniqueWithManyElements() {
+		'''
+		assert.throwsExceptionWithMessage("Illegal operation 'unique' on collection with 2 elements", { => [1, 2].unique() })
+		'''.test
+	}
+
+	@Test
 	def void anyUsingNull() {
 		'''
 		assert.throwsExceptionWithMessage("Operation any doesn't support null parameters", { => [1, 2].any(null) })
