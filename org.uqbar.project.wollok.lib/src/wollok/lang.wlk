@@ -928,7 +928,7 @@ class Set inherits Collection {
 	 *		#{1, 2, 3}.asSet() => Answers #{1, 2, 3}, which is a copy of original set
 	 * 		#{}.asSet()        => Answers #{}, also a copy of original #{}
 	 */
-	override method asSet() native
+	override method asSet() = self
 
 	/**
 	 * Answers any element of a non-empty collection
@@ -1195,7 +1195,11 @@ class List inherits Collection {
 	 *
 	 * @see Set
 	 */
-	override method asSet() native
+	override method asSet() {
+		const result = #{}
+		result.addAll(self)
+		return result
+	}
 	
 	/** 
 	 * Answers a view of the portion of this list between the specified fromIndex 
@@ -1402,7 +1406,11 @@ class List inherits Collection {
 	 * [1, 3, 1, 5, 1, 3, 2, 5].withoutDuplicates() => Answers [1, 2, 3, 5]
 	 * [].withoutDuplicates()                       => Answers []
 	 */
-	method withoutDuplicates() = self.asSet().asList()
+	method withoutDuplicates() {
+		const result = new List()
+		self.forEach { elem => if (!result.contains(elem)) result.add(elem) }
+		return result
+	}
 
 }
 
