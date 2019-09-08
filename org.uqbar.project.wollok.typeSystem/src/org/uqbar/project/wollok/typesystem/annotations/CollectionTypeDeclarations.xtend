@@ -71,6 +71,8 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		C.sumableCollection(E)
 		C.clear
 
+		C >> "unique" === #[] => E
+
 		C >> "join" === #[String] => String
 		C >> "join" === #[] => String
 		
@@ -87,6 +89,7 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		/* privates */
 		C >> "toStringPrefix" === #[] => String
 		C >> "toStringSuffix" === #[] => String
+		C >> "validateNotEmpty" === #[String] => Void
 	}
 	
 	def listDeclarations(AnnotationContext L, TypeAnnotation E) {

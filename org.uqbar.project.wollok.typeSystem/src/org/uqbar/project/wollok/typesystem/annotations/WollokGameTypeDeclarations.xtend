@@ -43,6 +43,7 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		game >> "getObjectsIn" === #[Position] => List.of(T)
 		game >> "say" === #[T, String] => Void
 		game >> "colliders" === #[U] => List.of(T)
+		game >> "uniqueCollider" === #[U] => T
 		game >> "stop" === #[] => Void
 		game >> "start" === #[] => Void
 		game >> "doStart" === #[Boolean] => Void
