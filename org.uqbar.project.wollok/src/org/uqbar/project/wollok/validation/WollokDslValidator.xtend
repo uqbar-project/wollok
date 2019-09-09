@@ -40,6 +40,7 @@ import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WMixin
+import org.uqbar.project.wollok.wollokDsl.WNamed
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
@@ -646,6 +647,30 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		m.variables.filter[v|inheritedVariables.exists[name == v.name]].forEach [
 			report(WollokDslValidator_DUPLICATED_VARIABLE_IN_HIERARCHY)
 		]
+	}
+	
+	@Check
+	@DefaultSeverity(WARN)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
+	def duplicatedMethodContainerFromImports(WMethodContainer it) {
+		duplicatedReferenceFromImports(it)
+	}
+	
+	@Check
+	@DefaultSeverity(WARN)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
+	def duplicatedAtributteFromImports(WVariable it) {
+		duplicatedReferenceFromImports(it)
+	}
+	
+	def duplicatedReferenceFromImports(EObject it) {
+		val imports = it.allImports
+		if (!imports.isEmpty) {
+			val allImportsNames = imports.allImportsNames(scopeProvider).map[i|i.substring(i.lastIndexOf('.') + 1)]
+			if (allImportsNames.contains(it.name)) {
+				report(WollokDslValidator_DUPLICATED_REFERENCE_FROM_IMPORTS, it, WNAMED__NAME)
+			}
+		}
 	}
 
 	@Check
