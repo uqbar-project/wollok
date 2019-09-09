@@ -71,6 +71,8 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		C.sumableCollection(E)
 		C.clear
 
+		C >> "unique" === #[] => E
+
 		C >> "join" === #[String] => String
 		C >> "join" === #[] => String
 		
@@ -78,6 +80,8 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		C >> "occurrencesOf" === #[E] => Number
 		
 		C >> "copy" === #[] => SelfType.of(E)
+		C >> "copyWith" === #[E] => SelfType.of(E)
+		C >> "copyWithout" === #[E] => SelfType.of(E)
 		C >> "newInstance" === #[] => SelfType.of(T)
 		C >> "filter" === #[predicate(E)] => SelfType.of(E)
 		C >> "flatten" === #[] => E //TODO: Should be C<C<E>>
@@ -85,6 +89,7 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		/* privates */
 		C >> "toStringPrefix" === #[] => String
 		C >> "toStringSuffix" === #[] => String
+		C >> "validateNotEmpty" === #[String] => Void
 	}
 	
 	def listDeclarations(AnnotationContext L, TypeAnnotation E) {

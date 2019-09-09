@@ -149,6 +149,11 @@ object game {
 	method colliders(visual) native
 
 	/**
+	 * Returns the unique object that is in same position of given object.
+	 */	
+	method uniqueCollider(visual) = self.colliders(visual).unique()
+
+	/**
 	 * Stops render the board and finish the game.
 	 */	
 	method stop() native
