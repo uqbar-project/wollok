@@ -1,0 +1,12 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+import libForImports.apu
+
+describe "duplicated references" {
+
+	test "with duplicated variable" {
+		// XPECT warnings --> "There is already an imported reference with this name" at "apu"
+		var apu = 2
+		assert.equals(apu, 2)		
+	}
+}

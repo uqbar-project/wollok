@@ -52,6 +52,22 @@ object game {
 	method removeVisual(visual) native
 	
 	/**
+	 * Verifies if an object is currently in the board.
+	 *
+	 * Example:
+	 *     game.hasVisual(pepita)
+	 */
+	method hasVisual(visual) native
+
+	/**
+	 * Returns all visual objects added to the board.
+	 *
+	 * Example:
+	 *     game.allVisuals()
+	 */
+	method allVisuals() native
+
+	/**
 	 * Adds a block that will be executed each time a specific key is pressed
 	 * @see keyboard.onPressDo()
 	 */	
@@ -131,6 +147,11 @@ object game {
 	 * Returns all objects that are in same position of given object.
 	 */	
 	method colliders(visual) native
+
+	/**
+	 * Returns the unique object that is in same position of given object.
+	 */	
+	method uniqueCollider(visual) = self.colliders(visual).unique()
 
 	/**
 	 * Stops render the board and finish the game.
