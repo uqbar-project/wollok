@@ -21,12 +21,12 @@ abstract class AbstractInferenceStrategy {
 	extension TypeVariablesRegistry registry
 
 	def boolean run() {
-		log.debug('''Running strategy: «class.simpleName»''')
+		log.trace('''Running strategy: «class.simpleName»''')
 		globalChanged = false
 		
 		walkThrougProgram
 
-		log.debug('''Ending «if (globalChanged) "with" else "WITHOUT"» changes''')
+		log.trace('''Ending «if (globalChanged) "with" else "WITHOUT"» changes''')
 		return globalChanged
 	}
 	

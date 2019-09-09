@@ -4,8 +4,10 @@ import com.google.inject.Inject
 import java.util.List
 import java.util.Map
 import java.util.Set
+import org.apache.log4j.ConsoleAppender
 import org.apache.log4j.Level
 import org.apache.log4j.Logger
+import org.apache.log4j.PatternLayout
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
@@ -83,6 +85,14 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	 * but also parametric types that need to be instantiated to create a type, such as Collection<T>
 	 */
 	Set<TypeFactory> allTypes
+	
+	new() {
+		(Logger.rootLogger.allAppenders.nextElement as ConsoleAppender).threshold = Level.WARN
+		Logger.getLogger("org.uqbar.project.wollok.typesystem.constraints") => [
+			addAppender(new ConsoleAppender(new PatternLayout("%m%n")))
+			level = Level.DEBUG
+		]	
+	}
 
 	override def name() { Constants.TS_CONSTRAINTS_BASED }
 
@@ -98,8 +108,6 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	// ** Analysis
 	// ************************************************************************
 	override initialize(EObject program) {
-		Logger.getLogger("org.uqbar.project.wollok.typesystem.constraints").level = Level.DEBUG
-		
 		registry = new TypeVariablesRegistry(this)
 		programs = newArrayList
 		constraintGenerator = new ConstraintGenerator(this)
@@ -143,10 +151,10 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 
 		var currentStage = 0
 
-		log.debug("Starting inference")
+		log.trace("Starting inference")
 
 		do {
-			log.debug("Running stage " + currentStage)
+			log.trace("Running stage " + currentStage)
 
 			if (runStage(stages.get(currentStage)))
 				// Stage produced new information, start again from stage 0. 

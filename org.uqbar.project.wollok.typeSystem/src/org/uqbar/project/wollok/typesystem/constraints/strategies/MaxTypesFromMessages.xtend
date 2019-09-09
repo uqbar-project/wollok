@@ -19,7 +19,7 @@ class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 
 		val maxTypes = tvar.maxTypes
 		if(!maxTypes.empty) {
-			log.debug('''	New max(«maxTypes») type for «tvar.owner.debugInfoInContext»''')
+			log.debug('''New max(«maxTypes») type for «tvar.owner.debugInfoInContext»''')
 
 			validMessages.forEach [ message |
 				maxTypes.forEach [ type |

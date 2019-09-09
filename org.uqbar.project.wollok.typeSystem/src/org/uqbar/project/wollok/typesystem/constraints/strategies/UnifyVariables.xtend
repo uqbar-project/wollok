@@ -88,7 +88,7 @@ class UnifyVariables extends AbstractInferenceStrategy {
 		} else if(supertype.typeInfo === null) {
 			supertype.copyTypeInfoFrom(subtype)
 		} else if(biUniqueRelationship(subtype, supertype) // Unify if both variables are uniques subtype/supertypes respectively
-		|| supertype.isVariableReferenceTo(subtype) // Unify variable references with their associated referenciables.
+//		|| supertype.isVariableReferenceTo(subtype) // Unify variable references with their associated referenciables.
 		|| subtype.typeInfo.isEmpty || subtype.typeInfo.isEmpty) {
 			subtype.typeInfo.doUnifyWith(supertype.typeInfo)
 		} else {
