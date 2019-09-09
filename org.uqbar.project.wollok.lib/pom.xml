@@ -8,7 +8,7 @@
 		<relativePath>../org.uqbar.project.wollok.releng/pom.xml</relativePath>
 		<groupId>org.uqbar-project</groupId>
 		<artifactId>wollok-parent</artifactId>
-		<version>1.8.2</version>
+		<version>1.8.4</version>
 	</parent>
 
 	<artifactId>org.uqbar.project.wollok.lib</artifactId>
