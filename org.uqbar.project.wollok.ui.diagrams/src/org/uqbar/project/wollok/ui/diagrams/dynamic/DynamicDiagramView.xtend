@@ -38,6 +38,7 @@ import org.eclipse.jface.viewers.ISelectionProvider
 import org.eclipse.jface.viewers.SelectionChangedEvent
 import org.eclipse.swt.SWT
 import org.eclipse.swt.widgets.Composite
+import org.eclipse.swt.widgets.Display
 import org.eclipse.ui.IPartListener
 import org.eclipse.ui.ISelectionListener
 import org.eclipse.ui.IViewSite
@@ -289,7 +290,7 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 		editDomain.activeTool = null
 		if(actionRegistry !== null) actionRegistry.dispose
 
-		super.dispose
+		if (Display.current !== null) super.dispose
 	}
 
 	override setSourceViewer(ISourceViewer sourceViewer) {}
