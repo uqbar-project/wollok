@@ -84,6 +84,166 @@ class SetTest extends CollectionTestCase {
 	}
 	
 	@Test
+	def void testSetOfNumberSize() {
+		'''
+		const set = new Set()
+		const a = 2
+		const b = 1 + 1
+		set.add(a)
+		set.add(b)
+		assert.equals(1, set.size())
+		assert.equals(set, #{a})
+		assert.equals(#{a}, #{b})
+		'''.test
+	}
+	
+	@Test
+	def void testSetOfStringSize() {
+		'''
+		const set = new Set()
+		const a = "hola"
+		const b = "ho" + "la"
+		set.add(a)
+		set.add(b)
+		assert.equals(1, set.size())
+		assert.equals(set, #{a})
+		assert.equals(#{a}, #{b})
+		'''.test
+	}
+	
+	@Test
+	def void testSetOfBooleanSize() {
+		'''
+		const set = new Set()
+		const a = true
+		const b = !false
+		set.add(a)
+		set.add(b)
+		assert.equals(1, set.size())
+		assert.equals(set, #{a})
+		assert.equals(#{a}, #{b})
+		'''.test
+	}
+	
+	@Test
+	def void testSetOfListSize() {
+		'''
+		const set = #{}
+		const a = [1,2,3]
+		const b = [1,2,3]
+		set.add(a)
+		set.add(b)
+		assert.equals(1, set.size())
+		assert.equals(set, #{a})
+		assert.equals(#{a}, #{b})
+		'''.test
+	}
+	
+	@Test
+	def void testSetOfSetSize() {
+		'''
+		const set = #{}
+		const a = #{1,2,3}
+		const b = #{1,2,3}
+		set.add(a)
+		set.add(b)
+		assert.equals(1, set.size())
+		assert.equals(set, #{a})
+		assert.equals(#{a}, #{b})
+		'''.test
+	}
+	
+	@Test
+	def void testSetOfDictionarySize() {
+		'''
+		const set = #{}
+		const a = new Dictionary()
+		const b = a
+		set.add(a)
+		set.add(b)
+		assert.equals(1, set.size())
+		assert.equals(set, #{a})
+		assert.equals(#{a}, #{b})
+		'''.test
+	}
+	
+	@Test
+	def void testSetOfPairSize() {
+		'''
+		const set = new Set()
+		const a = new Pair(1,2)
+		const b = a
+		set.add(a)
+		set.add(b)
+		assert.equals(1, set.size())
+		assert.equals(set, #{a})
+		assert.equals(#{a}, #{b})
+		'''.test
+	}
+	
+	@Test
+	def void testSetOfPositionSize() {
+		'''
+		const set = new Set()
+		const a = new Position()
+		const b = new Position()
+		set.add(a)
+		set.add(b)
+		assert.equals(1, set.size())
+		assert.equals(set, #{a})
+		assert.equals(#{a}, #{b})
+		'''.test
+	}
+	
+	@Test
+	def void testSetOftUserDefinedClassSize() {
+		'''
+		class MiClase {}
+		program a {
+			const set = new Set()
+			const a = new MiClase()
+			const b = a
+			set.add(a)
+			set.add(b)
+			assert.equals(1, set.size())
+			assert.equals(set, #{a})
+			assert.equals(#{a}, #{b})
+		}
+		
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testSetOfListsOfDifferentTypesSize() {
+		'''
+		const set = new Set()
+		const a = new List()
+		a.addAll([1,"hola",true,new Date()])
+		const b = new List()
+		b.addAll([1,"hola",true,new Date()])
+		set.add(a)
+		set.add(b)
+		assert.equals(1, set.size())
+		assert.equals(set, #{a})
+		assert.equals(#{a}, #{b})
+		'''.test
+	}
+	
+	@Test
+	def void testSetOfListAsSetConversion() {
+		'''
+		assert.equals(1, #{[1,2,3],[1,2,3]}.asSet().size())
+		'''.test
+	}
+	
+	@Test
+	def void testSetOfSetsAsSetConversion() {
+		'''
+		assert.equals(1, #{#{1,2,3},#{1,2,3}}.asSet().size())
+		'''.test
+	}
+	
+	@Test
 	override removeAll() {
 		'''
 		«instantiateCollectionAsNumbersVariable»
