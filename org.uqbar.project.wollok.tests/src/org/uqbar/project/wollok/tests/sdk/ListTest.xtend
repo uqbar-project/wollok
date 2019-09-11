@@ -66,15 +66,200 @@ class ListTest extends ListTestCase {
 		'''.test
 	}
 	
-		@Test
+	@Test
 	def void testAsSetConversion() {
 		'''
 		const set = #{}
 		set.add(1)
 		set.add(2)
 		set.add(3)
-		
 		assert.equals(set, set.asSet())
+		'''.test
+	}
+	
+	@Test
+	def void testListOfNumberAsSetConversion() {
+		'''
+		assert.equals(1, [1,1].asSet().size())
+		'''.test
+	}
+	
+	@Test
+	def void testListOfStringAsSetConversion() {
+		'''
+		assert.equals(1, ["hola","hola"].asSet().size())
+		'''.test
+	}
+	
+	@Test
+	def void testListOfBooleanAsSetConversion() {
+		'''
+		assert.equals(1, [true,true].asSet().size())
+		'''.test
+	}
+	
+	@Test
+	def void testListOfDateAsSetConversion() {
+		'''
+		const a = new Date(day=12, month=5, year=2019)
+		const b = new Date(day=12, month=5, year=2019)
+		assert.equals(1,[a,b].asSet().size())
+		'''.test
+	}
+	
+	@Test
+	def void testListOfListAsSetConversion() {
+		'''
+		assert.equals(1, [[1,2,3],[1,2,3]].asSet().size())
+		'''.test
+	}
+	
+	@Test
+	def void testListOfDictionaryAsSetConversion() {
+		'''
+		const dictionary = new Dictionary()
+		assert.equals(1, [dictionary,dictionary].asSet().size())
+		'''.test
+	}
+	
+	@Test
+	def void testListOfPairAsSetConversion() {
+		'''
+		const pair = new Pair(1,2)
+		assert.equals(1, [pair,pair].asSet().size())
+		'''.test
+	}
+	
+	@Test
+	def void testListOfPositionAsSetConversion() {
+		'''
+		const a = new Position()
+		const b = new Position()
+		assert.equals(1, [a,b].asSet().size())
+		'''.test
+	}
+	
+	@Test
+	def void testListOfUserDefinedClassAsSetConversion() {
+		'''
+		class MiClase {}
+		program a {
+			const miClase = new MiClase()
+			assert.equals(1, [miClase,miClase].asSet().size())
+		}
+		
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testListOfDifferentTypesAsSetConversion() {
+		'''
+			var list = []
+			list.add(1)
+			list.add("1")
+			list.add(true)
+			list.add("1")
+			list.add(new Date())
+			list.add(true)
+			list.add(new Date().toString())
+			list.add("true")
+			list.add(1)
+			list.add(new Date())
+			assert.equals(6, list.asSet().size())
+		'''.test
+	}
+	
+	@Test
+	def void testListOfNumberWithoutDuplicates() {
+		'''
+		assert.equals(1, [1,1].withoutDuplicates().size())
+		'''.test
+	}
+	
+	@Test
+	def void testListOfStringWithoutDuplicates() {
+		'''
+		assert.equals(1, ["hola","hola"].withoutDuplicates().size())
+		'''.test
+	}
+	
+	@Test
+	def void testListOfDateWithoutDuplicates() {
+		'''
+		const a = new Date(day=1, month=4, year=2018)
+		const b = new Date(day=1, month=4, year=2018)
+		assert.equals(1, [a,b].withoutDuplicates().size())
+		'''.test
+	}
+	
+	@Test
+	def void testListOfBooleanWithoutDuplicates() {
+		'''
+		assert.equals(1, [true,!false].withoutDuplicates().size())
+		'''.test
+	}
+	
+	@Test
+	def void testListOfListWithoutDuplicates() {
+		'''
+		assert.equals(1, [[1,2,3],[1,2,3]].withoutDuplicates().size())
+		'''.test
+	}
+	
+	@Test
+	def void testListOfSetWithoutDuplicates() {
+		'''
+		assert.equals(1, [#{1,2,3},#{1,2,3}].withoutDuplicates().size())
+		'''.test
+	}
+	
+	@Test
+	def void testListOfDictionaryWithoutDuplicates() {
+		'''
+		const a = new Dictionary()
+		assert.equals(1, [a,a].withoutDuplicates().size())
+		'''.test
+	}
+	
+	@Test
+	def void testListOfPairWithoutDuplicates() {
+		'''
+		const a = new Pair(1,2)
+		assert.equals(1, [a,a].withoutDuplicates().size())
+		'''.test
+	}
+	
+	@Test
+	def void testListOfPositionWithoutDuplicates() {
+		'''
+		const a = new Position()
+		const b = new Position()
+		assert.equals(1, [a,b].withoutDuplicates().size())
+		'''.test
+	}
+	
+	@Test
+	def void testListOfUserDefinedClassWithoutDuplicates() {
+		'''
+		class MiClase {}
+		program a {
+			const a = new MiClase()
+			assert.equals(1, [a,a].withoutDuplicates().size())
+		}
+		
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testListOfDifferentTypesWithoutDuplicates() {
+		'''
+		const list = new List()
+		list.add(1)
+		list.add("hola")
+		list.add(true)
+		list.add(1)
+		list.add("hola")
+		assert.equals(3, list.withoutDuplicates().size())
 		'''.test
 	}
 	
