@@ -45,5 +45,9 @@ class WollokTestFileContainer {
 	def filterTestByState(boolean shouldShowOnlyFailuresAndErrors) {
 		this.containers.forEach[container|container.filterTestByState(shouldShowOnlyFailuresAndErrors)]
 	}
+	
+	def getProject(){
+		this.containers.get(0).project
+	}
 
 }

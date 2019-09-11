@@ -140,7 +140,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 	def relaunch(String mode) {
 		if (results.globalContainer.processingManyFiles) {
-			allTestsLaunchShortcut.launch(results.container.project, mode)
+			allTestsLaunchShortcut.launch(results.globalContainer.project, mode)
 		} else {
 			testLaunchShortcut.launch(testFile, mode)
 		}
@@ -527,7 +527,7 @@ class WTestTreeLabelProvider extends LabelProvider {
 	}
 	
 	def dispatch getImage(WollokTestContainer element) {
-		var imageDescriptor = Activator.getDefault.getImageDescriptor("icons/suite.png")
+		val imageDescriptor = element.getImage()
 		resourceManager.createImage(imageDescriptor)
 	}
 	

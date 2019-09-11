@@ -47,5 +47,9 @@ public class WollokTestGlobalContainer {
 	def testByName(String testName) {
 		allTest.findFirst[name == testName]
 	}
+	
+	def getProject(){
+		this.testFiles.get(0).project
+	}
 
 }

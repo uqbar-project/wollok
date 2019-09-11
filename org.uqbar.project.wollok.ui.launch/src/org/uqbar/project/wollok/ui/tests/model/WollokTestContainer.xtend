@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.ui.tests.model
 import java.util.List
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.ui.launch.Activator
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
@@ -24,6 +25,40 @@ class WollokTestContainer {
 	
 	def filterTestByState(boolean shouldShowOnlyFailuresAndErrors) {
 		this.tests = newArrayList(allTests.filter [ result | result.failed || !shouldShowOnlyFailuresAndErrors ])
+	}
+	
+	def allTestsOk(){
+		val allTestsOk = tests.filter[ test | test.state === WollokTestState.OK ]
+		return allTestsOk.size === tests.size
+	}
+	
+	def isAnyRunning(){
+		return tests.findFirst[ test | test.state === WollokTestState.RUNNING ] !== null
+	}
+	
+	def isAnyWithError(){
+		return tests.findFirst[ test | test.state === WollokTestState.ERROR ] !== null
+	}
+	
+	def isAnyWithFail(){
+		return tests.findFirst[ test | test.state === WollokTestState.ASSERT ] !== null
+	}
+	
+	def getImage(){
+		var icon = "icons/suite.png"
+		if(isAnyRunning){
+			icon = "icons/suiterun.png"
+		}
+		if(isAnyWithError){
+			icon = "icons/suiteerr.png"
+		}
+		if(isAnyWithFail){
+			icon = "icons/suitefail.png"
+		}
+		if(allTestsOk){
+			icon = "icons/suiteok.png"
+		}
+		return Activator.getDefault.getImageDescriptor(icon)
 	}
 	
 	def void defineTests(List<WollokTestResult> tests, boolean shouldShowOnlyFailuresAndErrors) {
