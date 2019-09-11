@@ -27,7 +27,7 @@ class WollokTestContainer {
 		this.tests = newArrayList(allTests.filter [ result | result.failed || !shouldShowOnlyFailuresAndErrors ])
 	}
 	
-	def allTestsOk(){
+	def isAllTestsOk(){
 		val allTestsOk = tests.filter[ test | test.state === WollokTestState.OK ]
 		return allTestsOk.size === tests.size
 	}

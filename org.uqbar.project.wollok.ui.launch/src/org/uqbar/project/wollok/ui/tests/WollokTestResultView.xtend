@@ -532,7 +532,7 @@ class WTestTreeLabelProvider extends LabelProvider {
 	}
 	
 	def dispatch getImage(WollokTestFileContainer element) {
-		var imageDescriptor = Activator.getDefault.getImageDescriptor("icons/wollok-icon-test_16.png")
+		val imageDescriptor = element.getImage()
 		resourceManager.createImage(imageDescriptor)
 	}
 

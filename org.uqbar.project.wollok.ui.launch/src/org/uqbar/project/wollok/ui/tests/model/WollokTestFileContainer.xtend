@@ -4,6 +4,7 @@ import java.util.ArrayList
 import java.util.List
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.ui.launch.Activator
 
 @Accessors
 class WollokTestFileContainer {
@@ -48,6 +49,40 @@ class WollokTestFileContainer {
 	
 	def getProject(){
 		this.containers.get(0).project
+	}
+	
+	def allTestsOk(){
+		val allContainers = containers.filter[ container | container.isAllTestsOk ]
+		return allContainers.size === containers.size
+	}
+	
+	def isAnyRunning(){
+		return containers.findFirst[ container | container.isAnyRunning ] !== null
+	}
+	
+	def isAnyWithError(){
+		return containers.findFirst[ container | container.isAnyWithError ] !== null
+	}
+	
+	def isAnyWithFail(){
+		return containers.findFirst[ container | container.isAnyWithFail ] !== null
+	}
+	
+	def getImage(){
+		var icon = "icons/wollok-icon-test_16.png"
+		if(isAnyRunning){
+			icon = "icons/wollok-icon-testrun_16.png"
+		}
+		if(isAnyWithError){
+			icon = "icons/wollok-icon-testerr_16.png"
+		}
+		if(isAnyWithFail){
+			icon = "icons/wollok-icon-testfail_16.png"
+		}
+		if(allTestsOk){
+			icon = "icons/wollok-icon-testok_16.png"
+		}
+		return Activator.getDefault.getImageDescriptor(icon)
 	}
 
 }
