@@ -34,7 +34,7 @@ class WollokObjectComparator implements Comparator<WollokObject> {
 			val comparator = comparisonsStrategy.get(o1.kind.fqn) ?: new WollokObjectEqualsComparator		
 			return comparator.compare(o1, o2)
 		} catch (RuntimeException e) {
-			return o1.hashCode.compareTo(o2.hashCode)
+			return (o1.kind.hashCode).compareTo(o2.kind.hashCode)
 		}
 	}
 	
