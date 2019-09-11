@@ -1406,11 +1406,7 @@ class List inherits Collection {
 	 * [1, 3, 1, 5, 1, 3, 2, 5].withoutDuplicates() => Answers [1, 2, 3, 5]
 	 * [].withoutDuplicates()                       => Answers []
 	 */
-	method withoutDuplicates() {
-		const result = new List()
-		self.forEach { elem => if (!result.contains(elem)) result.add(elem) }
-		return result
-	}
+	method withoutDuplicates() native
 
 }
 
