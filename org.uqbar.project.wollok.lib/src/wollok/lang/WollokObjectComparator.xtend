@@ -48,7 +48,7 @@ class WollokObjectEqualsComparator implements Comparator<WollokObject> {
 
 	override compare(WollokObject o1, WollokObject o2) {
 		if (o1.hasEqualsMethod) {
-			return if (o1.wollokEquals(o2)) 0 else 1 // o1.compareGreaterThan(o2)
+			return if (o1.wollokEqualsMethod(o2)) 0 else 1 // o1.compareGreaterThan(o2)
 		}
 		// default case
 		return o1.hashCode.compareTo(o2.hashCode)
