@@ -1,20 +1,83 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
 
 class Golondrina { 
-	method vola(kilometros) { }
+	// XPECT type at energia --> Number
+	var energia = 100
 	
-	method come(grms) { }
+	// XPECT methodType at vola --> (Number) => Void
+	method vola(kilometros) { energia = energia - kilometros * 10 }
+	
+	// XPECT methodType at come --> (Number) => Void
+	method come(grms) { energia += grms * 0.10 }
+}
+
+object pepita {
+	// XPECT methodType at nombreAve --> () => String
+	method nombreAve() = "Pepita"
 }
 
 class Entrenador {
+	// XPECT type at estrategia --> {(Golondrina) => Void}
+	const estrategia = { ave => ave.vola(5) }
+	
+	// XPECT methodType at entrena --> (Golondrina) => Void
+	method entrena(ave) { ave.vola(5) }
+	
+	// XPECT methodType at llama --> (pepita) => String
+	method llama(p) = p.nombreAve()
+	
+	// XPECT methodType at estrategia --> () => {(Golondrina) => Void}
+	method estrategia() = estrategia
+	
+	
 	// XPECT methodType at falla --> (Golondrina) => Any
 	method falla(ave) { 
 		// XPECT! warnings --> "Golondrina does not understand habla()" at "ave.habla()"
 		ave.habla()
 		
 		ave.vola(1)
-		
-		// XPECT warnings --> "Golondrina does not understand come(). However other methods exist with different argument count: come(grms)" at "ave.come()" 
+
+		/* XPECT warnings ---
+			"Golondrina does not understand come(). However other methods exist with different argument count: come(grms)" at "ave.come()"
+			"Golondrina does not understand habla()" at "ave"
+		--- */
 		return ave.come()	
-	}	
+	}
+	
+	// XPECT methodType at falla2 --> (pepita) => Any
+	method falla2(p) {
+		// XPECT warnings --> "String does not understand esEstrambotico()" at "p.nombreAve().esEstrambotico()"
+		return p.nombreAve().esEstrambotico()
+	}
+	
+	// XPECT methodType at falla3 --> (Any) => Any
+	method falla3(ave) = ave.come() //TODO: should fail! 
+	
+	
+	// XPECT methodType at condicion --> () => {() => Boolean}
+	method condicion() = { true }
+	
+	// XPECT methodType at condicion2 --> () => {() => Boolean}
+	method condicion2() = { return true }
+	
+	// XPECT methodType at condicion3 --> () => {() => Boolean}	
+	method condicion3() { return { return true } }
+	
+	// XPECT methodType at entrenarConEstrategia --> (Golondrina) => Void	
+	method entrenarConEstrategia(ave) { self.estrategia().apply(ave) }
+	
+	// XPECT methodType at alimentar --> (Golondrina, Number) => Void	
+	method alimentar(golondrina, comida) {
+		var c = { g => g.come(comida) } 
+		c.apply(golondrina)
+	}
+
+	// XPECT methodType at id --> ((Golondrina|pepita)) => (Golondrina|pepita)
+	method id(ave) = ave
+
+	// XPECT methodType at typeIdWithPepita --> () => (Golondrina|pepita)
+	method typeIdWithPepita() = self.id(pepita)
+	
+	// XPECT methodType at typeIdWithgolondrina --> () => (Golondrina|pepita)
+	method typeIdWithgolondrina() = self.id(new Golondrina())
 }

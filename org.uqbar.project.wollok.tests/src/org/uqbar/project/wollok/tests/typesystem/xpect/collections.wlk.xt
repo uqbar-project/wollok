@@ -142,7 +142,7 @@ class TestCollection {
 		// XPECT type at flatMapped --> List<Boolean>
 		const flatMapped = sample.flatMap { number => [number.even()] } 
 
-		// XPECT type at fold --> Number
+		// XPECT! type at fold --> Number  //TODO: Force Number
 		const fold = sample.fold(0, { accum, elem => accum + elem }) 
 
 		// XPECT type at allEven --> Boolean
