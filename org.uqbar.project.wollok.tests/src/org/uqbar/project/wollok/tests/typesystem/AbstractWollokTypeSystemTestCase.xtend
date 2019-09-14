@@ -252,11 +252,15 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	}
 
 	def <T extends EObject> find(Class<T> resourceType, String resourceName) {
-		val resources = resourceSet.allContents.filter(resourceType).toList
+		val resources = resourceType.findAll()
 		resources.findFirst[it.name == resourceName] => [
 			if (it === null) 
 				throw new RuntimeException(
 					'''Could NOT find «resourceType.simpleName» [«resourceName»] in: «resources.map[it.name].toList»''')
 		]
+	}
+
+	def <T extends EObject> findAll(Class<T> resourceType) {
+		resourceSet.allContents.filter(resourceType).toList
 	}
 }

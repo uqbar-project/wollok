@@ -5,6 +5,8 @@ import org.junit.Test
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
+
 /**
  * Test cases for type inference of named objects, including imported ones.
  * 
@@ -15,6 +17,17 @@ class NamedObjectInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	@Parameters(name="{index}: {0}")
 	static def Object[] typeSystems() {
 		#[ConstraintBasedTypeSystem]
+	}
+
+	@Test
+	def void typeOfCoreWKO() {
+		'''
+			program p {
+				console
+			}
+		'''.parseAndInfer.asserting [
+			assertTypeOf(objectTypeFor(CONSOLE), 'console')
+		]
 	}
 
 	@Test

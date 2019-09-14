@@ -53,6 +53,17 @@ class GameObject {
 		var visual = board.findVisual(it)
 		board.remove(visual)
 	}
+
+	def hasVisual(WollokObject it) {
+		checkNotNull("hasVisual")
+		return board.findIfExistsVisual(it) !== null
+	}
+
+	def allVisuals() {
+		return board.components
+			.map [ it.WObject ]
+			.toList.javaToWollok
+	}
 	
 	def onTick(WollokObject milliseconds, WollokObject name, WollokObject action) {
 		milliseconds.checkNotNull("onTick")
@@ -158,7 +169,7 @@ class GameObject {
 	}
 	
 	def findVisual(Gameboard it, WollokObject visual) {
-		val result = components.findFirst[ WObject.equals(visual)]
+		val result = findIfExistsVisual(it, visual)
 		
 		if (result === null)
 			throw new WollokProgramExceptionWrapper(evaluator.newInstance(EXCEPTION) => [
@@ -168,6 +179,11 @@ class GameObject {
 		result
 	}
 	
+	def findIfExistsVisual(Gameboard it, WollokObject visual) {
+		return components
+			.findFirst[ WObject.equals(visual)]
+	}
+
 	def sound(String audioFile) {
 		board.sound(audioFile)
 	}

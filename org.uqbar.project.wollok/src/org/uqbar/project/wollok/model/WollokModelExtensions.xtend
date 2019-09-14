@@ -721,6 +721,29 @@ class WollokModelExtensions {
 			l
 		]
 	}
+	
+	def static List<String> allImportsNames(Iterable<Import> imports, WollokGlobalScopeProvider scopeProvider) {
+		if (!imports.isEmpty) {
+			val scopeElements = imports.get(0).getScope(scopeProvider).allElements.map[getName.toString]
+			val contextImportsNames = imports.map[importedNamespace]
+			return scopeElements.filter [ scopeElement |
+				scopeElement.contains(".") && isInImports(scopeElement, contextImportsNames)
+			].toList
+		} else	
+			newArrayList
+	}
+	
+	def static boolean isInImports(String scopeElement, Iterable<String> importsNames) {
+		importsNames.exists [ importName |
+			var name = scopeElement
+			var otherName = importName
+			if (importName.contains("*")) {
+				otherName = importName.substring(0, importName.length - 2)
+				name = scopeElement.substring(0, scopeElement.lastIndexOf('.'))
+			}
+			name.equals(otherName)
+		]
+	}
 
 	// *******************************
 	// ** Refactoring

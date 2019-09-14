@@ -434,6 +434,25 @@ class Collection {
 		})
 		return result.x()
 	}
+	
+	/**
+	  * Answers the unique element in the collection.
+	  * If collection is empty, an error is thrown.
+	  * If collection has more than one element, an error is thrown.
+	  *
+	  * Example:
+	  *       [1].unique() 	=>  Answers 1
+	  *       [].unique()  	=>  Throws error, list must not be empty
+	  *       [1, 2].unique()  	=>  Throws error, list must have one element
+	  */
+	method unique() {
+		self.validateNotEmpty("unique")
+		const size = self.size()
+		if (size > 1)
+			throw new Exception(message = "Illegal operation 'unique' on collection with " + size.toString() + " elements")
+		return self.anyOne()		
+	}
+	
 	 
 	// non-native methods
 
@@ -501,6 +520,15 @@ class Collection {
 	  *     [].isEmpty()        => Answers true
 	  */
 	method isEmpty() = self.size() == 0
+			
+	/** @private */
+	/** 
+	  * Throws error if self collection is empty 
+	  */
+	method validateNotEmpty(operation) {
+		if (self.isEmpty()) 
+			throw new Exception(message = "Illegal operation '" + operation + "' on empty collection")
+	}
 			
 	/**
 	 * Performs an operation on every element of self collection.
@@ -1139,10 +1167,8 @@ class List inherits Collection {
 	 * 		#[].anyOne()        => Throws error, list must not be empty	  
 	 */
 	override method anyOne() {
-		if (self.isEmpty()) 
-			throw new Exception(message = "Illegal operation 'anyOne' on empty collection")
-		else 
-			return self.get(0.randomUpTo(self.size()))
+		self.validateNotEmpty("anyOne")		
+		return self.get(0.randomUpTo(self.size()))
 	}
 	
 	/**
