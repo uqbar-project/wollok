@@ -169,11 +169,9 @@ class WollokJSONTestsReporter implements WollokTestsReporter {
 	}
 	
 	override start(WFile file) {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
 	override startFile(WFile file) {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
 }
