@@ -44,7 +44,12 @@ class WollokTestFileContainer {
 	}
 	
 	def getNoEmptyDescribes(){
-		containers.filter [ container | !container.tests.isEmpty ]
+		val suitesWithName = containers.filter [ container | container.suiteName  !== null] 
+		if(suitesWithName.isEmpty){
+			return containers.get(0).tests
+		}
+		return containers.filter [ container | !container.tests.isEmpty ]
+		 
 	}
 
 	def filterTestByState(boolean shouldShowOnlyFailuresAndErrors) {

@@ -107,11 +107,11 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 		testsFailed + testsErrored === 0
 	}
 	
-	override start() {
+	override startFile(WFile file) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
-	override startFile(WFile file) {
+	override start(WFile file) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	

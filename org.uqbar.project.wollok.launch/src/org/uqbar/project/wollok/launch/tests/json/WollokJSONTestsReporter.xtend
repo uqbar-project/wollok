@@ -168,7 +168,7 @@ class WollokJSONTestsReporter implements WollokTestsReporter {
 	override endProcessManyFiles() {
 	}
 	
-	override start() {
+	override start(WFile file) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	

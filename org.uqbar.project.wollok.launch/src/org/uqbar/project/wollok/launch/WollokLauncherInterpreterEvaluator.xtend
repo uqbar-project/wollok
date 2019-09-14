@@ -45,7 +45,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	}
 	def void runTestFile(WFile it){
 		if(!tests.empty){
-			wollokTestsReporter.testsToRun("Test sueltos", it, tests)
+			wollokTestsReporter.testsToRun(null, it, tests)
 			tests.forEach [ test |
 				resetGlobalState
 				test.eval ]
