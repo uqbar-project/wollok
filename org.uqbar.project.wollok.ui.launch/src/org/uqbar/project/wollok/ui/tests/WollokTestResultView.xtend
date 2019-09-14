@@ -572,11 +572,11 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 	}
 	
 	def dispatch getChildren(WollokTestFileContainer element) {
-		element.containers
+		element.noEmptyDescribes
 	}
 	
 	def dispatch getChildren(WollokTestGlobalContainer globalContainer){
-		globalContainer.testFiles
+		globalContainer.noEmptyFiles
 	}
 	
 	def dispatch getChildren(WollokTestContainer element) {

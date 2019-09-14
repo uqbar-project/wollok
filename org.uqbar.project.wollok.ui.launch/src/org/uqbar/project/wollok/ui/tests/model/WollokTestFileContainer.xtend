@@ -26,7 +26,7 @@ class WollokTestFileContainer {
 
 	def allTest() {
 		val allTest = new ArrayList
-		var unFlattedTests = this.containers.map[container|container.tests]
+		var unFlattedTests = this.containers.map[container|container.allTests]
 		unFlattedTests.forEach[tests|allTest.addAll(tests)]
 		return allTest
 	}
@@ -41,6 +41,10 @@ class WollokTestFileContainer {
 
 	def hasTests() {
 		this.containers.size >= 1
+	}
+	
+	def getNoEmptyDescribes(){
+		containers.filter [ container | !container.tests.isEmpty ]
 	}
 
 	def filterTestByState(boolean shouldShowOnlyFailuresAndErrors) {

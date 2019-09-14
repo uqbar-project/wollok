@@ -33,6 +33,10 @@ public class WollokTestGlobalContainer {
 	def filterTestByState(boolean shouldShowOnlyFailuresAndErrors) {
 		this.testFiles.forEach[testFile|testFile.filterTestByState(shouldShowOnlyFailuresAndErrors)]
 	}
+	
+	def noEmptyFiles () {
+		testFiles.filter[ file | !file.noEmptyDescribes.isEmpty ]
+	}
 
 	def allTest() {
 		val allTest = new ArrayList

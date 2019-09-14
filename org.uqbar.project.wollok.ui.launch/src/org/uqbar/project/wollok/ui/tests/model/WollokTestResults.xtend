@@ -67,7 +67,7 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 	
 	override showFailuresAndErrorsOnly(boolean showFailuresAndErrors) {
 		this.shouldShowOnlyFailuresAndErrors = showFailuresAndErrors
-		this.fileContainer.filterTestByState(this.shouldShowOnlyFailuresAndErrors)
+		this.globalContainer.filterTestByState(this.shouldShowOnlyFailuresAndErrors)
 
 		this.setChanged
 		this.notifyObservers("testsEnded")		
