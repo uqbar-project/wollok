@@ -4,6 +4,9 @@ import org.junit.Test
 
 /**
  * @author matifreyre
+ * @author nicoviotti
+ * @author fdodino
+ * 
  */
 class SetTestCase extends CollectionTestCase {
 
