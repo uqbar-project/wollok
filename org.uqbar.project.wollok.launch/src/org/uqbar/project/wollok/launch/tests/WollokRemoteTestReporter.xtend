@@ -57,7 +57,7 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	override testsToRun(String _suiteName, WFile file, List<WTest> tests) {
 		this.suiteName = _suiteName
 		val fileURI = file.eResource.URI.toString
-		remoteTestNotifier.testsToRun(suiteName, fileURI, getRunnedTestsInfo(tests, fileURI, suiteName), processingManyFiles)
+		remoteTestNotifier.testsToRun(suiteName, fileURI, getRunnedTestsInfo(tests, fileURI), processingManyFiles)
 	}
 
 	override testStart(WTest test) {
@@ -87,8 +87,8 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 		processingManyFiles = false
 	}
 	
-	protected def List<WollokTestInfo> getRunnedTestsInfo(List<WTest> tests, String fileURI, String suiteName) {
-		new ArrayList(tests.map[new WollokTestInfo(it, fileURI, processingManyFiles, suiteName)])
+	protected def List<WollokTestInfo> getRunnedTestsInfo(List<WTest> tests, String fileURI) {
+		new ArrayList(tests.map[new WollokTestInfo(it, fileURI, processingManyFiles)])
 	}
 	
 	override start(WFile it) {

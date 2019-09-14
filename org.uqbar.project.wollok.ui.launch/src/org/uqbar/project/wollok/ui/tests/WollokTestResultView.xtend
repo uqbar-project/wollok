@@ -298,7 +298,15 @@ class WollokTestResultView extends ViewPart implements Observer {
 		]
 		testTree.refresh
 		results.addObserver(this)
-
+		
+		new GridData => [	
+			grabExcessHorizontalSpace = true	
+			grabExcessVerticalSpace = true	
+			horizontalAlignment = GridData.FILL	
+			verticalAlignment = GridData.FILL	
+			verticalSpan = 5	
+			testTree.control.layoutData = it	
+		]
 	}
 
 	def createTextOutput(Composite parent) {
