@@ -9,7 +9,7 @@ class Golondrina {
 class Entrenador {
 	// XPECT methodType at falla --> (Golondrina) => Any
 	method falla(ave) { 
-		// XPECT warnings --> "Golondrina does not understand habla()" at "ave.habla()"
+		// XPECT! warnings --> "Golondrina does not understand habla()" at "ave.habla()"
 		ave.habla()
 		
 		ave.vola(1)
