@@ -110,18 +110,17 @@ class XtendExtensions {
 	 * Returns a copy of the list with the first element removed, 
 	 * or an empty list if the received list is empty.
 	 */
-	static def <T> allButFirst(List<T> list) {
-		list.subList(1.min(list.size), list.size)
+	static def <T> allButFirst(List<T> it) {
+		toList.subList(1.min(size), size)
 	}
 
 	/**
 	 * Returns a copy of the list with the last element removed, 
 	 * or an empty list if the received list is empty.
 	 */
-	static def <T> allButLast(List<T> list) {
-		list.subList(0, (list.size - 1).max(0))
+	static def <T> allButLast(Iterable<T> it) {
+		toList.subList(0, (size - 1).max(0))
 	}
-
 	
 	// ************************************************************************
 	// ** Map Extensions
