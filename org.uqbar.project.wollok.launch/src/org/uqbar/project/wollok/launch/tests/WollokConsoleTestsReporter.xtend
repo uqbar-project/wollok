@@ -107,8 +107,6 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 		testsFailed + testsErrored === 0
 	}
 	
-	override startFile(WFile file) { }
-	
-	override start(WFile file) { }
-	
+	override start() {
+	}
 }

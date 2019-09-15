@@ -91,13 +91,8 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 		new ArrayList(tests.map[new WollokTestInfo(it, fileURI, processingManyFiles)])
 	}
 	
-	override start(WFile it) {
+	override start() {
 		remoteTestNotifier.start()
-		startFile(it)	
-	}
-	
-	override startFile(WFile file) {
-		remoteTestNotifier.startFile(file.eResource.URI.toString)
 	}
 	
 }

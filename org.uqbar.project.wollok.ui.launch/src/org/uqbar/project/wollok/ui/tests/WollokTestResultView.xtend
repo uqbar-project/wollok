@@ -127,7 +127,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def canRelaunch() {
-		results !== null && results.fileContainer !== null && results.fileContainer.mainResource !== null
+		results !== null && results.globalContainer !== null
 	}
 
 	def relaunch() {
@@ -142,7 +142,9 @@ class WollokTestResultView extends ViewPart implements Observer {
 		if (results.globalContainer.processingManyFiles) {
 			allTestsLaunchShortcut.launch(results.globalContainer.project, mode)
 		} else {
-			testLaunchShortcut.launch(testFile, mode)
+			testLaunchShortcut.launch(
+				results.globalContainer.testFiles.get(0).mainResource.toIFile, mode
+			)
 		}
 	}
 
@@ -158,10 +160,6 @@ class WollokTestResultView extends ViewPart implements Observer {
 		//debugAgain.enabled = false
 		(testTree.contentProvider as WTestTreeContentProvider).results.globalContainer = new WollokTestGlobalContainer()
 		testTree.refresh(true)
-	}
-
-	def testFile() {
-		results.getFileContainer.mainResource.toIFile
 	}
 
 	def toggleShowFailuresAndErrors() {
@@ -617,7 +615,9 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 	
 	def dispatch getParent(WollokTestFileContainer element) { results.globalContainer }
 
-	def dispatch getParent(WollokTestContainer element) { results.getFileContainer }
+	def dispatch getParent(WollokTestContainer element) { results.globalContainer.getParent(element) }
+	
+	def dispatch getParent(WollokTestResult element) { null }
 	
 	def dispatch hasChildren(WollokTestGlobalContainer element) { true }
 	

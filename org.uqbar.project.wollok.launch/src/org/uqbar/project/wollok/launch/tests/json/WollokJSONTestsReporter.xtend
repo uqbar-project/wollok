@@ -168,10 +168,7 @@ class WollokJSONTestsReporter implements WollokTestsReporter {
 	override endProcessManyFiles() {
 	}
 	
-	override start(WFile file) {
-	}
-	
-	override startFile(WFile file) {
+	override start() {
 	}
 	
 }

@@ -37,7 +37,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 			main.eval
 		else {
 			val time = System.currentTimeMillis
-			wollokTestsReporter.start(it)
+			wollokTestsReporter.start()
 			runTestFile(it)
 			wollokTestsReporter.finished(System.currentTimeMillis - time)
 			null
@@ -63,11 +63,12 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	
 	override evaluateAll(List<EObject> eObjects, String folder) {
 		wollokTestsReporter.initProcessManyFiles(folder)	
+		wollokTestsReporter.start()	
+		
 		eObjects.forEach [ eObject |
 			val file = eObject as WFile
 			interpreter.initStack
 			interpreter.generateStack(eObject)
-			wollokTestsReporter.startFile(file)	
 			runTestFile(file)
 		]
 		wollokTestsReporter.endProcessManyFiles

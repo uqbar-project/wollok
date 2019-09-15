@@ -23,7 +23,5 @@ interface WollokRemoteUITestNotifier {
 	def void showFailuresAndErrorsOnly(boolean showFailuresAndErrors)
 	
 	def void start()
-	
-	def void startFile(String file)
-	
+		
 }

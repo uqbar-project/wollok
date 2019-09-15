@@ -18,20 +18,12 @@ import org.uqbar.project.wollok.ui.console.RunInUI
 class WollokTestResults extends Observable implements WollokRemoteUITestNotifier { 
 
 	boolean shouldShowOnlyFailuresAndErrors = false
-	
-	@Accessors
-	var WollokTestFileContainer fileContainer = new WollokTestFileContainer
-	
+		
 	@Accessors
 	var WollokTestGlobalContainer globalContainer = new WollokTestGlobalContainer
 	
 	override start(){
 		globalContainer = new WollokTestGlobalContainer
-	}
-	
-	override startFile(String file) {
-		fileContainer = new WollokTestFileContainer
-		fileContainer.mainResource = URI.createURI(file)
 	}
 	
 	override assertError(String testName, String message, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {
@@ -56,9 +48,10 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		container.mainResource = URI.createURI(containerResource)
 		container.defineTests(newArrayList(tests.map[new WollokTestResult(it)]), this.shouldShowOnlyFailuresAndErrors)
 		
+		val fileContainer = globalContainer.getFileContainer(containerResource)
 		fileContainer.processingManyFiles = processingManyFiles
 		fileContainer.add(container)
-		globalContainer.add(this.fileContainer)
+		globalContainer.add(fileContainer)
 		globalContainer.processingManyFiles = processingManyFiles
 		
 		this.setChanged
