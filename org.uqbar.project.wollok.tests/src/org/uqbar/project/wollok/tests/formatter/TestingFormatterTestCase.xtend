@@ -17,6 +17,24 @@ class TestingFormatterTestCase extends AbstractWollokFormatterTestCase {
 
 	// TEST METHODS
 	@Test
+	def void testConstantsFormatting() throws Exception {
+		assertFormatting(
+    	'''const a = new Sobreviviente()
+    	
+    	
+    	const b = new Sobreviviente()
+    	test "aSimpleTest"{              assert.that(true)           }''', '''
+			const a = new Sobreviviente()
+			const b = new Sobreviviente()
+
+			test "aSimpleTest" {
+				assert.that(true)
+			}
+		''')
+	}
+	
+	
+	@Test
 	def void testSimpleTestFormatting() throws Exception {
 		assertFormatting(
     	'''test "aSimpleTest"{              assert.that(true)           }''', '''
