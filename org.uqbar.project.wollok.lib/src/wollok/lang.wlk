@@ -1401,9 +1401,9 @@ class List inherits Collection {
 	override method ==(other) native
 
 	/**
-	 * Answers the list without duplicate elements
+	 * Answers the list without duplicate elements. Preserves order of elements.
 	 *
-	 * [1, 3, 1, 5, 1, 3, 2, 5].withoutDuplicates() => Answers [1, 2, 3, 5]
+	 * [1, 3, 1, 5, 1, 3, 2, 5].withoutDuplicates() => Answers [1, 3, 5, 2]
 	 * [].withoutDuplicates()                       => Answers []
 	 */
 	method withoutDuplicates() native
