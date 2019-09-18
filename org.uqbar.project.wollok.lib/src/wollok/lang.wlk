@@ -272,6 +272,17 @@ class Pair {
 	method key() = x
 	method value() = y
 
+	/** 
+	 * Two pairs are equals if they have the same values
+	 *
+	 * Example:
+	 *		new Pair(1, 2) == new Pair(1, 2)  ==> Answers true
+	 */
+	override method equals(other) {
+		self.checkNotNull(other, "equals")
+		return x == other.x() && y == other.y()
+	}
+ 
 	/** String representation of a Pair */
 	override method toString() = x.toString() + " -> " + y.toString()
 }
@@ -1394,12 +1405,12 @@ class List inherits Collection {
 	 *
 	 *
 	 * Examples:
-	 * 		[].equals([])         => Answers true
-	 *      [1, 2].equals([2, 1]) => Answers false
-	 *      [1, 2].equals([1, 2]) => Answers true
+	 * 		[] == []         => Answers true
+	 *      [1, 2] == [2, 1] => Answers false
+	 *      [1, 2] == [1, 2] => Answers true
 	 */
 	override method ==(other) native
-
+	
 	/**
 	 * Answers the list without duplicate elements. Preserves order of elements.
 	 *
@@ -1582,7 +1593,15 @@ class Dictionary {
 		if (self.size() > 0) result = result.substring(0, result.length() - 2) 
 		return result + "]"
 	}
-	
+
+	/** 
+	 * Two dictionaries are equals if they have the same values
+	 */
+	override method equals(other) {
+		self.checkNotNull(other, "equals")
+		return self.keys() == other.keys() && self.values() && other.values()
+	}
+		
 }
 
 /**

@@ -51,7 +51,9 @@ class WList extends WCollection<List<WollokObject>> implements JavaWrapper<List<
 		val set = new TreeSet<WollokObject>(new WollokObjectComparator)
 		for (var i = 0; i < wrapped.size; i++) {
 			val element = wrapped.get(i)
-			if(set.add(element)) result.add(element)
+			if (set.add(element)) {
+				result.add(element)
+			}
 		}
 		result
 	}

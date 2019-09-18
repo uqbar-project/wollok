@@ -99,7 +99,9 @@ class WCollection<T extends Collection<WollokObject>> {
 	}
 	
 	@NativeMessage("==")
-	def wollokEqualsEquals(WollokObject other) { wollokEquals(other) }
+	def wollokEqualsEquals(WollokObject other) { 
+		wollokEquals(other)
+	}
 	
 	@NativeMessage("equals")
 	def wollokEquals(WollokObject other) {

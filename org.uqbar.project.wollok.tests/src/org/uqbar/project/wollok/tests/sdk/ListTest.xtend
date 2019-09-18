@@ -114,23 +114,32 @@ class ListTest extends ListTestCase {
 		'''.test
 	}
 
-//  ESTE TEST FALLA (Expected [1] but found [2])
+	@Test
+	def void testListOfEmptyDictionaryAsSetConversion() {
+		'''
+		assert.equals(1, [new Dictionary(), new Dictionary()].asSet().size())
+		'''.test
+	}
 
-//	@Test
-//	def void testListOfDictionaryAsSetConversion() {
-//		'''
-//		assert.equals(1, [new Dictionary(), new Dictionary()].asSet().size())
-//		'''.test
-//	}
-	
-//  ESTE TEST FALLA (Expected [1] but found [2])
-
-//	@Test
-//	def void testListOfPairAsSetConversion() {
-//		'''
-//		assert.equals(1, [new Pair(1,2), new Pair(1,2)].asSet().size())
-//		'''.test
-//	}
+	@Test
+	def void testListOfNonEmptyDictionaryAsSetConversion() {
+		'''
+		const firstDictionary = new Dictionary()
+		firstDictionary.put(1, "hola")
+		firstDictionary.put(2, "chau")
+		const secondDictionary = new Dictionary()
+		secondDictionary.put(1, "hola")
+		secondDictionary.put(2, "chau")
+		assert.equals(1, [firstDictionary, secondDictionary].asSet().size())
+		'''.test
+	}
+		
+	@Test
+	def void testListOfPairAsSetConversion() {
+		'''
+		assert.equals(1, [new Pair(1,2), new Pair(1,2)].asSet().size())
+		'''.test
+	}
 	
 	@Test
 	def void testListOfPositionAsSetConversion() {
@@ -231,8 +240,7 @@ class ListTest extends ListTestCase {
 		'''.test
 	}
 	
-//  ESTE TEST FALLA (Expected [3] but found [4]). [6,7,8,9,22,12] estaría quedando duplicado luego del withoutDuplicates.
-	
+	//  ESTE TEST FALLA (Expected [3] but found [4]). [6,7,8,9,22,12] estaría quedando duplicado luego del withoutDuplicates.
 //	@Test
 //	def void testListOfListWithoutDuplicates() {
 //		'''
@@ -258,23 +266,19 @@ class ListTest extends ListTestCase {
 //		'''.test
 //	}
 	
-//  ESTE TEST FALLA (Expected [1] but found [2])
-
-//	@Test
-//	def void testListOfDictionaryWithoutDuplicates() {
-//		'''
-//		assert.equals(1, [new Dictionary(), new Dictionary()].withoutDuplicates().size())
-//		'''.test
-//	}
+	@Test
+	def void testListOfDictionaryWithoutDuplicates() {
+		'''
+		assert.equals(1, [new Dictionary(), new Dictionary()].withoutDuplicates().size())
+		'''.test
+	}
 	
-//  ESTE TEST FALLA (Expected [1] but found [2])	
-	
-//	@Test
-//	def void testListOfPairWithoutDuplicates() {
-//		'''
-//		assert.equals(1, [new Pair(1,2), new Pair(1,2)].withoutDuplicates().size())
-//		'''.test
-//	}
+	@Test
+	def void testListOfPairWithoutDuplicates() {
+		'''
+		assert.equals(1, [new Pair(1,2), new Pair(1,2)].withoutDuplicates().size())
+		'''.test
+	}
 	
 	@Test
 	def void testListOfPositionWithoutDuplicates() {
