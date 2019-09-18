@@ -113,24 +113,6 @@ class WCollection<T extends Collection<WollokObject>> {
 		verifyWollokElementsContained(other.getNativeCollection, wrapped)
 	}
 	
-	@NativeMessage("<")
-	def lessThan(WollokObject other) {
-		other.checkNotNull("<")
-		val otherCollection = other.getNativeCollection
-
-		!wollokEquals(other) && (wrapped.size < otherCollection.size ||
-			(wrapped.size == otherCollection.size && wrapped.toString < otherCollection.toString))
-	}
-
-	@NativeMessage(">")
-	def greaterThan(WollokObject other) {
-		other.checkNotNull(">")
-		val otherCollection = other.getNativeCollection
-
-		!wollokEquals(other) && (wrapped.size > otherCollection.size ||
-			(wrapped.size == otherCollection.size && wrapped.toString > otherCollection.toString))
-	}
-	
 	protected def hasNativeType(WollokObject it) {
 		hasNativeType(this.class.name)
 	}

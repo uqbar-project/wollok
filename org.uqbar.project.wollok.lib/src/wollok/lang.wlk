@@ -895,9 +895,7 @@ class Collection {
 	 * with default element separator (",")
 	 */
 	method join()
-	
-	method <(other) 
-	method >(other)
+
 }
 
 /**
@@ -1112,9 +1110,6 @@ class Set inherits Collection {
 	 * @see Object#==
 	 */
 	override method ==(other) native
-	
-	override method <(other) native
-	override method >(other) native
 	
 }
 
@@ -1424,9 +1419,6 @@ class List inherits Collection {
 	 * [].withoutDuplicates()                       => Answers []
 	 */
 	method withoutDuplicates() native
-	
-	override method <(other) native
-	override method >(other) native
 
 }
 
