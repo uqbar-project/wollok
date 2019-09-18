@@ -183,38 +183,44 @@ class ListTest extends ListTestCase {
 		'''.interpretPropagatingErrors
 	}
 	
-// ESTE TEST FALLA!. Al hacer list.asSet() queda duplicado C.
+	@Test
+	def void testListOfDifferentTypesAsSetConversion() {
+		'''
+		import wollok.game.Position
+		
+		class C {
+			var property nombre = "federico"
+			
+			override method equals(other) {
+				return self.nombre() == other.nombre()
+			} 
+		}
+		class D {
+			var property nombre = "gabriel"
+			
+			override method equals(other) {
+				return self.nombre() == other.nombre()
+			} 
+		}
 
-//	@Test
-//	def void testListOfDifferentTypesAsSetConversion() {
-//		'''
-//		import wollok.game.Position
-//		
-//		class C {
-//			override method equals(other) = self.kindName() == other.kindName()
-//		}
-//		class D {
-//			override method equals(other) = self.kindName() == other.kindName()
-//		}
-//
-//		test "issue 1771" {
-//			const dictionary = new Dictionary()
-//			const anotherDictionary = new Dictionary()
-//			dictionary.put("1", "hola")
-//			anotherDictionary.put("1", "hola")
-//			var defaultPosition = new Position()
-//			var anotherPosition = new Position()
-//			anotherPosition = anotherPosition.up(2)
-//		
-//			const list = [1,"1", defaultPosition, new Pair(5,6), new C(), "hola", new Dictionary(), "1", 
-//			new Dictionary(), "ho" + "la", true, new D(), new Date(day=21, month=10, year=2018), defaultPosition, 
-//			dictionary, "true", 2/2, !false, false, new C(), new Date(day=21, month=10, year=2018), anotherDictionary, new Pair(1,2), 
-//			new Date(day=2, month=5, year=2014), new Pair(1,2), anotherPosition]
-//			
-//			assert.equals(16, list.asSet().size())
-//		}
-//		'''.interpretPropagatingErrors
-//	}
+		test "issue 1771" {
+			const dictionary = new Dictionary()
+			const anotherDictionary = new Dictionary()
+			dictionary.put("1", "hola")
+			anotherDictionary.put("1", "hola")
+			var defaultPosition = new Position()
+			var anotherPosition = new Position()
+			anotherPosition = anotherPosition.up(2)
+		
+			const list = [1,"1", defaultPosition, new Pair(5,6), new C(), "hola", new Dictionary(), "1", 
+			new Dictionary(), "ho" + "la", true, new Date(day=21, month=10, year=2018), defaultPosition, 
+			dictionary, "true", 2/2, !false, false, new C(), new Date(day=21, month=10, year=2018), anotherDictionary, new Pair(1,2), 
+			new Date(day=2, month=5, year=2014), new Pair(1,2), anotherPosition, new D()]
+			
+			assert.equals(16, list.asSet().size())
+		}
+		'''.interpretPropagatingErrors
+	}
 	
 	@Test
 	def void testListOfNumberWithoutDuplicates() {
