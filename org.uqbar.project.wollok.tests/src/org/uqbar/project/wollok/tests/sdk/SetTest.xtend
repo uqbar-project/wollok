@@ -89,11 +89,13 @@ class SetTest extends CollectionTestCase {
 		const set = new Set()
 		const a = 2
 		const b = 1 + 1
+		const c = 3
 		set.add(a)
 		set.add(b)
-		assert.equals(1, set.size())
-		assert.equals(set, #{a})
-		assert.equals(#{a}, #{b})
+		set.add(c)
+		assert.equals(2, set.size())
+		assert.equals(set, #{a,c})
+		assert.equals(#{a,c}, #{b,c})
 		'''.test
 	}
 	
@@ -103,11 +105,13 @@ class SetTest extends CollectionTestCase {
 		const set = new Set()
 		const a = "hola"
 		const b = "ho" + "la"
+		const c = "chau"
 		set.add(a)
 		set.add(b)
-		assert.equals(1, set.size())
-		assert.equals(set, #{a})
-		assert.equals(#{a}, #{b})
+		set.add(c)
+		assert.equals(2, set.size())
+		assert.equals(set, #{a,c})
+		assert.equals(#{a,c}, #{b,c})
 		'''.test
 	}
 	
@@ -117,11 +121,13 @@ class SetTest extends CollectionTestCase {
 		const set = new Set()
 		const a = true
 		const b = !false
+		const c = false
 		set.add(a)
 		set.add(b)
-		assert.equals(1, set.size())
-		assert.equals(set, #{a})
-		assert.equals(#{a}, #{b})
+		set.add(c)
+		assert.equals(2, set.size())
+		assert.equals(set, #{a,c})
+		assert.equals(#{a,c}, #{b,c})
 		'''.test
 	}
 	
@@ -131,12 +137,14 @@ class SetTest extends CollectionTestCase {
 		const set = #{}
 		const a = [1,2,3]
 		const b = new List()
+		const c = [3,4,5]
 		b.addAll([1,2,3])
 		set.add(a)
 		set.add(b)
-		assert.equals(1, set.size())
-		assert.equals(set, #{a})
-		assert.equals(#{a}, #{b})
+		set.add(c)
+		assert.equals(2, set.size())
+		assert.equals(set, #{a,c})
+		assert.equals(#{a,c}, #{b,c})
 		'''.test
 	}
 	
@@ -146,12 +154,14 @@ class SetTest extends CollectionTestCase {
 		const set = #{}
 		const a = #{1,2,3}
 		const b = new Set()
+		const c = #{4,5,6}
 		b.addAll([1,2,3])
 		set.add(a)
 		set.add(b)
-		assert.equals(1, set.size())
-		assert.equals(set, #{a})
-		assert.equals(#{a}, #{b})
+		set.add(c)
+		assert.equals(2, set.size())
+		assert.equals(set, #{a,c})
+		assert.equals(#{a,c}, #{b,c})
 		'''.test
 	}
 	
@@ -161,11 +171,14 @@ class SetTest extends CollectionTestCase {
 		const set = #{}
 		const a = new Dictionary()
 		const b = new Dictionary()
+		const c = new Dictionary()
+		c.put(1, "hola")
 		set.add(a)
 		set.add(b)
-		assert.equals(1, set.size())
-		assert.equals(set, #{a})
-		//assert.equals(#{a}, #{b})
+		set.add(c)
+		assert.equals(2, set.size())
+		assert.equals(set, #{a,c})
+		//assert.equals(#{a,c}, #{b,c})
 		'''.test
 	}
 
@@ -175,11 +188,13 @@ class SetTest extends CollectionTestCase {
 		const set = new Set()
 		const a = new Pair(x = 1, y = 2)
 		const b = new Pair(x = 1, y = 2)
+		const c = new Pair(x = 3, y = 4)
 		set.add(a)
 		set.add(b)
-		assert.equals(1, set.size())
-		assert.equals(set, #{a})
-		assert.equals(#{a}, #{b})
+		set.add(c)
+		assert.equals(2, set.size())
+		assert.equals(set, #{a,c})
+		assert.equals(#{a,c}, #{b,c})
 		'''.test
 	}
 	
@@ -189,51 +204,89 @@ class SetTest extends CollectionTestCase {
 		const set = new Set()
 		const a = new Position()
 		const b = new Position()
+		var c = new Position()
+		c = c.up(2)
 		set.add(a)
 		set.add(b)
-		assert.equals(1, set.size())
-		assert.equals(set, #{a})
-		assert.equals(#{a}, #{b})
+		set.add(c)
+		assert.equals(2, set.size())
+		assert.equals(set, #{a,c})
+		assert.equals(#{a,c}, #{b,c})
 		'''.test
 	}
 	
 	@Test
-	def void testSetOfUserDefinedClassSizeIfEqualEqualSetToTrue() {
+	def void testSetOfUserDefinedClassSizeRedefiningEqualEqual() {
 		'''
 		class C {
-			override method ==(other) = true
+			override method ==(other) = self.kindName() == other.kindName()
 		}
+		
+		class D {
+			override method ==(other) = self.kindName() == other.kindName()
+		}
+		
 		test "issue 1771" {
 			const set = new Set()
 			const a = new C()
 			const b = new C()
+			const d = new D()
 			set.add(a)
 			set.add(b)
-			assert.equals(1, set.size())
-			assert.equals(set, #{a})
-			assert.equals(#{a}, #{b})
+			set.add(d)
+			assert.equals(2, set.size())
+			assert.equals(set, #{a,d})
+			assert.equals(#{a,d}, #{b,d})
 		}
 		'''.interpretPropagatingErrors
 	}
 	
 	@Test
-	def void testSetOfUserDefinedClassSizeIfEqualsSetToTrue() {
+	def void testSetOfUserDefinedClassSizeRedefiningEquals() {
 		'''
 		class C {
-			override method equals(other) = true
+			override method ==(other) = self.kindName() == other.kindName()
 		}
+		
+		class D {
+			override method ==(other) = self.kindName() == other.kindName()
+		}
+		
 		test "issue 1771" {
 			const set = new Set()
 			const a = new C()
 			const b = new C()
+			const d = new D()
 			set.add(a)
 			set.add(b)
-			assert.equals(1, set.size())
-			assert.equals(set, #{a})
+			set.add(d)
+			assert.equals(2, set.size())
+			assert.equals(set, #{a,d})
+			assert.equals(#{a,d}, #{b,d})
 		}
 		'''.interpretPropagatingErrors
 	}
 	
+	@Test
+	def void testSetOfDifferentTypesSize() {
+		'''
+		const dictionary = new Dictionary()
+		const anotherDictionary = new Dictionary()
+		var position = new Position()
+		position = position.up(2)
+		dictionary.put("1", "hola")
+		anotherDictionary.put("1", "hola")
+		
+		const set = #{1,"1", new Pair(5,6), "hola", new Position(), new Dictionary(), "1", new Dictionary(), 
+		"ho" + "la", true, new Position(), new Date(day=21, month=10, year=2018), position, dictionary, "true", 2/2, 
+		!false, false, new Date(day=21, month=10, year=2018), anotherDictionary, new Pair(1,2), 
+		new Date(day=2, month=5, year=2014), new Pair(1,2)}
+		
+		assert.equals(14, set.size())
+		'''.test
+	}
+	
+	// Si se agregan a las listas positions, dictionaries y/o clases definidas por el usuario deja de andar...
 	@Test
 	def void testSetOfListsOfDifferentTypesSize() {
 		'''
