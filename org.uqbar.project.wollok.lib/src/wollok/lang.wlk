@@ -273,7 +273,7 @@ class Pair {
 	method value() = y
 
 	/** 
-	 * Two pairs are equals if they have the same values
+	 * Two pairs are equal if they have the same values
 	 *
 	 * Example:
 	 *		new Pair(1, 2) == new Pair(1, 2)  ==> Answers true
@@ -1595,7 +1595,7 @@ class Dictionary {
 	}
 
 	/** 
-	 * Two dictionaries are equals if they have the same values
+	 * Two dictionaries are equal if they have the same keys and values
 	 */
 	override method equals(other) {
 		self.checkNotNull(other, "equals")
