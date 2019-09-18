@@ -240,31 +240,28 @@ class ListTest extends ListTestCase {
 		'''.test
 	}
 	
-	//  ESTE TEST FALLA (Expected [3] but found [4]). [6,7,8,9,22,12] estaría quedando duplicado luego del withoutDuplicates.
-//	@Test
-//	def void testListOfListWithoutDuplicates() {
-//		'''
-//		var lista = new List()
-//		lista.addAll([1,2,3])
-//		const list = [[6,7,8,9,22,12], [1,2,3], [1,2,3,4,5], [1,2,3], [6,7,8,9,22,12]]
-//		assert.equals(3, list.withoutDuplicates().size())
-//		assert.equals([[6,7,8,9,22,12], [1,2,3], [1,2,3,4,5] ], list.withoutDuplicates())
-//		'''.test
-//	}
+	@Test
+	def void testListOfListWithoutDuplicates() {
+		'''
+		const lista = new List()
+		lista.addAll([1,2,3])
+		const list = [[6,7,8,9,22,12], [1,2,3], [1,2,3,4,5], [1,2,3], [6,7,8,9,22,12]]
+		assert.equals([[6,7,8,9,22,12], [1,2,3], [1,2,3,4,5] ], list.withoutDuplicates())
+		assert.equals(3, list.withoutDuplicates().size())
+		'''.test
+	}
 	
 	
-//  ESTE TEST FALLA (Expected [3] but found [4]).  #{1,44,55,33,27,12} estaría quedando duplicado luego del withoutDuplicates.
-
-//	@Test
-//	def void testListOfSetWithoutDuplicates() {
-//		'''
-//		var set = new Set()
-//		set.addAll([1,2,3])
-//		const list = [#{1,44,55,33,27,12}, set, #{1,2,3,4,5,6}, #{1,2,3}, #{1,2,3,4,5,6}, #{1,44,55,33,27,12}]
-//		assert.equals(3, list.withoutDuplicates().size())
-//		assert.equals([#{1,44,55,33,27,12}, #{1,2,3}, #{1,2,3,4,5,6}], list.withoutDuplicates())
-//		'''.test
-//	}
+	@Test
+	def void testListOfSetWithoutDuplicates() {
+		'''
+		const set = new Set()
+		set.addAll([1,2,3])
+		const list = [#{1,44,55,33,27,12}, set, #{1,2,3,4,5,6}, #{1,2,3}, #{1,2,3,4,5,6}, #{1,44,55,33,27,12}]
+		assert.equals(3, list.withoutDuplicates().size())
+		assert.equals([#{1,44,55,33,27,12}, #{1,2,3}, #{1,2,3,4,5,6}], list.withoutDuplicates())
+		'''.test
+	}
 	
 	@Test
 	def void testListOfDictionaryWithoutDuplicates() {

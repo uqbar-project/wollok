@@ -155,37 +155,33 @@ class SetTest extends CollectionTestCase {
 		'''.test
 	}
 	
-//  ESTE TEST FALLA (Expected [1] but found [2])
+	@Test
+	def void testSetOfDictionarySize() {
+		'''
+		const set = #{}
+		const a = new Dictionary()
+		const b = new Dictionary()
+		set.add(a)
+		set.add(b)
+		assert.equals(1, set.size())
+		assert.equals(set, #{a})
+		//assert.equals(#{a}, #{b})
+		'''.test
+	}
 
-//	@Test
-//	def void testSetOfDictionarySize() {
-//		'''
-//		const set = #{}
-//		const a = new Dictionary()
-//		const b = new Dictionary()
-//		set.add(a)
-//		set.add(b)
-//		assert.equals(1, set.size())
-//		assert.equals(set, #{a})
-//		assert.equals(#{a}, #{b})
-//		'''.test
-//	}
-
-//  ESTE TEST FALLA (Expected [1] but found [2])
-
-//	@Test
-//	def void testSetOfPairSize() {
-//		'''
-//		const set = new Set()
-//		const a = new Pair(1,2)
-//		const b = new Pair(1,2)
-//		set.add(a)
-//		set.add(b)
-//		assert.equals(1, set.size())
-//		assert.equals(set, #{a})
-//		assert.equals(#{a}, #{b})
-//		'''.test
-//	}
+	@Test
+	def void testSetOfPairSize() {
+		'''
+		const set = new Set()
+		const a = new Pair(x = 1, y = 2)
+		const b = new Pair(x = 1, y = 2)
+		set.add(a)
+		set.add(b)
+		assert.equals(1, set.size())
+		assert.equals(set, #{a})
+		assert.equals(#{a}, #{b})
+		'''.test
+	}
 	
 	@Test
 	def void testSetOfPositionSize() {

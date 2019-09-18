@@ -48,12 +48,10 @@ class WList extends WCollection<List<WollokObject>> implements JavaWrapper<List<
 	
 	def withoutDuplicates() {
 		val result = newArrayList
-		val set = new TreeSet<WollokObject>(new WollokObjectComparator)
+		val comparator = new WollokObjectComparator
 		for (var i = 0; i < wrapped.size; i++) {
 			val element = wrapped.get(i)
-			if (set.add(element)) {
-				result.add(element)
-			}
+			if (result.forall [ newElement | comparator.compare(newElement, element) !== 0 ]) result.add(element)
 		}
 		result
 	}

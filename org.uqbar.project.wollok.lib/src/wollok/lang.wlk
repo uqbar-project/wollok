@@ -276,7 +276,7 @@ class Pair {
 	 * Two pairs are equal if they have the same values
 	 *
 	 * Example:
-	 *		new Pair(1, 2) == new Pair(1, 2)  ==> Answers true
+	 *		new Pair(1, 2).equals(new Pair(1, 2))  ==> Answers true
 	 */
 	override method equals(other) {
 		self.checkNotNull(other, "equals")
@@ -1600,7 +1600,7 @@ class Dictionary {
 	 */
 	override method equals(other) {
 		self.checkNotNull(other, "equals")
-		return self.keys() == other.keys() && self.values() && other.values()
+		return self.keys() == other.keys() && self.values() == other.values()
 	}
 		
 }

@@ -29,7 +29,7 @@ class WSet extends WCollection<Set<WollokObject>> implements JavaWrapper<Set<Wol
 	
 	override protected def verifyWollokElementsContained(Collection<WollokObject> set, Collection<WollokObject> set2) {
 		set2.forall [ elem |
-			set.exists[ it.wollokEquals(elem) ]
+			set.exists[ it.wollokEqualsMethod(elem) ]
 		]
 	}
 
