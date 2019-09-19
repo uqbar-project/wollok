@@ -116,6 +116,20 @@ class ListTest extends ListTestCase {
 	}
 
 	@Test
+	def void testListOfEmptyListAsSetConversion() {
+		'''
+		assert.equals(1, [[], []].asSet().size())
+		'''.test
+	}
+	
+	@Test
+	def void testListOfEmptySetAsSetConversion() {
+		'''
+		assert.equals(1, [#{}, #{}].asSet().size())
+		'''.test
+	}
+	
+	@Test
 	def void testListOfEmptyDictionaryAsSetConversion() {
 		'''
 		assert.equals(1, [new Dictionary(), new Dictionary()].asSet().size())
@@ -279,6 +293,15 @@ class ListTest extends ListTestCase {
 	}
 	
 	@Test
+	def void testListOfEmptyListWithoutDuplicates() {
+		'''
+		const withoutDuplicates = [[],[]].withoutDuplicates()
+		assert.equals(1, withoutDuplicates.size())
+		assert.equals([[]], withoutDuplicates)
+		'''.test
+	}
+	
+	@Test
 	def void testListOfSetWithoutDuplicates() {
 		'''
 		const set = #{1,2,3}
@@ -287,6 +310,15 @@ class ListTest extends ListTestCase {
 		const withoutDuplicates = list.withoutDuplicates()
 		assert.equals(3, withoutDuplicates.size())
 		(0..result.size()-1).forEach{ i => assert.that(withoutDuplicates.get(i).equals(result.get(i))) }
+		'''.test
+	}
+	
+	@Test
+	def void testListOfEmptySetWithoutDuplicates() {
+		'''
+		const withoutDuplicates = [#{}, #{}].withoutDuplicates()
+		assert.equals(1, withoutDuplicates.size())
+		assert.equals([#{}], withoutDuplicates)
 		'''.test
 	}
 	

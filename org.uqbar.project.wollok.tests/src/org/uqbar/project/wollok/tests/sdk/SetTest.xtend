@@ -147,6 +147,20 @@ class SetTest extends CollectionTestCase {
 		assert.equals(#{a,c}, #{b,c})
 		'''.test
 	}
+
+	@Test
+	def void testSetOfEmptyListSize() {
+		'''
+		const set = #{}
+		const a = []
+		const b = new List()
+		set.add(a)
+		set.add(b)
+		assert.equals(1, set.size())
+		assert.equals(set, #{a})
+		assert.equals(#{a}, #{b})
+		'''.test
+	}
 	
 	@Test
 	def void testSetOfSetSize() {
@@ -162,6 +176,20 @@ class SetTest extends CollectionTestCase {
 		assert.equals(2, set.size())
 		assert.equals(set, #{a,c})
 		assert.equals(#{a,c}, #{b,c})
+		'''.test
+	}
+	
+	@Test
+	def void testSetOfEmptySetSize() {
+		'''
+		const set = #{}
+		const a = #{}
+		const b = #{}
+		set.add(a)
+		set.add(b)
+		assert.equals(1, set.size())
+		assert.equals(set, #{a})
+		assert.equals(#{a}, #{b})
 		'''.test
 	}
 	
