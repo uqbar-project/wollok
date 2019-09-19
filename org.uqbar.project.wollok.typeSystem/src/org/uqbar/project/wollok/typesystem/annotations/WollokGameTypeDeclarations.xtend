@@ -52,6 +52,8 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		game >> "center" === #[] => Position
 		game >> "ground" === #[String] => Void
 		game >> "boardGround" === #[String] => Void
+		game >> "cellSize" === #[Number] => Void
+		game >> "doCellSize" === #[Number] => Void
 		game >> "hideAttributes" === #[T] => Void
 		game >> "showAttributes" === #[T] => Void
 		game >> "errorReporter" === #[T] => Void
