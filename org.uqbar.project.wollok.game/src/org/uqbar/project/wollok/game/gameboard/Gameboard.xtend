@@ -22,8 +22,8 @@ import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 @Accessors
 class Gameboard {
-	public static Gameboard instance
-	public static int CELLZISE = 50
+	static Gameboard instance
+	public int CELLZISE = 50
 	
 	val Logger log = Logger.getLogger(this.class)	
 	
@@ -41,9 +41,13 @@ class Gameboard {
 		
 	def static getInstance() {
 		if (instance === null) {
-			instance = new Gameboard()
+			resetInstance
 		}
 		instance
+	}
+		
+	def static resetInstance() {
+		instance = new Gameboard()
 	}
 	
 	new() {

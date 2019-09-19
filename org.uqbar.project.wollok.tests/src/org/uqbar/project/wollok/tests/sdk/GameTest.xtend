@@ -4,6 +4,7 @@ import org.junit.Before
 import org.junit.Test
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
+import org.junit.After
 
 class GameTest extends AbstractWollokInterpreterTestCase {
 
@@ -12,6 +13,11 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 	@Before
 	def void init() {
 		gameboard.clear
+	}
+	
+	@After
+	def void finish() {
+		Gameboard.resetInstance
 	}
 
 	@Test
@@ -192,7 +198,7 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 		'''
 			game.cellSize(10)
 		'''.gameTest
-		assertEquals(10, Gameboard.CELLZISE)
+		assertEquals(10, gameboard.CELLZISE)
 	}
 	
 	@Test

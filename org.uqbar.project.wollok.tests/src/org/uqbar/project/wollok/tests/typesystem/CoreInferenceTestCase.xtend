@@ -12,11 +12,6 @@ import static org.uqbar.project.wollok.sdk.WollokSDK.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
-/**
- * Test cases for type inference related to the console object.
- * 
- * @author npasserini
- */
 class CoreInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 
 	@Parameters(name="{index}: {0}")
