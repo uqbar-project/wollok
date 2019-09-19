@@ -23,7 +23,7 @@ import static org.uqbar.project.wollok.sdk.WollokSDK.*
 @Accessors
 class Gameboard {
 	public static Gameboard instance
-	public static final int CELLZISE = 50
+	public static int CELLZISE = 50
 	
 	val Logger log = Logger.getLogger(this.class)	
 	

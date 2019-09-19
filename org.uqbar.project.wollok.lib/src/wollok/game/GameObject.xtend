@@ -207,4 +207,6 @@ class GameObject {
 	def ground(String image) { board.ground = image }
 	def boardGround(String image) { board.boardGround = image }
 	
+	def doCellSize(WollokObject size) {Gameboard.CELLZISE=size.coerceToInteger }
+	
 }
