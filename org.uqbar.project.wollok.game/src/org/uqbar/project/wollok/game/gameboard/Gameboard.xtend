@@ -23,7 +23,6 @@ import static org.uqbar.project.wollok.sdk.WollokSDK.*
 @Accessors
 class Gameboard {
 	static Gameboard instance
-	public int CELLZISE = 50
 	
 	val Logger log = Logger.getLogger(this.class)	
 	
@@ -32,6 +31,7 @@ class Gameboard {
 	String boardGround
 	int height
 	int width
+	@Accessors int cellsize = 50
 	Background background
 	List<VisualComponent> components = newArrayList
 	List<GameboardListener> listeners = newArrayList
@@ -106,9 +106,9 @@ class Gameboard {
 		null
 	}
 
-	def pixelHeight() {	height * CELLZISE }
+	def pixelHeight() {	height * cellsize }
 
-	def pixelWidth() { width * CELLZISE }
+	def pixelWidth() { width * cellsize }
 	
 	def clear() {
 		components.clear()

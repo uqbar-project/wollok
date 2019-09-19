@@ -105,8 +105,8 @@ class VisualComponent {
 		val yMouse = Gdx.input.y
 		val bottomX = position.xinPixels
 		val bottomY = Gameboard.getInstance().pixelHeight - position.yinPixels
-		val topX = bottomX + Gameboard.instance.CELLZISE
-		val topY = bottomY - Gameboard.instance.CELLZISE
+		val topX = bottomX + Gameboard.instance.cellsize
+		val topY = bottomY - Gameboard.instance.cellsize
 		return (xMouse > bottomX && xMouse < topX) && (yMouse < bottomY && yMouse > topY)
 	}
 

@@ -49,9 +49,9 @@ abstract class Position {
 	def abstract int getX()
 	def abstract int getY()
 
-	def getXinPixels() { x * Gameboard.instance.CELLZISE }
+	def getXinPixels() { x * Gameboard.instance.cellsize }
 
-	def getYinPixels() { y * Gameboard.instance.CELLZISE }
+	def getYinPixels() { y * Gameboard.instance.cellsize }
 
 	override public int hashCode() {
 		val prime = 31

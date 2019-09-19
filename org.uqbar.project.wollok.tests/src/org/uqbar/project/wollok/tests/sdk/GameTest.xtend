@@ -198,7 +198,7 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 		'''
 			game.cellSize(10)
 		'''.gameTest
-		assertEquals(10, gameboard.CELLZISE)
+		assertEquals(10, gameboard.cellsize)
 	}
 	
 	@Test
