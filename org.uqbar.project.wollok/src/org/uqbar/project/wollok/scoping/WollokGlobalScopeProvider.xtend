@@ -90,7 +90,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		objectsFromLocalImport(context, imports, objectsFromManifests)
 	}
 
-	def objectsFromLocalImport(Resource context, Iterable<String> importsEntry,
+	def synchronized objectsFromLocalImport(Resource context, Iterable<String> importsEntry,
 		Iterable<IEObjectDescription> objectsFromManifests) {
 		val imports = (importsEntry.map[#[it] + localScopeProvider.allRelativeImports(it, context.implicitPackage)].
 			flatten).toSet
@@ -119,7 +119,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	 * Resolves the import to a ECore resource. Here is where the magic of resolving the libraries is performed for the
 	 * things that are not in the wollok classpath (found by the WollokManifestFinder).
 	 */
-	def static synchronized toResource(String importedNamespace, Resource resource) {
+	def static toResource(String importedNamespace, Resource resource) {
 		try {
 			var uri = generateUri(resource, importedNamespace)
 			if(uri === null) return null
@@ -133,7 +133,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	/**
 	 * Converts the importedName to a Resource relative to a context
 	 */
-	def static synchronized generateUri(Resource context, String importedName) {
+	def static generateUri(Resource context, String importedName) {
 		val levels = WollokRootLocator.levelsToRoot(context)
 		val parts = importedName.split("\\.")
 		var uri = context.URI.trimSegments(levels)
@@ -158,7 +158,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		uri.appendFileExtension(CLASS_OBJECTS_EXTENSION).toString
 	}
 
-	def static synchronized Boolean exists(URI fileURI, Resource context) {
+	def static Boolean exists(URI fileURI, Resource context) {
 		try {
 			context.resourceSet.URIConverter.exists(fileURI, null)
 		} catch (ClasspathUriResolutionException e) {
