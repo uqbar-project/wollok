@@ -331,16 +331,16 @@ class ListTest extends ListTestCase {
 	def void testListOfUserDefinedClassWithoutDuplicatesRedefiningEqualEqual() {
 		'''
 		class Animal {
-			override method ==(otroAnimal) = self.getNombre() == otroAnimal.getNombre()
-			method getNombre()
+			override method ==(otroAnimal) = self.nombre() == otroAnimal.nombre()
+			method nombre()
 		}
 			
 		class Perro inherits Animal {
-			override method getNombre() = "Firulais"
+			override method nombre() = "Firulais"
 		}
 			
 		class Gato inherits Animal {
-			override method getNombre() = "Garfield"
+			override method nombre() = "Garfield"
 		}
 		
 		test "issue 1771" {
@@ -357,16 +357,16 @@ class ListTest extends ListTestCase {
 	def void testListOfUserDefinedClassWithoutDuplicatesRedefiningEquals() {
 		'''
 		class Animal {
-			override method equals(otroAnimal) = self.getNombre() == otroAnimal.getNombre()
-			method getNombre()
+			override method equals(otroAnimal) = self.nombre() == otroAnimal.nombre()
+			method nombre()
 		}
 			
 		class Perro inherits Animal {
-			override method getNombre() = "Firulais"
+			override method nombre() = "Firulais"
 		}
 			
 		class Gato inherits Animal {
-			override method getNombre() = "Garfield"
+			override method nombre() = "Garfield"
 		}
 		
 		test "issue 1771" {

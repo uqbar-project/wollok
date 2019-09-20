@@ -206,7 +206,7 @@ class SetTest extends CollectionTestCase {
 		set.add(c)
 		assert.equals(2, set.size())
 		assert.equals(set, #{a,c})
-		//assert.equals(#{a,c}, #{b,c})
+		assert.equals(#{a,c}, #{b,c})
 		'''.test
 	}
 
@@ -247,16 +247,16 @@ class SetTest extends CollectionTestCase {
 	def void testSetOfUserDefinedClassSizeRedefiningEqualEqual() {
 		'''
 		class Animal {
-			override method ==(otroAnimal) = self.getNombre() == otroAnimal.getNombre()
-			method getNombre()
+			override method ==(otroAnimal) = self.nombre() == otroAnimal.nombre()
+			method nombre()
 		}
 		
 		class Perro inherits Animal {
-			override method getNombre() = "Firulais"
+			override method nombre() = "Firulais"
 		}
 		
 		class Gato inherits Animal {
-			override method getNombre() = "Garfield"
+			override method nombre() = "Garfield"
 		}
 		
 		test "issue 1771" {
@@ -278,16 +278,16 @@ class SetTest extends CollectionTestCase {
 	def void testSetOfUserDefinedClassSizeRedefiningEquals() {
 		'''
 		class Animal {
-			override method equals(otroAnimal) = self.getNombre() == otroAnimal.getNombre()
-			method getNombre()
+			override method equals(otroAnimal) = self.nombre() == otroAnimal.nombre()
+			method nombre()
 		}
 		
 		class Perro inherits Animal {
-			override method getNombre() = "Firulais"
+			override method nombre() = "Firulais"
 		}
 		
 		class Gato inherits Animal {
-			override method getNombre() = "Garfield"
+			override method nombre() = "Garfield"
 		}
 		
 		test "issue 1771" {
