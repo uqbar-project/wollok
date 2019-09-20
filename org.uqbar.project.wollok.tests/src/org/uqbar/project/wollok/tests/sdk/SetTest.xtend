@@ -246,25 +246,30 @@ class SetTest extends CollectionTestCase {
 	@Test
 	def void testSetOfUserDefinedClassSizeRedefiningEqualEqual() {
 		'''
-		class C {
-			override method ==(other) = self.kindName() == other.kindName()
+		class Animal {
+			override method ==(otroAnimal) = self.getNombre() == otroAnimal.getNombre()
+			method getNombre()
 		}
 		
-		class D {
-			override method ==(other) = self.kindName() == other.kindName()
+		class Perro inherits Animal {
+			override method getNombre() = "Firulais"
+		}
+		
+		class Gato inherits Animal {
+			override method getNombre() = "Garfield"
 		}
 		
 		test "issue 1771" {
 			const set = new Set()
-			const a = new C()
-			const b = new C()
-			const d = new D()
-			set.add(a)
-			set.add(b)
-			set.add(d)
+			const perro = new Perro()
+			const otroPerro = new Perro()
+			const gato = new Gato()
+			set.add(perro)
+			set.add(otroPerro)
+			set.add(gato)
 			assert.equals(2, set.size())
-			assert.equals(set, #{a,d})
-			assert.equals(#{a,d}, #{b,d})
+			assert.equals(set, #{perro,gato})
+			assert.equals(#{perro,gato}, #{otroPerro,gato})
 		}
 		'''.interpretPropagatingErrors
 	}
@@ -272,62 +277,32 @@ class SetTest extends CollectionTestCase {
 	@Test
 	def void testSetOfUserDefinedClassSizeRedefiningEquals() {
 		'''
-		class C {
-			override method ==(other) = self.kindName() == other.kindName()
+		class Animal {
+			override method equals(otroAnimal) = self.getNombre() == otroAnimal.getNombre()
+			method getNombre()
 		}
 		
-		class D {
-			override method ==(other) = self.kindName() == other.kindName()
+		class Perro inherits Animal {
+			override method getNombre() = "Firulais"
+		}
+		
+		class Gato inherits Animal {
+			override method getNombre() = "Garfield"
 		}
 		
 		test "issue 1771" {
 			const set = new Set()
-			const a = new C()
-			const b = new C()
-			const d = new D()
-			set.add(a)
-			set.add(b)
-			set.add(d)
+			const perro = new Perro()
+			const otroPerro = new Perro()
+			const gato = new Gato()
+			set.add(perro)
+			set.add(otroPerro)
+			set.add(gato)
 			assert.equals(2, set.size())
-			assert.equals(set, #{a,d})
-			assert.equals(#{a,d}, #{b,d})
+			assert.equals(set, #{perro,gato})
+			assert.equals(#{perro,gato}, #{otroPerro,gato})
 		}
 		'''.interpretPropagatingErrors
-	}
-	
-	@Test
-	def void testSetOfDifferentTypesSize() {
-		'''
-		const dictionary = new Dictionary()
-		const anotherDictionary = new Dictionary()
-		var position = new Position()
-		position = position.up(2)
-		dictionary.put("1", "hola")
-		anotherDictionary.put("1", "hola")
-		
-		const set = #{1,"1", new Pair(5,6), "hola", new Position(), new Dictionary(), "1", new Dictionary(), 
-		"ho" + "la", true, new Position(), new Date(day=21, month=10, year=2018), position, dictionary, "true", 2/2, 
-		!false, false, new Date(day=21, month=10, year=2018), anotherDictionary, new Pair(1,2), 
-		new Date(day=2, month=5, year=2014), new Pair(1,2)}
-		
-		assert.equals(14, set.size())
-		'''.test
-	}
-	
-	// Si se agregan a las listas positions, dictionaries y/o clases definidas por el usuario deja de andar...
-	@Test
-	def void testSetOfListsOfDifferentTypesSize() {
-		'''
-		const set = new Set()
-		const a = [1,"hola",true,new Date()]
-		const b = new List()
-		b.addAll([1,"hola",true,new Date()])
-		set.add(a)
-		set.add(b)
-		assert.equals(1, set.size())
-		assert.equals(set, #{a})
-		assert.equals(#{a}, #{b})
-		'''.test
 	}
 	
 	@Test

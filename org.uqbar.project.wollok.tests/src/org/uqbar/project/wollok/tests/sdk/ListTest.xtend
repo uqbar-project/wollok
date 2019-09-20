@@ -166,16 +166,21 @@ class ListTest extends ListTestCase {
 	@Test
 	def void testListOfUserDefinedClassAsSetConversionRedefiningEqualEqual() {
 		'''
-		class C {
-			override method ==(other) = self.kindName() == other.kindName()
+		class Animal {
+			override method ==(otroAnimal) = self.getNombre() == otroAnimal.getNombre()
+			method getNombre()
 		}
-			
-		class D {
-			override method ==(other) = self.kindName() == other.kindName()
+				
+		class Perro inherits Animal {
+			override method getNombre() = "Firulais"
+		}
+				
+		class Gato inherits Animal {
+			override method getNombre() = "Garfield"
 		}
 		
 		test "issue 1771" {
-			assert.equals(2, [new C(), new D(), new C(), new D()].asSet().size())
+			assert.equals(2, [new Perro(), new Gato(), new Perro(), new Gato()].asSet().size())
 		}
 		'''.interpretPropagatingErrors
 	}
@@ -183,55 +188,21 @@ class ListTest extends ListTestCase {
 	@Test
 	def void testListOfUserDefinedClassAsSetConversionRedefiningEquals() {
 		'''
-		class C {
-			override method equals(other) = self.kindName() == other.kindName()
+		class Animal {
+			override method ==(otroAnimal) = self.getNombre() == otroAnimal.getNombre()
+			method getNombre()
 		}
-			
-		class D {
-			override method equals(other) = self.kindName() == other.kindName()
+					
+		class Perro inherits Animal {
+			override method getNombre() = "Firulais"
+		}
+					
+		class Gato inherits Animal {
+			override method getNombre() = "Garfield"
 		}
 		
 		test "issue 1771" {
-			assert.equals(2, [new C(), new D(), new C(), new D()].asSet().size())
-		}
-		'''.interpretPropagatingErrors
-	}
-	
-	@Test
-	def void testListOfDifferentTypesAsSetConversion() {
-		'''
-		import wollok.game.Position
-		
-		class C {
-			var property nombre = "federico"
-			
-			override method equals(other) {
-				return self.nombre() == other.nombre()
-			} 
-		}
-		class D {
-			var property nombre = "gabriel"
-			
-			override method equals(other) {
-				return self.nombre() == other.nombre()
-			} 
-		}
-
-		test "issue 1771" {
-			const dictionary = new Dictionary()
-			const anotherDictionary = new Dictionary()
-			dictionary.put("1", "hola")
-			anotherDictionary.put("1", "hola")
-			var defaultPosition = new Position()
-			var anotherPosition = new Position()
-			anotherPosition = anotherPosition.up(2)
-		
-			const list = [1,"1", defaultPosition, new Pair(5,6), new C(), "hola", new Dictionary(), "1", 
-			new Dictionary(), "ho" + "la", true, new Date(day=21, month=10, year=2018), defaultPosition, 
-			dictionary, "true", 2/2, !false, false, new C(), new Date(day=21, month=10, year=2018), anotherDictionary, new Pair(1,2), 
-			new Date(day=2, month=5, year=2014), new Pair(1,2), anotherPosition, new D()]
-			
-			assert.equals(16, list.asSet().size())
+			assert.equals(2, [new Perro(), new Gato(), new Perro(), new Gato()].asSet().size())
 		}
 		'''.interpretPropagatingErrors
 	}
@@ -359,17 +330,22 @@ class ListTest extends ListTestCase {
 	@Test
 	def void testListOfUserDefinedClassWithoutDuplicatesRedefiningEqualEqual() {
 		'''
-		class C {
-			override method ==(other) = self.kindName() == other.kindName()
+		class Animal {
+			override method ==(otroAnimal) = self.getNombre() == otroAnimal.getNombre()
+			method getNombre()
 		}
-		
-		class D {
-			override method ==(other) = self.kindName() == other.kindName()
+			
+		class Perro inherits Animal {
+			override method getNombre() = "Firulais"
+		}
+			
+		class Gato inherits Animal {
+			override method getNombre() = "Garfield"
 		}
 		
 		test "issue 1771" {
-			const list = [new D(), new C(), new D(), new C()]
-			const result = [new D(), new C()]
+			const list = [new Perro(), new Gato(), new Perro(), new Gato()]
+			const result = [new Perro(), new Gato()]
 			const withoutDuplicates = list.withoutDuplicates()
 			assert.equals(2, withoutDuplicates.size())
 			(0..result.size()-1).forEach{ i => assert.that(withoutDuplicates.get(i).equals(result.get(i))) }
@@ -380,57 +356,24 @@ class ListTest extends ListTestCase {
 	@Test
 	def void testListOfUserDefinedClassWithoutDuplicatesRedefiningEquals() {
 		'''
-		class C {
-			override method equals(other) = self.kindName() == other.kindName()
+		class Animal {
+			override method equals(otroAnimal) = self.getNombre() == otroAnimal.getNombre()
+			method getNombre()
 		}
-				
-		class D {
-			override method equals(other) = self.kindName() == other.kindName()
+			
+		class Perro inherits Animal {
+			override method getNombre() = "Firulais"
+		}
+			
+		class Gato inherits Animal {
+			override method getNombre() = "Garfield"
 		}
 		
 		test "issue 1771" {
-			const list = [new D(), new C(), new D(), new C()]
-			const result = [new D(), new C()]
+			const list = [new Perro(), new Gato(), new Perro(), new Gato()]
+			const result = [new Perro(), new Gato()]
 			const withoutDuplicates = list.withoutDuplicates()
 			assert.equals(2, withoutDuplicates.size())
-			(0..result.size()-1).forEach{ i => assert.that(withoutDuplicates.get(i).equals(result.get(i))) }
-		}
-		'''.interpretPropagatingErrors
-	}
-	
-	@Test
-	def void testListOfDifferentTypesWithoutDuplicates() {
-		'''
-		import wollok.game.Position
-		
-		class C {
-			override method equals(other) = self.kindName() == other.kindName()
-		}
-		class D {
-			override method equals(other) = self.kindName() == other.kindName()
-		}
-
-		test "issue 1771" {
-			const dictionary = new Dictionary()
-			const anotherDictionary = new Dictionary()
-			dictionary.put("1", "hola")
-			anotherDictionary.put("1", "hola")
-			var defaultPosition = new Position()
-			var anotherPosition = new Position()
-			anotherPosition = anotherPosition.up(2)
-		
-			const list = [1,"1", defaultPosition, new Pair(5,6), new C(), "hola", new Dictionary(), "1", new Dictionary(), 
-			"ho" + "la", true, new D(), new Date(day=21, month=10, year=2018), defaultPosition, dictionary, "true", 2/2, 
-			!false, false, new C(), new Date(day=21, month=10, year=2018), anotherDictionary, new Pair(1,2), 
-			new Date(day=2, month=5, year=2014), new Pair(1,2), anotherPosition]
-		
-			const result = [1, "1", defaultPosition, new Pair(5,6),new C(), "hola", new Dictionary(), true, new D(), 
-			new Date(day=21, month=10, year=2018), dictionary, "true", false, new Pair(1,2), 
-			new Date(day=2, month=5, year=2014), anotherPosition]
-		
-			const withoutDuplicates = list.withoutDuplicates()
-		
-			assert.equals(16, withoutDuplicates.size())
 			(0..result.size()-1).forEach{ i => assert.that(withoutDuplicates.get(i).equals(result.get(i))) }
 		}
 		'''.interpretPropagatingErrors
