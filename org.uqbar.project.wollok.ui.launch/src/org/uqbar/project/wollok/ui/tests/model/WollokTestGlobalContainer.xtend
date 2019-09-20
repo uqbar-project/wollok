@@ -13,8 +13,8 @@ public class WollokTestGlobalContainer {
 	long millisecondsElapsed = 0
 
 	def void add(WollokTestFileContainer container) {
-		val isAlreadyExists = this.testFiles.findFirst[file|file.mainResource == container.mainResource]
-		if (isAlreadyExists === null) {
+		val alreadyExists = this.testFiles.exists [file|file.mainResource == container.mainResource]
+		if (!alreadyExists) {
 			testFiles.add(container)
 		}
 	}
@@ -27,7 +27,6 @@ public class WollokTestGlobalContainer {
 	}
 
 	def hasTests() {
-		// TODO: seria mejor chequear todos los test children
 		return !testFiles.empty
 	}
 

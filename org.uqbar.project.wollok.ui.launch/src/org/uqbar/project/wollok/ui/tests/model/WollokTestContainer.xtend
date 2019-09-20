@@ -27,38 +27,40 @@ class WollokTestContainer {
 		this.tests = newArrayList(allTests.filter [ result | result.failed || !shouldShowOnlyFailuresAndErrors ])
 	}
 	
-	def isAllTestsOk(){
-		val allTestsOk = tests.filter[ test | test.state === WollokTestState.OK ]
-		return allTestsOk.size === tests.size
+	def passed() {
+		tests.forall [ test | test.state === WollokTestState.OK ]
 	}
 	
-	def isAnyRunning(){
-		return tests.findFirst[ test | test.state === WollokTestState.RUNNING ] !== null
+	def running() {
+		tests.exists [ test | test.state === WollokTestState.RUNNING ]
 	}
 	
-	def isAnyWithError(){
-		return tests.findFirst[ test | test.state === WollokTestState.ERROR ] !== null
+	def errored() {
+		tests.exists [ test | test.state === WollokTestState.ERROR ]
 	}
 	
-	def isAnyWithFail(){
-		return tests.findFirst[ test | test.state === WollokTestState.ASSERT ] !== null
+	def failed() {
+		tests.exists [ test | test.state === WollokTestState.ASSERT ]
 	}
 	
+	def getInternalImage() {
+		if (running) {
+			return "icons/suiterun.png"
+		}
+		if (errored) {
+			return "icons/suiteerr.png"
+		}
+		if (failed) {
+			return "icons/suitefail.png"
+		}
+		if (passed) {
+			return "icons/suiteok.png"
+		}
+		"icons/suite.png"
+	}
+
 	def getImage(){
-		var icon = "icons/suite.png"
-		if(isAnyRunning){
-			icon = "icons/suiterun.png"
-		}
-		if(isAnyWithError){
-			icon = "icons/suiteerr.png"
-		}
-		if(isAnyWithFail){
-			icon = "icons/suitefail.png"
-		}
-		if(allTestsOk){
-			icon = "icons/suiteok.png"
-		}
-		return Activator.getDefault.getImageDescriptor(icon)
+		Activator.getDefault.getImageDescriptor(internalImage)
 	}
 	
 	def void defineTests(List<WollokTestResult> tests, boolean shouldShowOnlyFailuresAndErrors) {

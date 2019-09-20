@@ -52,7 +52,6 @@ import org.uqbar.project.wollok.ui.tests.model.WollokTestResults
 import org.uqbar.project.wollok.ui.tests.model.WollokTestState
 import org.uqbar.project.wollok.ui.tests.shortcut.WollokAllTestsLaunchShortcut
 import org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut
-import org.uqbar.project.wollok.utils.WEclipseUtils
 
 import static extension org.uqbar.project.wollok.utils.StringUtils.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
@@ -340,8 +339,10 @@ class WollokTestResultView extends ViewPart implements Observer {
 		textOutput.addSelectionListener(
 			new SelectionAdapter() {
 				override widgetSelected(SelectionEvent event) {
+					//
 					val fileOpenerStrategy = AbstractWollokFileOpenerStrategy.buildOpenerStrategy(event.text,
 						results.container.project)
+						//
 					val ITextEditor textEditor = fileOpenerStrategy.getTextEditor(opener)
 					val String fileName = fileOpenerStrategy.fileName
 					val Integer lineNumber = fileOpenerStrategy.lineNumber

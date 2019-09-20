@@ -60,38 +60,40 @@ class WollokTestFileContainer {
 		this.containers.get(0).project
 	}
 	
-	def allTestsOk(){
-		val allContainers = containers.filter[ container | container.isAllTestsOk ]
-		return allContainers.size === containers.size
+	def passed(){
+		containers.forall [ passed ]
 	}
 	
-	def isAnyRunning(){
-		return containers.findFirst[ container | container.isAnyRunning ] !== null
+	def running(){
+		containers.exists [ running ]
 	}
 	
-	def isAnyWithError(){
-		return containers.findFirst[ container | container.isAnyWithError ] !== null
+	def errored(){
+		containers.exists [ errored ]
 	}
 	
-	def isAnyWithFail(){
-		return containers.findFirst[ container | container.isAnyWithFail ] !== null
+	def failed(){
+		containers.exists [ failed ]
 	}
 	
-	def getImage(){
-		var icon = "icons/wollok-icon-test_16.png"
-		if(isAnyRunning){
-			icon = "icons/wollok-icon-testrun_16.png"
+	def String getInternalImage() {
+		if (running) {
+			return "icons/wollok-icon-testrun_16.png"
 		}
-		if(isAnyWithError){
-			icon = "icons/wollok-icon-testerr_16.png"
+		if (errored) {
+			return "icons/wollok-icon-testerr_16.png"
 		}
-		if(isAnyWithFail){
-			icon = "icons/wollok-icon-testfail_16.png"
+		if (failed) {
+			return "icons/wollok-icon-testfail_16.png"
 		}
-		if(allTestsOk){
-			icon = "icons/wollok-icon-testok_16.png"
+		if (passed) {
+			return "icons/wollok-icon-testok_16.png"
 		}
-		return Activator.getDefault.getImageDescriptor(icon)
+		"icons/wollok-icon-test_16.png"		
+	}
+
+	def getImage() {
+		Activator.getDefault.getImageDescriptor(internalImage)
 	}
 
 }
