@@ -73,11 +73,6 @@ class WollokTestContainer {
 		this.allTests.findFirst[name == testName]
 	}
 	
-	def getProject() {
-		if (this.allTests.empty) return null
-		this.allTests.head.testResource.toIFile.project
-	}
-	
 	def asText() {
 		if (this.hasSuiteName) return this.suiteName
 		this.mainResource.toIFile.projectRelativePath.toPortableString
