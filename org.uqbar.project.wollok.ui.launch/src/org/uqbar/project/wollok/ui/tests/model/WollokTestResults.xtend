@@ -26,21 +26,6 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		globalContainer = new WollokTestGlobalContainer
 	}
 	
-	override assertError(String testName, String message, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {
-		testByName(testName).endedAssertError(message, stackTrace, lineNumber, resource)
-		
-		this.setChanged
-		this.notifyObservers()
-	}
-
-	override testOk(String testName) {
-		
-		testByName(testName).endedOk()
-
-		this.setChanged
-		this.notifyObservers
-	}
-	
 	override testsToRun(String suiteName, String containerResource, List<WollokTestInfo> tests, boolean processingManyFiles) {
 		val container = new WollokTestContainer
 		container.suiteName = suiteName
@@ -66,32 +51,18 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		this.notifyObservers("testsEnded")		
 	}
 
-	override testStart(String testName) {
-		testByName(testName).started()
-
-		this.setChanged
-		this.notifyObservers
-	}
-
-	def testByName(String testName){
-		globalContainer.testByName(testName)
-	}
 	
-	override error(String testName, String exceptionAsString, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {
-		testByName(testName).endedError(exceptionAsString, stackTrace, lineNumber, resource)
+	def testByName(String suiteName, String testName){
+		globalContainer.testByName(suiteName, testName)
+	}
 		
-		this.setChanged
-		this.notifyObservers		
-	}
-	
-	
 	override notifyObservers(Object arg) {
 		RunInUI.runInUI[super.notifyObservers(arg)]
 	}
 	
 	override testsResult(List<WollokResultTestDTO> tests, long millisecondsElapsed) {
 		tests.forEach [
-			val test = testByName(testName)
+			val test = testByName(suiteName, testName)
 			if (ok()) {
 				test.endedOk()
 			}

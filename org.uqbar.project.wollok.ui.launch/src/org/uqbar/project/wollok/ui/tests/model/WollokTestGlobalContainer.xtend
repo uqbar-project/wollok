@@ -5,6 +5,7 @@ import java.util.List
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.launch.Messages
+import org.uqbar.project.wollok.wollokDsl.WTest
 
 @Accessors
 public class WollokTestGlobalContainer {
@@ -43,13 +44,22 @@ public class WollokTestGlobalContainer {
 		this.testFiles.forEach[file|allTest.addAll(file.allTest())]
 		return allTest
 	}
+	def allContainers() {
+		val allContainers = new ArrayList
+		this.testFiles.forEach[file|allContainers.addAll(file.containers)]
+		return allContainers
+	}
 
 	def allTest((WollokTestResult)=>Boolean predicate) {
 		return allTest().filter(predicate)
 	}
 
-	def testByName(String testName) {
-		allTest.findFirst[name == testName]
+	def WollokTestResult testByName(String suiteName, String testName) {
+		val WollokTestContainer container = allContainers.findFirst [ container | 
+			 	container.suiteName == suiteName &&
+			 	container.tests.exists[ test | test.name == testName]
+		]
+		container.tests.findFirst[name == testName ]
 	}
 	
 	def getProject(){

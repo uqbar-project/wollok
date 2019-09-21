@@ -19,7 +19,6 @@ interface WollokTestsReporter {
 	def void reportTestError(WTest test, Exception exception, int lineNumber, URI resource)
 	def void reportTestOk(WTest test)
 	def void testsToRun(String suiteName, WFile file, List<WTest> tests)
-	def void testStart(WTest test)
 	
 	/**
 	 * Tells this reporter that the execution has finished

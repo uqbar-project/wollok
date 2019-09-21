@@ -40,8 +40,6 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 		resetTestsCount
 	}
 
-	override testStart(WTest test) {}
-
 	override reportTestAssertError(WTest test, AssertionException assertionError, int lineNumber, URI resource) {
 		incrementTestsFailed
 		println(ansi

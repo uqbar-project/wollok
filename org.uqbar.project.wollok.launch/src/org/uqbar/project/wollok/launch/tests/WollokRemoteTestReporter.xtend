@@ -47,11 +47,18 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	}
 
 	override reportTestAssertError(WTest test, AssertionException assertionException, int lineNumber, URI resource) {
-		testsResult.add(WollokResultTestDTO.assertionError(test.getFullName(processingManyFiles), assertionException.message, assertionException.wollokException?.convertStackTrace, lineNumber, resource?.toString))
+		testsResult.add(WollokResultTestDTO.assertionError(
+			suiteName,
+			test.getFullName(processingManyFiles),
+			assertionException.message,
+			assertionException.wollokException?.convertStackTrace,
+			lineNumber,
+		 	resource?.toString
+		))
 	}
 
 	override reportTestOk(WTest test) {
-		testsResult.add(WollokResultTestDTO.ok(test.getFullName(processingManyFiles)))
+		testsResult.add(WollokResultTestDTO.ok(suiteName,test.getFullName(processingManyFiles)))
 	}
 
 	override testsToRun(String _suiteName, WFile file, List<WTest> tests) {
@@ -60,13 +67,13 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 		remoteTestNotifier.testsToRun(suiteName, fileURI, getRunnedTestsInfo(tests, fileURI), processingManyFiles)
 	}
 
-	override testStart(WTest test) {
-		// for better performance we avoid a RMI call
-	}
-
 	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
 		testsResult.add(
-			WollokResultTestDTO.error(test.getFullName(processingManyFiles), exception.convertToString, exception.convertStackTrace, lineNumber,
+			WollokResultTestDTO.error(suiteName,
+				test.getFullName(processingManyFiles),
+				exception.convertToString,
+				exception.convertStackTrace,
+				lineNumber,
 				resource?.toString))
 	}
 
