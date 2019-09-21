@@ -57,9 +57,9 @@ public class WollokTestGlobalContainer {
 	def WollokTestResult testByName(String suiteName, String testName) {
 		val WollokTestContainer container = allContainers.findFirst [ container | 
 			 	container.suiteName == suiteName &&
-			 	container.tests.exists[ test | test.name == testName]
+			 	container.allTests.exists[ name == testName ]
 		]
-		container.tests.findFirst[name == testName ]
+		container.allTests.findFirst[name == testName ]
 	}
 	
 	def getProject(){
