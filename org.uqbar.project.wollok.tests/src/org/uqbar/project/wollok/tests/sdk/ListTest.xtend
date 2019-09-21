@@ -109,9 +109,8 @@ class ListTest extends ListTestCase {
 	@Test
 	def void testListOfListAsSetConversion() {
 		'''
-		var list = new List()
-		list.addAll([1,2,3])
-		assert.equals(3, [list, [4,5], [1,2,3], [6,7,8], [4,5]].asSet().size())
+		var list = [[1,2,3],[5,6],[7,8],[1,2,3],[5,6]]
+		assert.equals(3, list.asSet().size())
 		'''.test
 	}
 
@@ -119,6 +118,14 @@ class ListTest extends ListTestCase {
 	def void testListOfEmptyListAsSetConversion() {
 		'''
 		assert.equals(1, [[], []].asSet().size())
+		'''.test
+	}
+	
+	@Test
+	def void testListOfSetAsSetConversion() {
+		'''
+		var list = [#{1,2,3},#{5,6},#{7,8},#{1,2,3},#{5,6}]
+		assert.equals(3, list.asSet().size())
 		'''.test
 	}
 	
