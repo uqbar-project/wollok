@@ -134,17 +134,8 @@ class SetTest extends CollectionTestCase {
 	@Test
 	def void testSetOfListSize() {
 		'''
-		const set = #{}
-		const a = [1,2,3]
-		const b = new List()
-		const c = [3,4,5]
-		b.addAll([1,2,3])
-		set.add(a)
-		set.add(b)
-		set.add(c)
-		assert.equals(2, set.size())
-		assert.equals(set, #{a,c})
-		assert.equals(#{a,c}, #{b,c})
+		const set = #{[1,2,3],[5,6],[7,8],[1,2,3],[5,6]}
+		assert.equals(3, set.size())
 		'''.test
 	}
 
@@ -165,17 +156,8 @@ class SetTest extends CollectionTestCase {
 	@Test
 	def void testSetOfSetSize() {
 		'''
-		const set = #{}
-		const a = #{1,2,3}
-		const b = new Set()
-		const c = #{4,5,6}
-		b.addAll([1,2,3])
-		set.add(a)
-		set.add(b)
-		set.add(c)
-		assert.equals(2, set.size())
-		assert.equals(set, #{a,c})
-		assert.equals(#{a,c}, #{b,c})
+		const set = #{#{1,2,3},#{5,6},#{7,8},#{1,2,3},#{5,6}}
+		assert.equals(3, set.size())
 		'''.test
 	}
 	
