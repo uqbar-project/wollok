@@ -47,7 +47,9 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	}
 
 	override reportTestAssertError(WTest test, AssertionException assertionException, int lineNumber, URI resource) {
+		val file = test.file.URI.toString
 		testsResult.add(WollokResultTestDTO.assertionError(
+			file,
 			suiteName,
 			test.getFullName(processingManyFiles),
 			assertionException.message,
@@ -58,7 +60,8 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	}
 
 	override reportTestOk(WTest test) {
-		testsResult.add(WollokResultTestDTO.ok(suiteName,test.getFullName(processingManyFiles)))
+		val file = test.file.URI.toString
+		testsResult.add(WollokResultTestDTO.ok(file ,suiteName,test.getFullName(processingManyFiles)))
 	}
 
 	override testsToRun(String _suiteName, WFile file, List<WTest> tests) {
@@ -68,8 +71,11 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	}
 
 	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
+		val file = test.file.URI.toString
 		testsResult.add(
-			WollokResultTestDTO.error(suiteName,
+			WollokResultTestDTO.error(
+				file,
+				suiteName,
 				test.getFullName(processingManyFiles),
 				exception.convertToString,
 				exception.convertStackTrace,

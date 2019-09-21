@@ -51,8 +51,8 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 	}
 
 	
-	def testByName(String suiteName, String testName){
-		globalContainer.testByName(suiteName, testName)
+	def testByName(String file, String suiteName, String testName){
+		globalContainer.testByName(file, suiteName, testName)
 	}
 		
 	override notifyObservers(Object arg) {
@@ -61,7 +61,7 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 	
 	override testsResult(List<WollokResultTestDTO> tests, long millisecondsElapsed) {
 		tests.forEach [
-			val test = testByName(suiteName, testName)
+			val test = testByName(file, suiteName, testName)
 			if (ok()) {
 				test.endedOk()
 			}
