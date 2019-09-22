@@ -5,7 +5,7 @@ import libForImports.apu
 describe "duplicated references" {
 
 	test "with duplicated variable" {
-		// XPECT warnings --> "There is already an imported reference with this name" at "apu"
+		// XPECT warnings --> "This name is already defined (imported from libForImports.wlk)" at "apu"
 		var apu = 2
 		assert.equals(apu, 2)		
 	}
