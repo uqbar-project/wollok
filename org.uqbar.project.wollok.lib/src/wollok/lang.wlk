@@ -771,8 +771,23 @@ class Collection {
 	/** Converts a collection to a list */
 	method asList()
 	
-	/** Converts a collection to a set (no duplicates) */
-	method asSet()
+	/** Converts a collection to a set (removing duplicates if necessary)
+	 *
+	 * Examples:	
+	 *		[1, 2, 3].asSet()       => Answers #{1, 2, 3}
+	 *      [].asSet()              => Answers #{}
+	 *      [1, 2, 1, 1, 2].asSet() => Answers #{1, 2}	
+	 *
+	 *		#{1, 2, 3}.asSet() => Answers #{1, 2, 3}
+	 * 		#{}.asSet()        => Answers #{}
+	 *
+	 * @see Set
+	 */
+	method asSet() {
+		const result = #{}
+		result.addAll(self)
+		return result
+	}
 
 	/**
 	 * Answers a new collection of the same type and with the same content 
@@ -933,15 +948,6 @@ class Set inherits Collection {
 		return result
 	}
 	
-	/**
-	 * Converts an object to a Set. No effect on Sets.
-	 *
-	 * Examples
-	 *		#{1, 2, 3}.asSet() => Answers #{1, 2, 3}
-	 * 		#{}.asSet()        => Answers #{}
-	 */
-	override method asSet() = self
-
 	/**
 	 * Answers any element of a non-empty collection
 	 *
@@ -1196,22 +1202,6 @@ class List inherits Collection {
 	 * @see List
 	 */
 	override method asList() = self
-	
-	/**
-	 * Converts this list to a set (removing duplicate elements)
-	 *
-	 * Examples:	
-	 *		[1, 2, 3].asSet()       => Answers #{1, 2, 3}
-	 *      [].asSet()              => Answers #{}
-	 *      [1, 2, 1, 1, 2].asSet() => Answers #{1, 2}	
-	 *
-	 * @see Set
-	 */
-	override method asSet() {
-		const result = #{}
-		result.addAll(self)
-		return result
-	}
 	
 	/** 
 	 * Answers a view of the portion of this list between the specified fromIndex 
