@@ -665,16 +665,11 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	
 	def duplicatedReferenceFromImports(EObject it) {
 		val imports = it.allImports
-		if (!imports.isEmpty) {
-			val collidingImport = imports.allImportsNames(scopeProvider).filter [ name |
-				val referenceName = name.substring(name.lastIndexOf('.') + 1)
-				referenceName.equals(it.name)
-			].head
-			if (!collidingImport.nullOrEmpty) {
-				report(
-					NLS.bind(WollokDslValidator_DUPLICATED_REFERENCE_FROM_IMPORTS,
-						collidingImport.substring(0, collidingImport.lastIndexOf('.')) + ".wlk"), it, WNAMED__NAME)
-			}
+		val duplicatedReference = it.duplicatedReference(imports, scopeProvider)
+		if (duplicatedReference !== null) {
+			report(
+				NLS.bind(WollokDslValidator_DUPLICATED_REFERENCE_FROM_IMPORTS,
+					duplicatedReference.EObjectURI.lastSegment), it, WNAMED__NAME)
 		}
 	}
 	
