@@ -5,7 +5,6 @@ import java.util.List
 import java.util.Observable
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.uqbar.project.wollok.errorHandling.StackTraceElementDTO
 import org.uqbar.project.wollok.launch.tests.WollokRemoteUITestNotifier
 import org.uqbar.project.wollok.launch.tests.WollokResultTestDTO
 import org.uqbar.project.wollok.launch.tests.WollokTestInfo
@@ -24,21 +23,6 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 	
 	override start(){
 		globalContainer = new WollokTestGlobalContainer
-	}
-	
-	override assertError(String testName, String message, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {
-		testByName(testName).endedAssertError(message, stackTrace, lineNumber, resource)
-		
-		this.setChanged
-		this.notifyObservers()
-	}
-
-	override testOk(String testName) {
-		
-		testByName(testName).endedOk()
-
-		this.setChanged
-		this.notifyObservers
 	}
 	
 	override testsToRun(String suiteName, String containerResource, List<WollokTestInfo> tests, boolean processingManyFiles) {
@@ -66,32 +50,18 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		this.notifyObservers("testsEnded")		
 	}
 
-	override testStart(String testName) {
-		testByName(testName).started()
-
-		this.setChanged
-		this.notifyObservers
-	}
-
-	def testByName(String testName){
-		globalContainer.testByName(testName)
-	}
 	
-	override error(String testName, String exceptionAsString, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {
-		testByName(testName).endedError(exceptionAsString, stackTrace, lineNumber, resource)
+	def testByName(String file, String suiteName, String testName){
+		globalContainer.testByName(file, suiteName, testName)
+	}
 		
-		this.setChanged
-		this.notifyObservers		
-	}
-	
-	
 	override notifyObservers(Object arg) {
 		RunInUI.runInUI[super.notifyObservers(arg)]
 	}
 	
 	override testsResult(List<WollokResultTestDTO> tests, long millisecondsElapsed) {
 		tests.forEach [
-			val test = testByName(testName)
+			val test = testByName(file, suiteName, testName)
 			if (ok()) {
 				test.endedOk()
 			}

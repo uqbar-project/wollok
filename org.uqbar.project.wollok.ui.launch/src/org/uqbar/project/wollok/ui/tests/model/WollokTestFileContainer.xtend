@@ -2,6 +2,9 @@ package org.uqbar.project.wollok.ui.tests.model
 
 import java.util.ArrayList
 import java.util.List
+import org.eclipse.core.resources.IProject
+import org.eclipse.core.resources.ResourcesPlugin
+import org.eclipse.core.runtime.Path
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.ui.launch.Activator
@@ -56,8 +59,9 @@ class WollokTestFileContainer {
 		this.containers.forEach[container|container.filterTestByState(shouldShowOnlyFailuresAndErrors)]
 	}
 	
-	def getProject(){
-		this.containers.get(0).project
+	def IProject getProject(){
+		val path = new Path(mainResource.toFileString)
+		ResourcesPlugin.workspace.root.getFileForLocation(path).project
 	}
 	
 	def passed(){

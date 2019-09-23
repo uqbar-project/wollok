@@ -58,8 +58,6 @@ class WollokJSONTestsReporter implements WollokTestsReporter {
 		endObject
 	}
 
-	override testStart(WTest test) {}
-
 	def static operator_doubleArrow(JsonWriter writer, Pair<String, Object> pair) {
 		pair.value.interpret(writer.name(pair.key))
 	}

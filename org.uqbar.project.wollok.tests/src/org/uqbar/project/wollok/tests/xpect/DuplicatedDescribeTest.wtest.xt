@@ -1,0 +1,15 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+// XPECT errors --> "The names of the describes cannot be repeated" at ""duplicatedDescribe""
+describe "duplicatedDescribe" {
+	test "test" {
+	 	assert.equals(1, 1)
+	}
+}
+
+// XPECT errors --> "The names of the describes cannot be repeated" at ""duplicatedDescribe""
+describe "duplicatedDescribe" {
+	test "test" {
+	 	assert.equals(1, 1)
+	}
+}
