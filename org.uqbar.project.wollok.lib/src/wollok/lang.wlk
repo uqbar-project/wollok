@@ -441,15 +441,15 @@ class Collection {
 	  * If collection has more than one element, an error is thrown.
 	  *
 	  * Example:
-	  *       [1].unique() 	=>  Answers 1
-	  *       [].unique()  	=>  Throws error, list must not be empty
-	  *       [1, 2].unique()  	=>  Throws error, list must have one element
+	  *       [1].uniqueElement()    => Answers 1
+	  *       [].uniqueElement()     => Throws error, list must not be empty
+	  *       [1, 2].uniqueElement() => Throws error, list must have one element
 	  */
-	method unique() {
-		self.validateNotEmpty("unique")
+	method uniqueElement() {
+		self.validateNotEmpty("uniqueElement")
 		const size = self.size()
 		if (size > 1)
-			throw new Exception(message = "Illegal operation 'unique' on collection with " + size.toString() + " elements")
+			throw new Exception(message = "Illegal operation 'uniqueElement' on collection with " + size.toString() + " elements")
 		return self.anyOne()		
 	}
 	
