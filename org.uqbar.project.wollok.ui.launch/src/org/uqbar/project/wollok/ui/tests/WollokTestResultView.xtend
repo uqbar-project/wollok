@@ -149,8 +149,11 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 	/** this method is invoked between test executions */
 	def cleanView() {
-		bar.background = pendingColor
-		bar.text = Messages.WollokTestResultView_runningTests
+		val globalContainer = results.globalContainer
+		if (globalContainer !== null && globalContainer.hasTests) {
+			bar.background = pendingColor
+			bar.text = Messages.WollokTestResultView_runningTests
+		}
 		totalTextBox.text = ""
 		failedTextBox.text = ""
 		errorTextBox.text = ""
