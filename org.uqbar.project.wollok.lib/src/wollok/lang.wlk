@@ -272,6 +272,17 @@ class Pair {
 	method key() = x
 	method value() = y
 
+	/** 
+	 * Two pairs are equal if they have the same values
+	 *
+	 * Example:
+	 *		new Pair(1, 2).equals(new Pair(1, 2))  ==> Answers true
+	 */
+	override method equals(other) {
+		self.checkNotNull(other, "equals")
+		return x == other.x() && y == other.y()
+	}
+ 
 	/** String representation of a Pair */
 	override method toString() = x.toString() + " -> " + y.toString()
 }
@@ -788,8 +799,23 @@ class Collection {
 	/** Converts a collection to a list */
 	method asList()
 	
-	/** Converts a collection to a set (no duplicates) */
-	method asSet()
+	/** Converts a collection to a set (removing duplicates if necessary)
+	 *
+	 * Examples:	
+	 *		[1, 2, 3].asSet()       => Answers #{1, 2, 3}
+	 *      [].asSet()              => Answers #{}
+	 *      [1, 2, 1, 1, 2].asSet() => Answers #{1, 2}	
+	 *
+	 *		#{1, 2, 3}.asSet() => Answers #{1, 2, 3}
+	 * 		#{}.asSet()        => Answers #{}
+	 *
+	 * @see Set
+	 */
+	method asSet() {
+		const result = #{}
+		result.addAll(self)
+		return result
+	}
 
 	/**
 	 * Answers a new collection of the same type and with the same content 
@@ -912,6 +938,7 @@ class Collection {
 	 * with default element separator (",")
 	 */
 	method join()
+
 }
 
 /**
@@ -949,15 +976,6 @@ class Set inherits Collection {
 		return result
 	}
 	
-	/**
-	 * Returns a new copy of current Set.
-	 *
-	 * Examples
-	 *		#{1, 2, 3}.asSet() => Answers #{1, 2, 3}, which is a copy of original set
-	 * 		#{}.asSet()        => Answers #{}, also a copy of original #{}
-	 */
-	override method asSet() native
-
 	/**
 	 * Answers any element of a non-empty collection
 	 *
@@ -1211,18 +1229,6 @@ class List inherits Collection {
 	 */
 	override method asList() = self
 	
-	/**
-	 * Converts this list to a set (removing duplicate elements)
-	 *
-	 * Examples:	
-	 *		[1, 2, 3].asSet()       => Answers #{1, 2, 3}
-	 *      [].asSet()              => Answers #{}
-	 *      [1, 2, 1, 1, 2].asSet() => Answers #{1, 2}	
-	 *
-	 * @see Set
-	 */
-	override method asSet() native
-	
 	/** 
 	 * Answers a view of the portion of this list between the specified fromIndex 
 	 * and toIndex, both inclusive. Remember first element is position 0, 
@@ -1416,19 +1422,19 @@ class List inherits Collection {
 	 *
 	 *
 	 * Examples:
-	 * 		[].equals([])         => Answers true
-	 *      [1, 2].equals([2, 1]) => Answers false
-	 *      [1, 2].equals([1, 2]) => Answers true
+	 * 		[] == []         => Answers true
+	 *      [1, 2] == [2, 1] => Answers false
+	 *      [1, 2] == [1, 2] => Answers true
 	 */
 	override method ==(other) native
-
+	
 	/**
-	 * Answers the list without duplicate elements
+	 * Answers the list without duplicate elements. Preserves order of elements.
 	 *
-	 * [1, 3, 1, 5, 1, 3, 2, 5].withoutDuplicates() => Answers [1, 2, 3, 5]
+	 * [1, 3, 1, 5, 1, 3, 2, 5].withoutDuplicates() => Answers [1, 3, 5, 2]
 	 * [].withoutDuplicates()                       => Answers []
 	 */
-	method withoutDuplicates() = self.asSet().asList()
+	method withoutDuplicates() native
 
 }
 
@@ -1604,7 +1610,15 @@ class Dictionary {
 		if (self.size() > 0) result = result.substring(0, result.length() - 2) 
 		return result + "]"
 	}
-	
+
+	/** 
+	 * Two dictionaries are equal if they have the same keys and values
+	 */
+	override method equals(other) {
+		self.checkNotNull(other, "equals")
+		return self.keys() == other.keys() && self.values() == other.values()
+	}
+		
 }
 
 /**

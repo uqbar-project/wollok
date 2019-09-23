@@ -84,6 +84,228 @@ class SetTest extends CollectionTestCase {
 	}
 	
 	@Test
+	def void testSetOfNumberSize() {
+		'''
+		const set = new Set()
+		const a = 2
+		const b = 1 + 1
+		const c = 3
+		set.add(a)
+		set.add(b)
+		set.add(c)
+		assert.equals(2, set.size())
+		assert.equals(set, #{a,c})
+		assert.equals(#{a,c}, #{b,c})
+		'''.test
+	}
+	
+	@Test
+	def void testSetOfStringSize() {
+		'''
+		const set = new Set()
+		const a = "hola"
+		const b = "ho" + "la"
+		const c = "chau"
+		set.add(a)
+		set.add(b)
+		set.add(c)
+		assert.equals(2, set.size())
+		assert.equals(set, #{a,c})
+		assert.equals(#{a,c}, #{b,c})
+		'''.test
+	}
+	
+	@Test
+	def void testSetOfBooleanSize() {
+		'''
+		const set = new Set()
+		const a = true
+		const b = !false
+		const c = false
+		set.add(a)
+		set.add(b)
+		set.add(c)
+		assert.equals(2, set.size())
+		assert.equals(set, #{a,c})
+		assert.equals(#{a,c}, #{b,c})
+		'''.test
+	}
+	
+	@Test
+	def void testSetOfListSize() {
+		'''
+		const set = #{[1,2,3],[5,6],[7,8],[1,2,3],[5,6]}
+		assert.equals(3, set.size())
+		'''.test
+	}
+
+	@Test
+	def void testSetOfEmptyListSize() {
+		'''
+		const set = #{}
+		const a = []
+		const b = new List()
+		set.add(a)
+		set.add(b)
+		assert.equals(1, set.size())
+		assert.equals(set, #{a})
+		assert.equals(#{a}, #{b})
+		'''.test
+	}
+	
+	@Test
+	def void testSetOfSetSize() {
+		'''
+		const set = #{#{1,2,3},#{5,6},#{7,8},#{1,2,3},#{5,6}}
+		assert.equals(3, set.size())
+		'''.test
+	}
+	
+	@Test
+	def void testSetOfEmptySetSize() {
+		'''
+		const set = #{}
+		const a = #{}
+		const b = #{}
+		set.add(a)
+		set.add(b)
+		assert.equals(1, set.size())
+		assert.equals(set, #{a})
+		assert.equals(#{a}, #{b})
+		'''.test
+	}
+	
+	@Test
+	def void testSetOfDictionarySize() {
+		'''
+		const set = #{}
+		const a = new Dictionary()
+		const b = new Dictionary()
+		const c = new Dictionary()
+		c.put(1, "hola")
+		set.add(a)
+		set.add(b)
+		set.add(c)
+		assert.equals(2, set.size())
+		assert.equals(set, #{a,c})
+		assert.equals(#{a,c}, #{b,c})
+		'''.test
+	}
+
+	@Test
+	def void testSetOfPairSize() {
+		'''
+		const set = new Set()
+		const a = new Pair(x = 1, y = 2)
+		const b = new Pair(x = 1, y = 2)
+		const c = new Pair(x = 3, y = 4)
+		set.add(a)
+		set.add(b)
+		set.add(c)
+		assert.equals(2, set.size())
+		assert.equals(set, #{a,c})
+		assert.equals(#{a,c}, #{b,c})
+		'''.test
+	}
+	
+	@Test
+	def void testSetOfPositionSize() {
+		'''
+		const set = new Set()
+		const a = new Position()
+		const b = new Position()
+		var c = new Position()
+		c = c.up(2)
+		set.add(a)
+		set.add(b)
+		set.add(c)
+		assert.equals(2, set.size())
+		assert.equals(set, #{a,c})
+		assert.equals(#{a,c}, #{b,c})
+		'''.test
+	}
+	
+	@Test
+	def void testSetOfUserDefinedClassSizeRedefiningEqualEqual() {
+		'''
+		class Animal {
+			override method ==(otroAnimal) = self.nombre() == otroAnimal.nombre()
+			method nombre()
+		}
+		
+		class Perro inherits Animal {
+			override method nombre() = "Firulais"
+		}
+		
+		class Gato inherits Animal {
+			override method nombre() = "Garfield"
+		}
+		
+		test "issue 1771" {
+			const set = new Set()
+			const perro = new Perro()
+			const otroPerro = new Perro()
+			const gato = new Gato()
+			set.add(perro)
+			set.add(otroPerro)
+			set.add(gato)
+			assert.equals(2, set.size())
+			assert.equals(set, #{perro,gato})
+			assert.equals(#{perro,gato}, #{otroPerro,gato})
+		}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testSetOfUserDefinedClassSizeRedefiningEquals() {
+		'''
+		class Animal {
+			override method equals(otroAnimal) = self.nombre() == otroAnimal.nombre()
+			method nombre()
+		}
+		
+		class Perro inherits Animal {
+			override method nombre() = "Firulais"
+		}
+		
+		class Gato inherits Animal {
+			override method nombre() = "Garfield"
+		}
+		
+		test "issue 1771" {
+			const set = new Set()
+			const perro = new Perro()
+			const otroPerro = new Perro()
+			const gato = new Gato()
+			set.add(perro)
+			set.add(otroPerro)
+			set.add(gato)
+			assert.equals(2, set.size())
+			assert.equals(set, #{perro,gato})
+			assert.equals(#{perro,gato}, #{otroPerro,gato})
+		}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testSetOfListAsSetConversion() {
+		'''
+		var list = new List()
+		list.addAll([1,2,3])
+		assert.equals(1, #{list,[1,2,3]}.asSet().size())
+		'''.test
+	}
+	
+	@Test
+	def void testSetOfSetsAsSetConversion() {
+		'''
+		var set = new Set()
+		set.addAll([1,2,3])
+		assert.equals(1, #{set, #{1,2,3}}.asSet().size())
+		'''.test
+	}
+	
+	@Test
 	override removeAll() {
 		'''
 		«instantiateCollectionAsNumbersVariable»

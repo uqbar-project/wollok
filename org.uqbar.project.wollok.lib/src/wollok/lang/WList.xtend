@@ -45,6 +45,16 @@ class WList extends WCollection<List<WollokObject>> implements JavaWrapper<List<
 		}
 		wrapped = wrapped.sortWith(comparator)
 	}
+	
+	def withoutDuplicates() {
+		val result = newArrayList
+		val comparator = new WollokObjectComparator
+		for (var i = 0; i < wrapped.size; i++) {
+			val element = wrapped.get(i)
+			if (result.forall [ newElement | comparator.compare(newElement, element) !== 0 ]) result.add(element)
+		}
+		result
+	}
 
 	def max() {
 		if (wrapped.isEmpty) throw new RuntimeException(NLS.bind(Messages.WollokRuntime_WrongMessage_EMPTY_LIST, "max"))

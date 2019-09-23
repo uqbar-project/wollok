@@ -283,8 +283,12 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		c.allUntypedMethods.findMethodIgnoreCase(methodName, argumentsSize) 
 	}
 
+	def static ownerOf(WollokObject o, String methodName) {
+		o.behavior.lookupMethod(methodName, #[o], false).wollokClass.fqn
+	}
+	
 	def static hasEqualsMethod(WollokObject o) {
-		o.behavior.methods.hasMethodIgnoreCase(EQUALITY, 1) || o.behavior.methods.hasMethodIgnoreCase("equals", 1)  
+		!o.ownerOf(EQUALITY).equals(OBJECT) || !o.ownerOf("equals").equals(OBJECT)
 	}
 	
 	def static hasGreaterThanMethod(WollokObject o) {

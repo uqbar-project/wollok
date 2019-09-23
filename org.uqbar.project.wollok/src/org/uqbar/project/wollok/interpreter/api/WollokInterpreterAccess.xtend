@@ -15,20 +15,20 @@ class WollokInterpreterAccess {
 	
 	public static val INSTANCE = new WollokInterpreterAccess
 	
-	/**
-	 * Helper method for simple access to wollok equality between objects, 
-	 * which is needed in different parts of the interpreter 
-	 */
 	def boolean wollokEquals(WollokObject a, WollokObject b) {
-		operations.asBinaryOperation(EQUALITY).apply(a, [|b]).isTrue
+		callBinaryOperation(a, b, EQUALITY)
 	}
 
-	/**
-	 * Helper method for simple access to wollok number comparison, 
-	 * which is needed in different parts of the interpreter 
-	 */
+	def boolean wollokEqualsMethod(WollokObject a, WollokObject b) {
+		callBinaryOperation(a, b, "equals")
+	}
+
 	def boolean wollokGreaterThan(WollokObject a, WollokObject b) {
-		operations.asBinaryOperation(GREATER_THAN).apply(a, [|b]).isTrue
+		callBinaryOperation(a, b, GREATER_THAN)
+	}
+
+	def callBinaryOperation(WollokObject a, WollokObject b, String binaryOperation) {
+		operations.asBinaryOperation(binaryOperation).apply(a, [|b]).isTrue
 	}
 
 }
