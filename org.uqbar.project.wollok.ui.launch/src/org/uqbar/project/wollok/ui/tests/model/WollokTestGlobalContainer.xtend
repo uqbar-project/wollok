@@ -5,7 +5,8 @@ import java.util.List
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.launch.Messages
-import org.uqbar.project.wollok.wollokDsl.WTest
+
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
 @Accessors
 public class WollokTestGlobalContainer {
@@ -24,7 +25,7 @@ public class WollokTestGlobalContainer {
 		if (processingManyFiles) {
 			return Messages.ALL_TEST_IN_PROJECT
 		}
-		return "Resultado de los test"
+		return Messages.TEST_RESULTS
 	}
 
 	def hasTests() {
@@ -50,15 +51,12 @@ public class WollokTestGlobalContainer {
 	}
 
 	def WollokTestResult testByName(String file, String suiteName, String testName) {
-		val allContainers = new ArrayList
-		testFiles.filter[testFile|testFile.mainResource.toString == file].forEach [ testFile |
-			allContainers.addAll(testFile.containers)
-		]
-
-		val WollokTestContainer container = allContainers.findFirst [ container |
-			container.suiteName == suiteName && container.allTests.exists[name == testName]
-		]
-		container.allTests.findFirst[name == testName]
+		testFiles
+			.filter [testFile | testFile.fileName.equals(file) ]
+			.flatMap [ containers ]
+			.findFirst [ container | container.suiteName.equals(suiteName) ]
+			.allTests
+			.findFirst [ test | test.name == testName ]
 	}
 
 	def getProject() {

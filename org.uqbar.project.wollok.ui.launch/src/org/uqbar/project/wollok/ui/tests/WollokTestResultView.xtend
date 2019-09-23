@@ -153,6 +153,9 @@ class WollokTestResultView extends ViewPart implements Observer {
 		if (globalContainer !== null && globalContainer.hasTests) {
 			bar.background = pendingColor
 			bar.text = Messages.WollokTestResultView_runningTests
+		} else {
+			bar.background = noResultColor
+			bar.text = ""
 		}
 		totalTextBox.text = ""
 		failedTextBox.text = ""

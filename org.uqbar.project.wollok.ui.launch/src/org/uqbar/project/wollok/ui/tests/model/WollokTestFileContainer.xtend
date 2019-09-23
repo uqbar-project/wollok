@@ -99,5 +99,9 @@ class WollokTestFileContainer {
 	def getImage() {
 		Activator.getDefault.getImageDescriptor(internalImage)
 	}
+	
+	def fileName() {
+		if (mainResource !== null) mainResource.toString else "" 
+	}
 
 }
