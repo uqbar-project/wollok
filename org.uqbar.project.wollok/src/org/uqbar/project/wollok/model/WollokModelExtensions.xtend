@@ -75,6 +75,7 @@ import static extension org.uqbar.project.wollok.model.ResourceUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
 import org.uqbar.project.wollok.sdk.WollokSDK
+import org.eclipse.xtext.resource.IEObjectDescription
 
 /**
  * Extension methods to Wollok semantic model.
@@ -722,26 +723,35 @@ class WollokModelExtensions {
 		]
 	}
 	
-	def static List<String> allImportsNames(Iterable<Import> imports, WollokGlobalScopeProvider scopeProvider) {
+	def static IEObjectDescription duplicatedReference(EObject object, Iterable<Import> imports,
+		WollokGlobalScopeProvider scopeProvider) {
+		return imports.allImportedElements(scopeProvider).findFirst [ elementName |
+			val referenceName = elementName.toString.substring(elementName.toString.lastIndexOf('.') + 1)
+			referenceName.equals(object.name)
+		]
+	}
+	
+	def static List<IEObjectDescription> allImportedElements(Iterable<Import> imports,
+		WollokGlobalScopeProvider scopeProvider) {
 		if (!imports.isEmpty) {
-			val scopeElements = imports.get(0).getScope(scopeProvider).allElements.map[getName.toString]
-			val contextImportsNames = imports.map[importedNamespace]
-			return scopeElements.filter [ scopeElement |
-				scopeElement.contains(".") && isInImports(scopeElement, contextImportsNames)
+			val scopeElements = imports.head.getScope(scopeProvider).allElements
+			scopeElements.filter [ scopeElement |
+				val scopeElementName = scopeElement.getName.toString
+				scopeElementName.contains(".") && isInImports(scopeElementName, imports)
 			].toList
-		} else	
+		} else
 			newArrayList
 	}
 	
-	def static boolean isInImports(String scopeElement, Iterable<String> importsNames) {
-		importsNames.exists [ importName |
+	def static boolean isInImports(String scopeElement, Iterable<Import> imports) {
+		imports.exists [ anImport |
 			var name = scopeElement
-			var otherName = importName
+			var importName = anImport.importedNamespace
 			if (importName.contains("*")) {
-				otherName = importName.substring(0, importName.length - 2)
+				importName = importName.substring(0, importName.length - 2)
 				name = scopeElement.substring(0, scopeElement.lastIndexOf('.'))
 			}
-			name.equals(otherName)
+			name.equals(importName)
 		]
 	}
 

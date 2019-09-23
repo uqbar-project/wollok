@@ -4,17 +4,17 @@ import libForImports.apu
 import libForImports.flanders.mod
 import libForImports.Burns
 
-// XPECT warnings --> "There is already an imported reference with this name" at "apu"
+// XPECT warnings --> "This name is already defined (imported from libForImports.wlk)" at "apu"
 object apu {
-	// XPECT warnings --> "There is already an imported reference with this name" at "mod"
+	// XPECT warnings --> "This name is already defined (imported from libForImports.wlk)" at "mod"
 	var mod = 20
 	
 	method getMod() = mod
 }
 
-// XPECT warnings --> "There is already an imported reference with this name" at "Burns"
+// XPECT warnings --> "This name is already defined (imported from libForImports.wlk)" at "Burns"
 class Burns {
-	// XPECT warnings --> "There is already an imported reference with this name" at "mod"
+	// XPECT warnings --> "This name is already defined (imported from libForImports.wlk)" at "mod"
 	const mod = 5
 	
 	method getMod() = mod

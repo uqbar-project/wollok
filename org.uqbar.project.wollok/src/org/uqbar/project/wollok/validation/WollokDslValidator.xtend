@@ -663,14 +663,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	
 	def duplicatedReferenceFromImports(EObject it) {
 		val imports = it.allImports
-		if (!imports.isEmpty) {
-			val allImportsNames = imports.allImportsNames(scopeProvider).map[i|i.substring(i.lastIndexOf('.') + 1)]
-			if (allImportsNames.contains(it.name)) {
-				report(WollokDslValidator_DUPLICATED_REFERENCE_FROM_IMPORTS, it, WNAMED__NAME)
-			}
+		val duplicatedReference = it.duplicatedReference(imports, scopeProvider)
+		if (duplicatedReference !== null) {
+			report(
+				NLS.bind(WollokDslValidator_DUPLICATED_REFERENCE_FROM_IMPORTS,
+					duplicatedReference.EObjectURI.lastSegment), it, WNAMED__NAME)
 		}
 	}
-
+	
 	@Check
 	@DefaultSeverity(ERROR)
 	@NotConfigurable
