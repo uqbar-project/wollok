@@ -7,12 +7,12 @@ import org.eclipse.core.runtime.Platform
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
+import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.osgi.util.NLS
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.naming.IQualifiedNameConverter
 import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.validation.Check
-import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
@@ -40,7 +40,6 @@ import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WMixin
-import org.uqbar.project.wollok.wollokDsl.WNamed
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
@@ -74,7 +73,6 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
-import org.eclipse.emf.ecore.resource.Resource
 
 /**
  * Custom validation rules.
@@ -1372,6 +1370,17 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 				}
 			}
 		}
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_DESIGN_PROBLEM)
+	def duplicatedDescribeNames(WFile it){
+		suites.forEach[ suite |
+			if(suites.exists[ aSuite | aSuite !== suite && aSuite.name == suite.name]){
+				report(WollokDslValidator_CANNOT_DUPLICATED_DESCRIBES_NAME, suite, WSUITE__NAME)
+			}
+		]
 	}
 	
 	def syntaxErrorsOf(Resource resource) {

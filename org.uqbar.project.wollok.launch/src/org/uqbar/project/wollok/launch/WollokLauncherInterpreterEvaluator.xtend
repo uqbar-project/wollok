@@ -15,7 +15,6 @@ import org.uqbar.project.wollok.wollokDsl.WTest
 import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 import static extension org.uqbar.project.wollok.launch.tests.WollokExceptionUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * 
@@ -37,38 +36,42 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 			main.eval
 		else {
 			val time = System.currentTimeMillis
-			val _isASuite = isASuite
-			var testsToRun = tests
-			var String suiteName = null
-			if (_isASuite) {
-				suiteName = suite.name
-				testsToRun = suite.tests
-			}
-			wollokTestsReporter.testsToRun(suiteName, it, testsToRun)
-			try {
-				testsToRun.fold(null) [ a, _test |
-					resetGlobalState
-					if (_isASuite) {
-						_test.evalInSuite(suite)
-					} else {
-						_test.eval
-					}
-				]
-			} finally {
-				wollokTestsReporter.finished(System.currentTimeMillis - time)
-			}
+			wollokTestsReporter.start()
+			runTestFile(it)
+			wollokTestsReporter.finished(System.currentTimeMillis - time)
+			null
 		}
 	}
-
+	def void runTestFile(WFile it){
+		if(!tests.empty){
+			wollokTestsReporter.testsToRun(null, it, tests)
+			tests.forEach [ test |
+				resetGlobalState
+				test.eval ]
+		}
+						
+		suites.forEach [suite |
+			var testsToRun = suite.tests
+			var String suiteName = suite.name				
+			wollokTestsReporter.testsToRun(suiteName, it, testsToRun)
+			testsToRun.forEach [ test |
+				resetGlobalState
+				test.evalInSuite(suite)]
+			]
+	}
+	
 	override evaluateAll(List<EObject> eObjects, String folder) {
-		wollokTestsReporter.initProcessManyFiles(folder)
-		val result = eObjects.fold(null, [ o, eObject |
+		wollokTestsReporter.initProcessManyFiles(folder)	
+		wollokTestsReporter.start()	
+		
+		eObjects.forEach [ eObject |
+			val file = eObject as WFile
 			interpreter.initStack
-			interpreter.generateStack(eObject)		 
-			evaluate(eObject as WFile)
-		])
+			interpreter.generateStack(eObject)
+			runTestFile(file)
+		]
 		wollokTestsReporter.endProcessManyFiles
-		result
+		null
 	}
 	
 	def WollokObject evalInSuite(WTest test, WSuite suite) {

@@ -21,8 +21,6 @@ class DefaultWollokTestsReporter implements WollokTestsReporter {
 	
 	override testsToRun(String suiteName, WFile file, List<WTest> tests) {}
 	
-	override testStart(WTest test) {}
-	
 	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
 		throw exception
 	}
@@ -35,6 +33,9 @@ class DefaultWollokTestsReporter implements WollokTestsReporter {
 	}
 	
 	override endProcessManyFiles() {
+	}
+	
+	override start() {
 	}
 	
 }

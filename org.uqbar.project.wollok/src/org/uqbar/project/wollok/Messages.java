@@ -92,6 +92,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_TESTS_CANNOT_BE_EMPTY;
 	public static String WollokDslValidator_FIXTURE_CANNOT_BE_EMPTY;
 	public static String WollokDslValidator_DESCRIBE_CANNOT_BE_EMPTY;
+	public static String WollokDslValidator_CANNOT_DUPLICATED_DESCRIBES_NAME;
 	public static String WollokDslValidator_NATIVE_METHOD_NO_BODY;
 	public static String WollokDslValidator_NATIVE_METHOD_NO_OVERRIDE;
 	public static String WollokDslValidator_NATIVE_METHOD_ONLY_IN_CLASSES;

@@ -5,7 +5,6 @@ import java.util.List
 import java.util.Observable
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.uqbar.project.wollok.errorHandling.StackTraceElementDTO
 import org.uqbar.project.wollok.launch.tests.WollokRemoteUITestNotifier
 import org.uqbar.project.wollok.launch.tests.WollokResultTestDTO
 import org.uqbar.project.wollok.launch.tests.WollokTestInfo
@@ -20,29 +19,24 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 	boolean shouldShowOnlyFailuresAndErrors = false
 		
 	@Accessors
-	var WollokTestContainer container
+	var WollokTestGlobalContainer globalContainer = new WollokTestGlobalContainer
 	
-	override assertError(String testName, String message, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {
-		testByName(testName).endedAssertError(message, stackTrace, lineNumber, resource)
-		
-		this.setChanged
-		this.notifyObservers()
-	}
-
-	override testOk(String testName) {
-		
-		testByName(testName).endedOk()
-
-		this.setChanged
-		this.notifyObservers
+	override start(){
+		globalContainer = new WollokTestGlobalContainer
 	}
 	
 	override testsToRun(String suiteName, String containerResource, List<WollokTestInfo> tests, boolean processingManyFiles) {
-		this.container = new WollokTestContainer
-		this.container.suiteName = suiteName
-		this.container.processingManyFiles = processingManyFiles
-		this.container.mainResource = URI.createURI(containerResource)
-		this.container.defineTests(newArrayList(tests.map[new WollokTestResult(it)]), this.shouldShowOnlyFailuresAndErrors)
+		val container = new WollokTestContainer
+		container.suiteName = suiteName
+		container.processingManyFiles = processingManyFiles
+		container.mainResource = URI.createURI(containerResource)
+		container.defineTests(newArrayList(tests.map[new WollokTestResult(it)]), this.shouldShowOnlyFailuresAndErrors)
+		
+		val fileContainer = globalContainer.getFileContainer(containerResource)
+		fileContainer.processingManyFiles = processingManyFiles
+		fileContainer.add(container)
+		globalContainer.add(fileContainer)
+		globalContainer.processingManyFiles = processingManyFiles
 		
 		this.setChanged
 		this.notifyObservers("testReceived")		
@@ -50,38 +44,24 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 	
 	override showFailuresAndErrorsOnly(boolean showFailuresAndErrors) {
 		this.shouldShowOnlyFailuresAndErrors = showFailuresAndErrors
-		this.container.filterTestByState(this.shouldShowOnlyFailuresAndErrors)
+		this.globalContainer.filterTestByState(this.shouldShowOnlyFailuresAndErrors)
 
 		this.setChanged
 		this.notifyObservers("testsEnded")		
 	}
 
-	override testStart(String testName) {
-		testByName(testName).started()
-
-		this.setChanged
-		this.notifyObservers
-	}
-
-	def testByName(String testName){
-		this.container.testByName(testName)
-	}
 	
-	override error(String testName, String exceptionAsString, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {
-		testByName(testName).endedError(exceptionAsString, stackTrace, lineNumber, resource)
+	def testByName(String file, String suiteName, String testName){
+		globalContainer.testByName(file, suiteName, testName)
+	}
 		
-		this.setChanged
-		this.notifyObservers		
-	}
-	
-	
 	override notifyObservers(Object arg) {
 		RunInUI.runInUI[super.notifyObservers(arg)]
 	}
 	
 	override testsResult(List<WollokResultTestDTO> tests, long millisecondsElapsed) {
 		tests.forEach [
-			val test = testByName(testName)
+			val test = testByName(file, suiteName, testName)
 			if (ok()) {
 				test.endedOk()
 			}
@@ -91,11 +71,14 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 			if (error()) {
 				test.endedError(message, stackTrace, errorLineNumber, resource)
 			}
-		]
-		this.container.filterTestByState(this.shouldShowOnlyFailuresAndErrors)
-		this.container.millisecondsElapsed = millisecondsElapsed
+		]		
+		globalContainer.filterTestByState(this.shouldShowOnlyFailuresAndErrors)
+		globalContainer.millisecondsElapsed = millisecondsElapsed
 		this.setChanged
 		this.notifyObservers
 	}
+	
+	
+	
 
 }

@@ -7,8 +7,6 @@ import java.util.List
 import net.sf.lipermi.handler.CallHandler
 import net.sf.lipermi.net.Client
 import org.eclipse.emf.common.util.URI
-import org.eclipse.osgi.util.NLS
-import org.uqbar.project.wollok.launch.Messages
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WTest
@@ -49,35 +47,39 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	}
 
 	override reportTestAssertError(WTest test, AssertionException assertionException, int lineNumber, URI resource) {
-		testsResult.add(WollokResultTestDTO.assertionError(test.getFullName(processingManyFiles), assertionException.message, assertionException.wollokException?.convertStackTrace, lineNumber, resource?.toString))
+		val file = test.file.URI.toString
+		testsResult.add(WollokResultTestDTO.assertionError(
+			file,
+			suiteName,
+			test.getFullName(processingManyFiles),
+			assertionException.message,
+			assertionException.wollokException?.convertStackTrace,
+			lineNumber,
+		 	resource?.toString
+		))
 	}
 
 	override reportTestOk(WTest test) {
-		testsResult.add(WollokResultTestDTO.ok(test.getFullName(processingManyFiles)))
+		val file = test.file.URI.toString
+		testsResult.add(WollokResultTestDTO.ok(file ,suiteName,test.getFullName(processingManyFiles)))
 	}
 
 	override testsToRun(String _suiteName, WFile file, List<WTest> tests) {
 		this.suiteName = _suiteName
 		val fileURI = file.eResource.URI.toString
-		if (processingManyFiles) {
-			if (this.folder !== null) {
-				this.suiteName = NLS.bind(Messages.ALL_TEST_IN_FOLDER, this.folder)
-			} else {
-				this.suiteName = Messages.ALL_TEST_IN_PROJECT
-			}
-			this.testFiles.addAll(getRunnedTestsInfo(tests, fileURI))
-		} else {
-			remoteTestNotifier.testsToRun(suiteName, fileURI, getRunnedTestsInfo(tests, fileURI), false)
-		}
-	}
-
-	override testStart(WTest test) {
-		// for better performance we avoid a RMI call
+		remoteTestNotifier.testsToRun(suiteName, fileURI, getRunnedTestsInfo(tests, fileURI), processingManyFiles)
 	}
 
 	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
+		val file = test.file.URI.toString
 		testsResult.add(
-			WollokResultTestDTO.error(test.getFullName(processingManyFiles), exception.convertToString, exception.convertStackTrace, lineNumber,
+			WollokResultTestDTO.error(
+				file,
+				suiteName,
+				test.getFullName(processingManyFiles),
+				exception.convertToString,
+				exception.convertStackTrace,
+				lineNumber,
 				resource?.toString))
 	}
 
@@ -94,15 +96,16 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	}
 	
 	override endProcessManyFiles() {
-		remoteTestNotifier => [
-			testsToRun(suiteName, "", this.testFiles, true)
-			testsResult(testsResult, (System.currentTimeMillis - this.initialTime))
-		]
+		remoteTestNotifier.testsResult(testsResult, (System.currentTimeMillis - this.initialTime))
 		processingManyFiles = false
 	}
 	
 	protected def List<WollokTestInfo> getRunnedTestsInfo(List<WTest> tests, String fileURI) {
 		new ArrayList(tests.map[new WollokTestInfo(it, fileURI, processingManyFiles)])
+	}
+	
+	override start() {
+		remoteTestNotifier.start()
 	}
 	
 }
