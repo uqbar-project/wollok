@@ -19,7 +19,7 @@ class DefaultWollokTestsReporter implements WollokTestsReporter {
 	
 	override reportTestOk(WTest test) {}
 	
-	override testsToRun(String suiteName, WFile file, List<WTest> tests) {}
+	override testsToRun(String suiteName, WFile file, List<WTest> tests, boolean reset) {}
 	
 	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
 		throw exception

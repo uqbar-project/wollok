@@ -64,7 +64,7 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 		testsResult.add(WollokResultTestDTO.ok(file ,suiteName,test.getFullName(processingManyFiles)))
 	}
 
-	override testsToRun(String _suiteName, WFile file, List<WTest> tests) {
+	override testsToRun(String _suiteName, WFile file, List<WTest> tests, boolean reset) {
 		this.suiteName = _suiteName
 		val fileURI = file.eResource.URI.toString
 		remoteTestNotifier.testsToRun(suiteName, fileURI, getRunnedTestsInfo(tests, fileURI), processingManyFiles)

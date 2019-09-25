@@ -107,6 +107,8 @@ class WollokInterpreter implements XInterpreter<EObject, WollokObject>, IWollokI
 			evaluator.evaluateAll(eObjects, folder)
 		} catch (WollokProgramExceptionWrapper e) {
 			throw e
+		} catch (WollokTestsFailedException e) {
+			throw e
 		} catch (Throwable e) {
 			console.logError(e)
 			null
@@ -120,8 +122,6 @@ class WollokInterpreter implements XInterpreter<EObject, WollokObject>, IWollokI
 			rootObject.generateStack
 			evaluator.evaluate(rootObject)
 		} catch (WollokProgramExceptionWrapper e) {
-			throw e
-		} catch (WollokTestsFailedException e) {
 			throw e
 		} catch (Throwable e) {
 			if (e.shouldShowStackTraceInJava) {

@@ -6,6 +6,7 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
+import org.uqbar.project.wollok.interpreter.WollokTestsFailedException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.launch.tests.WollokTestsReporter
 import org.uqbar.project.wollok.wollokDsl.WFile
@@ -42,33 +43,41 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 			null
 		}
 	}
+
 	def void runTestFile(WFile it){
 		if(!tests.empty){
-			wollokTestsReporter.testsToRun(null, it, tests)
+			wollokTestsReporter.testsToRun(null, it, tests, true)
 			tests.forEach [ test |
 				resetGlobalState
 				test.eval ]
 		}
 						
-		suites.forEach [suite |
-			var testsToRun = suite.tests
-			var String suiteName = suite.name				
-			wollokTestsReporter.testsToRun(suiteName, it, testsToRun)
+		suites.forEach [suite, i |
+			val testsToRun = suite.tests
+			val String suiteName = suite.name				
+			wollokTestsReporter.testsToRun(suiteName, it, testsToRun, i == 0)
 			testsToRun.forEach [ test |
 				resetGlobalState
-				test.evalInSuite(suite)]
+				test.evalInSuite(suite)
 			]
+		]
 	}
 	
 	override evaluateAll(List<EObject> eObjects, String folder) {
 		wollokTestsReporter.initProcessManyFiles(folder)	
 		wollokTestsReporter.start()	
-		
+
 		eObjects.forEach [ eObject |
-			val file = eObject as WFile
-			interpreter.initStack
-			interpreter.generateStack(eObject)
-			runTestFile(file)
+			try {
+				val initialTime = System.currentTimeMillis
+				val file = eObject as WFile
+				interpreter.initStack
+				interpreter.generateStack(eObject)
+				file.runTestFile
+				wollokTestsReporter.finished(System.currentTimeMillis - initialTime)
+			} catch (WollokTestsFailedException e) {
+				// catching error since we must continue processing
+			}
 		]
 		wollokTestsReporter.endProcessManyFiles
 		null

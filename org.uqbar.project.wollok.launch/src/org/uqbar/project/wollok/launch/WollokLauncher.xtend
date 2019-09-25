@@ -46,6 +46,9 @@ class WollokLauncher extends WollokChecker {
 			interpreter.interpret(filesToParse.parse(parameters), parameters.folder)
 			System.exit(0)
 		} catch (Exception e) {
+			if (e instanceof WollokTestsFailedException) {
+				throw e
+			}
 			System.exit(-1)
 		}
 		

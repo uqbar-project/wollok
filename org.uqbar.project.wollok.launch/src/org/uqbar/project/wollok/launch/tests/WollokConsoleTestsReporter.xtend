@@ -21,23 +21,27 @@ import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionEx
  * 
  * @author tesonep
  * @author dodain
- * 
+ *
  */
 class WollokConsoleTestsReporter implements WollokTestsReporter {
 
+	int globalTestsFailed = 0
+	int globalTestsErrored = 0
 	int testsFailed = 0
 	int testsErrored = 0
 	int totalTests = 0
 	
-	override testsToRun(String suiteName, WFile file, List<WTest> tests) {
+	override testsToRun(String suiteName, WFile file, List<WTest> tests, boolean reset) {
 		AnsiConsole.systemInstall
-		totalTests = tests.size
+		totalTests += tests.size
 		if (suiteName ?: '' !== '') {
 			println('''Running all tests from suite «suiteName»''')
 		} else {
 			println('''Running «totalTests» tests...''')
 		}
-		resetTestsCount
+		if (reset) {
+			resetTestsCount
+		}
 	}
 
 	override reportTestAssertError(WTest test, AssertionException assertionError, int lineNumber, URI resource) {
@@ -70,7 +74,7 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 		println(ansi
 			.fg(STATUS)
 			.bold
-			.a(totalTests).a(" tests, ")
+			.a(totalTests).a(if (totalTests == 1) " test, " else " tests, ")
 			.a(testsFailed).a(if (testsFailed == 1) " failure and " else " failures and ")
 			.a(testsErrored).a(if (testsErrored == 1) " error" else " errors")
 			.a("\n")
@@ -78,19 +82,29 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 			.a("\n")
 			.reset
 		)
+		
+		totalTests = 0
+		resetTestsCount
+		
 		AnsiConsole.systemUninstall
-		if (!processWasOK) {
-			throw new WollokTestsFailedException
-		}
+		if (!processWasOK) throw new WollokTestsFailedException
 	}
 
-	override initProcessManyFiles(String folder) {}
+	override initProcessManyFiles(String folder) {
+		globalTestsFailed = 0
+		globalTestsErrored = 0
+		resetTestsCount
+	}
 	
-	override endProcessManyFiles() {}
+	override endProcessManyFiles() {
+		if (!overallProcessWasOK) throw new WollokTestsFailedException
+	}
 
 	def resetTestsCount() {
+		globalTestsFailed += testsFailed
+		globalTestsErrored += testsErrored
 		testsFailed = 0
-		testsErrored = 0	
+		testsErrored = 0
 	}
 	
 	def incrementTestsFailed() {
@@ -103,6 +117,10 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 	
 	def processWasOK() {
 		testsFailed + testsErrored === 0
+	}
+	
+	def overallProcessWasOK() {
+		globalTestsFailed + globalTestsErrored === 0
 	}
 	
 	override start() {
