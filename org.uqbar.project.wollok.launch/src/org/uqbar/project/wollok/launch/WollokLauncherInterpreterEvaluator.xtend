@@ -6,7 +6,6 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
-import org.uqbar.project.wollok.interpreter.WollokTestsFailedException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.launch.tests.WollokTestsReporter
 import org.uqbar.project.wollok.wollokDsl.WFile
@@ -36,10 +35,9 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 		if (main !== null)
 			main.eval
 		else {
-			val time = System.currentTimeMillis
-			wollokTestsReporter.start()
-			runTestFile(it)
-			wollokTestsReporter.finished(System.currentTimeMillis - time)
+			wollokTestsReporter.start
+			runTestFile
+			wollokTestsReporter.finished
 			null
 		}
 	}
@@ -49,7 +47,8 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 			wollokTestsReporter.testsToRun(null, it, tests, true)
 			tests.forEach [ test |
 				resetGlobalState
-				test.eval ]
+				test.eval
+			]
 		}
 						
 		suites.forEach [suite, i |
@@ -65,19 +64,14 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	
 	override evaluateAll(List<EObject> eObjects, String folder) {
 		wollokTestsReporter.initProcessManyFiles(folder)	
-		wollokTestsReporter.start()	
 
 		eObjects.forEach [ eObject |
-			try {
-				val initialTime = System.currentTimeMillis
-				val file = eObject as WFile
-				interpreter.initStack
-				interpreter.generateStack(eObject)
-				file.runTestFile
-				wollokTestsReporter.finished(System.currentTimeMillis - initialTime)
-			} catch (WollokTestsFailedException e) {
-				// catching error since we must continue processing
-			}
+			wollokTestsReporter.start
+			val file = eObject as WFile
+			interpreter.initStack
+			interpreter.generateStack(eObject)
+			file.runTestFile
+			wollokTestsReporter.finished
 		]
 		wollokTestsReporter.endProcessManyFiles
 		null

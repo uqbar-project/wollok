@@ -41,7 +41,7 @@ class WollokJSONTestsReporter implements WollokTestsReporter {
 		]
 	}
 
-	override finished(long millisecondsElapsed) {
+	override finished() {
 		writer => [
 			endArray
 			writeSummary

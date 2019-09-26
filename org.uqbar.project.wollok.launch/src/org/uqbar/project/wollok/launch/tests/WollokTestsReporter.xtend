@@ -18,12 +18,13 @@ interface WollokTestsReporter {
 	def void reportTestAssertError(WTest test, AssertionException wollokException, int lineNumber, URI resource)
 	def void reportTestError(WTest test, Exception exception, int lineNumber, URI resource)
 	def void reportTestOk(WTest test)
+	def void testStarted(WTest test)
 	def void testsToRun(String suiteName, WFile file, List<WTest> tests, boolean reset)
 	
 	/**
 	 * Tells this reporter that the execution has finished
 	 */	
-	def void finished(long millisecondsElapsed)
+	def void finished()
 	
 	/** Just for processing many files */
 	def void initProcessManyFiles(String folder)

@@ -35,6 +35,7 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	boolean processingManyFiles
 	String folder
 	long initialTime
+	long startTime
 	
 	String suiteName
 	List<WollokTestInfo> testFiles
@@ -83,7 +84,8 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 				resource?.toString))
 	}
 
-	override finished(long timeElapsedInMilliseconds) {
+	override finished() {
+		val timeElapsedInMilliseconds = System.currentTimeMillis - startTime
 		if (!processingManyFiles) {
 			remoteTestNotifier.testsResult(testsResult, timeElapsedInMilliseconds)
 		}
@@ -105,6 +107,7 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	}
 	
 	override start() {
+		startTime = System.currentTimeMillis
 		remoteTestNotifier.start()
 	}
 	

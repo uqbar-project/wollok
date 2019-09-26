@@ -25,20 +25,29 @@ import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionEx
  */
 class WollokConsoleTestsReporter implements WollokTestsReporter {
 
-	int globalTestsFailed = 0
-	int globalTestsErrored = 0
+	boolean processingManyFiles = false
+	long startTime = 0
+	long startGroupTime = 0
+	int totalTestsRun = 0
+	int totalTestsFailed = 0
+	int totalTestsErrored = 0
+	int testsGroupRun = 0
+	int testsGroupFailed = 0
+	int testsGroupErrored = 0
 	int testsFailed = 0
 	int testsErrored = 0
-	int totalTests = 0
+	int testsRun = 0
 	
 	override testsToRun(String suiteName, WFile file, List<WTest> tests, boolean reset) {
 		AnsiConsole.systemInstall
-		totalTests += tests.size
 		if (suiteName ?: '' !== '') {
-			println('''Running all tests from suite «suiteName»''')
+			println('''Running all tests from describe «suiteName»''')
 		} else {
-			println('''Running «totalTests» tests...''')
+			println('''Running «tests.size» test«if (tests.size !== 1) "s"»...''')
 		}
+		testsRun += tests.size
+		testsGroupRun += tests.size
+		totalTestsRun += tests.size
 		if (reset) {
 			resetTestsCount
 		}
@@ -69,60 +78,70 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 		)
 	}
 
-	override finished(long millisecondsElapsed) {
-		val STATUS = if (processWasOK) GREEN else RED
+	override finished() {
+		val millisecondsElapsed = System.currentTimeMillis - startGroupTime
+		this.printTestsResults(testsGroupRun, testsGroupFailed, testsGroupErrored, millisecondsElapsed)
+		resetGroupTestsCount
+		if (testsGroupFailed + testsGroupErrored > 0 && !processingManyFiles) throw new WollokTestsFailedException
+	}
+
+	override initProcessManyFiles(String folder) {
+		processingManyFiles = true
+		startTime = System.currentTimeMillis
+		resetTestsCount
+		resetGroupTestsCount
+	}
+	
+	override endProcessManyFiles() {
+		this.printTestsResults(totalTestsRun, totalTestsFailed, totalTestsErrored, System.currentTimeMillis - startTime)
+		if (!overallProcessWasOK) throw new WollokTestsFailedException
+	}
+
+	def resetTestsCount() {
+		testsFailed = 0
+		testsErrored = 0
+		testsRun = 0
+	}
+
+	def resetGroupTestsCount() {
+		testsGroupRun = 0
+		testsGroupFailed = 0
+		testsGroupErrored = 0
+	}
+	
+	def incrementTestsFailed() {
+		testsFailed++
+		testsGroupFailed++
+		totalTestsFailed++
+	}
+
+	def incrementTestsErrored() {
+		testsErrored++
+		testsGroupErrored++
+		totalTestsErrored++
+	}
+	
+	def overallProcessWasOK() {
+		testsGroupFailed + testsGroupErrored === 0
+	}
+	
+	override start() {
+		startGroupTime = System.currentTimeMillis
+	}
+	
+	def printTestsResults(int totalTests, int failedTests, int erroredTests, long millisecondsElapsed) {
+		val STATUS = if (failedTests + erroredTests === 0) GREEN else RED
 		println(ansi
 			.fg(STATUS)
 			.bold
 			.a(totalTests).a(if (totalTests == 1) " test, " else " tests, ")
-			.a(testsFailed).a(if (testsFailed == 1) " failure and " else " failures and ")
-			.a(testsErrored).a(if (testsErrored == 1) " error" else " errors")
+			.a(failedTests).a(if (failedTests == 1) " failure and " else " failures and ")
+			.a(erroredTests).a(if (erroredTests == 1) " error" else " errors")
 			.a("\n")
 			.a("Total time: ").a(millisecondsElapsed.asSeconds).a(" seconds")
 			.a("\n")
 			.reset
 		)
-		
-		totalTests = 0
-		resetTestsCount
-		
 		AnsiConsole.systemUninstall
-		if (!processWasOK) throw new WollokTestsFailedException
-	}
-
-	override initProcessManyFiles(String folder) {
-		globalTestsFailed = 0
-		globalTestsErrored = 0
-		resetTestsCount
-	}
-	
-	override endProcessManyFiles() {
-		if (!overallProcessWasOK) throw new WollokTestsFailedException
-	}
-
-	def resetTestsCount() {
-		globalTestsFailed += testsFailed
-		globalTestsErrored += testsErrored
-		testsFailed = 0
-		testsErrored = 0
-	}
-	
-	def incrementTestsFailed() {
-		testsFailed++
-	}
-
-	def incrementTestsErrored() {
-		testsErrored++
-	}
-	
-	def processWasOK() {
-		testsFailed + testsErrored === 0
-	}
-	
-	def overallProcessWasOK() {
-		globalTestsFailed + globalTestsErrored === 0
-	}
-	
-	override start() {
 	}
 }
