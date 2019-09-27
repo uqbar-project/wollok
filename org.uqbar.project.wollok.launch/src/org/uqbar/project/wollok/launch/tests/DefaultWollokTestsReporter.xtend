@@ -40,7 +40,7 @@ class DefaultWollokTestsReporter implements WollokTestsReporter {
 		throw exception
 	}
 
-	override start() {
+	override started() {
 		this.overallStartTime = System.currentTimeMillis
 	}
 	

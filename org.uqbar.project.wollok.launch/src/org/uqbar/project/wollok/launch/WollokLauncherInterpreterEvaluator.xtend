@@ -36,7 +36,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 			main.eval
 		else {
 			wollokTestsReporter.initProcessManyFiles("")
-			wollokTestsReporter.start
+			wollokTestsReporter.started
 			runTestFile
 			wollokTestsReporter.finished
 			wollokTestsReporter.endProcessManyFiles
@@ -68,7 +68,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 		wollokTestsReporter.initProcessManyFiles(folder)	
 
 		eObjects.forEach [ eObject |
-			wollokTestsReporter.start
+			wollokTestsReporter.started
 			val file = eObject as WFile
 			interpreter.initStack
 			interpreter.generateStack(eObject)

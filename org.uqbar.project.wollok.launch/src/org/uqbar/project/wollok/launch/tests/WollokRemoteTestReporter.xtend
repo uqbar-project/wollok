@@ -109,8 +109,8 @@ class WollokRemoteTestReporter extends DefaultWollokTestsReporter {
 		])
 	}
 	
-	override start() {
-		super.start
+	override started() {
+		super.started
 		remoteTestNotifier.start()
 	}
 
