@@ -71,7 +71,7 @@ class WollokRemoteTestReporter extends DefaultWollokTestsReporter {
 		testsResult.add(wollokResultDTO)
 	}
 
-	override testsToRun(String _suiteName, WFile file, List<WTest> tests, boolean reset) {
+	override testsToRun(String _suiteName, WFile file, List<WTest> tests) {
 		this.suiteName = _suiteName
 		val fileURI = file.eResource.URI.toString
 		remoteTestNotifier.testsToRun(suiteName, fileURI, getRunnedTestsInfo(tests, fileURI), processingManyFiles)
@@ -93,14 +93,12 @@ class WollokRemoteTestReporter extends DefaultWollokTestsReporter {
 
 	override finished() {
 		super.finished
-		if (!processingManyFiles) {
-			remoteTestNotifier.testsResult(testsResult, overallTimeElapsedInMilliseconds)
-		}
+		remoteTestNotifier.testsResult(testsResult, overallTimeElapsedInMilliseconds)
 	}
 
-	override endProcessManyFiles() {
-		super.endProcessManyFiles
-		remoteTestNotifier.testsResult(testsResult, folderTimeElapsedInMilliseconds)
+	override folderFinished() {
+		super.folderFinished
+//		remoteTestNotifier.testsResult(testsResult, folderTimeElapsedInMilliseconds)
 	}
 	
 	protected def List<WollokTestInfo> getRunnedTestsInfo(List<WTest> tests, String fileURI) {

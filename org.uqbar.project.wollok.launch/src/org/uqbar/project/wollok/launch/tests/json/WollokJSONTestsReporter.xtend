@@ -33,7 +33,7 @@ class WollokJSONTestsReporter implements WollokTestsReporter {
 
 	var JsonWriter _writer
 
-	override testsToRun(String suiteName, WFile file, List<WTest> tests, boolean reset) {
+	override testsToRun(String suiteName, WFile file, List<WTest> tests) {
 		writer.beginObject => [
 			name("version").value(Wollok.VERSION)
 			if (!suiteName.empty) name("suite").value(suiteName)
@@ -160,12 +160,16 @@ class WollokJSONTestsReporter implements WollokTestsReporter {
 		_writer = writer
 	}
 
-	override initProcessManyFiles(String folder) {}
+	override folderStarted(String folder) {}
 	
-	override endProcessManyFiles() {}
+	override folderFinished() {}
 	
 	override started() {}
 	
 	override testStarted(WTest test) {}
+	
+	override groupStarted(String groupName) {}
+	
+	override groupFinished(String groupName) {}
 	
 }

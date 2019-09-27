@@ -35,18 +35,18 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 		if (main !== null)
 			main.eval
 		else {
-			wollokTestsReporter.initProcessManyFiles("")
 			wollokTestsReporter.started
+			wollokTestsReporter.folderStarted("")
 			runTestFile
+			wollokTestsReporter.folderFinished
 			wollokTestsReporter.finished
-			wollokTestsReporter.endProcessManyFiles
 			null
 		}
 	}
 
 	def void runTestFile(WFile it){
 		if(!tests.empty){
-			wollokTestsReporter.testsToRun(null, it, tests, true)
+			wollokTestsReporter.testsToRun(null, it, tests)
 			tests.forEach [ test |
 				resetGlobalState
 				test.eval
@@ -56,7 +56,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 		suites.forEach [suite, i |
 			val testsToRun = suite.tests
 			val String suiteName = suite.name				
-			wollokTestsReporter.testsToRun(suiteName, it, testsToRun, i == 0)
+			wollokTestsReporter.testsToRun(suiteName, it, testsToRun)
 			testsToRun.forEach [ test |
 				resetGlobalState
 				test.evalInSuite(suite)
@@ -65,17 +65,19 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	}
 	
 	override evaluateAll(List<EObject> eObjects, String folder) {
-		wollokTestsReporter.initProcessManyFiles(folder)	
+		wollokTestsReporter.started
+		wollokTestsReporter.folderStarted(folder ?: "several-files")	
 
 		eObjects.forEach [ eObject |
-			wollokTestsReporter.started
 			val file = eObject as WFile
+			wollokTestsReporter.groupStarted(file.toString)
 			interpreter.initStack
 			interpreter.generateStack(eObject)
 			file.runTestFile
-			wollokTestsReporter.finished
+			wollokTestsReporter.groupFinished(file.toString)
 		]
-		wollokTestsReporter.endProcessManyFiles
+		wollokTestsReporter.folderFinished
+		wollokTestsReporter.finished
 		null
 	}
 	
@@ -83,7 +85,6 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 		// If in a suite, we should create a suite wko so this will be our current context to eval the tests
 		try {
 			val suiteObject = new SuiteBuilder(suite, interpreter).forTest(test).build
-			wollokTestsReporter.testStarted(test)
 			interpreter.performOnStack(test, suiteObject, [ | test.eval])
 		} catch (Exception e) {
 			handleExceptionInTest(e, test)

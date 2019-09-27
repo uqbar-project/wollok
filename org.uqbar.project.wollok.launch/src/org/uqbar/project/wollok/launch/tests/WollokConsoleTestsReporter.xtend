@@ -19,7 +19,7 @@ import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionEx
  * like eclipse UI.
  * 
  * @author tesonep
- * @author dodain
+ * @author dodain   Added performance measurement & extract common behavior
  *
  */
 class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
@@ -34,7 +34,7 @@ class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 	int testsErrored = 0
 	int testsRun = 0
 	
-	override testsToRun(String suiteName, WFile file, List<WTest> tests, boolean reset) {
+	override testsToRun(String suiteName, WFile file, List<WTest> tests) {
 		AnsiConsole.systemInstall
 		if (suiteName ?: '' !== '') {
 			println('''Running all tests from describe «suiteName»''')
@@ -44,9 +44,6 @@ class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 		testsRun += tests.size
 		testsGroupRun += tests.size
 		totalTestsRun += tests.size
-		if (reset) {
-			resetTestsCount
-		}
 	}
 
 	override reportTestAssertError(WTest test, AssertionException assertionError, int lineNumber, URI resource) {
@@ -79,21 +76,20 @@ class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 
 	override finished() {
 		super.finished
-		printTestsResults(testsGroupRun, testsGroupFailed, testsGroupErrored, overallTimeElapsedInMilliseconds)
+		printTestsResults(totalTestsRun, totalTestsFailed, totalTestsErrored, overallTimeElapsedInMilliseconds)
 		resetGroupTestsCount
-		if (testsGroupFailed + testsGroupErrored > 0 && !processingManyFiles) throw new WollokTestsFailedException
+		if (!overallProcessWasOK) throw new WollokTestsFailedException
 	}
 
-	override initProcessManyFiles(String folder) {
-		super.initProcessManyFiles(folder)
+	override groupStarted(String groupName) {
+		super.groupStarted(groupName)
 		resetTestsCount
-		resetGroupTestsCount
+		resetGroupTestsCount		
 	}
 	
-	override endProcessManyFiles() {
-		super.endProcessManyFiles
-		this.printTestsResults(totalTestsRun, totalTestsFailed, totalTestsErrored, folderTimeElapsedInMilliseconds)
-		if (!overallProcessWasOK) throw new WollokTestsFailedException
+	override groupFinished(String groupName) {
+		super.groupFinished(groupName)
+		printTestsResults(testsGroupRun, testsGroupFailed, testsGroupErrored, groupTimeElapsedInMilliseconds)
 	}
 
 	def resetTestsCount() {

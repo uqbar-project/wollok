@@ -9,7 +9,8 @@ import org.uqbar.project.wollok.wollokDsl.WTest
 import wollok.lib.AssertionException
 
 /**
- * Does nothing (?)
+ * Default implementation
+ * Measures performance between tests, a group of tests and overall process
  * 
  * @author tesonep
  * @author dodain   Adding time elapsed for each test
@@ -21,6 +22,10 @@ class DefaultWollokTestsReporter implements WollokTestsReporter {
 	boolean processingManyFiles
 	long folderStartTime
 	long folderTimeElapsedInMilliseconds
+
+	// Total time of group of tests run
+	long groupStartTime
+	long groupTimeElapsedInMilliseconds	
 	
 	// Total time of all tests run
 	long overallStartTime
@@ -28,18 +33,9 @@ class DefaultWollokTestsReporter implements WollokTestsReporter {
 	
 	Map<WTest,TimeDuration> testTimeElapsed = newHashMap
 		
-	override reportTestAssertError(WTest test, AssertionException assertionError, int lineNumber, URI resource) {
-		throw assertionError
-	}
-	
-	override reportTestOk(WTest test) {}
-	
-	override testsToRun(String suiteName, WFile file, List<WTest> tests, boolean reset) {}
-	
-	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
-		throw exception
-	}
-
+	/**
+	 * Global events - starting & finishing the whole execution
+	 */	
 	override started() {
 		this.overallStartTime = System.currentTimeMillis
 	}
@@ -48,19 +44,42 @@ class DefaultWollokTestsReporter implements WollokTestsReporter {
 		overallTimeElapsedInMilliseconds = System.currentTimeMillis - overallStartTime
 	}
 	
-	override initProcessManyFiles(String folder) {
-		this.processingManyFiles = true
+	/** starting & finishing execution of a certain folder, a group of files */
+	override folderStarted(String folder) {
+		this.processingManyFiles = folder !== null && !folder.equals("")
 		this.folder = folder
 		this.folderStartTime = System.currentTimeMillis
 	}
 	
-	override endProcessManyFiles() {
+	override folderFinished() {
 		this.processingManyFiles = false
 		folderTimeElapsedInMilliseconds = System.currentTimeMillis - this.folderStartTime
 	}
 	
+	/** starting & finishing a group of tests */
+	override groupStarted(String groupName) {
+		this.groupStartTime = System.currentTimeMillis
+	}
+	
+	override groupFinished(String groupName) {
+		this.groupTimeElapsedInMilliseconds = System.currentTimeMillis - groupStartTime
+	}
+	
+	/** starting & finishing execution of a single test */
 	override testStarted(WTest test) {
 		testTimeElapsed.put(test, new TimeDuration(System.currentTimeMillis))
+	}
+
+	override reportTestAssertError(WTest test, AssertionException assertionError, int lineNumber, URI resource) {
+		throw assertionError
+	}
+	
+	override reportTestOk(WTest test) {}
+	
+	override testsToRun(String suiteName, WFile file, List<WTest> tests) {}
+	
+	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
+		throw exception
 	}
 	
 	def testFinished(WTest test) {
@@ -70,7 +89,6 @@ class DefaultWollokTestsReporter implements WollokTestsReporter {
 	def getTotalTime(WTest test) {
 		testTimeElapsed.get(test).totalTime
 	}
-
 }
 
 @Accessors

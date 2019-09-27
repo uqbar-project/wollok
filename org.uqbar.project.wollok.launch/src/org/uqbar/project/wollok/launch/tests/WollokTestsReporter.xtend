@@ -19,46 +19,54 @@ import wollok.lib.AssertionException
  * Event lifecycle for several files
  * 
  * start()
- *   initProcessManyFiles("folderA")
- *     testToRun("describeA", ...., [test1, test2], true)
- *     testStarted(test1)
- *     reportTestOk(test1)
- *     testStarted(test2)
- *     reportTestAssertError(test2)
- *   endProcessManyFiles 
- *   initProcessManyFiles("folderB")
- *     testToRun("describeB", ...., [test3], true)
- *     testStarted(test3)
- *     reportTestError(test3)
- *   endProcessManyFiles 
+ *   folderStarted("folderA")       <== or "several-files" if they are several folders
+ *     groupStarted("WFileImpl@489a6d9c")
+ *       testToRun("describeA", ...., [test1, test2])
+ *       testStarted(test1)
+ *       reportTestOk(test1)
+ *       testStarted(test2)
+ *       reportTestAssertError(test2)
+ *     groupFinished("WFileImpl@489a6d9c")
+ *     groupStarted("WFileImpl@5b65ac8a")
+ *       testToRun("describeB", ...., [test3])
+ *       testStarted(test3)
+ *       reportTestError(test3)
+ *     groupFinished("WFileImpl@5b65ac8a")
+ *   folderFinished
  * finished()
- * 
+ *
+ * Potentially we could add several folders, but there's no implemented cycle
+ * in WollokLauncherInterpreterEvaluator. 
  * 
  * =================================================================
  * Event lifecycle for a group of tests in a single file
  * 
  * start()
- *   initProcessManyFiles("") 
- *     testToRun(null, ...., [test1, test2], true)
- *     testStarted(test1)
- *     reportTestOk(test1)
- *     testStarted(test2)
- *     reportTestAssertError(test2)
- *   endProcessManyFiles 
+ *   folderStarted("")                         <== empty string is passed as folder, single file
+ *     groupStarted("WFileImpl@489a6d9c")
+ *       testToRun(null, ...., [test1, test2]) <== see null here, no describe
+ *       testStarted(test1)
+ *       reportTestOk(test1)
+ *       testStarted(test2)
+ *       reportTestAssertError(test2)
+ *     groupFinished("WFileImpl@489a6d9c")
+ *   folderFinished 
  * finished()
  *
  *
  * =================================================================
- * Event lifecycle for a describe in a single file
+ * Event lifecycle for a single describe in a single file
  * 
  * start()
- *   initProcessManyFiles("") 
- *     testToRun("describeA", ...., [test1, test2], true)
- *     testStarted(test1)
- *     reportTestOk(test1)
- *     testStarted(test2)
- *     reportTestAssertError(test2)
- *   endProcessManyFiles 
+ *   folderStarted("")                                <== empty string is passed as folder, single file
+ *     groupStarted("WFileImpl@489a6d9c")
+ *       testToRun("describeA", ...., [test1, test2]) <== see "describeA" here
+ *       testStarted(test1)
+ *       reportTestOk(test1)
+ *       testStarted(test2)
+ *       reportTestAssertError(test2)
+ *     groupFinished("WFileImpl@489a6d9c")
+ *   folderFinished
  * finished()
  * 
  */
@@ -71,11 +79,15 @@ interface WollokTestsReporter {
 	def void finished()
 	
 	/** starting & finishing execution of a certain folder, a group of files */
-	def void initProcessManyFiles(String folder)
-	def void endProcessManyFiles()
+	def void folderStarted(String folder)
+	def void folderFinished()
 
-	/** predefining which tests are going to run - when changing a folder reset should be true */
-	def void testsToRun(String suiteName, WFile file, List<WTest> tests, boolean reset)
+	/** starting & finishing a group of tests */
+	def void groupStarted(String groupName)
+	def void groupFinished(String groupName)
+	
+	/** predefining which tests are going to run */
+	def void testsToRun(String suiteName, WFile file, List<WTest> tests)
 
 	/** starting & finishing execution of a single test */
 	def void testStarted(WTest test)
