@@ -940,7 +940,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	@NotConfigurable
 	def nonBooleanValueInNotExpression(WUnaryOperation it) {
-		if (isNotOperation && !operand.isBooleanOrUnknownType)
+		if (isNotOperation && operand !== null && !operand.isBooleanOrUnknownType)
 			report(WollokDslValidator_EXPECTING_BOOLEAN, it, WUNARY_OPERATION__OPERAND)
 	}
 
