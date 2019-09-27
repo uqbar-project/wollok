@@ -35,9 +35,11 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 		if (main !== null)
 			main.eval
 		else {
+			wollokTestsReporter.initProcessManyFiles("")
 			wollokTestsReporter.start
 			runTestFile
 			wollokTestsReporter.finished
+			wollokTestsReporter.endProcessManyFiles
 			null
 		}
 	}
@@ -81,6 +83,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 		// If in a suite, we should create a suite wko so this will be our current context to eval the tests
 		try {
 			val suiteObject = new SuiteBuilder(suite, interpreter).forTest(test).build
+			wollokTestsReporter.testStarted(test)
 			interpreter.performOnStack(test, suiteObject, [ | test.eval])
 		} catch (Exception e) {
 			handleExceptionInTest(e, test)

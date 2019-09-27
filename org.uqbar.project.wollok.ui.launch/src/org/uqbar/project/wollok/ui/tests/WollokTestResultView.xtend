@@ -53,7 +53,6 @@ import org.uqbar.project.wollok.ui.tests.model.WollokTestState
 import org.uqbar.project.wollok.ui.tests.shortcut.WollokAllTestsLaunchShortcut
 import org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut
 
-import static extension org.uqbar.project.wollok.utils.StringUtils.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**
@@ -434,7 +433,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 		val millisecondsElapsed = results.globalContainer.millisecondsElapsed
 		if (millisecondsElapsed > 0) {
-			lblMilliseconds.text = NLS.bind(Messages.WollokTestResultView_timeTestsElapsed, millisecondsElapsed.asSeconds)	
+			lblMilliseconds.text = NLS.bind(Messages.WollokTestResultView_timeTestsElapsed, millisecondsElapsed)	
 		}
 		
 		if (results.globalContainer.hasTests) {
@@ -477,11 +476,11 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def count((WollokTestResult)=>Boolean predicate) {
-		results.globalContainer.allTest(predicate).size
+		results.globalContainer.allTestsMatching(predicate).size
 	}
 
 	def total() {
-		results.globalContainer.allTest.size
+		results.globalContainer.allTests.size
 	}
 
 	override setFocus() {
@@ -519,8 +518,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 	def dispatch getOutputText(WollokTestResult result) {
 		result.state.getOutputText(result)
 	}
-	
-	
+
 }
 
 class WTestTreeLabelProvider extends LabelProvider {

@@ -14,8 +14,18 @@ import wollok.lib.AssertionException
  * @author tesonep
  * @author dodain   Adding time elapsed for each test
  */
+@Accessors
 class DefaultWollokTestsReporter implements WollokTestsReporter {
-
+	// Attributes for carrying a folder test run
+	String folder
+	boolean processingManyFiles
+	long folderStartTime
+	long folderTimeElapsedInMilliseconds
+	
+	// Total time of all tests run
+	long overallStartTime
+	long overallTimeElapsedInMilliseconds	
+	
 	Map<WTest,TimeDuration> testTimeElapsed = newHashMap
 		
 	override reportTestAssertError(WTest test, AssertionException assertionError, int lineNumber, URI resource) {
@@ -29,18 +39,24 @@ class DefaultWollokTestsReporter implements WollokTestsReporter {
 	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
 		throw exception
 	}
+
+	override start() {
+		this.overallStartTime = System.currentTimeMillis
+	}
 	
 	override finished() {
-	
+		overallTimeElapsedInMilliseconds = System.currentTimeMillis - overallStartTime
 	}
 	
 	override initProcessManyFiles(String folder) {
+		this.processingManyFiles = true
+		this.folder = folder
+		this.folderStartTime = System.currentTimeMillis
 	}
 	
 	override endProcessManyFiles() {
-	}
-	
-	override start() {
+		this.processingManyFiles = false
+		folderTimeElapsedInMilliseconds = System.currentTimeMillis - this.folderStartTime
 	}
 	
 	override testStarted(WTest test) {
@@ -54,7 +70,7 @@ class DefaultWollokTestsReporter implements WollokTestsReporter {
 	def getTotalTime(WTest test) {
 		testTimeElapsed.get(test).totalTime
 	}
-	
+
 }
 
 @Accessors

@@ -24,9 +24,6 @@ import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionEx
  */
 class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 
-	boolean processingManyFiles = false
-	long startTime = 0
-	long startGroupTime = 0
 	int totalTestsRun = 0
 	int totalTestsFailed = 0
 	int totalTestsErrored = 0
@@ -81,21 +78,21 @@ class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 	}
 
 	override finished() {
-		val millisecondsElapsed = System.currentTimeMillis - startGroupTime
-		printTestsResults(testsGroupRun, testsGroupFailed, testsGroupErrored, millisecondsElapsed)
+		super.finished
+		printTestsResults(testsGroupRun, testsGroupFailed, testsGroupErrored, overallTimeElapsedInMilliseconds)
 		resetGroupTestsCount
 		if (testsGroupFailed + testsGroupErrored > 0 && !processingManyFiles) throw new WollokTestsFailedException
 	}
 
 	override initProcessManyFiles(String folder) {
-		processingManyFiles = true
-		startTime = System.currentTimeMillis
+		super.initProcessManyFiles(folder)
 		resetTestsCount
 		resetGroupTestsCount
 	}
 	
 	override endProcessManyFiles() {
-		this.printTestsResults(totalTestsRun, totalTestsFailed, totalTestsErrored, System.currentTimeMillis - startTime)
+		super.endProcessManyFiles
+		this.printTestsResults(totalTestsRun, totalTestsFailed, totalTestsErrored, folderTimeElapsedInMilliseconds)
 		if (!overallProcessWasOK) throw new WollokTestsFailedException
 	}
 
@@ -125,10 +122,6 @@ class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 	
 	def overallProcessWasOK() {
 		testsGroupFailed + testsGroupErrored === 0
-	}
-	
-	override start() {
-		startGroupTime = System.currentTimeMillis
 	}
 	
 	def printTestsResults(int totalTests, int failedTests, int erroredTests, long millisecondsElapsed) {

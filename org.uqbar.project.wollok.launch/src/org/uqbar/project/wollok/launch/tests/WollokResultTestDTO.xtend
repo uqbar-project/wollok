@@ -16,6 +16,7 @@ class WollokResultTestDTO implements Serializable {
 	String message
 	StackTraceElementDTO[] stackTrace
 	boolean error = false
+	long totalTime
 	
 	def boolean ok() {
 		message === null && errorLineNumber == 0	
