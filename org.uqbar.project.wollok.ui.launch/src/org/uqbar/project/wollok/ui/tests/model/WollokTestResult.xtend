@@ -34,7 +34,7 @@ class WollokTestResult {
 	}
 
 	def getName() {
-		testInfo.name
+		testInfo.name + " (" + testInfo.millisecondsElapsed + "ms)"
 	}
 
 	def void endedOk(){

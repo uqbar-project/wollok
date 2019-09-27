@@ -11,7 +11,6 @@ import wollok.lib.AssertionException
 import static org.fusesource.jansi.Ansi.*
 import static org.fusesource.jansi.Ansi.Color.*
 
-import static extension org.uqbar.project.wollok.utils.StringUtils.*
 import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 
 /**
@@ -23,7 +22,7 @@ import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionEx
  * @author dodain
  *
  */
-class WollokConsoleTestsReporter implements WollokTestsReporter {
+class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 
 	boolean processingManyFiles = false
 	long startTime = 0
@@ -54,9 +53,10 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 	}
 
 	override reportTestAssertError(WTest test, AssertionException assertionError, int lineNumber, URI resource) {
+		test.testFinished
 		incrementTestsFailed
 		println(ansi
-				.a("  ").fg(YELLOW).a(test.name).a(": ✗ FAILED => ").reset
+				.a("  ").fg(YELLOW).a(test.name).a(": ✗ FAILED (").a(test.totalTime).a("ms) => ").reset
 				.fg(YELLOW).a(assertionError.message).reset
 				.fg(YELLOW).a(" (").a(resource.trimFragment).a(":").a(lineNumber).a(")").reset
 				.a("\n    ")
@@ -66,12 +66,14 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 	}
 	
 	override reportTestOk(WTest test) {
-		println(ansi.a("  ").fg(GREEN).a(test.name).a(": √ (Ok)").reset)
+		test.testFinished
+		println(ansi.a("  ").fg(GREEN).a(test.name).a(": √ OK (").a(test.totalTime).a("ms)").reset)
 	}
 
 	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
+		test.testFinished
 		incrementTestsErrored
-		println(ansi.a("  ").fg(RED).a(test.name).a(": ✗ ERRORED => ").reset
+		println(ansi.a("  ").fg(RED).a(test.name).a(": ✗ ERRORED (").a(test.totalTime).a("ms) => ").reset
 			.fg(RED).a(exception.convertToString).reset
 			.a("\n    ").fg(RED).a(exception.convertStackTrace.join("\n    ")).reset
 			.a("\n")
@@ -80,7 +82,7 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 
 	override finished() {
 		val millisecondsElapsed = System.currentTimeMillis - startGroupTime
-		this.printTestsResults(testsGroupRun, testsGroupFailed, testsGroupErrored, millisecondsElapsed)
+		printTestsResults(testsGroupRun, testsGroupFailed, testsGroupErrored, millisecondsElapsed)
 		resetGroupTestsCount
 		if (testsGroupFailed + testsGroupErrored > 0 && !processingManyFiles) throw new WollokTestsFailedException
 	}
@@ -138,7 +140,7 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 			.a(failedTests).a(if (failedTests == 1) " failure and " else " failures and ")
 			.a(erroredTests).a(if (erroredTests == 1) " error" else " errors")
 			.a("\n")
-			.a("Total time: ").a(millisecondsElapsed.asSeconds).a(" seconds")
+			.a("Total time: ").a(millisecondsElapsed).a("ms")
 			.a("\n")
 			.reset
 		)

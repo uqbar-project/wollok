@@ -160,13 +160,12 @@ class WollokJSONTestsReporter implements WollokTestsReporter {
 		_writer = writer
 	}
 
-	override initProcessManyFiles(String folder) {
-	}
+	override initProcessManyFiles(String folder) {}
 	
-	override endProcessManyFiles() {
-	}
+	override endProcessManyFiles() {}
 	
-	override start() {
-	}
+	override start() {}
+	
+	override testStarted(WTest test) {}
 	
 }

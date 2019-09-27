@@ -93,6 +93,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 
 	override dispatch evaluate(WTest test) {
 		try {
+			wollokTestsReporter.testStarted(test)
 			test.elements.forEach [ expr |
 				interpreter.performOnStack(expr, currentContext) [ | expr.eval ]
 			]

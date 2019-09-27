@@ -23,7 +23,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
  * 
  * @author tesonep
  */
-class WollokRemoteTestReporter implements WollokTestsReporter {
+class WollokRemoteTestReporter extends DefaultWollokTestsReporter {
 
 	@Inject
 	var WollokLauncherParameters parameters
@@ -103,7 +103,9 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	}
 	
 	protected def List<WollokTestInfo> getRunnedTestsInfo(List<WTest> tests, String fileURI) {
-		new ArrayList(tests.map[new WollokTestInfo(it, fileURI, processingManyFiles)])
+		new ArrayList(tests.map [
+			test | new WollokTestInfo(test, fileURI, processingManyFiles, test.totalTime)
+		])
 	}
 	
 	override start() {
