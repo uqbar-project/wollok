@@ -76,6 +76,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
 import org.uqbar.project.wollok.sdk.WollokSDK
 import org.eclipse.xtext.resource.IEObjectDescription
+import org.eclipse.xtext.scoping.IScope
 
 /**
  * Extension methods to Wollok semantic model.
@@ -753,6 +754,21 @@ class WollokModelExtensions {
 			}
 			name.equals(importName)
 		]
+	}
+	
+	def static matchingImports(IScope scope, String elementToFind) {
+		synchronized (scope) {
+			scope.allElements.filter [ element |
+				val elementCompleteName = element.getName.toString
+				val elementName = elementCompleteName.substring(elementCompleteName.lastIndexOf(".") + 1)
+				isValidImport(elementCompleteName) && elementName.equals(elementToFind)
+			].map[anImport|anImport.name.toString].toSet
+		}
+	}
+	
+	def static isValidImport(String importName) {
+		!#["wollok.lang", "wollok.lib", "wollok.mirror"].exists[library|importName.startsWith(library)] &&
+			importName.contains(".") && !#["wollok.game", "wollok.vm"].exists[library|importName.equals(library)]
 	}
 
 	// *******************************
