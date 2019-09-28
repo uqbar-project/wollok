@@ -77,14 +77,15 @@ class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 	override finished() {
 		super.finished
 		printTestsResults(totalTestsRun, totalTestsFailed, totalTestsErrored, overallTimeElapsedInMilliseconds)
+		val ok = overallProcessWasOK
 		resetGroupTestsCount
-		if (!overallProcessWasOK) throw new WollokTestsFailedException
+		if (!ok) throw new WollokTestsFailedException
 	}
 
 	override groupStarted(String groupName) {
 		super.groupStarted(groupName)
 		resetTestsCount
-		resetGroupTestsCount		
+		resetGroupTestsCount
 	}
 	
 	override groupFinished(String groupName) {
@@ -117,7 +118,7 @@ class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 	}
 	
 	def overallProcessWasOK() {
-		testsGroupFailed + testsGroupErrored === 0
+		totalTestsFailed + totalTestsErrored === 0
 	}
 	
 	def printTestsResults(int totalTests, int failedTests, int erroredTests, long millisecondsElapsed) {
