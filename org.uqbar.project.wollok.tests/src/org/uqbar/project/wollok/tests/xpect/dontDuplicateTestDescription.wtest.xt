@@ -8,6 +8,11 @@ test "testing something" {
 	assert.that(2 == 2)
 }
 
+// XPECT warnings --> "Tests must have a non-empty description" at """"
+test "" {
+	assert.that(true)
+}
+
 // A different test, everything cool!
 
 test "testing other thing" {

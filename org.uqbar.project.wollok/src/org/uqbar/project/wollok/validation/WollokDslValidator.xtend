@@ -1138,6 +1138,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(WARN)
 	@CheckGroup(WollokCheckGroup.POTENTIAL_DESIGN_PROBLEM)
+	def testWithEmptyDescription(WTest t) {
+		if ((t.name ?: "").equals(""))
+			report(WollokDslValidator_TEST_WITH_EMPTY_DESCRIPTION, t, WTEST__NAME)
+	}
+	
+	@Check
+	@DefaultSeverity(WARN)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_DESIGN_PROBLEM)
 	def testShouldSendOneAssertMessage(WTest test) {
 		if (!test.elements.empty && !test.elements.exists [ sendsMessageToAssert ])
 			report(WollokDslValidator_TEST_SHOULD_HAVE_AT_LEAST_ONE_ASSERT, test, WTEST__ELEMENTS)
@@ -1370,6 +1378,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 				}
 			}
 		}
+	}
+
+	@Check
+	@DefaultSeverity(WARN)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_DESIGN_PROBLEM)
+	def describeWithEmptyDescription(WSuite s) {
+		if ((s.name ?: "").equals(""))
+			report(WollokDslValidator_DESCRIBE_WITH_EMPTY_DESCRIPTION, s, WSUITE__NAME)
 	}
 
 	@Check
