@@ -42,7 +42,7 @@ import wollok.lib.AssertionException
  * Event lifecycle for a group of tests in a single file
  * 
  * start()
- *   folderStarted("")                         <== empty string is passed as folder, single file
+ *   folderStarted(null)                       <== null is passed as folder, single file
  *     groupStarted("WFileImpl@489a6d9c")
  *       testToRun(null, ...., [test1, test2]) <== see null here, no describe
  *       testStarted(test1)
@@ -58,7 +58,7 @@ import wollok.lib.AssertionException
  * Event lifecycle for a single describe in a single file
  * 
  * start()
- *   folderStarted("")                                <== empty string is passed as folder, single file
+ *   folderStarted(null)                              <== null is passed as folder, single file
  *     groupStarted("WFileImpl@489a6d9c")
  *       testToRun("describeA", ...., [test1, test2]) <== see "describeA" here
  *       testStarted(test1)

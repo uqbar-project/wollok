@@ -96,11 +96,6 @@ class WollokRemoteTestReporter extends DefaultWollokTestsReporter {
 		remoteTestNotifier.testsResult(testsResult, overallTimeElapsedInMilliseconds)
 	}
 
-	override folderFinished() {
-		super.folderFinished
-//		remoteTestNotifier.testsResult(testsResult, folderTimeElapsedInMilliseconds)
-	}
-	
 	protected def List<WollokTestInfo> getRunnedTestsInfo(List<WTest> tests, String fileURI) {
 		new ArrayList(tests.map [
 			test | new WollokTestInfo(test, fileURI, processingManyFiles)

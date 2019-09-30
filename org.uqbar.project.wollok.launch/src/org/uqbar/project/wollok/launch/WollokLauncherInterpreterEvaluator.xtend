@@ -36,7 +36,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 			main.eval
 		else {
 			wollokTestsReporter.started
-			wollokTestsReporter.folderStarted("")
+			wollokTestsReporter.folderStarted(null)
 			runTestFile
 			wollokTestsReporter.folderFinished
 			wollokTestsReporter.finished
@@ -53,7 +53,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 			]
 		}
 						
-		suites.forEach [suite, i |
+		suites.forEach [suite |
 			val testsToRun = suite.tests
 			val String suiteName = suite.name				
 			wollokTestsReporter.testsToRun(suiteName, it, testsToRun)
