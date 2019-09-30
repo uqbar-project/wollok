@@ -221,11 +221,12 @@ class Object {
 	
 	/** @private */
 	method internalToSmartString(alreadyShown) {
-		return self.kindName() + "[" 
+		const hasInstanceVariables = !self.instanceVariables().isEmpty()
+		return self.kindName() + (if (hasInstanceVariables) "[" else "") 
 			+ self.instanceVariables().map { v => 
 				v.name() + "=" + v.valueToSmartString(alreadyShown)
 			}.join(', ') 
-		+ "]"
+		+ (if (hasInstanceVariables) "]" else "")
 	}
 	
 	/** @private */

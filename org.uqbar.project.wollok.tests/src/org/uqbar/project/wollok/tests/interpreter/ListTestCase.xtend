@@ -214,7 +214,7 @@ class ListTestCase extends CollectionTestCase {
 			)
 			*/
 			assert.throwsExceptionWithMessage(
-				"Expected [[a[]]] but found [[a B[]]]", 
+				"Expected [[a]] but found [[a B]]", 
 				{ assert.equals([ a ], [ new B() ]) }
 			)
 		}
