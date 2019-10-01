@@ -643,7 +643,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			issueResolutionAcceptor.accept(issue,
 				NLS.bind(Messages.WollokDslQuickFixProvider_add_import_name, nameWithWildcard),
 				NLS.bind(Messages.WollokDslQuickFixProvider_add_import_description, nameWithWildcard),
-				"package.png", [ e, context |
+				"w.png", [ e, context |
 					e.insertImport(nameWithWildcard.generateNewImportCode, context)
 				], 1)
 			issueResolutionAcceptor.accept(issue,
