@@ -644,12 +644,12 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 				NLS.bind(Messages.WollokDslQuickFixProvider_add_import_name, nameWithWildcard),
 				NLS.bind(Messages.WollokDslQuickFixProvider_add_import_description, nameWithWildcard),
 				"package.png", [ e, context |
-					e.declaringContext.insertImport(nameWithWildcard.generateNewImportCode, context)
+					e.insertImport(nameWithWildcard.generateNewImportCode, context)
 				], 1)
 			issueResolutionAcceptor.accept(issue,
 				NLS.bind(Messages.WollokDslQuickFixProvider_add_import_name, importName),
 				NLS.bind(Messages.WollokDslQuickFixProvider_add_import_description, importName), icon, [ e, context |
-					e.declaringContext.insertImport(importName.generateNewImportCode, context)
+					e.insertImport(importName.generateNewImportCode, context)
 				], 1)
 		]
 	}

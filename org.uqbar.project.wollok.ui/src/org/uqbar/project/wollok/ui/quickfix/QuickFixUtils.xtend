@@ -183,7 +183,7 @@ class QuickFixUtils {
 
 	def static dispatch grammarDescription(EObject it) { it }
 	
-	def static insertImport(WMethodContainer declaringContext, String code, IModificationContext context) {
+	def static insertImport(EObject declaringContext, String code, IModificationContext context) {
 		val xtextDocument = context.getXtextDocument(declaringContext.fileURI)
 		val importLocation = declaringContext.placeToAddImport(xtextDocument)
 		xtextDocument.replace(importLocation.placeToAdd, 0, importLocation.formatCode(code))
@@ -201,7 +201,7 @@ class QuickFixUtils {
 		}
 	}
 	
-	def static placeToAddImport(WMethodContainer declaringContext, IXtextDocument xtextDocument) {
+	def static placeToAddImport(EObject declaringContext, IXtextDocument xtextDocument) {
 		val position = importToAddPosition(declaringContext.allImports)
 		val location = importToAddLocation(xtextDocument, position)
 		new QuickFixLocation(position, location)
