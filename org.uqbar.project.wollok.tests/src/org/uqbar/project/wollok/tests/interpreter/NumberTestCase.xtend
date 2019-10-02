@@ -556,7 +556,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void integerDivisionFail() {
 		'''
-		assert.throwsExceptionWithMessage("Cannot convert parameter \"a\" to type wollok.lang.Number", { 8.div("a") })
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a", { 8.div("a") })
 		'''.test
 	}
 	

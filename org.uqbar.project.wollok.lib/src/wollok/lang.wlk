@@ -1684,7 +1684,10 @@ class Number {
 	 * 		15.div(5) ==> Answers 3
 	 *		8.2.div(3.3)  ==> Answers 2
 	 */
-	method div(other) native
+	method div(other) {
+		self.checkNotNull(other, "div")
+		return (self / other).truncate(0)
+	}
 	
 	/**
 	 * raisedTo operation
@@ -1816,10 +1819,7 @@ class Number {
 	  * 
 	  * Self must be an integer value
 	  */
-	method even() {
-		const intValue = self.coerceToInteger()
-		return intValue % 2 == 0 
-	}
+	method even() = self % 2 == 0
 	
 	/** 
 	 * Answers whether self is an odd number 
@@ -1827,9 +1827,9 @@ class Number {
 	 * 
 	 * Self must be an integer value
 	 */
-	method odd() { 
-		const intValue = self.coerceToInteger()
-		return intValue.even().negate() 
+	method odd() {
+		if (!self.isInteger()) return false
+		return !self.even()
 	}
 	
 	/** Answers remainder between self and other
