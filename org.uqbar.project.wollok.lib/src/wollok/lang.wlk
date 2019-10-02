@@ -1993,15 +1993,26 @@ class String {
 	 * at index 0, the next at index 1, and so on, as for array indexing.
 	 * Parameter index must be a positive integer value.
 	 */
-	method charAt(index) native
+	method charAt(index) {
+		self.checkNotNull(index, "charAt")
+		if (!index.isInteger()) throw new DomainException(message = "charAt expects an integer instead of " + index)
+		return self.substring(index, index + 1)
+	}
 	
 	/** 
 	 * Concatenates the specified string to the end of this string.
 	 * Example:
 	 * 		"cares" + "s" => Answers "caress"
 	 */
-	method +(other) native
-	
+	method +(other) = self.concat(other.toString())
+
+	/** 
+	 * Concatenates the specified string to the end of this string. Same as +.
+	 * Example:
+	 * 		"cares".concat("s") => Answers "caress"
+	 */
+  	method concat(other) native
+
 	/** 
 	 * Tests if this string starts with the specified prefix. 
 	 * It is case sensitive.
