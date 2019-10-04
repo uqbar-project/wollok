@@ -68,14 +68,15 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 import wollok.lang.Exception
+import org.uqbar.project.wollok.sdk.WollokSDK
+import org.eclipse.xtext.resource.IEObjectDescription
 
 import static org.uqbar.project.wollok.WollokConstants.*
 
 import static extension org.uqbar.project.wollok.model.ResourceUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
-import org.uqbar.project.wollok.sdk.WollokSDK
-import org.eclipse.xtext.resource.IEObjectDescription
+import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * Extension methods to Wollok semantic model.
@@ -104,6 +105,14 @@ class WollokModelExtensions {
 	def static dispatch String fqn(WNamedObject it) { nameWithPackage }
 	def static dispatch String fqn(WMixin it) { nameWithPackage }
 	def static dispatch String fqn(WSuite it) { nameWithPackage }
+
+
+	def static WMethodDeclaration getInitMethod(WMethodContainer it) {
+		methods.findFirst [ m |
+			m.name.equals(INITIALIZE_METHOD) && m.arguments.isEmpty
+		]
+	}
+
 
 	/** 
 	 * This method is intended to univocally identify every WMethodContainer

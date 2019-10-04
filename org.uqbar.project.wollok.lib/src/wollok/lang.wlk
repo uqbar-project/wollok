@@ -112,6 +112,7 @@ class StackTraceElement {
  * since 1.0
  */
 class Object {
+
 	/** 
 	 * Answers object identity of a Wollok object, represented by
 	 * a unique number in Wollok environment 
@@ -2392,10 +2393,10 @@ class Range {
 	 */
 	method map(closure) {
 		self.checkNotNull(closure, "map")
-		const l = []
-		self.forEach { e => l.add(closure.apply(e)) }
-		return l
-	}
+		const list = []
+		self.forEach { element => list.add(closure.apply(element)) }
+		return list
+    }
 
 	/**
 	 * Map + flatten operation
@@ -2407,15 +2408,15 @@ class Range {
 	 */
 	method flatMap(closure) {
 		self.checkNotNull(closure, "flatMap")
-		return self.fold([], { acc, e =>
-			acc.addAll(closure.apply(e))
-			acc
+		return self.fold([], { seed, element =>
+			seed.addAll(closure.apply(element))
+			seed
 		})
 	}
 	
 	/** @private */
 	method asList() {
-		return self.map({ elem => return elem })
+		return self.map({ elem => elem })
 	}
 	
 	/** 
@@ -2469,7 +2470,7 @@ class Range {
 	 *     new Range(start = 2, end = 5).contains(4) ==> Answers true 
 	 *     new Range(start = 2, end = 5).contains(0) ==> Answers false
 	 */
-	method contains(e) = self.asList().contains(e)
+	method contains(element) = self.asList().contains(element)
 	
 	/** @see List#sum() */
 	method sum() = self.asList().sum()
@@ -2518,6 +2519,8 @@ class Range {
  */
 class Closure {
 
+	method initialize() native
+	
 	/** Evaluates this closure passing its parameters
 	 *
 	 * Example: 
