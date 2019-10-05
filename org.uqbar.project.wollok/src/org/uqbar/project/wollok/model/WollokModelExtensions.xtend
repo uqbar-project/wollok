@@ -760,15 +760,16 @@ class WollokModelExtensions {
 	def static matchingImports(IScope scope, String elementToFind) {
 		synchronized (scope) {
 			scope.allElements.filter [ element |
-				val elementCompleteName = element.getName.toString
+				val elementCompleteName = element.name.toString
 				val elementName = elementCompleteName.substring(elementCompleteName.lastIndexOf(".") + 1)
-				isValidImport(elementCompleteName) && elementName.equals(elementToFind)
+				isValidImport(element) && elementName.equals(elementToFind)
 			].map[anImport|anImport.name.toString].toSet
 		}
 	}
 	
-	def static isValidImport(String importName) {
-		importName.importRequired && !NON_IMPLICIT_IMPORTS.exists [ it.equals(importName) ] 
+	def static isValidImport(IEObjectDescription element) {
+		val fqn = element.name.toString
+		fqn.importRequired && !NON_IMPLICIT_IMPORTS.exists[it.equals(fqn)] && element.EObjectOrProxy.container !== null
 	}
 
 	// *******************************
