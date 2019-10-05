@@ -74,7 +74,7 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 	def void addSameObjectToGameShouldFail() {
 		'''
 		«position(0,0)».drawElement(myVisual)
-		assert.throwsExceptionWithMessage("myVisual is already in the game.", { «position(1,1)».drawElement(myVisual) })
+		assert.throwsExceptionWithMessage("myVisual[] is already in the game.", { «position(1,1)».drawElement(myVisual) })
 		'''.gameTest
 	}
 	

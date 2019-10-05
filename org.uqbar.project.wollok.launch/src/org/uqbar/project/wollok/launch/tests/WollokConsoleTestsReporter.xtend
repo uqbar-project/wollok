@@ -12,6 +12,7 @@ import static org.fusesource.jansi.Ansi.*
 import static org.fusesource.jansi.Ansi.Color.*
 
 import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
+import static extension org.uqbar.project.wollok.utils.StringUtils.*
 
 /**
  * Logs the events to the console output.
@@ -39,7 +40,7 @@ class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 		if (suiteName ?: '' !== '') {
 			println('''Running all tests from describe «suiteName»''')
 		} else {
-			println('''Running «tests.size» test«if (tests.size !== 1) "s"»...''')
+			println('''Running «tests.size.singularOrPlural("test")» ...''')
 		}
 		testsRun += tests.size
 		testsGroupRun += tests.size
@@ -126,9 +127,9 @@ class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 		println(ansi
 			.fg(STATUS)
 			.bold
-			.a(totalTests).a(if (totalTests == 1) " test, " else " tests, ")
-			.a(failedTests).a(if (failedTests == 1) " failure and " else " failures and ")
-			.a(erroredTests).a(if (erroredTests == 1) " error" else " errors")
+			.a(totalTests.singularOrPlural("test")).a(", ")
+			.a(failedTests.singularOrPlural("failure")).a(" and ")
+			.a(erroredTests.singularOrPlural("error"))
 			.a("\n")
 			.a("Total time: ").a(millisecondsElapsed).a("ms")
 			.a("\n")
