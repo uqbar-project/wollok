@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.libraries
 
+import java.util.List
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.resource.IResourceDescription.Manager
@@ -11,7 +12,15 @@ import org.eclipse.xtext.resource.IResourceDescription.Manager
  */
 class WollokLibExtensions {
 	
-	private static val libsFqn = #["wollok.lang","wollok.lib","wollok.vm","wollok.game","wollok.mirror"]
+	public static val LANG_LIB = "wollok.lang"
+	public static val LIB_LIB = "wollok.lib"
+	public static val VM_LIB = "wollok.vm"
+	public static val GAME_LIB = "wollok.game"
+	public static val MIRROR_LIB = "wollok.mirror"
+	
+	public static val ALL_LIBS = #[LANG_LIB, LIB_LIB, VM_LIB, GAME_LIB, MIRROR_LIB]
+	public static val IMPLICIT_IMPORTS = #[LIB_LIB, LANG_LIB]
+	public static val NON_IMPLICIT_IMPORTS = #[GAME_LIB, VM_LIB, MIRROR_LIB]
 
 	/**
 	 * loads the objects without cache
@@ -48,11 +57,16 @@ class WollokLibExtensions {
 	
 	}
 	
-	static def boolean isCoreLib(String fqn){
-		if(fqn === null) return false
-		val fqnMatches = libsFqn.filter[ String lib | fqn.startsWith(lib)]
-		return fqnMatches.size() >= 1
+	static def boolean isCoreLib(String fqn) {
+		(fqn ?: "").belongsTo(ALL_LIBS)
 	}
 	
+	static def boolean importRequired(String fqn) {
+		!(fqn ?: "").belongsTo(IMPLICIT_IMPORTS)
+	}
 	
+	static def boolean belongsTo(String fqn, List<String> libraries) {
+		libraries.exists [ lib | fqn.startsWith(lib) ]
+	}
+
 }
