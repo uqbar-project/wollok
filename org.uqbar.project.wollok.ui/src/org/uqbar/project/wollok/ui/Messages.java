@@ -155,6 +155,8 @@ public class Messages extends NLS {
 	public static String WollokDslQuickFixProvider_add_always_description;
 	public static String WollokDslQuickFixProvider_replace_if_condition_name;
 	public static String WollokDslQuickFixProvider_replace_if_condition_description;
+	public static String WollokDslQuickFixProvider_add_import_name;
+	public static String WollokDslQuickFixProvider_add_import_description;
 	public static String WollokDslQuickFixProvider_create_local_variable_name; 
 	public static String WollokDslQuickFixProvider_create_local_variable_description; 
 	public static String WollokDslQuickFixProvider_create_instance_variable_name; 
