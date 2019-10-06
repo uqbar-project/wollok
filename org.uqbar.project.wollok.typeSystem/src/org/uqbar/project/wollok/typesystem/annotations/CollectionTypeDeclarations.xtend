@@ -71,7 +71,7 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		C.sumableCollection(E)
 		C.clear
 
-		C >> "unique" === #[] => E
+		C >> "uniqueElement" === #[] => E
 
 		C >> "join" === #[String] => String
 		C >> "join" === #[] => String

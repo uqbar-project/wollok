@@ -14,6 +14,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.WollokConstants.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import org.eclipse.xtend.lib.annotations.Data
+import org.uqbar.project.wollok.wollokDsl.Import
 
 /**
  * Provides utilities for quickfixes.
@@ -181,6 +182,12 @@ class QuickFixUtils {
 	def static dispatch grammarDescription(RuleCall it) { "RuleCall " + rule }
 
 	def static dispatch grammarDescription(EObject it) { it }
+	
+	def static insertImport(EObject declaringContext, String code, IModificationContext context) {
+		val xtextDocument = context.getXtextDocument(declaringContext.fileURI)
+		val importLocation = declaringContext.placeToAddImport(xtextDocument)
+		xtextDocument.replace(importLocation.placeToAdd, 0, importLocation.formatCode(code))
+	}
 
 	def static insertVariable(WMethodContainer declaringContext, String newVarName, IModificationContext context) {
 		val lastVariableDefinition = declaringContext.variableDeclarations.sortBy[before]?.last
@@ -192,6 +199,35 @@ class QuickFixUtils {
 				context.insertBefore(firstBehavior, VAR + " " + newVarName)
 			}
 		}
+	}
+	
+	def static placeToAddImport(EObject declaringContext, IXtextDocument xtextDocument) {
+		val position = importToAddPosition(declaringContext.allImports)
+		val location = importToAddLocation(xtextDocument, position)
+		new QuickFixLocation(position, location)
+	}
+	
+	def static int importToAddPosition(Iterable<Import> imports) {
+		if(!imports.isEmpty) imports.last.after else 0
+	}
+	
+	def static Location importToAddLocation(IXtextDocument xtextDocument, int position) {
+		val IRegion lineInformation = xtextDocument.getLineInformationOfOffset(position)
+		val IRegion nextLineInformation = xtextDocument.getLineInformationOfOffset(lineInformation.endOfLine + 2)
+		val String lineText = xtextDocument.get(lineInformation.offset, lineInformation.length)
+		val String nextLineText = xtextDocument.get(nextLineInformation.offset, nextLineInformation.length)
+		var Location result
+
+		if (position.equals(0)) {
+			if (!lineText.isEmpty)
+				result = Location.TWOLINESBEFORE
+			else if(!nextLineText.isEmpty) result = Location.BEFORE else result = Location.NONE
+		} else {
+			if(!nextLineText.isEmpty) result = Location.ALL else result = Location.AFTER
+
+		}
+
+		result
 	}
 	
 	def static insertMethod(WMethodContainer declaringContext, String code, IModificationContext context) {
@@ -256,6 +292,10 @@ class QuickFixUtils {
 		if (numberOfChars < 1) return ""
 		(1..numberOfChars).map [ character ].reduce [ acum, c | acum + c ]
 	}
+	
+	def static generateNewImportCode(String newObjectName) {
+		IMPORT + blankSpace + newObjectName
+	}
 
 	def static generateNewWKOCode(String newObjectName) {
 		WKO + blankSpace + newObjectName + " {" + System.lineSeparator + System.lineSeparator + "}" + System.lineSeparator + System.lineSeparator
@@ -267,7 +307,7 @@ class QuickFixUtils {
 	
 }
 
-enum Location { BEFORE, AFTER, ALL }
+enum Location { BEFORE, AFTER, ALL, TWOLINESBEFORE, NONE }
 
 @Data
 class QuickFixLocation {
@@ -278,8 +318,12 @@ class QuickFixLocation {
 	def formatCode(String code) {
 		if (location === Location.BEFORE)
 			code + System.lineSeparator
-		else if (location === Location.AFTER) 
+		else if (location === Location.TWOLINESBEFORE)
+			code + System.lineSeparator + System.lineSeparator
+		else if (location === Location.AFTER)
 			System.lineSeparator + code
+		else if (location === Location.NONE)
+			code
 		else
 			System.lineSeparator + code + System.lineSeparator
 	}

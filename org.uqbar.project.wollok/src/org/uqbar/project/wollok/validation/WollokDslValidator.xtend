@@ -7,12 +7,12 @@ import org.eclipse.core.runtime.Platform
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
+import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.osgi.util.NLS
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.naming.IQualifiedNameConverter
 import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.validation.Check
-import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
@@ -40,7 +40,6 @@ import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WMixin
-import org.uqbar.project.wollok.wollokDsl.WNamed
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
@@ -74,7 +73,6 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
-import org.eclipse.emf.ecore.resource.Resource
 
 /**
  * Custom validation rules.
@@ -665,14 +663,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	
 	def duplicatedReferenceFromImports(EObject it) {
 		val imports = it.allImports
-		if (!imports.isEmpty) {
-			val allImportsNames = imports.allImportsNames(scopeProvider).map[i|i.substring(i.lastIndexOf('.') + 1)]
-			if (allImportsNames.contains(it.name)) {
-				report(WollokDslValidator_DUPLICATED_REFERENCE_FROM_IMPORTS, it, WNAMED__NAME)
-			}
+		val duplicatedReference = it.duplicatedReference(imports, scopeProvider)
+		if (duplicatedReference !== null) {
+			report(
+				NLS.bind(WollokDslValidator_DUPLICATED_REFERENCE_FROM_IMPORTS,
+					duplicatedReference.EObjectURI.lastSegment), it, WNAMED__NAME)
 		}
 	}
-
+	
 	@Check
 	@DefaultSeverity(ERROR)
 	@NotConfigurable
@@ -942,7 +940,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	@NotConfigurable
 	def nonBooleanValueInNotExpression(WUnaryOperation it) {
-		if (isNotOperation && !operand.isBooleanOrUnknownType)
+		if (isNotOperation && operand !== null && !operand.isBooleanOrUnknownType)
 			report(WollokDslValidator_EXPECTING_BOOLEAN, it, WUNARY_OPERATION__OPERAND)
 	}
 
@@ -1137,6 +1135,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			report(WollokDslValidator_DONT_DUPLICATE_TEST_DESCRIPTION, wtest, WTEST__NAME)
 	}
 
+	@Check
+	@DefaultSeverity(WARN)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_DESIGN_PROBLEM)
+	def testWithEmptyDescription(WTest it) {
+		if (name.nullOr[equals("")])
+			report(WollokDslValidator_TEST_WITH_EMPTY_DESCRIPTION, it, WTEST__NAME)
+	}
+	
 	@Check
 	@DefaultSeverity(WARN)
 	@CheckGroup(WollokCheckGroup.POTENTIAL_DESIGN_PROBLEM)
@@ -1372,6 +1378,25 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 				}
 			}
 		}
+	}
+
+	@Check
+	@DefaultSeverity(WARN)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_DESIGN_PROBLEM)
+	def describeWithEmptyDescription(WSuite it) {
+		if ((name ?: "").equals(""))
+			report(WollokDslValidator_DESCRIBE_WITH_EMPTY_DESCRIPTION, it, WSUITE__NAME)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_DESIGN_PROBLEM)
+	def duplicatedDescribeNames(WFile it){
+		suites.forEach[ suite |
+			if(suites.exists[ aSuite | aSuite !== suite && aSuite.name == suite.name]){
+				report(WollokDslValidator_CANNOT_DUPLICATED_DESCRIBES_NAME, suite, WSUITE__NAME)
+			}
+		]
 	}
 	
 	def syntaxErrorsOf(Resource resource) {

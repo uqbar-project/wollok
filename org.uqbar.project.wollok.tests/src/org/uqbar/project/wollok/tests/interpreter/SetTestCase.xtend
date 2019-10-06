@@ -4,9 +4,82 @@ import org.junit.Test
 
 /**
  * @author matifreyre
+ * @author nicoviotti
+ * @author fdodino
+ * 
  */
 class SetTestCase extends CollectionTestCase {
+
+	@Test
+	def void aSetWithObjectsOfSameClassAreNotAddedIfEqualEqualSetToTrue() {
+		'''
+		class C {
+			override method ==(other) = true
+		}
+		
+		test "issue 1771" {
+			const aSet = #{new C(), new C()}
+			assert.equals(1, aSet.size())
+		}
+		'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void aSetWithObjectsOfSameClassAreNotAddedIfEqualsSetToTrue() {
+		'''
+		class C {
+			override method equals(other) = true
+		}
+		
+		test "issue 1771" {
+			const aSet = #{new C(), new C()}
+			assert.equals(1, aSet.size())
+		}
+		'''.interpretPropagatingErrors
+	}
 	
+	@Test
+	def void aSetWithObjectsInDifferentHierarchyAreNotAddedIfEqualsSetToTrue() {
+		'''
+		class Animal {
+			override method equals(other) = true
+		}
+		
+		class Perro inherits Animal {
+		}
+		
+		class Gato inherits Animal {
+			
+		}
+		
+		test "issue 1771" {
+			const aSet = #{new Perro(), new Perro(), new Gato()}
+			assert.equals(1, aSet.size())
+		}
+		'''.interpretPropagatingErrors
+	}	
+
+	@Test
+	def void aSetWithObjectsInDifferentHierarchyAreNotAddedIfEqualEqualSetToTrue() {
+		'''
+		class Animal {
+			override method ==(other) = true
+		}
+		
+		class Perro inherits Animal {
+		}
+		
+		class Gato inherits Animal {
+			
+		}
+		
+		test "issue 1771" {
+			const aSet = #{new Perro(), new Perro(), new Gato()}
+			assert.equals(1, aSet.size())
+		}
+		'''.interpretPropagatingErrors
+	}	
+
 	@Test
 	def void unionWithEmptySet() {
 		'''

@@ -11,8 +11,8 @@ import wollok.lib.AssertionException
 import static org.fusesource.jansi.Ansi.*
 import static org.fusesource.jansi.Ansi.Color.*
 
-import static extension org.uqbar.project.wollok.utils.StringUtils.*
 import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
+import static extension org.uqbar.project.wollok.utils.StringUtils.*
 
 /**
  * Logs the events to the console output.
@@ -20,32 +20,38 @@ import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionEx
  * like eclipse UI.
  * 
  * @author tesonep
- * @author dodain
- * 
+ * @author dodain   Added performance measurement & extract common behavior
+ *
  */
-class WollokConsoleTestsReporter implements WollokTestsReporter {
+class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 
+	int totalTestsRun = 0
+	int totalTestsFailed = 0
+	int totalTestsErrored = 0
+	int testsGroupRun = 0
+	int testsGroupFailed = 0
+	int testsGroupErrored = 0
 	int testsFailed = 0
 	int testsErrored = 0
-	int totalTests = 0
+	int testsRun = 0
 	
 	override testsToRun(String suiteName, WFile file, List<WTest> tests) {
 		AnsiConsole.systemInstall
-		totalTests = tests.size
 		if (suiteName ?: '' !== '') {
-			println('''Running all tests from suite «suiteName»''')
+			println('''Running all tests from describe «suiteName»''')
 		} else {
-			println('''Running «totalTests» tests...''')
+			println('''Running «tests.size.singularOrPlural("test")» ...''')
 		}
-		resetTestsCount
+		testsRun += tests.size
+		testsGroupRun += tests.size
+		totalTestsRun += tests.size
 	}
 
-	override testStart(WTest test) {}
-
 	override reportTestAssertError(WTest test, AssertionException assertionError, int lineNumber, URI resource) {
+		test.testFinished
 		incrementTestsFailed
 		println(ansi
-				.a("  ").fg(YELLOW).a(test.name).a(": ✗ FAILED => ").reset
+				.a("  ").fg(YELLOW).a(test.name).a(": ✗ FAILED (").a(test.totalTime).a("ms) => ").reset
 				.fg(YELLOW).a(assertionError.message).reset
 				.fg(YELLOW).a(" (").a(resource.trimFragment).a(":").a(lineNumber).a(")").reset
 				.a("\n    ")
@@ -55,55 +61,80 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 	}
 	
 	override reportTestOk(WTest test) {
-		println(ansi.a("  ").fg(GREEN).a(test.name).a(": √ (Ok)").reset)
+		test.testFinished
+		println(ansi.a("  ").fg(GREEN).a(test.name).a(": √ OK (").a(test.totalTime).a("ms)").reset)
 	}
 
 	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
+		test.testFinished
 		incrementTestsErrored
-		println(ansi.a("  ").fg(RED).a(test.name).a(": ✗ ERRORED => ").reset
+		println(ansi.a("  ").fg(RED).a(test.name).a(": ✗ ERRORED (").a(test.totalTime).a("ms) => ").reset
 			.fg(RED).a(exception.convertToString).reset
 			.a("\n    ").fg(RED).a(exception.convertStackTrace.join("\n    ")).reset
 			.a("\n")
 		)
 	}
 
-	override finished(long millisecondsElapsed) {
-		val STATUS = if (processWasOK) GREEN else RED
-		println(ansi
-			.fg(STATUS)
-			.bold
-			.a(totalTests).a(" tests, ")
-			.a(testsFailed).a(if (testsFailed == 1) " failure and " else " failures and ")
-			.a(testsErrored).a(if (testsErrored == 1) " error" else " errors")
-			.a("\n")
-			.a("Total time: ").a(millisecondsElapsed.asSeconds).a(" seconds")
-			.a("\n")
-			.reset
-		)
-		AnsiConsole.systemUninstall
-		if (!processWasOK) {
-			throw new WollokTestsFailedException
-		}
+	override finished() {
+		super.finished
+		printTestsResults(totalTestsRun, totalTestsFailed, totalTestsErrored, overallTimeElapsedInMilliseconds)
+		val ok = overallProcessWasOK
+		resetGroupTestsCount
+		if (!ok) throw new WollokTestsFailedException
 	}
 
-	override initProcessManyFiles(String folder) {}
+	override groupStarted(String groupName) {
+		super.groupStarted(groupName)
+		resetTestsCount
+		resetGroupTestsCount
+	}
 	
-	override endProcessManyFiles() {}
+	override groupFinished(String groupName) {
+		super.groupFinished(groupName)
+		printTestsResults(testsGroupRun, testsGroupFailed, testsGroupErrored, groupTimeElapsedInMilliseconds)
+	}
 
 	def resetTestsCount() {
 		testsFailed = 0
-		testsErrored = 0	
+		testsErrored = 0
+		testsRun = 0
+	}
+
+	def resetGroupTestsCount() {
+		testsGroupRun = 0
+		testsGroupFailed = 0
+		testsGroupErrored = 0
 	}
 	
 	def incrementTestsFailed() {
 		testsFailed++
+		testsGroupFailed++
+		totalTestsFailed++
 	}
 
 	def incrementTestsErrored() {
 		testsErrored++
+		testsGroupErrored++
+		totalTestsErrored++
 	}
 	
-	def processWasOK() {
-		testsFailed + testsErrored === 0
+	def overallProcessWasOK() {
+		totalTestsFailed + totalTestsErrored === 0
+	}
+	
+	def printTestsResults(int totalTests, int failedTests, int erroredTests, long millisecondsElapsed) {
+		val STATUS = if (failedTests + erroredTests === 0) GREEN else RED
+		println(ansi
+			.fg(STATUS)
+			.bold
+			.a(totalTests.singularOrPlural("test")).a(", ")
+			.a(failedTests.singularOrPlural("failure")).a(" and ")
+			.a(erroredTests.singularOrPlural("error"))
+			.a("\n")
+			.a("Total time: ").a(millisecondsElapsed).a("ms")
+			.a("\n")
+			.reset
+		)
+		AnsiConsole.systemUninstall
 	}
 }
