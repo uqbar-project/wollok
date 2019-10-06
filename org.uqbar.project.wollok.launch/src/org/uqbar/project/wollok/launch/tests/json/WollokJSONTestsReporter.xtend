@@ -41,7 +41,7 @@ class WollokJSONTestsReporter implements WollokTestsReporter {
 		]
 	}
 
-	override finished(long millisecondsElapsed) {
+	override finished() {
 		writer => [
 			endArray
 			writeSummary
@@ -160,13 +160,16 @@ class WollokJSONTestsReporter implements WollokTestsReporter {
 		_writer = writer
 	}
 
-	override initProcessManyFiles(String folder) {
-	}
+	override folderStarted(String folder) {}
 	
-	override endProcessManyFiles() {
-	}
+	override folderFinished() {}
 	
-	override start() {
-	}
+	override started() {}
+	
+	override testStarted(WTest test) {}
+	
+	override groupStarted(String groupName) {}
+	
+	override groupFinished(String groupName) {}
 	
 }

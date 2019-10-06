@@ -47,7 +47,7 @@ public enum WollokTestState {
 
 		@Override
 		public String getOutputText(WollokTestResult result) {
-			return getText();
+			return getText() + " - " + result.getTotalTimeElapsed();
 		}
 	},
 	ERROR {
@@ -71,7 +71,7 @@ public enum WollokTestState {
 
 		@Override
 		public String getOutputText(WollokTestResult result) {
-			return result.getErrorOutput();
+			return result.getErrorOutput() + " - " + result.getTotalTimeElapsed();
 		}
 
 	},
@@ -115,7 +115,7 @@ public enum WollokTestState {
 
 		@Override
 		public String getOutputText(WollokTestResult result) {
-			return result.getErrorOutput();
+			return result.getErrorOutput() + " - " + result.getTotalTimeElapsed();
 		}
 
 	};

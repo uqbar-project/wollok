@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.Path
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.ui.launch.Activator
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
 @Accessors
 class WollokTestFileContainer {
@@ -24,22 +25,19 @@ class WollokTestFileContainer {
 	}
 
 	def testByName(String testName) {
-		allTest.findFirst[name == testName]
+		allTests.findFirst[name == testName]
 	}
 
-	def allTest() {
-		val allTest = new ArrayList
-		var unFlattedTests = this.containers.map[container|container.allTests]
-		unFlattedTests.forEach[tests|allTest.addAll(tests)]
-		return allTest
+	def getAllTests() {
+		this.containers.flatMap [ allTests ]
 	}
 
 	def allTestSize() {
-		return this.allTest().size()
+		return this.allTests.size()
 	}
 
 	def allTestSize((WollokTestResult)=>Boolean predicate) {
-		return allTest().filter(predicate).size
+		return allTests.filter(predicate).size
 	}	
 
 	def hasTests() {
@@ -47,9 +45,9 @@ class WollokTestFileContainer {
 	}
 	
 	def getNoEmptyDescribes(){
-		val suitesWithName = containers.filter [ container | container.suiteName  !== null] 
-		if(suitesWithName.isEmpty){
-			return containers.get(0).tests
+		val suitesWithName = containers.filter [ suiteName !== null ] 
+		if (suitesWithName.isEmpty) {
+			return containers.head.tests
 		}
 		return containers.filter [ container | !container.tests.isEmpty ]
 		 
@@ -102,6 +100,10 @@ class WollokTestFileContainer {
 	
 	def fileName() {
 		if (mainResource !== null) mainResource.toString else "" 
+	}
+
+	override toString() {
+		"[" + allTests.map [ name ].join(",") + "]" 
 	}
 
 }

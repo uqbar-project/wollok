@@ -10,3 +10,10 @@ describe "fakeTest" {
 	 	assert.equals(1, 1)
 	}
 }
+
+// XPECT warnings --> "Describe should have a non-empty description" at """"
+describe "" {
+	test "sum of two numbers" {
+		assert.equals(2, 1 + 1)
+	}
+}

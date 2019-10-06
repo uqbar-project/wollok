@@ -40,23 +40,29 @@ public class WollokTestGlobalContainer {
 		testFiles.filter[file|!file.noEmptyDescribes.isEmpty]
 	}
 
-	def allTest() {
-		val allTest = new ArrayList
-		this.testFiles.forEach[file|allTest.addAll(file.allTest())]
-		return allTest
+	def getAllTests() {
+		this.testFiles.flatMap [ allTests ]
 	}
 
-	def allTest((WollokTestResult)=>Boolean predicate) {
-		return allTest().filter(predicate)
+	def allTestsMatching((WollokTestResult)=>Boolean predicate) {
+		return allTests.filter(predicate)
 	}
 
 	def WollokTestResult testByName(String file, String suiteName, String testName) {
-		testFiles
-			.filter [testFile | testFile.fileName.equals(file) ]
-			.flatMap [ containers ]
-			.findFirst [ container | container.suiteName.equals(suiteName) ]
-			.allTests
-			.findFirst [ test | test.name == testName ]
+		if (suiteName !== null) {
+			testFiles
+				.filter [testFile | testFile.fileName.equals(file) ]
+				.flatMap [ containers ]
+				.findFirst [ container | container.suiteName.equals(suiteName) ]
+				.allTests
+				.findFirst [ test | test.name == testName ]
+		} else {
+			testFiles
+				.findFirst [testFile | testFile.fileName.equals(file) ]
+				.allTests
+				.findFirst [ test | test.name == testName ] 
+		}
+			
 	}
 
 	def getProject() {
@@ -78,4 +84,8 @@ public class WollokTestGlobalContainer {
 		testFiles.findFirst[file|file.containers.findFirst[container|container == containerToFind] !== null]
 	}
 
+	override toString() {
+		"[" + testFiles.join(", ") + "]"
+	}
+	
 }
