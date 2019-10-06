@@ -25,6 +25,7 @@ class WollokTestResult {
 	// for other exceptions we just get the string. This is a hack, but I need to cut the refactor (exceptions to wollok)
 	String exceptionAsString
 	String mainResource
+	long millisecondsElapsed
 
 	new(WollokTestInfo testInfo) {
 		this.testInfo = testInfo
@@ -36,8 +37,13 @@ class WollokTestResult {
 	def getName() {
 		testInfo.name
 	}
+	
+	def getTotalTimeElapsed() {
+		 "" + millisecondsElapsed + "ms"
+	}
 
-	def void endedOk(){
+	def void endedOk(long millisecondsElapsed) {
+		this.millisecondsElapsed = millisecondsElapsed
 		ended(WollokTestState.OK)
 	}
 	
@@ -46,12 +52,14 @@ class WollokTestResult {
 		startTime = System.currentTimeMillis
 	}
 	
-	def endedAssertError(String message, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {
+	def endedAssertError(String message, StackTraceElementDTO[] stackTrace, int lineNumber, String resource, long millisecondsElapsed) {
+		this.millisecondsElapsed = millisecondsElapsed
 		innerEnded(lineNumber, resource, WollokTestState.ASSERT)
 		this.exceptionAsString = message + System.lineSeparator + stackTrace.printStackTrace
 	}
 	
-	def endedError(String exceptionAsString, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {
+	def endedError(String exceptionAsString, StackTraceElementDTO[] stackTrace, int lineNumber, String resource, long millisecondsElapsed) {
+		this.millisecondsElapsed = millisecondsElapsed
 		innerEnded(lineNumber, resource, WollokTestState.ERROR)
 		this.exceptionAsString = exceptionAsString + System.lineSeparator + stackTrace.printStackTrace
 	}

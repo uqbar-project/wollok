@@ -224,8 +224,8 @@ class Object {
 		return self.kindName() + "[" 
 			+ self.instanceVariables().map { v => 
 				v.name() + "=" + v.valueToSmartString(alreadyShown)
-			}.join(', ') 
-		+ "]"
+			}.join(', ')
+			+ "]"
 	}
 	
 	/** @private */

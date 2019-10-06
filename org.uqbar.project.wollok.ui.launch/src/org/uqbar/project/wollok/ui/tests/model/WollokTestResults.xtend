@@ -49,7 +49,6 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		this.setChanged
 		this.notifyObservers("testsEnded")		
 	}
-
 	
 	def testByName(String file, String suiteName, String testName){
 		globalContainer.testByName(file, suiteName, testName)
@@ -63,13 +62,13 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		tests.forEach [
 			val test = testByName(file, suiteName, testName)
 			if (ok()) {
-				test.endedOk()
+				test.endedOk(totalTime)
 			}
 			if (failure()) {
-				test.endedAssertError(message, stackTrace, errorLineNumber, resource)
+				test.endedAssertError(message, stackTrace, errorLineNumber, resource, totalTime)
 			}
 			if (error()) {
-				test.endedError(message, stackTrace, errorLineNumber, resource)
+				test.endedError(message, stackTrace, errorLineNumber, resource, totalTime)
 			}
 		]		
 		globalContainer.filterTestByState(this.shouldShowOnlyFailuresAndErrors)
@@ -78,7 +77,4 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		this.notifyObservers
 	}
 	
-	
-	
-
 }

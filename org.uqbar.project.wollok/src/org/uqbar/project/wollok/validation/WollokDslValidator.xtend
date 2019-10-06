@@ -940,7 +940,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	@NotConfigurable
 	def nonBooleanValueInNotExpression(WUnaryOperation it) {
-		if (isNotOperation && !operand.isBooleanOrUnknownType)
+		if (isNotOperation && operand !== null && !operand.isBooleanOrUnknownType)
 			report(WollokDslValidator_EXPECTING_BOOLEAN, it, WUNARY_OPERATION__OPERAND)
 	}
 
@@ -1135,6 +1135,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			report(WollokDslValidator_DONT_DUPLICATE_TEST_DESCRIPTION, wtest, WTEST__NAME)
 	}
 
+	@Check
+	@DefaultSeverity(WARN)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_DESIGN_PROBLEM)
+	def testWithEmptyDescription(WTest it) {
+		if (name.nullOr[equals("")])
+			report(WollokDslValidator_TEST_WITH_EMPTY_DESCRIPTION, it, WTEST__NAME)
+	}
+	
 	@Check
 	@DefaultSeverity(WARN)
 	@CheckGroup(WollokCheckGroup.POTENTIAL_DESIGN_PROBLEM)
@@ -1370,6 +1378,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 				}
 			}
 		}
+	}
+
+	@Check
+	@DefaultSeverity(WARN)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_DESIGN_PROBLEM)
+	def describeWithEmptyDescription(WSuite it) {
+		if ((name ?: "").equals(""))
+			report(WollokDslValidator_DESCRIBE_WITH_EMPTY_DESCRIPTION, it, WSUITE__NAME)
 	}
 
 	@Check

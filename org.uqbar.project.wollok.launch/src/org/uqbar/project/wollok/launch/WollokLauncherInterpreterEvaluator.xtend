@@ -35,42 +35,49 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 		if (main !== null)
 			main.eval
 		else {
-			val time = System.currentTimeMillis
-			wollokTestsReporter.start()
-			runTestFile(it)
-			wollokTestsReporter.finished(System.currentTimeMillis - time)
+			wollokTestsReporter.started
+			wollokTestsReporter.folderStarted(null)
+			runTestFile
+			wollokTestsReporter.folderFinished
+			wollokTestsReporter.finished
 			null
 		}
 	}
+
 	def void runTestFile(WFile it){
 		if(!tests.empty){
 			wollokTestsReporter.testsToRun(null, it, tests)
 			tests.forEach [ test |
 				resetGlobalState
-				test.eval ]
+				test.eval
+			]
 		}
 						
 		suites.forEach [suite |
-			var testsToRun = suite.tests
-			var String suiteName = suite.name				
+			val testsToRun = suite.tests
+			val String suiteName = suite.name				
 			wollokTestsReporter.testsToRun(suiteName, it, testsToRun)
 			testsToRun.forEach [ test |
 				resetGlobalState
-				test.evalInSuite(suite)]
+				test.evalInSuite(suite)
 			]
+		]
 	}
 	
 	override evaluateAll(List<EObject> eObjects, String folder) {
-		wollokTestsReporter.initProcessManyFiles(folder)	
-		wollokTestsReporter.start()	
-		
+		wollokTestsReporter.started
+		wollokTestsReporter.folderStarted(folder ?: "several-files")	
+
 		eObjects.forEach [ eObject |
 			val file = eObject as WFile
+			wollokTestsReporter.groupStarted(file.toString)
 			interpreter.initStack
 			interpreter.generateStack(eObject)
-			runTestFile(file)
+			file.runTestFile
+			wollokTestsReporter.groupFinished(file.toString)
 		]
-		wollokTestsReporter.endProcessManyFiles
+		wollokTestsReporter.folderFinished
+		wollokTestsReporter.finished
 		null
 	}
 	
@@ -90,6 +97,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 
 	override dispatch evaluate(WTest test) {
 		try {
+			wollokTestsReporter.testStarted(test)
 			test.elements.forEach [ expr |
 				interpreter.performOnStack(expr, currentContext) [ | expr.eval ]
 			]

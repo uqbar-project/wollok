@@ -107,6 +107,8 @@ class WollokInterpreter implements XInterpreter<EObject, WollokObject>, IWollokI
 			evaluator.evaluateAll(eObjects, folder)
 		} catch (WollokProgramExceptionWrapper e) {
 			throw e
+		} catch (WollokTestsFailedException e) {
+			throw e
 		} catch (Throwable e) {
 			console.logError(e)
 			null
