@@ -7,7 +7,7 @@ import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionEx
 
 /**
  * @author tesonep
- * @author jfernades
+ * @author jfernandes
  */
 class TestTestCase extends AbstractWollokInterpreterTestCase {
 

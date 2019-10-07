@@ -98,12 +98,10 @@ class WCollection<T extends Collection<WollokObject>> {
 		wrapped.map[ if (it instanceof WCallable) call("toString") else toString ].join(separator)
 	}
 	
-	def asSet(){
-		wrapped.toSet
-	}
-	
 	@NativeMessage("==")
-	def wollokEqualsEquals(WollokObject other) { wollokEquals(other) }
+	def wollokEqualsEquals(WollokObject other) { 
+		wollokEquals(other)
+	}
 	
 	@NativeMessage("equals")
 	def wollokEquals(WollokObject other) {
@@ -114,7 +112,6 @@ class WCollection<T extends Collection<WollokObject>> {
 		verifyWollokElementsContained(wrapped, other.getNativeCollection) &&
 		verifyWollokElementsContained(other.getNativeCollection, wrapped)
 	}
-	
 	
 	protected def hasNativeType(WollokObject it) {
 		hasNativeType(this.class.name)

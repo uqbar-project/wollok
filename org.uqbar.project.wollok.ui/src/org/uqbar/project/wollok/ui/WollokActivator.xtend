@@ -138,7 +138,11 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 	
 	override partActivated(IWorkbenchPart editor) {
 		if (editor instanceof WollokTextEditor) {
-			Thread.sleep(300) // fixes synchronization problem
+			try {
+				Thread.sleep(300) // fixes synchronization problem
+			} catch (InterruptedException e) {
+				// Just ignore this exception -> could be any thread in Eclipse
+			}
 			val wollokTextEditor = editor as WollokTextEditor
 			if (wollokTextEditor.resource === null) return;
 			val resource = wollokTextEditor.resource.platformFullPath

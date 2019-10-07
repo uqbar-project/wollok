@@ -130,7 +130,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		if (main !== null)
 			main.eval
 		else {
-			if(suite !== null) suite.eval else tests.evalAll
+			if(suites !== null) suites.evalAll else tests.evalAll
 		}
 	}
 

@@ -9,11 +9,14 @@ import org.uqbar.project.wollok.errorHandling.StackTraceElementDTO
 class WollokResultTestDTO implements Serializable {
 	
 	String testName
+	String suiteName
+	String file
 	int errorLineNumber
 	String resource
 	String message
 	StackTraceElementDTO[] stackTrace
 	boolean error = false
+	long totalTime
 	
 	def boolean ok() {
 		message === null && errorLineNumber == 0	
@@ -27,14 +30,18 @@ class WollokResultTestDTO implements Serializable {
 		!ok && error
 	}
 	
-	static def WollokResultTestDTO ok(String _testName) {
+	static def WollokResultTestDTO ok(String _file, String _suiteName, String _testName) {
 		return new WollokResultTestDTO => [
+			file = _file
+			suiteName = _suiteName
 			testName = _testName
 		]
 	}
 	
-	static def WollokResultTestDTO assertionError(String _testName, String _message, List<StackTraceElementDTO> _stackTrace, int _lineNumber, String _resource) {
+	static def WollokResultTestDTO assertionError(String _file, String _suiteName, String _testName, String _message, List<StackTraceElementDTO> _stackTrace, int _lineNumber, String _resource) {
 		return new WollokResultTestDTO => [
+			file = _file
+			suiteName = _suiteName
 			testName = _testName
 			message = _message
 			stackTrace = _stackTrace
@@ -43,8 +50,10 @@ class WollokResultTestDTO implements Serializable {
 		]
 	}
 	
-	static def WollokResultTestDTO error(String _testName, String _message, List<StackTraceElementDTO> _stackTrace, int _lineNumber, String _resource) {
+	static def WollokResultTestDTO error(String _file, String _suiteName, String _testName, String _message, List<StackTraceElementDTO> _stackTrace, int _lineNumber, String _resource) {
 		return new WollokResultTestDTO => [
+			file = _file
+			suiteName = _suiteName
 			testName = _testName
 			message = _message	
 			stackTrace = _stackTrace
