@@ -242,10 +242,12 @@ object game {
     method errorReporter(visual) native
      
     /**
-	 * Plays once a .mp3, .ogg or .wav audio file
+	 * Returns a sound object
      */ 
-    method sound(audioFile) native
-    
+    method sound(audioFile) {
+    	return new Sound(file=audioFile)
+    }
+     
 	/** 
 	* @private
 	*/
@@ -468,4 +470,50 @@ class Key {
 	method onPressDo(action) {
 		keyCodes.forEach{ key => game.whenKeyPressedDo(key, action) } //TODO: Implement native
 	}
+}
+
+
+class Sound {
+	constructor(file){
+		self.setFile(file)
+	}
+	
+	
+	/**
+	 * @private
+	 */
+	method setFile(file) native
+	
+	/**
+	 * Plays the file's sound
+	 */
+	method play() native
+	
+	/** 
+	 * Stops playing the sound without saving the state 
+	 */
+	method stop() native
+	
+	/** 
+	 * Pauses the sound 
+	 */
+	method pause() native
+	
+	/** Changes absolute volume, values should be between 0 and 1
+	 *
+	 * Examples:
+	 	* mySound.volume(0.5)  New volume is half of the original sound's volume
+	    * mySound.volume(mySound.volume()*0.5) New volume is half of the current volume
+	 */
+	method volume(newVolume) native
+	
+	/** 
+	 * Returns current sound volume 
+	 */	
+	method volume() native
+	
+	/**
+	 * Now plays as a loop
+	 */
+	method loop() native
 }

@@ -1,6 +1,8 @@
 package org.uqbar.project.wollok.typesystem.annotations
 
 class WollokGameTypeDeclarations extends TypeDeclarations {
+	
+	
 	override declarations() {
 		Position.variable("x", Number)
 		Position.variable("y", Number)
@@ -55,11 +57,19 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		game >> "hideAttributes" === #[T] => Void
 		game >> "showAttributes" === #[T] => Void
 		game >> "errorReporter" === #[T] => Void
-		game >> "sound" === #[String] => Void
+		game >> "sound" === #[String] => Sound
 
 		keyboard.allMethods.except("num") === #[] => Key
 		keyboard >> "num" === #[Number] => Key
+		
+		Sound.variable("file",String)
+		Sound.fakeProperty("volume",Number)
+		Sound >> "play" === #[] => Void
+		Sound >> "stop" === #[] => Void
+		Sound >> "pause" === #[] => Void
+		Sound >> "loop" === #[] => Void
 
+						
 		Key >> "onPressDo" === #[closure(#[], Void)] => Void
 	}
 }

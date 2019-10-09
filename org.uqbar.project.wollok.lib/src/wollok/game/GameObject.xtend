@@ -20,6 +20,7 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
 import static extension org.uqbar.project.wollok.utils.WollokObjectUtils.checkNotNull
 
+
 /**
  * 
  * @author ?
@@ -184,9 +185,13 @@ class GameObject {
 			.findFirst[ WObject.equals(visual)]
 	}
 
-	def sound(String audioFile) {
-		board.sound(audioFile)
+	def WollokObject sound(String audioFile) {
+		var newSound = new Sound()
+		newSound.initialize(audioFile)
+		return newSound.wObject()
 	}
+	
+	
 		
 //	 ACCESSORS
 	def title() { board.title }
