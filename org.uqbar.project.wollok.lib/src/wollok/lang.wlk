@@ -1241,7 +1241,7 @@ class List inherits Collection {
    */
   method subList(start) {
     if (self.isEmpty()) return []
-    if (start > self.size()) return []
+    if (start >= self.size()) return []
     return self.subList(start, self.size() - 1)
   }
 
@@ -1259,7 +1259,7 @@ class List inherits Collection {
   method subList(start, end) {
     self.checkNotNull(start, "subList")
     self.checkNotNull(end, "subList")
-    if (self.isEmpty())
+    if (self.isEmpty() || start >= self.size())
       return self.newInstance()
     
     const newList = self.newInstance()
