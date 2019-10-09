@@ -13,6 +13,7 @@ import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
+import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
@@ -34,6 +35,7 @@ class HumanReadableUtils {
 	def static dispatch modelTypeDescription(WMethodDeclaration it) { "Method" }
 	def static dispatch modelTypeDescription(WVariableDeclaration it) { if (writeable) "Variable" else "Constant" }
 	
+	def static modelTypeName(WReferenciable it) { "reference " + name }
 	def static modelTypeName(EClass it) { if(name.startsWith("W")) name.substring(1) else name }
 	
 	
