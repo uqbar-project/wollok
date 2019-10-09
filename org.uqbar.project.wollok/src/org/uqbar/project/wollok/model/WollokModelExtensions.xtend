@@ -9,7 +9,9 @@ import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.naming.QualifiedName
 import org.eclipse.xtext.nodemodel.INode
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
+import org.eclipse.xtext.resource.IEObjectDescription
 import org.eclipse.xtext.resource.XtextResource
+import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.impl.ImportNormalizer
 import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.WollokConstants
@@ -17,6 +19,7 @@ import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
+import org.uqbar.project.wollok.sdk.WollokSDK
 import org.uqbar.project.wollok.visitors.ParameterUsesVisitor
 import org.uqbar.project.wollok.visitors.VariableAssignmentsVisitor
 import org.uqbar.project.wollok.visitors.VariableUsesVisitor
@@ -68,11 +71,10 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 import wollok.lang.Exception
-import org.uqbar.project.wollok.sdk.WollokSDK
-import org.eclipse.xtext.resource.IEObjectDescription
 
 import static org.uqbar.project.wollok.WollokConstants.*
 
+import static extension org.uqbar.project.wollok.libraries.WollokLibExtensions.*
 import static extension org.uqbar.project.wollok.model.ResourceUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
@@ -762,6 +764,21 @@ class WollokModelExtensions {
 			}
 			name.equals(importName)
 		]
+	}
+	
+	def static matchingImports(IScope scope, String elementToFind) {
+		synchronized (scope) {
+			scope.allElements.filter [ element |
+				val elementCompleteName = element.name.toString
+				val elementName = elementCompleteName.substring(elementCompleteName.lastIndexOf(".") + 1)
+				isValidImport(element) && elementName.equals(elementToFind)
+			].map[anImport|anImport.name.toString].toSet
+		}
+	}
+	
+	def static isValidImport(IEObjectDescription element) {
+		val fqn = element.name.toString
+		fqn.importRequired && !NON_IMPLICIT_IMPORTS.exists[it.equals(fqn)] && element.EObjectOrProxy.container !== null
 	}
 
 	// *******************************

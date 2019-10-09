@@ -26,6 +26,8 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.scoping.WollokScopeExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
+import static extension org.uqbar.project.wollok.libraries.WollokLibExtensions.*
+
 /**
  * @author tesonep
  * @author jfernandes
@@ -40,8 +42,6 @@ class WollokImportedNamespaceAwareLocalScopeProvider extends AbstractGlobalScope
 
 	@Inject
 	IQualifiedNameProvider qualifiedNameProvider
-
-	static val IMPLICIT_IMPORTS = #["wollok.lib", "wollok.lang"]
 
 	// ************************************************************************
 	// ** Public interface

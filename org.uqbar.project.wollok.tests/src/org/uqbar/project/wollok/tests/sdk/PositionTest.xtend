@@ -125,7 +125,7 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 		}
 		
 		program p {
-			assert.throwsExceptionWithMessage("visual<position=a Position<x=0, y=0>> does not understand position()", { game.addVisual(visual) })
+			assert.throwsExceptionWithMessage("visual[position=a Position[x=0, y=0]] does not understand position()", { game.addVisual(visual) })
 		}'''.interpretPropagatingErrors
 	}
 

@@ -175,7 +175,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				}	
 				catch e : MessageNotUnderstoodException {
 					// ok !
-					assert.equals("a A does not understand m2()", e.message())
+					assert.equals("a A[] does not understand m2()", e.message())
 				}
 			}
 		'''.interpretPropagatingErrors
@@ -200,7 +200,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				}	
 				catch e : MessageNotUnderstoodException {
 					// ok !
-					assert.equals("a A does not understand m1(). However other methods exist with different argument count: m1(a)", e.message())
+					assert.equals("a A[] does not understand m1(). However other methods exist with different argument count: m1(a)", e.message())
 				}
 			}
 		'''.interpretPropagatingErrors
@@ -225,7 +225,8 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				}	
 				catch e : MessageNotUnderstoodException {
 					// ok !
-					assert.equals("a A does not understand M1(param1). However other similar methods exist: m1(a)", e.message())
+					assert.equals("a A[] does not understand M1(param1). However other similar methods exist: m1(a)", e.message())
+//					assert.equals("Wrong case-sensitive message M1(param1) sent to a A[]. Use m1(a)", e.message())
 				}
 			}
 		'''.interpretPropagatingErrors
@@ -250,7 +251,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				}	
 				catch e : MessageNotUnderstoodException {
 					// ok !
-					assert.equals("a A does not understand m1(param1, param2). However other methods exist with different argument count: m1(a)", e.message())
+					assert.equals("a A[] does not understand m1(param1, param2). However other methods exist with different argument count: m1(a)", e.message())
 				}
 			}
 		'''.interpretPropagatingErrors
@@ -313,7 +314,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				}	
 				catch e : MessageNotUnderstoodException {
 					// ok !
-					assert.equals("a A does not understand m2(param1, param2)", e.message())
+					assert.equals("a A[] does not understand m2(param1, param2)", e.message())
 				}
 			}
 		'''.interpretPropagatingErrors

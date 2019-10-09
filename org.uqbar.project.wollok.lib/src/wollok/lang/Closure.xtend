@@ -53,11 +53,28 @@ class Closure implements NodeAware<WClosure>, Function1<WollokObject, Object> {
 		]
 	}
 	
-	def static createEvaluationContext(WClosure c, WollokObject... values) {
-		if (values.size !== c.parameters.size) {
-			throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_ARGUMENTS_SIZE_IN_CLOSURE, c.parameters.size, values.size))
-		} 
-		c.parameterNames.createEvaluationContext(values)
+	def EvaluationContext<WollokObject> createEvaluationContext(WClosure it, WollokObject... arguments) {
+		if (parameters.size > 0 && parameters.last.isVarArg) {
+			if (arguments.size < parameters.size -1) {
+				throw throwInvalidOperation(NLS.bind(
+					Messages.WollokConversion_INVALID_ARGUMENTS_SIZE_IN_CLOSURE_WITH_VARARGS, 
+					parameters.size - 1, arguments.size
+				))
+			} 
+			
+			val regularArguments = arguments.toList.subList(0, parameters.size - 1) 
+			val variableArgumentsList = arguments.toList.subList(parameters.size - 1, arguments.size).convertJavaToWollok
+			parameterNames.createEvaluationContext(regularArguments + #[variableArgumentsList])
+		} else {
+			if (arguments.size !== parameters.size) {
+				throw throwInvalidOperation(NLS.bind(
+					Messages.WollokConversion_INVALID_ARGUMENTS_SIZE_IN_CLOSURE, 
+					parameters.size, arguments.size
+				))
+			} 
+			
+			parameterNames.createEvaluationContext(arguments)
+		}
 	}
 	
 	def static getParameterNames(WClosure it) { parameters.map[name] }

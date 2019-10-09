@@ -1139,7 +1139,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(WARN)
 	@CheckGroup(WollokCheckGroup.POTENTIAL_DESIGN_PROBLEM)
 	def testWithEmptyDescription(WTest it) {
-		if ((name ?: "").equals(""))
+		if (name.nullOr[equals("")])
 			report(WollokDslValidator_TEST_WITH_EMPTY_DESCRIPTION, it, WTEST__NAME)
 	}
 	

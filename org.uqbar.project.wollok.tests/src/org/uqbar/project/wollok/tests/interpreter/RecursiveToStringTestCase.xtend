@@ -35,7 +35,7 @@ class RecursiveToStringTestCase extends AbstractWollokInterpreterTestCase {
 				obj2.setY(obj1)
 				obj1.addX(new Prb())
 				
-				assert.equals('obj2<y=obj1<x=[obj2, a Prb]>>', obj2.toString())
+				assert.equals('obj2[y=obj1[x=[obj2, a Prb[]]]]', obj2.toString())
 			}
 		'''.interpretPropagatingErrors
 	}
@@ -70,7 +70,7 @@ class RecursiveToStringTestCase extends AbstractWollokInterpreterTestCase {
 				cuenta.duenios().add(duenio)
 				cuenta.metodoInexistente()
 			} catch e {
-				assert.equals("a Cuenta<duenios=[a Duenio<cuentas=[a Cuenta]>]> does not understand metodoInexistente()", e.message())
+				assert.equals("a Cuenta[duenios=[a Duenio[cuentas=[a Cuenta]]]] does not understand metodoInexistente()", e.message())
 			}
 		}
 		'''.interpretPropagatingErrors

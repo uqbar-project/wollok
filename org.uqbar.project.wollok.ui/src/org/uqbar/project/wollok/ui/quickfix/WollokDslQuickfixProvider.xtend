@@ -43,6 +43,8 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
+import org.eclipse.osgi.util.NLS
 
 /**
  * Custom quickfixes.
@@ -56,6 +58,9 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	@Inject
 	WollokClassFinder classFinder
+	
+	@Inject
+	WollokGlobalScopeProvider scopeProvider
 
 	/** 
 	 * ***********************************************************************
@@ -551,6 +556,9 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		val hasMethodContainer = targetContext !== null
 		val hasParameters = target.declaringMethod !== null && target.declaringMethod.parameters !== null
 		val canCreateLocalVariable = target.canCreateLocalVariable
+		
+		// add import
+		addImport(issueResolutionAcceptor, issue, target, xtextDocument, "wollok-icon-object_16.png")
 
 		// create new local wko
 		issueResolutionAcceptor.accept(issue, Messages.WollokDslQuickFixProvider_create_new_local_wko_name,
@@ -601,7 +609,10 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	}
 
 	protected def quickFixForUnresolvedRefToClass(IssueResolutionAcceptor issueResolutionAcceptor, Issue issue,
-		IXtextDocument xtextDocument) {
+		IXtextDocument xtextDocument, EObject target) {
+			
+		// add import
+		addImport(issueResolutionAcceptor, issue, target, xtextDocument, "wollok-icon-class_16.png")
 			
 		// create inner class
 		issueResolutionAcceptor.accept(issue, Messages.WollokDslQuickFixProvider_create_new_class_name,
@@ -620,6 +631,27 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			new AddNewElementQuickFixDialog(newClassName, false, resource, context, e)
 		]
 			
+	}
+	
+	protected def addImport(IssueResolutionAcceptor issueResolutionAcceptor, Issue issue, EObject target,
+		IXtextDocument xtextDocument, String icon) {
+		val scope = scopeProvider.getScope(target.eResource, WollokDslPackage.Literals.WPACKAGE__ELEMENTS)
+		val objectName = xtextDocument.get(issue.offset, issue.length)
+
+		scope.matchingImports(objectName).forEach [ importName |
+			val nameWithWildcard = importName.substring(0, importName.lastIndexOf(".")) + ".*"
+			issueResolutionAcceptor.accept(issue,
+				NLS.bind(Messages.WollokDslQuickFixProvider_add_import_name, nameWithWildcard),
+				NLS.bind(Messages.WollokDslQuickFixProvider_add_import_description, nameWithWildcard),
+				"w.png", [ e, context |
+					e.insertImport(nameWithWildcard.generateNewImportCode, context)
+				], 1)
+			issueResolutionAcceptor.accept(issue,
+				NLS.bind(Messages.WollokDslQuickFixProvider_add_import_name, importName),
+				NLS.bind(Messages.WollokDslQuickFixProvider_add_import_description, importName), icon, [ e, context |
+					e.insertImport(importName.generateNewImportCode, context)
+				], 1)
+		]
 	}
 
 	// *********************************************
@@ -656,7 +688,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 				// TODO: quickFixForUnresolvedRefToNamedParameter
 			}
 		} else if (reference.EType == WollokDslPackage.Literals.WCLASS) {
-			quickFixForUnresolvedRefToClass(issueResolutionAcceptor, issue, xtextDocument)
+			quickFixForUnresolvedRefToClass(issueResolutionAcceptor, issue, xtextDocument, target)
 		}
 	}
 
