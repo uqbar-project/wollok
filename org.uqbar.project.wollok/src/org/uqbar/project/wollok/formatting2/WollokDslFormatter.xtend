@@ -63,7 +63,14 @@ class WollokDslFormatter extends AbstractFormatter2 {
 					^import.append [ newLine ]
 				}
 			]
-			elements.forEach [ format ]
+			elements.forEach [ element, i |
+				element.format
+				if (elements.size - 1 == i) {
+					element.append [ setNewLines(2) ]
+				} else {
+					element.append [ newLine ]
+				}
+			]
 			main.format
 			tests.formatTests(document)
 			suites.formatSuites(document)
