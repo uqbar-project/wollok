@@ -33,7 +33,7 @@ class Gameboard {
 	List<GameboardListener> listeners = newArrayList
 	VisualComponent character
 	@Accessors(NONE) VisualComponent errorReporter
-	SoundAdapter soundAdapter
+	
 		
 	def static getInstance() {
 		if (instance === null) {
@@ -47,7 +47,6 @@ class Gameboard {
 		height = 5
 		width = 5
 		ground = "ground.png" 
-		soundAdapter = SoundAdapter.getInstance
 	}
 	
 	def void start() {

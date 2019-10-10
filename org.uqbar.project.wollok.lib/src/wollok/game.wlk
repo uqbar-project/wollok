@@ -474,15 +474,7 @@ class Key {
 
 
 class Sound {
-	constructor(file){
-		self.setFile(file)
-	}
-	
-	
-	/**
-	 * @private
-	 */
-	method setFile(file) native
+	const property file
 	
 	/**
 	 * Plays the file's sound
@@ -499,6 +491,11 @@ class Sound {
 	 */
 	method pause() native
 	
+	/** 
+	 * Resumes the sound 
+	 */
+	method resume() native
+	
 	/** Changes absolute volume, values should be between 0 and 1
 	 *
 	 * Examples:
@@ -507,13 +504,8 @@ class Sound {
 	 */
 	method volume(newVolume) native
 	
-	/** 
-	 * Returns current sound volume 
-	 */	
-	method volume() native
-	
 	/**
 	 * Now plays as a loop
 	 */
-	method loop() native
+	method loop(looping) native
 }
