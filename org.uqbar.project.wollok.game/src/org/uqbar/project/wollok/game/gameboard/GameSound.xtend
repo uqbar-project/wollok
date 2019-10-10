@@ -10,7 +10,6 @@ import org.uqbar.project.wollok.game.Messages
 class GameSound {
 	String file
 	long soundID
-	float volume
 	Sound sound
 
 	def play() {
@@ -32,10 +31,9 @@ class GameSound {
 	def volume(float newVolume) {
 		fetchSound.setVolume(soundID, newVolume)
 	}
-	
+
 //	def volume(){
 //	}
-
 	def loop(boolean looping) {
 		fetchSound.setLooping(soundID, looping)
 	}
