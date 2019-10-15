@@ -20,13 +20,23 @@ class WollokParseHelper extends ParseHelper<WFile>{
 		parse(file, resourceSetToUse, false)
 	}
 
+	override def parse(CharSequence text, ResourceSet resourceSetToUse) throws Exception {
+		text.toString.computeFileExtension
+		return super.parse(getAsStream(text), computeUnusedUri(resourceSetToUse), null, resourceSetToUse);
+	}
+	
+	def void computeFileExtension(String fileContent) {
+		this.fileExtension = 
+			if (fileContent.toString.contains("program "))
+				WollokConstants.PROGRAM_EXTENSION
+			else if (fileContent.toString.contains("test "))
+				WollokConstants.TEST_EXTENSION
+			else
+				WollokConstants.WOLLOK_DEFINITION_EXTENSION
+	}
+	
 	def WFile parse(Pair<String,String> file, ResourceSet resourceSetToUse, boolean createFilesOnDisk) throws Exception {
-		this.fileExtension = if (file.value.toString.contains("program "))
-									WollokConstants.PROGRAM_EXTENSION
-							 else if (file.value.toString.contains("test "))
-									WollokConstants.TEST_EXTENSION
-							else
-									WollokConstants.CLASS_OBJECTS_EXTENSION
+		file.value.computeFileExtension
 		val uri = resourceSetToUse.calculateUriFor(file).trimFileExtension.appendFileExtension(fileExtension)
 		
 		if (createFilesOnDisk) {

@@ -88,8 +88,10 @@ import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.co
  */
 class WollokModelExtensions {
 
-	def static implicitPackage(EObject it) { file.implicitPackage }
-
+	def static implicitPackage(EObject it) {
+		file.implicitPackage
+	}
+	
 	def static file(EObject it) { eResource }
 
 	def static boolean isException(WClass it) { fqn == Exception.name || (parent !== null && parent.exception) }

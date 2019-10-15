@@ -8,11 +8,11 @@ import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Label
 import org.eclipse.swt.widgets.Text
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.ui.wizard.abstractWizards.AbstractNewWollokFileWizardPage
 
 import static extension org.uqbar.project.wollok.validation.ElementNameValidation.*
+import static extension org.uqbar.project.wollok.WollokConstants.*
 
 class NewWollokObjectsWizardPage extends AbstractNewWollokFileWizardPage {
 	Text elementNameText
@@ -25,8 +25,8 @@ class NewWollokObjectsWizardPage extends AbstractNewWollokFileWizardPage {
 	}
 
 	override doInit() {
-		this.extension = WollokConstants.CLASS_OBJECTS_EXTENSION
-		this.initialFileName = "objects." + WollokConstants.CLASS_OBJECTS_EXTENSION //$NON-NLS-1$
+		this.extension = WOLLOK_DEFINITION_EXTENSION
+		this.initialFileName = "objects." + WOLLOK_DEFINITION_EXTENSION //$NON-NLS-1$
 		this.title = Messages.NewWollokObjectsWizardPage_title
 		this.description = Messages.NewWollokObjectsWizardPage_description
 	}
