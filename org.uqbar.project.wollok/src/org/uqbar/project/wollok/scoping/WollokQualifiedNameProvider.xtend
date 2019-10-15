@@ -34,8 +34,6 @@ class WollokQualifiedNameProvider extends DefaultDeclarativeQualifiedNameProvide
 	}
 	
 	def qualifiedName(WFile ele) {
-		println("file " + ele.eResource.URI)
-		println(QualifiedName.create(ele.eResource.implicitPackageForImport.split("\\.")))
 		QualifiedName.create(ele.eResource.implicitPackageForImport.split("\\."))		
 	}
 	

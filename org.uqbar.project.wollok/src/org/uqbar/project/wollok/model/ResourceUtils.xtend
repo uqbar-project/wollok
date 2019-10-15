@@ -8,6 +8,7 @@ import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.emf.common.util.URI
 
 import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
@@ -73,7 +74,11 @@ class ResourceUtils {
 	}
 	
 	def static preffixPackage(Resource it) {
-		(implicitPackagePreffixes.get(URI.fileExtension) ?: "")
+		URI.preffixForImport
+	}
+
+	def static preffixForImport(URI uri) {
+		implicitPackagePreffixes.get(uri.fileExtension) ?: ""
 	}
 
 }

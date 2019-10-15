@@ -10,6 +10,8 @@ import org.uqbar.project.wollok.wollokDsl.WFile
 /**
  * 
  * @author tesonep
+ * @author dodain   ==> parse(CharSequence, ResourceSet) modified for issue #1815 (.wlk / .wtest / .wpgm same file name)
+ *
  */
 class WollokParseHelper extends ParseHelper<WFile>{
 	
@@ -22,7 +24,8 @@ class WollokParseHelper extends ParseHelper<WFile>{
 
 	override def parse(CharSequence text, ResourceSet resourceSetToUse) throws Exception {
 		text.toString.computeFileExtension
-		return super.parse(getAsStream(text), computeUnusedUri(resourceSetToUse), null, resourceSetToUse);
+		val uri = computeUnusedUri(resourceSetToUse).trimFileExtension.appendFileExtension(fileExtension)
+		return super.parse(getAsStream(text), uri, null, resourceSetToUse)
 	}
 	
 	def void computeFileExtension(String fileContent) {
