@@ -771,7 +771,7 @@ class WollokModelExtensions {
 	
 	def static isValidImport(IEObjectDescription element) {
 		val fqn = element.name.toString
-		fqn.importRequired && !NON_IMPLICIT_IMPORTS.exists[it.equals(fqn)] && element.EObjectOrProxy.container !== null
+		fqn.importRequired && !NON_IMPLICIT_IMPORTS.exists[it.equals(fqn)] && element.EObjectURI.fileExtension.equals(WOLLOK_DEFINITION_EXTENSION) && element.EObjectOrProxy.container !== null
 	}
 
 	// *******************************
