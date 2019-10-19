@@ -1,0 +1,3 @@
+[submodule "wollok-language"]
+	path = wollok-language
+	url = git@github.com:uqbar-project/wollok-language.git

@@ -37,4 +37,31 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>src/wollok/game.wlk</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/wollok-language/src/wollok/game.wlk</locationURI>
+		</link>
+		<link>
+			<name>src/wollok/lang.wlk</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/wollok-language/src/wollok/lang.wlk</locationURI>
+		</link>
+		<link>
+			<name>src/wollok/lib.wlk</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/wollok-language/src/wollok/lib.wlk</locationURI>
+		</link>
+		<link>
+			<name>src/wollok/mirror.wlk</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/wollok-language/src/wollok/mirror.wlk</locationURI>
+		</link>
+		<link>
+			<name>src/wollok/vm.wlk</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/wollok-language/src/wollok/vm.wlk</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
