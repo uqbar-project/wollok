@@ -15,8 +15,8 @@ install:
   - cmd: SET JAVA_OPTS=-XX:MaxPermSize=2g -Xmx4g
   - cmd: SET M2_HOME=C:\maven\apache-maven-3.2.5
   - cmd: DIR
-  - cmd: DIR C:\projects\wollok\wollok-language\src\wollok\*.wlk
-  - cmd: DIR wollok-language\src\wollok\*.wlk
+  - cmd: DIR wollok-language
+  - cmd: DIR wollok-language\src
   - cmd: MKLINK /D C:\projects\wollok\wollok-language\src\wollok\*.wlk C:\projects\wollok\org.uqbar.project.wollok.lib\src\wollok
 build_script:
   - cd org.uqbar.project.wollok.releng/
