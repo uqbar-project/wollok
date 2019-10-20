@@ -1,5 +1,11 @@
 version: '{build}'
 os: Windows Server 2012
+clone_script:
+- cmd: >-
+    git clone -q --branch=%APPVEYOR_REPO_BRANCH% https://github.com/%APPVEYOR_REPO_NAME%.git %APPVEYOR_BUILD_FOLDER%
+    cd %APPVEYOR_BUILD_FOLDER%
+    git checkout -qf %APPVEYOR_REPO_COMMIT%
+    git submodule update --init --recursive
 install:
   - ps: |
       Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -17,7 +23,7 @@ install:
   - cmd: DIR
   - cmd: DIR wollok-language
   - cmd: DIR wollok-language\src
-  - cmd: MKLINK /D C:\projects\wollok\wollok-language\src\wollok\*.wlk C:\projects\wollok\org.uqbar.project.wollok.lib\src\wollok
+  # - cmd: MKLINK /D C:\projects\wollok\wollok-language\src\wollok\*.wlk C:\projects\wollok\org.uqbar.project.wollok.lib\src\wollok
 build_script:
   - cd org.uqbar.project.wollok.releng/
   - mvn clean install -U -Darguments='-Dtycho.disableP2Mirrors=true' -Dtycho.disableP2Mirrors=true
