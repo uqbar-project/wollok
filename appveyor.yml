@@ -16,7 +16,7 @@ install:
   - cmd: SET MAVEN_OPTS=-XX:MaxPermSize=2g -Xmx4g
   - cmd: SET JAVA_OPTS=-XX:MaxPermSize=2g -Xmx4g
   - cmd: SET M2_HOME=C:\maven\apache-maven-3.2.5
-  - cmd: for /r %file in (*.wlk) do MKLINK wollok-language\src\wollok\%file org.uqbar.project.wollok.lib\src\wollok\%file
+  - cmd: for /r %%file in (*.wlk) do MKLINK wollok-language\src\wollok\%%file org.uqbar.project.wollok.lib\src\wollok\%%file
 build_script:
   - cd org.uqbar.project.wollok.releng/
   - mvn clean install -U -Darguments='-Dtycho.disableP2Mirrors=true' -Dtycho.disableP2Mirrors=true
