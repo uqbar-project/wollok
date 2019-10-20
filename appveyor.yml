@@ -16,9 +16,7 @@ install:
   - cmd: SET MAVEN_OPTS=-XX:MaxPermSize=2g -Xmx4g
   - cmd: SET JAVA_OPTS=-XX:MaxPermSize=2g -Xmx4g
   - cmd: SET M2_HOME=C:\maven\apache-maven-3.2.5
-  - cmd: for /r %%file in (*.wlk) do (
-      echo Copying %%file
-      MKLINK wollok-language\src\wollok\%%file org.uqbar.project.wollok.lib\src\wollok\%%file
+  - cmd: for %%FILE in (*.wlk) do MKLINK "wollok-language\src\wollok\%%FILE" "org.uqbar.project.wollok.lib\src\wollok\%%FILE"
     )
 build_script:
   - cd org.uqbar.project.wollok.releng/
