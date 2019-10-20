@@ -390,9 +390,8 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	def changeDeclarationToVar(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_changeToVar_name,
 			Messages.WollokDslQuickfixProvider_changeToVar_description, null) [ e, context |
-			val f = (e as WAssignment).feature.ref.eContainer
-			if (f instanceof WVariableDeclaration) {
-				val feature = f as WVariableDeclaration
+			val feature = (e as WAssignment).feature.ref.eContainer
+			if (feature instanceof WVariableDeclaration) {
 				val valueOrNothing = if (feature.right === null) "" else " =" + feature.right.node.text
 				context.xtextDocument.replace(feature.before, feature.node.length,
 					VAR + " " + feature.variable.name + valueOrNothing)
