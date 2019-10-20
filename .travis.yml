@@ -8,6 +8,7 @@ before_install:
 - openssl aes-256-cbc -K $encrypted_1cc7b892dc78_key -iv $encrypted_1cc7b892dc78_iv
   -in settings.xml.enc -out settings.xml -d
 - mv settings.xml ~/.m2/settings.xml
+- git submodule add --branch master https://github.com/uqbar-project/wollok-language.git
 after_success:
 - |
   if [ $TRAVIS_PULL_REQUEST == "false" -a $TRAVIS_BRANCH == "master" ] ; then 
