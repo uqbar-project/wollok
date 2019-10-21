@@ -20,6 +20,7 @@ class SanityTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void run() {
 		val Map<String, AssertionError> allErrors = newHashMap
+		// TODO: Meter Logger.log
 		println('''
 		===================================================================================
 		                          BEGIN SANITY TESTS
@@ -30,12 +31,12 @@ class SanityTestCase extends AbstractWollokInterpreterTestCase {
 			.forEach [ file |
 				try {
 					new File(file.toString).interpretPropagatingErrors(false)
-					println('''√ OK «file.fileName»''')
+					println('''√ OK «file»''')
 				} catch (AssertionError e) {
 					allErrors.put(file.toString, e)
 					println(
 						'''
-						✗ ERRORED «file.fileName»
+						✗ ERRORED «file»
 							«e.message»
 						'''
 					)

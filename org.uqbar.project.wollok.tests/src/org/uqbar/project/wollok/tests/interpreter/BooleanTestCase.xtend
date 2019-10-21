@@ -10,14 +10,6 @@ import org.junit.Test
 class BooleanTestCase extends AbstractWollokInterpreterTestCase {
 	
 	@Test
-	def void literals() {
-		'''program a {
-			assert.that(true)
-			assert.notThat(false)
-		}'''.interpretPropagatingErrors
-	}
-	
-	@Test
 	def void andWithLiterals() {
 		'''program a {
 			assert.that(true && true)
