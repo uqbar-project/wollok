@@ -18,6 +18,8 @@ import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.tests.injectors.WollokTestInjectorProvider
 import wollok.lang.WDate
 
+import static wollok.lang.WDate.*
+
 /**
  * Abstract base class for all interpreter tests cases.
  * Already has all the necessary behavior and objects 
@@ -120,9 +122,13 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	}
 
 	def interpretPropagatingErrors(File fileToRead) {
+		fileToRead.interpretPropagatingErrors(true)
+	}
+
+	def interpretPropagatingErrors(File fileToRead, boolean validate) {
 		new FileInputStream(fileToRead).parse(URI.createFileURI(fileToRead.path), null, resourceSet) => [
-			assertNoErrors
-			interpret(true)
+			if (validate) assertNoErrors
+			interpret(true, !validate)
 		]
 	}
 
