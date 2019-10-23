@@ -10,29 +10,6 @@ import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestC
 class NamedObjectTestCase extends AbstractWollokInterpreterTestCase {
 	
 	@Test
-	def void testMultipleReferencesToSameObjectCreatesJustOneInstance() { '''
-		object pp {
-		    var ps = [pepita]
-		    method unMethod(){
-		        var x = pepita
-		        return x
-		    }
-		
-		    method getPs() {
-		        return ps
-		    }
-		}
-		
-		object pepita {	}
-		
-		program p {
-			pp.unMethod()
-			
-			assert.equals(pepita, pp.getPs().get(0))
-		}'''.interpretPropagatingErrors
-	}
-	
-	@Test
 	def void testObjectScopingWithClassesFailsOnLinking() {
 		try {
 			'''
