@@ -148,29 +148,3 @@ class VisualComponent {
 			setPosition(getPosition.right())
 	}
 }
-
-@Accessors
-class WGVisualComponent extends VisualComponent {
-	Position _position
-	Image image
-	List<String> attributes
-
-	new(Position position, Image image) {
-		super(null)
-		this._position = position
-		this.image = image
-	}
-	
-	override Image getImage() {
-		image
-	}
-
-	override Position getPosition() {
-		_position
-	}
-
-	override setPosition(Position position) {
-		_position = position
-	}
-	
-}

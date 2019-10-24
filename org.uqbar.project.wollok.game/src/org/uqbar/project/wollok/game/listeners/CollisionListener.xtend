@@ -14,7 +14,8 @@ class CollisionListener extends GameboardListener {
 	}
 
 	override notify(Gameboard gameboard) {
-		gameboard.colliders.forEach[collide]
+		if (gameboard.alreadyInGame(component.WObject))
+			gameboard.colliders.forEach[collide]
 	}
 
 	def colliders(Gameboard gameboard) { // TODO: Move to Gameboard

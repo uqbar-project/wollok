@@ -6,7 +6,6 @@ import org.junit.Test
 import org.uqbar.project.wollok.game.Image
 import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.WGPosition
-import org.uqbar.project.wollok.game.WGVisualComponent
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.listeners.CollisionListener
 import org.uqbar.project.wollok.game.listeners.InstantCollisionListener
