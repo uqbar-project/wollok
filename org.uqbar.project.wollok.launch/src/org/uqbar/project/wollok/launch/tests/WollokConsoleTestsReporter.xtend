@@ -15,6 +15,7 @@ import static org.fusesource.jansi.Ansi.Color.*
 
 import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 import static extension org.uqbar.project.wollok.utils.StringUtils.*
+import org.fusesource.jansi.Ansi
 
 /**
  * Logs the events to the console output.
@@ -27,6 +28,9 @@ import static extension org.uqbar.project.wollok.utils.StringUtils.*
  */
 class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 
+	public static int MIN_PERFORMANCE_TIME_ACCEPTED = 50
+	public static int MAX_PERFORMANCE_TIME_ACCEPTED = 100
+		
 	int totalTestsRun = 0
 	int totalTestsFailed = 0
 	int totalTestsErrored = 0
@@ -42,10 +46,12 @@ class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 		
 	override testsToRun(String suiteName, WFile file, List<WTest> tests) {
 		AnsiConsole.systemInstall
+		val fileSegments = file.eResource.URI.segments
+		val filename = fileSegments.get(fileSegments.length - 1)
 		if (suiteName ?: '' !== '') {
-			println('''Running all tests from describe «suiteName»''')
+			println(ansi.bold.a('''Describe «suiteName» from «filename»''').reset)
 		} else {
-			println('''Running «tests.size.singularOrPlural("test")» ...''')
+			println(ansi.bold.a('''Individual tests from «filename»''').reset)
 		}
 		testsRun += tests.size
 		testsGroupRun += tests.size
@@ -61,9 +67,9 @@ class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 	
 	override reportTestOk(WTest test) {
 		test.testFinished
-		println(ansi.a("  ").fg(GREEN).a(test.name).a(": √ OK (").a(test.totalTime).a("ms)").reset)
+		println(ansi.a("  ").bold.green("√ ").reset.gray(test.name).time(test.totalTime).reset)
 	}
-
+	
 	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
 		test.testFinished
 		incrementTestsErrored
@@ -189,6 +195,24 @@ class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 			if (assertionOrigin) test.printAssertionException(assertionException, lineNumber, resource)
 			else test.printException(exception, lineNumber, resource)
 		]
+	}
+
+	def green(Ansi ansi, String text) {
+		ansi.displayInColor(text, GREEN)
+	}
+	
+	def gray(Ansi ansi, String text) {
+		ansi.displayInColor(text, WHITE)
+	}
+	
+	def displayInColor(Ansi ansi, String text, Ansi$Color color) {
+		ansi.fg(color).a(text).reset
+	}
+	
+	def time(Ansi ansi, long time) {
+		if (time > MAX_PERFORMANCE_TIME_ACCEPTED) return ansi.displayInColor(" (" + time + "ms)", RED)
+		if (time >= MIN_PERFORMANCE_TIME_ACCEPTED && time < MAX_PERFORMANCE_TIME_ACCEPTED) return ansi.displayInColor(" (" + time + "ms)", YELLOW)
+		ansi
 	}
 
 }
