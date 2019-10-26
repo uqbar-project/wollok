@@ -14,6 +14,10 @@ class WSound extends AbstractJavaWrapper<GameSound> {
 		getWrapped.play()
 	}
 
+	def WollokObject played() {
+		getWrapped.played().convertJavaToWollok
+	}
+
 	def void stop() {
 		getWrapped.stop()
 	}
@@ -25,13 +29,25 @@ class WSound extends AbstractJavaWrapper<GameSound> {
 	def void resume() {
 		getWrapped.resume()
 	}
+	
+	def WollokObject isPaused(){
+		getWrapped.isPaused().convertJavaToWollok
+	}
 
 	def void volume(WollokObject newVolume) {
 		getWrapped.volume(newVolume.asNumber.floatValue)
 	}
 
-	def void loop(boolean looping) {
-		getWrapped.loop(looping)
+	def WollokObject volume() {
+		getWrapped.volume().doubleValue.convertJavaToWollok //Converts to double since a Float to Wollok convertion doesn't work.
+	}
+
+	def void shouldLoop(Boolean looping) {
+		getWrapped.shouldLoop(looping)
+	}
+
+	def WollokObject shouldLoop() {
+		getWrapped.shouldLoop().convertJavaToWollok
 	}
 
 	override getWrapped() {

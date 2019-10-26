@@ -9,33 +9,70 @@ import org.uqbar.project.wollok.game.Messages
 @Accessors
 class GameSound {
 	String file
-	long soundID
+	Long soundID
 	Sound sound
+	Boolean looped = false
+	Float volume = 1.0f
+	Boolean paused = false
 
-	def play() {
-		soundID = fetchSound.play()
+	def play() {		
+		if(looped)
+			soundID = fetchSound.play(volume)
+		else
+			soundID=fetchSound.loop(volume)
+	}
+
+	def played() {
+		soundID !== null		
 	}
 
 	def stop() {
 		fetchSound.stop()
+		fetchSound.dispose()
 	}
 
 	def pause() {
 		fetchSound.pause()
+		paused = true
 	}
 
 	def resume() {
 		fetchSound.resume()
+		paused = false
+	}
+	
+	def isPaused(){
+		paused
 	}
 
-	def volume(float newVolume) {
-		fetchSound.setVolume(soundID, newVolume)
+	def volume(Float newVolume) {
+		volume = newVolume
+		syncVolume()
 	}
 
-//	def volume(){
-//	}
-	def loop(boolean looping) {
-		fetchSound.setLooping(soundID, looping)
+	def volume() {
+		volume
+	}
+
+	def syncVolume() {
+		if (played()) {
+			fetchSound.setVolume(soundID, volume)
+		}
+	}
+
+	def shouldLoop(Boolean looping) {
+		looped = looping
+		syncLoop()
+	}
+
+	def shouldLoop() {
+		looped
+	}
+
+	def syncLoop() {
+		if (played()) {
+			fetchSound.setLooping(soundID, looped)
+		}
 	}
 
 	def fetchSound() {

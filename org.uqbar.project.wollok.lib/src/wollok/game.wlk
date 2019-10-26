@@ -330,7 +330,7 @@ class Position {
 	override method ==(other) = x == other.x() && y == other.y()
 	
 	/**
-	 * String representation of a position
+	 * String representation of a position.
 	 */
 	override method toString() = "(" + x + "," + y + ")"
 	
@@ -477,26 +477,37 @@ class Sound {
 	const property file
 	
 	/**
-	 * Plays the file's sound
+	 * Plays the file's sound. Throws exception if played twice.
 	 */
 	method play() native
 	
+	/**
+	 * Answers whether the sound has been played or not.
+	 */
+	method played() native
+	
 	/** 
-	 * Stops playing the sound without saving the state 
+	 * Stops playing the sound and disposes resources.
 	 */
 	method stop() native
 	
 	/** 
-	 * Pauses the sound 
+	 * Pauses the sound. Throws exception if the sound is already paused.
 	 */
 	method pause() native
 	
 	/** 
-	 * Resumes the sound 
+	 * Resumes playing the sound. Throws exception if the sound is already playing
 	 */
 	method resume() native
 	
-	/** Changes absolute volume, values should be between 0 and 1
+	/** 
+	 * Answers whether the sound is paused or not. 
+	 */
+	method isPaused() native
+	
+	/** 
+	 * Changes absolute volume, values should be between 0 and 1.
 	 *
 	 * Examples:
 	 	* mySound.volume(0.5)  New volume is half of the original sound's volume
@@ -504,8 +515,18 @@ class Sound {
 	 */
 	method volume(newVolume) native
 	
-	/**
-	 * Now plays as a loop
+	/** 
+	 * Answers the volume of the sound. 
 	 */
-	method loop(looping) native
+	method volume() native
+	
+	/**
+	 * Whether the sound is set to loop or not.
+	 */
+	method shouldLoop(looping) native
+	
+	/** 
+	 * Answers whether the sound is set to loop or not. 
+	 */
+	method shouldLoop() native
 }
