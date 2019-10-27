@@ -15,37 +15,51 @@ class GameSound {
 	Float volume = 1.0f
 	Boolean paused = false
 
-	def play() {		
-		if(looped)
+	def play() {
+		if (played)
+			throw new RuntimeException(Messages.WollokGame_SoundAlreadyPlayed)
+		if (looped)
 			soundID = fetchSound.play(volume)
 		else
-			soundID=fetchSound.loop(volume)
+			soundID = fetchSound.loop(volume)
 	}
 
 	def played() {
-		soundID !== null		
+		soundID !== null
 	}
 
 	def stop() {
+		if(!played)
+			throw new RuntimeException(Messages.WollokGame_SoundNotYetPlayed)
 		fetchSound.stop()
 		fetchSound.dispose()
 	}
 
 	def pause() {
+		if (!played)
+			throw new RuntimeException(Messages.WollokGame_PausedANotPlayedSound)
+		if (paused)
+			throw new RuntimeException(Messages.WollokGame_SoundAlreadyPaused)
 		fetchSound.pause()
 		paused = true
 	}
 
 	def resume() {
+		if (!played)
+			throw new RuntimeException(Messages.WollokGame_PausedANotPlayedSound)
+		if (!paused)
+			throw new RuntimeException(Messages.WollokGame_SoundAlreadyPlaying)
 		fetchSound.resume()
 		paused = false
 	}
-	
-	def isPaused(){
+
+	def isPaused() {
 		paused
 	}
 
 	def volume(Float newVolume) {
+		if (newVolume < 0 || newVolume > 1)
+			throw new RuntimeException(Messages.WollokGame_VolumeOutOfRange)
 		volume = newVolume
 		syncVolume()
 	}

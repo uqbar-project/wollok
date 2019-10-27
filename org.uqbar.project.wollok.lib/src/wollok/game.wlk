@@ -477,7 +477,7 @@ class Sound {
 	const property file
 	
 	/**
-	 * Plays the file's sound. Throws exception if played twice.
+	 * Plays the file's sound. A sound can't be played more than once.
 	 */
 	method play() native
 	
@@ -492,12 +492,14 @@ class Sound {
 	method stop() native
 	
 	/** 
-	 * Pauses the sound. Throws exception if the sound is already paused.
+	 * Pauses the sound. 
+	 * Throws exception if the sound is already paused or if the sound hasn't been played yet.
 	 */
 	method pause() native
 	
 	/** 
-	 * Resumes playing the sound. Throws exception if the sound is already playing
+	 * Resumes playing the sound. 
+	 * Throws exception if the sound is not paused.
 	 */
 	method resume() native
 	
@@ -507,7 +509,7 @@ class Sound {
 	method isPaused() native
 	
 	/** 
-	 * Changes absolute volume, values should be between 0 and 1.
+	 * Changes absolute volume, values must be between 0 and 1.
 	 *
 	 * Examples:
 	 	* mySound.volume(0.5)  New volume is half of the original sound's volume
