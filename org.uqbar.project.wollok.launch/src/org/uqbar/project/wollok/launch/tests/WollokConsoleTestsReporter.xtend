@@ -10,12 +10,13 @@ import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WTest
 import wollok.lib.AssertionException
 
+import org.fusesource.jansi.Ansi
+
 import static org.fusesource.jansi.Ansi.*
 import static org.fusesource.jansi.Ansi.Color.*
 
 import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 import static extension org.uqbar.project.wollok.utils.StringUtils.*
-import org.fusesource.jansi.Ansi
 
 /**
  * Logs the events to the console output.
@@ -43,9 +44,17 @@ class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 	List<WTestFailed> reportTestsFailed = newArrayList
 
 	public static String FINAL_SEPARATOR = "====================================================================================================="
-		
-	override testsToRun(String suiteName, WFile file, List<WTest> tests) {
+	
+	new() {
 		AnsiConsole.systemInstall
+	}
+
+	override folderStarted(String folder) {
+		super.folderStarted(folder)
+		this.resetTotalTestsCount
+	}
+
+	override testsToRun(String suiteName, WFile file, List<WTest> tests) {
 		val fileSegments = file.eResource.URI.segments
 		val filename = fileSegments.get(fileSegments.length - 1)
 		if (suiteName ?: '' !== '') {
@@ -122,6 +131,12 @@ class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 		testsGroupRun = 0
 		testsGroupFailed = 0
 		testsGroupErrored = 0
+	}
+	
+	def resetTotalTestsCount() {
+		totalTestsRun = 0
+		totalTestsFailed = 0
+		totalTestsErrored = 0
 	}
 	
 	def incrementTestsFailed() {
@@ -215,6 +230,17 @@ class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 		ansi
 	}
 
+}
+
+/**
+ * Internal console for sanity tests in Eclipse/Xtext build - without colors
+ */
+class WollokSimpleConsoleTestsReporter extends WollokConsoleTestsReporter {
+	
+	new() {
+		super()
+		Ansi.setEnabled = false		
+	}
 }
 
 @Accessors

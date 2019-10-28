@@ -35,6 +35,7 @@ class WollokLauncherParameters {
 	boolean validate = true
 	boolean exitOnBuildFailure = false
 	boolean saveFile = false
+	boolean colored = true
 
 	Integer numberOfDecimals = null
 	String printingStrategy = null

@@ -6,9 +6,11 @@ import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.WollokInterpreterException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
+
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
-import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * Extension methods for handling Wollok errors.
@@ -220,6 +222,9 @@ class WollokExceptionExtensions {
 
 	def static dispatch shouldShowStackTraceInJava(WollokProgramExceptionWrapper e) { false }
 	def static dispatch shouldShowStackTraceInJava(WollokInterpreterException e) { false }
-	def static dispatch shouldShowStackTraceInJava(Throwable t) { true }
+	def static dispatch shouldShowStackTraceInJava(Throwable t) { 
+		// !t.class.name.equals(ASSERTION_EXCEPTION_FQN)
+		true
+	}
 	
 }

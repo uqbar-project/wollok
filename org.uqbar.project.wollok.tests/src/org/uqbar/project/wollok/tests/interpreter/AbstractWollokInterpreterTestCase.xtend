@@ -126,9 +126,13 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	}
 
 	def interpretPropagatingErrors(File fileToRead, boolean validate) {
+		fileToRead.interpretPropagatingErrors(validate, true)		
+	}
+
+	def interpretPropagatingErrors(File fileToRead, boolean validate, boolean propagatingErrors) {
 		new FileInputStream(fileToRead).parse(URI.createFileURI(fileToRead.path), null, resourceSet) => [
 			if (validate) assertNoErrors
-			interpret(true, !validate)
+			it.interpret(propagatingErrors)
 		]
 	}
 

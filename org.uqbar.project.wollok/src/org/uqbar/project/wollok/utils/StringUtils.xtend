@@ -56,11 +56,11 @@ class StringUtils {
 	}
 
 	static def singularOrPlural(int amount, String text) {
-		"" + amount + " " + amount.singularOrPlural(text, text + "s")		
-	} 
+		amount.singularOrPlural(text, text + "s")
+	}
 
 	static def singularOrPlural(int amount, String text, String pluralText) {
-		if (amount === 1) text else pluralText
+		"" + amount + " " + if (amount === 1) text else pluralText
 	}
-		
+
 }

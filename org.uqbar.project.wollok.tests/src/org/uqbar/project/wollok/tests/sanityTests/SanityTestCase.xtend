@@ -3,51 +3,53 @@ package org.uqbar.project.wollok.tests.sanityTests
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.util.Map
+import java.time.format.DateTimeFormatter
+import org.eclipse.xtext.testing.InjectWith
+import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.uqbar.project.wollok.tests.injectors.WollokSanityTestInjectorProvider
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
+import wollok.lang.WDate
 
 import static org.uqbar.project.wollok.WollokConstants.*
+import static wollok.lang.WDate.*
+
+import static extension org.uqbar.project.wollok.utils.StringUtils.*
 
 /**
  * Executes Sanity Tests from wollok-language
  * 
+ * Prints output in the console without colors
+ * Succeeds if no files have errors. Looks for all .wtest files in sibling wollok-language folder.
+ * 
  * @author dodain
  */
+@RunWith(XtextRunner)
+@InjectWith(WollokSanityTestInjectorProvider) 
 class SanityTestCase extends AbstractWollokInterpreterTestCase {
 	val path = "../wollok-language/test/sanity"
 	
 	@Test
 	def void run() {
-		val Map<String, AssertionError> allErrors = newHashMap
-		// TODO: Meter Logger.log
-		println('''
-		===================================================================================
-		                          BEGIN SANITY TESTS
-		===================================================================================
-		''')
+		// TODO: We should find a better way instead of forcing locale
+		WDate.FORMATTER = DateTimeFormatter.ofPattern("M/d/yyyy")
+
+		val failed = newArrayList
 		Files.walk(Paths.get(path))
 			.filter([ path | !Files.isDirectory(path) && path.toString.endsWith(TEST_EXTENSION) ])
 			.forEach [ file |
 				try {
 					new File(file.toString).interpretPropagatingErrors(false)
-					println('''√ OK «file»''')
-				} catch (AssertionError e) {
-					allErrors.put(file.toString, e)
-					println(
-						'''
-						✗ ERRORED «file»
-							«e.message»
-						'''
-					)
+				} catch (Exception e) {
+					failed.add(file.toString)
 				}
 			]
-		println('''
-		===================================================================================
-		                           END SANITY TESTS
-		===================================================================================
-		''')			
-		assertEquals(newHashMap, allErrors)
+		assertTrue('''
+		There were «failed.size.singularOrPlural("file", "files")»  with errors in the sanity tests. 
+		Check your log for details.
+		«failed.join("\n")»
+		''', failed.isEmpty)
 	}
 	
 }
