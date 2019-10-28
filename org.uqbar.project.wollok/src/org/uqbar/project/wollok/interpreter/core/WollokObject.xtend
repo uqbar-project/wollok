@@ -176,8 +176,9 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	override setReference(String name, WollokObject value) {
 		if (name == SELF)
  			throw new RuntimeException(NLS.bind(Messages.WollokDslValidator_CANNOT_MODIFY_REFERENCE, SELF))
-		if (!instanceVariables.containsKey(name))
-			throw new UnresolvableReference('''Unrecognized variable "«name»" in object "«this»"''')
+		if (!instanceVariables.containsKey(name)) {
+			throw new UnresolvableReference('''Unrecognized variable "«name»" in object "«this.behavior.objectDescription»"''')
+		}
 
 		val oldValue = instanceVariables.put(name, value)
 		listeners.forEach[fieldChanged(name, oldValue, value)]
