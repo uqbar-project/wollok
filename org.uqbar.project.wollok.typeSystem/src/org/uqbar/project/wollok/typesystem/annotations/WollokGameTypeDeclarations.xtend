@@ -64,11 +64,13 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		
 		Sound.variable("file",String)
 		Sound.fakeProperty("volume",Number)
+		Sound.fakeProperty("shouldLoop",Boolean)
 		Sound >> "play" === #[] => Void
+		Sound >> "played" === #[] => Boolean
 		Sound >> "stop" === #[] => Void
 		Sound >> "pause" === #[] => Void
-		Sound >> "loop" === #[] => Void
-
+		Sound >> "isPaused" === #[] => Boolean
+		Sound >> "resume" === #[] => Void
 						
 		Key >> "onPressDo" === #[closure(#[], Void)] => Void
 	}

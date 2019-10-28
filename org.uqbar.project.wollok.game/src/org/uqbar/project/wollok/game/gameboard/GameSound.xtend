@@ -18,7 +18,7 @@ class GameSound {
 	def play() {
 		if (played)
 			throw new RuntimeException(Messages.WollokGame_SoundAlreadyPlayed)
-		if (looped)
+		if (!looped)
 			soundID = fetchSound.play(volume)
 		else
 			soundID = fetchSound.loop(volume)
@@ -37,7 +37,7 @@ class GameSound {
 
 	def pause() {
 		if (!played)
-			throw new RuntimeException(Messages.WollokGame_PausedANotPlayedSound)
+			throw new RuntimeException(Messages.WollokGame_PausedOrResumedANotPlayedSound)
 		if (paused)
 			throw new RuntimeException(Messages.WollokGame_SoundAlreadyPaused)
 		fetchSound.pause()
@@ -46,7 +46,7 @@ class GameSound {
 
 	def resume() {
 		if (!played)
-			throw new RuntimeException(Messages.WollokGame_PausedANotPlayedSound)
+			throw new RuntimeException(Messages.WollokGame_PausedOrResumedANotPlayedSound)
 		if (!paused)
 			throw new RuntimeException(Messages.WollokGame_SoundAlreadyPlaying)
 		fetchSound.resume()
@@ -69,7 +69,7 @@ class GameSound {
 	}
 
 	def syncVolume() {
-		if (played()) {
+		if (played) {
 			fetchSound.setVolume(soundID, volume)
 		}
 	}
@@ -84,7 +84,7 @@ class GameSound {
 	}
 
 	def syncLoop() {
-		if (played()) {
+		if (played) {
 			fetchSound.setLooping(soundID, looped)
 		}
 	}

@@ -477,7 +477,8 @@ class Sound {
 	const property file
 	
 	/**
-	 * Plays the file's sound. A sound can't be played more than once.
+	 * Plays the file's sound. 
+	 * A sound can only be played once.
 	 */
 	method play() native
 	
@@ -512,8 +513,9 @@ class Sound {
 	 * Changes absolute volume, values must be between 0 and 1.
 	 *
 	 * Examples
-	 	*#mySound.volume(0.5)  => New volume is half of the original sound's volume
-	    *#mySound.volume(mySound.volume()*0.5) => New volume is half of the current volume
+	 *		mySound.volume(0)  => The sound is now muted.
+	 *		mySound.volume(0.5)  => New volume is half of the original sound's volume
+	 *		mySound.volume(mySound.volume()*0.5) => New volume is half of the current volume
 	 */
 	method volume(newVolume) native
 	
@@ -523,7 +525,7 @@ class Sound {
 	method volume() native
 	
 	/**
-	 * Whether the sound is set to loop or not.
+	 * Sets whether the sound should loop or not.
 	 */
 	method shouldLoop(looping) native
 	

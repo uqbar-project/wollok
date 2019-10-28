@@ -211,7 +211,7 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void soundCantBePausedIfItHasntBePlayed() {
 		'''
-		assert.throwsExceptionWithMessage("You cannot pause a sound that hasn't been played.", { => sound.pause() })
+		assert.throwsExceptionWithMessage("You cannot pause or resume a sound that hasn't been played.", { => sound.pause() })
 		'''.soundTest
 	}	
 	

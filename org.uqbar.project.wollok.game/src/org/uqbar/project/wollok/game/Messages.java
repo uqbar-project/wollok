@@ -13,7 +13,7 @@ public class Messages extends NLS {
 	
 	public static String WollokGame_SoundGameNotStarted;
 	public static String WollokGame_SoundAlreadyPlayed;
-	public static String WollokGame_PausedANotPlayedSound;
+	public static String WollokGame_PausedOrResumedANotPlayedSound;
 	public static String WollokGame_SoundAlreadyPaused;
 	public static String WollokGame_VolumeOutOfRange;
 	public static String WollokGame_SoundAlreadyPlaying;
