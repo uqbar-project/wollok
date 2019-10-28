@@ -493,13 +493,13 @@ class Sound {
 	
 	/** 
 	 * Pauses the sound. 
-	 * Throws exception if the sound is already paused or if the sound hasn't been played yet.
+	 * Throws error if the sound is already paused or if the sound hasn't been played yet.
 	 */
 	method pause() native
 	
 	/** 
 	 * Resumes playing the sound. 
-	 * Throws exception if the sound is not paused.
+	 * Throws error if the sound is not paused.
 	 */
 	method resume() native
 	
@@ -511,9 +511,9 @@ class Sound {
 	/** 
 	 * Changes absolute volume, values must be between 0 and 1.
 	 *
-	 * Examples:
-	 	* mySound.volume(0.5)  New volume is half of the original sound's volume
-	    * mySound.volume(mySound.volume()*0.5) New volume is half of the current volume
+	 * Examples
+	 	*#mySound.volume(0.5)  => New volume is half of the original sound's volume
+	    *#mySound.volume(mySound.volume()*0.5) => New volume is half of the current volume
 	 */
 	method volume(newVolume) native
 	
