@@ -1,59 +1,54 @@
 program collections {
+	const numbers = [2, 23, 25]
 
-const numbers = [2, 23, 25]
+	const y = 23
+	const z = 2.2
 
-self.println(numbers)
+	const x = "Hola"
+	const bag = [x,y,z]
 
-const y = 23
-const z = 2.2
+	// ***************************
+	// ** calling native methods
+	// ***************************
 
-const x = "Hola"
-const bag = [x,y,z]
-self.println(bag)
+	// size (a forwarded message to java.util.List)
+	assert.equals(3, numbers.size())
+	assert.that(numbers.contains(23))
+	assert.notThat(numbers.contains(1))
 
-// ***************************
-// ** calling native methods
-// ***************************
+	// all
+	assert.that([20, 22, 34].all({n => n > 18}))
+	assert.notThat([20, 22, 34].all({n => n > 30}))
 
-// size (a forwarded message to java.util.List)
-assert.equals(3, numbers.size())
-assert.that(numbers.contains(23))
-self.assertFalse(numbers.contains(1))
-
-// forAll
-assert.that([20, 22, 34].forAll({n => n > 18}))
-self.assertFalse([20, 22, 34].forAll({n => n > 30}))
-
-// forEach
-const vaca1 = object {
-	var peso = 1000
-	method engordar(cuanto) {
-		peso = peso + cuanto
+	// forEach
+	const vaca1 = object {
+		var peso = 1000
+		method engordar(cuanto) {
+			peso = peso + cuanto
+		}
+		method peso() = peso
 	}
-	method peso() = peso
-}
 
-const vaca2 = object {
-	var peso = 1000
-	method engordar(cuanto) {
-		peso = peso + cuanto
+	const vaca2 = object {
+		var peso = 1000
+		method engordar(cuanto) {
+			peso = peso + cuanto
+		}
+		method peso() = peso
 	}
-	method peso() = peso
-}
-const vacas = [vaca1, vaca2]
+	const vacas = [vaca1, vaca2]
 
-vacas.forEach{v => v.engordar(2)}
-assert.that(vacas.forAll{v => v.peso() == 1002})
+	vacas.forEach{v => v.engordar(2)}
+	assert.that(vacas.all{v => v.peso() == 1002})
 
-// map
-const mapped = vacas.map{v => v.peso()}
-assert.that(mapped.forAll{p => p == 1002})
+	// map
+	const mapped = vacas.map{v => v.peso()}
+	assert.that(mapped.all{p => p == 1002})
 
-
-// filter
-const r = [10, 20, 30, 40, 50].filter{n=> n > 30}
-assert.that(r.size() == 2)
-assert.that(r.contains(40))
-assert.that(r.contains(50))
+	// filter
+	const r = [10, 20, 30, 40, 50].filter{n=> n > 30}
+	assert.that(r.size() == 2)
+	assert.that(r.contains(40))
+	assert.that(r.contains(50))
 
 }

@@ -1,12 +1,7 @@
 import simpleInheritance.*
 
 program simpleInheritance {
-	
 	const pepita = new Golondrina()
-	pepita.volar(50)
-
-	pepita.setEnergia(23)
-
-	assert.that(pepita.energia() == 50) // Mando mensaje en superclase
-	
+	pepita.volar(40)
+	assert.equals(pepita.energia(), 60) // Mando mensaje en superclase
 }

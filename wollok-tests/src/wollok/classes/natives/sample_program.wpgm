@@ -1,5 +1,11 @@
 import wollok.classes.natives.MyNative
 
+/**
+ * If you want to run this test, you have to copy `wollok` folder with MyNative Java
+ * definitions into your `src` folder (or any other source folder that belongs to the
+ * classpath)
+ */
+
 program nativeSample {
 	const obj = new MyNative()
 	const response = obj.aNativeMethod()

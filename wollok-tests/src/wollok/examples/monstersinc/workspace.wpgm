@@ -27,7 +27,7 @@ program monstersInc {
 	mike.mejora(new EstudiarMateria("Sustos 2", 50))
 	mike.mejora(new EjercitarEnSimulador(2))
 	
-	assert.that(70 == mike.puntosDeTerror())
+	assert.equals(70, mike.puntosDeTerror())
 	
 	const piyamada = new Piyamada()
 	piyamada.agregarNinio(new Ninio(2))
@@ -35,11 +35,9 @@ program monstersInc {
 	piyamada.agregarNinio(new Ninio(4))
 	
 	const puertaConPiyamada = new Puerta(piyamada)
-	
 	const energiaMike = mike.entrarAPuerta(puertaConPiyamada)
 	
-	console.println(mike)
-	assert.that(75 == energiaMike)   // 70/2 + 70/3 + 70/4 = 75
+	assert.equals(75.83333, energiaMike)   // 70/2 + 70/3 + 70/4 = 75
 
 
 	// 3)

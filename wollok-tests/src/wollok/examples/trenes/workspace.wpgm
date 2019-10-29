@@ -3,56 +3,50 @@ import trenes.*
 // 1)
 program trenes {
 
-const tren = new Tren()
-tren.agregarVagon(new VagonPasajeros(2, 10))
-assert.equals(80, tren.getCantidadPasajeros())
+  const tren = new Tren()
+  tren.agregarVagon(new VagonPasajeros(ancho = 2, largo = 10))
+  assert.equals(80, tren.getCantidadPasajeros())
 
-tren.agregarVagon(new VagonPasajeros(3, 10))
-assert.equals(180, tren.getCantidadPasajeros())
+  tren.agregarVagon(new VagonPasajeros(ancho = 3, largo = 10))
+  assert.equals(180, tren.getCantidadPasajeros())
 
-tren.agregarVagon(new VagonCarga(1000))
-assert.equals(180, tren.getCantidadPasajeros())
+  tren.agregarVagon(new VagonCarga(cargaMaxima = 1000))
+  assert.equals(180, tren.getCantidadPasajeros())
+
+  // 2) Cuántos vagones livianos tiene una formación;
+  assert.equals(1, tren.getCantidadVagonesLivianos()) // el de carga
 
 
-// 2) Cuántos vagones livianos tiene una formación;
-assert.equals(1, tren.getCantidadVagonesLivianos()) // el de carga
+  // 3) La velocidad máxima de una formación,
+  tren.agregarLocomotora(new Locomotora(peso = 1020, pesoMaximoArrastre = 8100, velocidadMaxima = 60)) // de 60 kpm
+  tren.agregarLocomotora(new Locomotora(peso = 1400, pesoMaximoArrastre = 10000,velocidadMaxima =  75)) // de 60 kpm
 
+  assert.equals(60, tren.getVelocidadMaxima())
 
-// 3) La velocidad máxima de una formación,
-tren.agregarLocomotora(new Locomotora(1020, 8100, 60)) // de 60 kpm
-tren.agregarLocomotora(new Locomotora(1400, 10000, 75)) // de 60 kpm
+  // 4) Si una formación es eficiente;
+  assert.that(new Locomotora(peso = 10, pesoMaximoArrastre = 50, velocidadMaxima = 0).esEficiente())
+  assert.that(new Locomotora(peso = 10, pesoMaximoArrastre = 51, velocidadMaxima = 0).esEficiente())
+  assert.notThat(new Locomotora(peso = 10, pesoMaximoArrastre = 49, velocidadMaxima = 0).esEficiente())
 
-assert.equals(60, tren.getVelocidadMaxima())
+  assert.that(tren.esEficiente())
 
-// 4) Si una formación es eficiente;
+  // 5) Si una formación puede moverse.
+  assert.that(tren.puedeMoverse())
 
-assert.that(new Locomotora(10, 50, 0).esEficiente())
-assert.that(new Locomotora(10, 51, 0).esEficiente())
-assert.notThat(new Locomotora(10, 49, 0).esEficiente())
+  // 6) Cuántos kilos de empuje le faltan a una formación para poder moverse,
+  assert.equals(0, tren.getKilosEmpujeFaltantes())
 
-assert.that(tren.esEficiente())
+  const trenNoSeMueve = new Tren()
+  trenNoSeMueve.agregarVagon(new VagonPasajeros(ancho = 3, largo = 12))
+  trenNoSeMueve.agregarLocomotora(new Locomotora(peso = 1200, pesoMaximoArrastre = 4000, velocidadMaxima = 55))
+  assert.notThat(trenNoSeMueve.puedeMoverse())
+  assert.equals(6800, trenNoSeMueve.getKilosEmpujeFaltantes())
 
-// 5) Si una formación puede moverse.
+  // 7) Dado un depósito, obtener el conjunto formado por el vagón más pesado de cada formación;
 
-assert.that(tren.puedeMoverse())
+  const deposito = new Deposito()
+  deposito.agregarFormacion(tren)
+  deposito.agregarFormacion(trenNoSeMueve)
 
-// 6) Cuántos kilos de empuje le faltan a una formación para poder moverse,
-
-assert.that(0 == tren.getKilosEmpujeFaltantes())
-
-const trenNoSeMueve = new Tren()
-trenNoSeMueve.agregarVagon(new VagonPasajeros(3, 12))
-trenNoSeMueve.agregarLocomotora(new Locomotora(1200, 4000, 55))
-assert.that(trenNoSeMueve.puedeMoverse())
-assert.equals(6800, trenNoSeMueve.getKilosEmpujeFaltantes())
-
-// 7) Dado un depósito, obtener el conjunto formado por el vagón más pesado de cada formación;
-
-const deposito = new Deposito()
-deposito.agregarFormacion(tren)
-deposito.agregarFormacion(trenNoSeMueve)
-
-assert.that(2 == deposito.vagonesMasPesados().size())
-
-console.println("FIIIIN")
+  assert.equals(2, deposito.vagonesMasPesados().size())
 }

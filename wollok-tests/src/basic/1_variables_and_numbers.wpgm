@@ -12,30 +12,20 @@ program variablesAndNumbers {
 	var c = 23
 	c = 24   //OK!
 	
-	/*
-	 * asdasd
-	 */
-	
 	assert.that(b == 24)
 	
 	assert.that(10 - 5 == 5)
 	assert.that(10 * a == 230)
 	assert.that(100 / 10 == 10)
 	assert.that(100 % 10 == 0)
-	assert.that(2 ** 3 == 8.0)
-	assert.equals(8.0, 2**3)
-	
+	assert.that(2 ** 4 == 16.0)
+	assert.equals(16.0, 2**4)
+
 	assert.that(2 * 2.0 == 2.0 * 2)
 	assert.that(2 + 2.0 == 2.0 + 2)
 	
-	assert.that("Hola" * 3 == "HolaHolaHola")
-	assert.that(3 * "Hola" == "HolaHolaHola")
-	
 	assert.equals(0 - 1, -1)
 	assert.equals(0 - 4, -4)
-	
-	assert.that("Hola Mundo" - 6 == "Hola")
-	assert.that("Juan Jose Juan Pepe" - "Juan" == " Jose  Pepe")
 	
 	var d = 1
 	d++

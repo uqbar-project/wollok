@@ -4,7 +4,7 @@
  * @author jfernandes
  */
 class Golondrina {
-	var energia = 100 /** Retorna la energia actual  */
+	var energia = 50    /** Retorna la energia actual  */
 	method getEnergia() {
 		return energia
 	}

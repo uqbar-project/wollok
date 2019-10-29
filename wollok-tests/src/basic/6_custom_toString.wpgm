@@ -1,12 +1,11 @@
 program customToString {
 
-const pepe = object {
-	override method toString() {
-		return 'Pepe'
+	const pepe = object {
+		override method toString() {
+			return 'Pepe'
+		}
 	}
-}
 
-console.println(pepe)
-assert.that(pepe.toString() == 'Pepe')
+	assert.equals(pepe.toString(), 'Pepe')
 
 }

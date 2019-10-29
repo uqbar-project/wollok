@@ -4,6 +4,5 @@ program guybrush {
 
 	const guy = new GuybrushTreepWood()
 	console.println(guy.fightSwordMaster())
-	console.println("end of program")
 
 }

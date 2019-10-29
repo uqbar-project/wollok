@@ -12,7 +12,6 @@ class Birdo mixed with Energy {
 
 mixin Flies {
 	method fly() {
-		console.println("I'm flying")
 	}
 }
 
@@ -96,12 +95,8 @@ test "Class with simple mixin inherits a method" {
 test "Class with mixin modifying its own state from the mixin" {
 	const b = new WalkingBird()
 	b.walk(10)
-//	console.println(b.walkedDistance())
 	const walked = b.walkedDistance()
-	console.println("sarasa = " + walked)
-	assert.that(10 == walked)
-	
-	console.println("Y ahora ?")
+	assert.equals(10, walked)
 }
 
 test "asd" {
@@ -114,14 +109,10 @@ test "asd" {
 
 test "Mixin method calls a method on the class" {
 	const b = new BirdWithFlyingShortCuts()
-	b.fly100meters()
+	b.fly100Meters()
 	assert.equals(100, b.energy())
 }
 
 test "WKO with mixin" {
 	pepita.fly()
 }
-
-
-
-
