@@ -1,20 +1,24 @@
 package org.uqbar.project.wollok.ui.quickfix
 
+import java.util.Collections
+import java.util.List
+import java.util.Set
 import org.eclipse.emf.ecore.EObject
-
-
 import org.eclipse.jface.text.IRegion
+import org.eclipse.xtend.lib.annotations.Data
 import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.nodemodel.INode
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.ui.editor.model.IXtextDocument
 import org.eclipse.xtext.ui.editor.model.edit.IModificationContext
-import org.uqbar.project.wollok.wollokDsl.WMethodContainer
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.WollokConstants.*
-import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import org.eclipse.xtend.lib.annotations.Data
 import org.uqbar.project.wollok.wollokDsl.Import
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
+
+import static org.uqbar.project.wollok.WollokConstants.*
+
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
 /**
  * Provides utilities for quickfixes.
@@ -183,6 +187,77 @@ class QuickFixUtils {
 
 	def static dispatch grammarDescription(EObject it) { it }
 	
+	def static void insertWildcardImport(IXtextDocument it, EObject declaringContext, String wildcardImport) {
+		val allImports = declaringContext.allImports.toList
+		insertImport(declaringContext, wildcardImport.generateNewImportCode)
+		if (!allImports.empty) {
+			removeRedundantImports(allImports, wildcardImport)
+		}
+	}
+
+	def static void removeRedundantImports(IXtextDocument it, List<Import> imports, String importToAdd) {
+		val withoutRedundant = imports.withoutRedundant(importToAdd)
+		if (imports.size > withoutRedundant.size) {
+			if (withoutRedundant.isEmpty) {
+				removeImports(imports, 2)
+			} else {
+				removeImports(imports, 0)
+			}
+			relocateImports(withoutRedundant, imports.head.before)
+		}
+	}
+
+	def static removeImports(IXtextDocument it, List<Import> imports, int extraEspace) {
+		val firstImportPosition = imports.head.before
+		replace(firstImportPosition, imports.last.after - firstImportPosition + extraEspace, "")
+	}
+
+	def static List<String> withoutRedundant(List<Import> imports, String importToAdd) {
+		val importsNames = imports.map[anImport|anImport.importedNamespace]
+		val Set<String> wildCardImports = wildcardImports(importsNames)
+		val Set<String> importsNamesSet = newHashSet
+		wildCardImports.add(importToAdd.substring(0, importToAdd.lastIndexOf(".")))
+		importsNames.filter [ importName |
+			val path = importName.substring(0, importName.lastIndexOf("."))
+			(!wildCardImports.contains(path) && importsNamesSet.add(importName)) ||
+				importName.substring(importName.lastIndexOf(".")).equals(".*")
+		].toList
+	}
+
+	def static Set<String> wildcardImports(List<String> imports) {
+		imports.filter [ importName |
+			importName.substring(importName.lastIndexOf(".")).equals(".*")
+		].map [ importName |
+			importName.substring(0, importName.lastIndexOf("."))
+		].toSet
+	}
+
+	def static void relocateImports(IXtextDocument xtextDocument, List<String> imports, int position) {
+		Collections.reverse(imports)
+		imports.forEach [ anImport, index |
+			val location = xtextDocument.importToRelocateLocation(index)
+			val importCode = anImport.generateNewImportCode
+			xtextDocument.insertImport(new QuickFixLocation(position, location), importCode)
+		]
+	}
+
+	def static Location importToRelocateLocation(IXtextDocument xtextDocument, int index) {
+		if (index !== 0) {
+			Location.BEFORE
+		} else {
+			Location.NONE
+		}
+	}
+
+	def static insertImport(IXtextDocument xtextDocument, EObject declaringContext, String code) {
+		val importLocation = declaringContext.placeToAddImport(xtextDocument)
+		insertImport(xtextDocument, importLocation, code)
+	}
+
+	def static insertImport(IXtextDocument xtextDocument, QuickFixLocation importLocation, String code) {
+		xtextDocument.replace(importLocation.placeToAdd, 0, importLocation.formatCode(code))
+	}
+	
 	def static insertImport(EObject declaringContext, String code, IModificationContext context) {
 		val xtextDocument = context.getXtextDocument(declaringContext.fileURI)
 		val importLocation = declaringContext.placeToAddImport(xtextDocument)
@@ -213,9 +288,8 @@ class QuickFixUtils {
 	
 	def static Location importToAddLocation(IXtextDocument xtextDocument, int position) {
 		val IRegion lineInformation = xtextDocument.getLineInformationOfOffset(position)
-		val IRegion nextLineInformation = xtextDocument.getLineInformationOfOffset(lineInformation.endOfLine + 2)
-		val String lineText = xtextDocument.get(lineInformation.offset, lineInformation.length)
-		val String nextLineText = xtextDocument.get(nextLineInformation.offset, nextLineInformation.length)
+		val String lineText = xtextDocument.lineText(position)
+		val String nextLineText = xtextDocument.lineText(lineInformation.endOfLine + 2)
 		var Location result
 
 		if (position.equals(0)) {
@@ -228,6 +302,11 @@ class QuickFixUtils {
 		}
 
 		result
+	}
+	
+	def static String lineText(IXtextDocument xtextDocument, int position)  {
+		val IRegion lineInformation = xtextDocument.getLineInformationOfOffset(position)
+		xtextDocument.get(lineInformation.offset, lineInformation.length)
 	}
 	
 	def static insertMethod(WMethodContainer declaringContext, String code, IModificationContext context) {
