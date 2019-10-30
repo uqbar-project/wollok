@@ -88,7 +88,7 @@ class Villano inherits AntiHeroe {
 class ReVillano inherits AntiHeroe {
 	var nivelMaldad
 	/* XPECT errors ---
-		"Couldn't resolve reference to Referenciable 'ciudadesQueAma'." at "ciudadesQueAma"
+		"Couldn't resolve reference to 'ciudadesQueAma'." at "ciudadesQueAma"
 		"Named parameters are not allowed here" at "ciudadesQueAma = ["New York"]"
 	--- */
 	constructor(_fraseCabecera) = super(ciudadesQueAma = ["New York"]) {
@@ -106,14 +106,14 @@ class A {
 		a = _a
 	}
 	/* XPECT errors ---
-		"Couldn't resolve reference to Referenciable '_a'." at "_a"
+		"Couldn't resolve reference to '_a'." at "_a"
 		"Named parameters are not allowed here" at "_a = x"
 	--- */
 	constructor(x, y) = self(_a = x) {
 		b = y
 	}
 	/* XPECT errors ---
-		"Couldn't resolve reference to Referenciable 'inexistente'." at "inexistente"
+		"Couldn't resolve reference to 'inexistente'." at "inexistente"
 		"Named parameters are not allowed here" at "x = y, inexistente = 3"
 	--- */
 	constructor(x, y, z) = self(x = y, inexistente = 3) {
