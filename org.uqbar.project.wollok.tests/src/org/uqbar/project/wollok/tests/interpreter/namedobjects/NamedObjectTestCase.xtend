@@ -28,7 +28,7 @@ class NamedObjectTestCase extends AbstractWollokInterpreterTestCase {
 			fail("Linking should have failed, 'n' from class Pepe shouldn't have been resolved !")
 		}
 		catch (AssertionError e) {
-			assertTrue(e.message.startsWith("Expected no errors, but got :ERROR (org.eclipse.xtext.diagnostics.Diagnostic.Linking) 'Couldn't resolve reference to Referenciable 'n'.' on WVariableReference"))
+			assertTrue(e.message.startsWith("Expected no errors, but got :ERROR (org.eclipse.xtext.diagnostics.Diagnostic.Linking) 'Couldn't resolve reference to 'n'.' on WVariableReference"))
 		}
 	}
 	
