@@ -53,7 +53,7 @@ class GameSound {
 		paused = false
 	}
 
-	def isPaused() {
+	def paused() {
 		paused
 	}
 

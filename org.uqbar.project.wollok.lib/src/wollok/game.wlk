@@ -242,7 +242,7 @@ object game {
     method errorReporter(visual) native
      
     /**
-	 * Returns a sound object
+	 * Returns a sound object. Audio file must be a .mp3, .ogg or .wav file.
      */ 
     method sound(audioFile) {
     	return new Sound(file=audioFile)
@@ -507,7 +507,7 @@ class Sound {
 	/** 
 	 * Answers whether the sound is paused or not. 
 	 */
-	method isPaused() native
+	method paused() native
 	
 	/** 
 	 * Changes absolute volume, values must be between 0 and 1.

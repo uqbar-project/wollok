@@ -69,7 +69,7 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		Sound >> "played" === #[] => Boolean
 		Sound >> "stop" === #[] => Void
 		Sound >> "pause" === #[] => Void
-		Sound >> "isPaused" === #[] => Boolean
+		Sound >> "paused" === #[] => Boolean
 		Sound >> "resume" === #[] => Void
 						
 		Key >> "onPressDo" === #[closure(#[], Void)] => Void

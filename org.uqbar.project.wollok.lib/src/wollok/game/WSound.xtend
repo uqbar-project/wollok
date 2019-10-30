@@ -30,8 +30,8 @@ class WSound extends AbstractJavaWrapper<GameSound> {
 		getWrapped.resume()
 	}
 	
-	def WollokObject isPaused(){
-		getWrapped.isPaused().convertJavaToWollok
+	def WollokObject paused(){
+		getWrapped.paused().convertJavaToWollok
 	}
 
 	def void volume(WollokObject newVolume) {
