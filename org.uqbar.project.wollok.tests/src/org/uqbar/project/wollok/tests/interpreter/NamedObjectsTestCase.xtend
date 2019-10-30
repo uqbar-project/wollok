@@ -54,28 +54,4 @@ class NamedObjectsTestCase extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	}
 
-	@Test
-	def void referencingObject() {
-		'''
-			object pp {
-			    const ps = [pepita]
-			    
-			    method unMethod(){
-			        var x = pepita
-			        return x
-			    }
-			
-			    method getPs(){
-			        return ps
-			    }
-			}
-			
-			object pepita {}
-			
-			program xxx{
-				pp.unMethod()
-				assert.equals(pepita, pp.getPs().get(0))
-			}
-		'''.interpretPropagatingErrors
-	}
 }
