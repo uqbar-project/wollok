@@ -39,7 +39,7 @@ class WSound extends AbstractJavaWrapper<GameSound> {
 	}
 
 	def WollokObject volume() {
-		getWrapped.volume().doubleValue.convertJavaToWollok //Converts to double since a Float to Wollok convertion doesn't work.
+		getWrapped.volume().convertJavaToWollok
 	}
 
 	def void shouldLoop(Boolean looping) {
