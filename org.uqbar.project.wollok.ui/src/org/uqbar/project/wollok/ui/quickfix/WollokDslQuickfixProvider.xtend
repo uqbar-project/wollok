@@ -43,6 +43,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import static extension org.uqbar.project.wollok.utils.StringUtils.*
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
 import org.eclipse.osgi.util.NLS
 
@@ -639,7 +640,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		val objectName = xtextDocument.get(issue.offset, issue.length)
 
 		scope.matchingImports(objectName).forEach [ importName |
-			val nameWithWildcard = importName.substring(0, importName.lastIndexOf(".")) + ".*"
+			val nameWithWildcard = importName.getPackage + ".*"
 			issueResolutionAcceptor.accept(issue,
 				NLS.bind(Messages.WollokDslQuickFixProvider_add_import_name, nameWithWildcard),
 				NLS.bind(Messages.WollokDslQuickFixProvider_add_import_description, nameWithWildcard),

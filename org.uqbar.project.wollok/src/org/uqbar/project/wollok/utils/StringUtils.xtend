@@ -62,5 +62,9 @@ class StringUtils {
 	static def singularOrPlural(int amount, String text, String pluralText) {
 		if (amount === 1) text else pluralText
 	}
+	
+	static def getPackage(String name) {
+		name.substring(0, name.lastIndexOf("."))
+	}
 		
 }

@@ -19,6 +19,7 @@ import static org.uqbar.project.wollok.WollokConstants.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import static extension org.uqbar.project.wollok.utils.StringUtils.*
 
 /**
  * Provides utilities for quickfixes.
@@ -196,29 +197,26 @@ class QuickFixUtils {
 	}
 
 	def static void removeRedundantImports(IXtextDocument it, List<Import> imports, String importToAdd) {
-		val withoutRedundant = imports.withoutRedundant(importToAdd)
-		if (imports.size > withoutRedundant.size) {
-			if (withoutRedundant.isEmpty) {
-				removeImports(imports, 2)
-			} else {
-				removeImports(imports, 0)
-			}
-			relocateImports(withoutRedundant, imports.head.before)
+		val essentialImports = imports.essentialImports(importToAdd)
+		val extraSpace = if(essentialImports.isEmpty) 2 else 0
+		if (imports.size > essentialImports.size) {
+			removeImports(imports, extraSpace)
+			relocateImports(essentialImports, imports.head.before)
 		}
 	}
-
-	def static removeImports(IXtextDocument it, List<Import> imports, int extraEspace) {
+	
+	def static removeImports(IXtextDocument it, List<Import> imports, int extraSpace) {
 		val firstImportPosition = imports.head.before
-		replace(firstImportPosition, imports.last.after - firstImportPosition + extraEspace, "")
+		replace(firstImportPosition, imports.last.after - firstImportPosition + extraSpace, "")
 	}
 
-	def static List<String> withoutRedundant(List<Import> imports, String importToAdd) {
+	def static List<String> essentialImports(List<Import> imports, String importToAdd) {
 		val importsNames = imports.map[anImport|anImport.importedNamespace]
 		val Set<String> wildCardImports = wildcardImports(importsNames)
 		val Set<String> importsNamesSet = newHashSet
-		wildCardImports.add(importToAdd.substring(0, importToAdd.lastIndexOf(".")))
+		wildCardImports.add(importToAdd.getPackage)
 		importsNames.filter [ importName |
-			val path = importName.substring(0, importName.lastIndexOf("."))
+			val path = importName.getPackage()
 			(!wildCardImports.contains(path) && importsNamesSet.add(importName)) ||
 				importName.substring(importName.lastIndexOf(".")).equals(".*")
 		].toList
@@ -228,7 +226,7 @@ class QuickFixUtils {
 		imports.filter [ importName |
 			importName.substring(importName.lastIndexOf(".")).equals(".*")
 		].map [ importName |
-			importName.substring(0, importName.lastIndexOf("."))
+			importName.getPackage
 		].toSet
 	}
 
