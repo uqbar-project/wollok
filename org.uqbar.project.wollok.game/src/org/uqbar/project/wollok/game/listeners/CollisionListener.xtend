@@ -15,11 +15,7 @@ class CollisionListener extends GameboardListener {
 
 	override notify(Gameboard gameboard) {
 		if (gameboard.alreadyInGame(component.WObject))
-			gameboard.colliders.forEach[collide]
-	}
-
-	def colliders(Gameboard gameboard) { // TODO: Move to Gameboard
-		gameboard.getComponentsInPosition(component.position).clone.filter[it != component]
+			gameboard.colliders(component).forEach[collide]
 	}
 
 	def collide(VisualComponent it) {
@@ -42,7 +38,7 @@ class InstantCollisionListener extends CollisionListener {
 
 	override notify(Gameboard gameboard) {
 		super.notify(gameboard)
-		lastColliders = gameboard.colliders.toList
+		lastColliders = gameboard.colliders(component).toList
 	}
 
 	override collide(VisualComponent it) {
