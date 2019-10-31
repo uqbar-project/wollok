@@ -73,15 +73,6 @@ class ArrowListenerTest {
 		Assert.assertEquals(new WGPosition(1, 0), character.position) 
 	}
 
-//	@Test
-//	def when_right_key_is_pressed_character_move_right_2() {
-//		character.position = new WGPosition(4, 4)
-//		this.press("RIGHT")
-//		
-//		arrowListener.notify(gameboard)
-//		Assert.assertEquals(new WGPosition(4, 4), character.position) 
-//	}
-	
 	def press(String key) {
 		when(keyboard.isKeyPressed(new Keyboard().getKey(key))).thenReturn(true)
 	}
