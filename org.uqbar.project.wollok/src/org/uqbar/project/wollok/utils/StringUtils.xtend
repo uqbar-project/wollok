@@ -64,7 +64,7 @@ class StringUtils {
 	}
 	
 	static def getPackage(String name) {
-		name.substring(0, name.lastIndexOf("."))
+		name.copyUptoLast(".")
 	}
 		
 }
