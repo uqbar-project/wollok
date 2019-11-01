@@ -285,20 +285,19 @@ class QuickFixUtils {
 	}
 	
 	def static Location importToAddLocation(IXtextDocument xtextDocument, int position) {
-		val IRegion lineInformation = xtextDocument.getLineInformationOfOffset(position)
-		val String lineText = xtextDocument.lineText(position)
-		val String nextLineText = xtextDocument.lineText(lineInformation.endOfLine + 2)
-		var Location result
-
-		if (position.equals(0)) {
+		var Location result = Location.AFTER
+		val firstImportPosition = 0
+		if (position.equals(firstImportPosition)) {
+			val IRegion lineInformation = xtextDocument.getLineInformationOfOffset(position)
+			val String lineText = xtextDocument.lineText(position)
+			val String nextLineText = xtextDocument.lineText(lineInformation.endOfLine + 2)
 			if (!lineText.isEmpty)
 				result = Location.TWOLINESBEFORE
-			else if(!nextLineText.isEmpty) result = Location.BEFORE else result = Location.NONE
-		} else {
-			if(!nextLineText.isEmpty) result = Location.ALL else result = Location.AFTER
-
+			else if (!nextLineText.isEmpty)
+				result = Location.BEFORE
+			else
+				result = Location.NONE
 		}
-
 		result
 	}
 	
