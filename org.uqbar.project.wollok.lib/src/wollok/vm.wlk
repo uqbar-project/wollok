@@ -1,1 +1,3 @@
-../../../wollok-language/src/wollok/vm.wlk
+object runtime {
+  method isInteractive() native
+}

@@ -1,8 +1,8 @@
-package org.uqbar.project.wollok.tests.interpreter
+package org.uqbar.project.wollok.tests.interpreter.language
 
 import org.junit.Test
 
-class RuntimeTest extends AbstractWollokInterpreterTestCase {
+class RuntimeTest extends org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase {
 	@Test
 	def void testInteractive() {
 		'''

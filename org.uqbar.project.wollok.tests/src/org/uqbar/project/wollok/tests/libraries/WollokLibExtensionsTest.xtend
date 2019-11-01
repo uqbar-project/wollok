@@ -2,9 +2,10 @@ package org.uqbar.project.wollok.tests.libraries
 
 import org.junit.Test
 import org.uqbar.project.wollok.libraries.WollokLibExtensions
-import org.junit.rules.TestName
-import static org.junit.Assert.assertTrue
+
 import static org.junit.Assert.assertFalse
+import static org.junit.Assert.assertTrue
+
 class WollokLibExtensionsTest  {
 	
 	public static class IsCoreLibTest{
