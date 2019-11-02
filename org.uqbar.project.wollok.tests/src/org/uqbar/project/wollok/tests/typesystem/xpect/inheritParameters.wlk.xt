@@ -10,6 +10,9 @@ class Ave {
 
 class Golondrina inherits Ave {
 	
+	// XPECT methodType at energy --> () => Number
+	method energy() = self.energia() 
+	
 	method vola() {
 		energia -= 10 
 	}
