@@ -17,7 +17,7 @@ after_success:
     cd ..
   fi
 script:
-- ./install.sh
+- "./install.sh"
 - cd org.uqbar.project.wollok.releng/
 - export PROFILES=normalProfile
 - export UPDATE_SITE=none
