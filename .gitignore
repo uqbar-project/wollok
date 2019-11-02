@@ -31,4 +31,4 @@ scripts/wollok-site
 scripts/wollok-cli
 
 # Ignoring wollok-language files
-org.uqbar.project.wollok.lib/src/wollok/*.wlk
+# org.uqbar.project.wollok.lib/src/wollok/*.wlk
