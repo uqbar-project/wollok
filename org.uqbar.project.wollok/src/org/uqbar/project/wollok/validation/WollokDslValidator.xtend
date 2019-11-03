@@ -152,6 +152,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	// WARNING KEYS
 	public static val WARNING_UNUSED_VARIABLE = "WARNING_UNUSED_VARIABLE"
 	public static val WARNING_UNUSED_PARAMETER = "WARNING_UNUSED_PARAMETER"
+	public static val WARNING_VARIABLE_SHOULD_BE_CONST = "WARNING_VARIABLE_SHOULD_BE_CONST"
 
 	def validatorExtensions() {
 		if (wollokValidatorExtensions !== null)
@@ -890,6 +891,16 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def unusedParameters(WConstructor it) {
 		checkUnusedParameters(it.parameters)
 	}
+	
+	@Check
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
+	def variableSingleAssignmentShouldBeConst(WVariableDeclaration it) {
+		val assignments = variable.assignments
+		if (assignments.length === 1 && writeable && !isProperty) {
+			warning(WollokDslValidator_VARIABLE_SHOULD_BE_CONST, it, WVARIABLE_DECLARATION__VARIABLE, WARNING_VARIABLE_SHOULD_BE_CONST)
+		}
+	}
+	
 	
 	def void checkUnusedParameters(List<WParameter> parameters) {
 		parameters.forEach [ parameter |
