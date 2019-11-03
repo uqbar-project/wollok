@@ -15,6 +15,8 @@ import org.uqbar.project.wollok.wollokDsl.WTest
 import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 import static extension org.uqbar.project.wollok.launch.tests.WollokExceptionUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import org.eclipse.emf.common.util.EList
+import java.util.ArrayList
 
 /**
  * 
@@ -44,29 +46,51 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 		}
 	}
 
-	def void runTestFile(WFile it){
-		if(!tests.empty){
+	def void runTestFile(WFile it) {
+		if (!tests.empty) {
 			wollokTestsReporter.testsToRun(null, it, tests)
 			tests.forEach [ test |
 				resetGlobalState
 				test.eval
 			]
 		}
-						
-		suites.forEach [suite |
+		runSuites(suites)
+	}
+
+	def runSuites(WFile file, EList<WSuite> suites) {
+		suites.forEach [ suite |
 			val testsToRun = suite.tests
-			val String suiteName = suite.name				
-			wollokTestsReporter.testsToRun(suiteName, it, testsToRun)
+			val String suiteName = suite.name
+			wollokTestsReporter.testsToRun(suiteName, file, testsToRun)
 			testsToRun.forEach [ test |
 				resetGlobalState
 				test.evalInSuite(suite)
 			]
+			val fathersPath = new ArrayList()
+			fathersPath.add(suite.name)
+			runSuites(file, suite, fathersPath)
 		]
 	}
 	
+	def void runSuites(WFile file, WSuite fatherSuite, List<String> fathersPath) {
+		fatherSuite.suites.forEach [ suite |
+			val testsToRun = suite.tests
+			val String suiteName = suite.name
+			wollokTestsReporter.testsToRun(fathersPath, suiteName, file, testsToRun)
+			testsToRun.forEach [ test |
+				resetGlobalState
+				test.evalInSuite(suite)
+			]
+			val nextFatherPath = new ArrayList()
+			nextFatherPath.addAll(fathersPath)
+			nextFatherPath.add(suite.name)
+			runSuites(file, suite, nextFatherPath)
+		]
+	}
+
 	override evaluateAll(List<EObject> eObjects, String folder) {
 		wollokTestsReporter.started
-		wollokTestsReporter.folderStarted(folder ?: "several-files")	
+		wollokTestsReporter.folderStarted(folder ?: "several-files")
 
 		eObjects.forEach [ eObject |
 			val file = eObject as WFile
@@ -80,15 +104,15 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 		wollokTestsReporter.finished
 		null
 	}
-	
+
 	def WollokObject evalInSuite(WTest test, WSuite suite) {
 		// If in a suite, we should create a suite wko so this will be our current context to eval the tests
 		try {
 			val suiteObject = new SuiteBuilder(suite, interpreter).forTest(test).build
-			interpreter.performOnStack(test, suiteObject, [ | test.eval])
+			interpreter.performOnStack(test, suiteObject, [|test.eval])
 		} catch (Exception e) {
 			handleExceptionInTest(e, test)
-		} 
+		}
 	}
 
 	def resetGlobalState() {
@@ -99,7 +123,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 		try {
 			wollokTestsReporter.testStarted(test)
 			test.elements.forEach [ expr |
-				interpreter.performOnStack(expr, currentContext) [ | expr.eval ]
+				interpreter.performOnStack(expr, currentContext)[|expr.eval]
 			]
 			wollokTestsReporter.reportTestOk(test)
 			null
@@ -143,12 +167,12 @@ class SuiteBuilder {
 		]
 		if (suite.fixture !== null) {
 			suite.fixture.elements.forEach [ element |
-				interpreter.performOnStack(test, suiteObject, [| interpreter.eval(element) ])
+				interpreter.performOnStack(test, suiteObject, [|interpreter.eval(element)])
 			]
-		}		
+		}
 		if (test !== null) {
 			// Now, declaring test local variables as suite wko instance variables
-			test.variableDeclarations.forEach[ variable |
+			test.variableDeclarations.forEach [ variable |
 				suiteObject.addMember(variable, false)
 			]
 		}

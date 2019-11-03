@@ -80,7 +80,7 @@ public class WollokTestGlobalContainer {
 		return file
 	}
 
-	def getParent(WollokTestContainer containerToFind) {
+	def getParent(WollokTestSuite containerToFind) {
 		testFiles.findFirst[file|file.containers.findFirst[container|container == containerToFind] !== null]
 	}
 

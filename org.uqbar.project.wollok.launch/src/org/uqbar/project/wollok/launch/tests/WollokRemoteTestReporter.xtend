@@ -34,12 +34,13 @@ class WollokRemoteTestReporter extends DefaultWollokTestsReporter {
 	var callHandler = new CallHandler
 	WollokRemoteUITestNotifier remoteTestNotifier
 	val testsResult = new LinkedList<WollokResultTestDTO>
-	
+
 	// TODO: Is a temporary variable, we should refactor and add a grouping WollokTestInfo
 	String suiteName
-	
+	String suiteFatherName
+
 	List<WollokTestInfo> testFiles
-	
+
 	@Inject
 	def init() {
 		client = new Client("localhost", parameters.testPort, callHandler)
@@ -51,14 +52,14 @@ class WollokRemoteTestReporter extends DefaultWollokTestsReporter {
 		test.testFinished
 		val file = test.file.URI.toString
 		val wollokResultDTO = WollokResultTestDTO.assertionError(
-				file,
-				suiteName,
-				test.getFullName(processingManyFiles),
-				assertionException.message,
-				assertionException.wollokException?.convertStackTrace,
-				lineNumber,
-			 	resource?.toString
-			) => [ totalTime = test.totalTime ]
+			file,
+			suiteName,
+			test.getFullName(processingManyFiles),
+			assertionException.message,
+			assertionException.wollokException?.convertStackTrace,
+			lineNumber,
+			resource?.toString
+		) => [totalTime = test.totalTime]
 		testsResult.add(wollokResultDTO)
 	}
 
@@ -66,7 +67,7 @@ class WollokRemoteTestReporter extends DefaultWollokTestsReporter {
 		test.testFinished
 		val file = test.file.URI.toString
 		val wollokResultDTO = WollokResultTestDTO.ok(file, suiteName, test.getFullName(processingManyFiles)) => [
-			totalTime = test.totalTime 
+			totalTime = test.totalTime
 		]
 		testsResult.add(wollokResultDTO)
 	}
@@ -74,20 +75,24 @@ class WollokRemoteTestReporter extends DefaultWollokTestsReporter {
 	override testsToRun(String _suiteName, WFile file, List<WTest> tests) {
 		this.suiteName = _suiteName
 		val fileURI = file.eResource.URI.toString
-		remoteTestNotifier.testsToRun(suiteName, fileURI, getRunnedTestsInfo(tests, fileURI), processingManyFiles)
+		remoteTestNotifier.testsToRun(null, suiteName, fileURI, getRunnedTestsInfo(tests, fileURI), processingManyFiles)
+	}
+
+	override testsToRun(List<String> fathersPath, String suiteName, WFile file, List<WTest> tests) {
+		// this.suiteFatherName = suiteFatherName
+		val fileURI = file.eResource.URI.toString
+		remoteTestNotifier.testsToRun(fathersPath, suiteName, fileURI, getRunnedTestsInfo(tests, fileURI),
+			processingManyFiles)
+
 	}
 
 	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
 		test.testFinished
 		val file = test.file.URI.toString
-		val wollokResultDTO = WollokResultTestDTO.error(
-			file,
-			suiteName,
-			test.getFullName(processingManyFiles),
-			exception.convertToString,
-			exception.convertStackTrace,
-			lineNumber,
-			resource?.toString) => [ totalTime = test.totalTime ]
+		val wollokResultDTO = WollokResultTestDTO.error(file, suiteName, test.getFullName(processingManyFiles),
+			exception.convertToString, exception.convertStackTrace, lineNumber, resource?.toString) => [
+			totalTime = test.totalTime
+		]
 		testsResult.add(wollokResultDTO)
 	}
 
@@ -97,11 +102,11 @@ class WollokRemoteTestReporter extends DefaultWollokTestsReporter {
 	}
 
 	protected def List<WollokTestInfo> getRunnedTestsInfo(List<WTest> tests, String fileURI) {
-		new ArrayList(tests.map [
-			test | new WollokTestInfo(test, fileURI, processingManyFiles)
+		new ArrayList(tests.map [ test |
+			new WollokTestInfo(test, fileURI, processingManyFiles)
 		])
 	}
-	
+
 	override started() {
 		super.started
 		remoteTestNotifier.start()

@@ -7,7 +7,7 @@ import java.util.List
  */
 interface WollokRemoteUITestNotifier {
 			
-	def void testsToRun(String suiteName, String containerResource, List<WollokTestInfo> tests, boolean processingManyFiles)
+	def void testsToRun(List<String> fathersPath, String suiteName, String containerResource, List<WollokTestInfo> tests, boolean processingManyFiles)
 			
 	def void testsResult(List<WollokResultTestDTO> resultTests, long millisecondsElapsed)
 

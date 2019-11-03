@@ -88,6 +88,9 @@ interface WollokTestsReporter {
 	
 	/** predefining which tests are going to run */
 	def void testsToRun(String suiteName, WFile file, List<WTest> tests)
+	
+	
+	def void testsToRun(List<String> fathersPath, String suiteName, WFile file, List<WTest> tests)
 
 	/** starting & finishing execution of a single test */
 	def void testStarted(WTest test)

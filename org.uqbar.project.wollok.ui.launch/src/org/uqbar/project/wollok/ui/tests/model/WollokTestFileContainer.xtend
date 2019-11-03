@@ -12,12 +12,15 @@ import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
 @Accessors
 class WollokTestFileContainer {
-	var List<WollokTestContainer> containers = new ArrayList
+	var List<WollokTestSuite> containers = new ArrayList
 	var URI mainResource
 	var boolean processingManyFiles = false
 
-	def void add(WollokTestContainer container) {
-		containers.add(container)
+	def void add(WollokTestSuite containerToAdd) {
+		containers.add(containerToAdd)
+	}
+
+	def void addToFather(String suiteName) {
 	}
 
 	def String asText() {
@@ -29,7 +32,7 @@ class WollokTestFileContainer {
 	}
 
 	def getAllTests() {
-		this.containers.flatMap [ allTests ]
+		this.containers.flatMap[allTests]
 	}
 
 	def allTestSize() {
@@ -38,46 +41,46 @@ class WollokTestFileContainer {
 
 	def allTestSize((WollokTestResult)=>Boolean predicate) {
 		return allTests.filter(predicate).size
-	}	
+	}
 
 	def hasTests() {
 		this.containers.size >= 1
 	}
-	
-	def getNoEmptyDescribes(){
-		val suitesWithName = containers.filter [ suiteName !== null ] 
+
+	def getNoEmptyDescribes() {
+		val suitesWithName = containers.filter[suiteName !== null]
 		if (suitesWithName.isEmpty) {
 			return containers.head.tests
 		}
-		return containers.filter [ container | !container.tests.isEmpty ]
-		 
+		return containers.filter[container|!container.isEmpty]
+
 	}
 
 	def filterTestByState(boolean shouldShowOnlyFailuresAndErrors) {
 		this.containers.forEach[container|container.filterTestByState(shouldShowOnlyFailuresAndErrors)]
 	}
-	
-	def IProject getProject(){
+
+	def IProject getProject() {
 		val path = new Path(mainResource.toFileString)
 		ResourcesPlugin.workspace.root.getFileForLocation(path).project
 	}
-	
-	def passed(){
-		containers.forall [ passed ]
+
+	def passed() {
+		containers.forall[passed]
 	}
-	
-	def running(){
-		containers.exists [ running ]
+
+	def running() {
+		containers.exists[running]
 	}
-	
-	def errored(){
-		containers.exists [ errored ]
+
+	def errored() {
+		containers.exists[errored]
 	}
-	
-	def failed(){
-		containers.exists [ failed ]
+
+	def failed() {
+		containers.exists[failed]
 	}
-	
+
 	def String getInternalImage() {
 		if (running) {
 			return "icons/wollok-icon-testrun_16.png"
@@ -91,19 +94,38 @@ class WollokTestFileContainer {
 		if (passed) {
 			return "icons/wollok-icon-testok_16.png"
 		}
-		"icons/wollok-icon-test_16.png"		
+		"icons/wollok-icon-test_16.png"
 	}
 
 	def getImage() {
 		Activator.getDefault.getImageDescriptor(internalImage)
 	}
-	
+
 	def fileName() {
-		if (mainResource !== null) mainResource.toString else "" 
+		if(mainResource !== null) mainResource.toString else ""
 	}
 
 	override toString() {
-		"[" + allTests.map [ name ].join(",") + "]" 
+		"[" + allTests.map[name].join(",") + "]"
+	}
+	
+	def getSuite(List<String> pathToSuite) {
+		var suite = findSuiteByName(pathToSuite.head, containers)
+		pathToSuite.drop(1).fold(suite)[currentSuite, path|
+			val foundPath = findSuiteByName(path, currentSuite.containers)
+			foundPath
+		]
+	}
+	
+	def findSuiteByName(String suiteName, List<WollokTestSuite> suites) {
+		suites.findFirst[suite|suite.suiteName == suiteName]
+	}
+	
+	def List<WollokTestSuite> containerAndAllChildrenOf(WollokTestSuite suite) {
+		val suites = new ArrayList()
+		suites.add(suite)
+		suites.addAll(suite.containers.flatMap[container|containerAndAllChildrenOf(container)])
+		suites
 	}
 
 }

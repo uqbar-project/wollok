@@ -25,16 +25,23 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		globalContainer = new WollokTestGlobalContainer
 	}
 	
-	override testsToRun(String suiteName, String containerResource, List<WollokTestInfo> tests, boolean processingManyFiles) {
-		val container = new WollokTestContainer
-		container.suiteName = suiteName
-		container.processingManyFiles = processingManyFiles
-		container.mainResource = URI.createURI(containerResource)
-		container.defineTests(newArrayList(tests.map[new WollokTestResult(it)]), this.shouldShowOnlyFailuresAndErrors)
+	override testsToRun(List<String> fathersPath, String suiteName, String containerResource, List<WollokTestInfo> tests, boolean processingManyFiles) {
+		val suite = new WollokTestSuite
+		suite.suiteName = suiteName
+		suite.fathersPath = fathersPath
+		suite.processingManyFiles = processingManyFiles
+		suite.mainResource = URI.createURI(containerResource)
+		suite.defineTests(newArrayList(tests.map[new WollokTestResult(it)]), this.shouldShowOnlyFailuresAndErrors)
 		
 		val fileContainer = globalContainer.getFileContainer(containerResource)
 		fileContainer.processingManyFiles = processingManyFiles
-		fileContainer.add(container)
+		
+		if(fathersPath !== null) {
+			val suiteFather = fileContainer.getSuite(fathersPath)
+			suiteFather.addChild(suite)
+		} else {
+			fileContainer.add(suite)	
+		}
 		globalContainer.add(fileContainer)
 		globalContainer.processingManyFiles = processingManyFiles
 		

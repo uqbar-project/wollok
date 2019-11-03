@@ -44,12 +44,13 @@ import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.ui.console.RunInUI
 import org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages
 import org.uqbar.project.wollok.ui.launch.Activator
-import org.uqbar.project.wollok.ui.tests.model.WollokTestContainer
 import org.uqbar.project.wollok.ui.tests.model.WollokTestFileContainer
 import org.uqbar.project.wollok.ui.tests.model.WollokTestGlobalContainer
 import org.uqbar.project.wollok.ui.tests.model.WollokTestResult
 import org.uqbar.project.wollok.ui.tests.model.WollokTestResults
 import org.uqbar.project.wollok.ui.tests.model.WollokTestState
+import org.uqbar.project.wollok.ui.tests.model.WollokTestSuite
+import org.uqbar.project.wollok.ui.tests.model.WollokTestSuiteChild
 import org.uqbar.project.wollok.ui.tests.shortcut.WollokAllTestsLaunchShortcut
 import org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut
 
@@ -494,7 +495,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 		}
 	}
 	
-	def dispatch openElement(WollokTestContainer container) {
+	def dispatch openElement(WollokTestSuite container) {
 		// @dodain - in case we are running all tests
 		if (container.mainResource !== null) {
 			opener.open(container.mainResource, true)
@@ -502,21 +503,22 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def dispatch openElement(WollokTestResult result) {
-		opener.open(result.state.getURI(result), true)
+		// opener.open(result.state.getURI(result), true)
 	}
 
 	def dispatch openElement(URI uri) {
 		opener.open(uri, true)
 	}
 
-	def dispatch getOutputText(WollokTestContainer container) { container.asText }
+	def dispatch getOutputText(WollokTestSuite container) { container.asText }
 	
 	def dispatch getOutputText(WollokTestGlobalContainer container) { "" }
 
 	def dispatch getOutputText(WollokTestFileContainer container) { container.asText }
 
 	def dispatch getOutputText(WollokTestResult result) {
-		result.state.getOutputText(result)
+		'ARREGLAME'
+		// result.state.getOutputText(result)
 	}
 
 }
@@ -534,7 +536,7 @@ class WTestTreeLabelProvider extends LabelProvider {
 		resourceManager.createImage(imageDescriptor)
 	}
 	
-	def dispatch getImage(WollokTestContainer element) {
+	def dispatch getImage(WollokTestSuite element) {
 		val imageDescriptor = element.getImage()
 		resourceManager.createImage(imageDescriptor)
 	}
@@ -544,7 +546,7 @@ class WTestTreeLabelProvider extends LabelProvider {
 		resourceManager.createImage(imageDescriptor)
 	}
 
-	def dispatch getText(WollokTestContainer element) {
+	def dispatch getText(WollokTestSuite element) {
 		return element.asText()
 	}
 	
@@ -556,8 +558,13 @@ class WTestTreeLabelProvider extends LabelProvider {
 		return element.asText()
 	}
 	
+	def dispatch getText(WollokTestSuiteChild element) {
+		return element.asText()
+	}
+	
+		
 	def dispatch getText(WollokTestResult element) {
-		element.testInfo.name
+		element.asText()
 	}
 
 	override def dispose() {
@@ -587,8 +594,8 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 		globalContainer.noEmptyFiles
 	}
 	
-	def dispatch getChildren(WollokTestContainer element) {
-		element.tests
+	def dispatch getChildren(WollokTestSuite element) {
+		return element.children
 	}
 
 	def dispatch getChildren(WollokTestResult element) {
@@ -603,8 +610,8 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 			return newArrayOfSize(0)
 	}
 
-	def dispatch getElements(WollokTestContainer inputElement) {
-		inputElement.tests
+	def dispatch getElements(WollokTestSuite inputElement) {
+		inputElement.children
 	}
 
 	def dispatch getElements(WollokTestResult inputElement) {
@@ -617,7 +624,7 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 	
 	def dispatch getParent(WollokTestFileContainer element) { results.globalContainer }
 
-	def dispatch getParent(WollokTestContainer element) { results.globalContainer.getParent(element) }
+	def dispatch getParent(WollokTestSuite element) { results.globalContainer.getParent(element) }
 	
 	def dispatch getParent(WollokTestResult element) { null }
 	
@@ -625,7 +632,7 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 	
 	def dispatch hasChildren(WollokTestFileContainer element) { true }
 	
-	def dispatch hasChildren(WollokTestContainer element) { true }
+	def dispatch hasChildren(WollokTestSuite element) { true }
 	
 	def dispatch hasChildren(Object element) { false }
 

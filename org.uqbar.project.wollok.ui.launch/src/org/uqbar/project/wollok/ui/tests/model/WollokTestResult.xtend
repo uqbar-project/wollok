@@ -14,7 +14,7 @@ import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionEx
  * @author tesonep
  */
 @Accessors
-class WollokTestResult {
+class WollokTestResult implements WollokTestSuiteChild {
 	val WollokTestInfo testInfo
 	var WollokTestState state
 	var long startTime = 0
@@ -37,55 +37,61 @@ class WollokTestResult {
 	def getName() {
 		testInfo.name
 	}
-	
+
 	def getTotalTimeElapsed() {
-		 "" + millisecondsElapsed + "ms"
+		"" + millisecondsElapsed + "ms"
 	}
 
 	def void endedOk(long millisecondsElapsed) {
 		this.millisecondsElapsed = millisecondsElapsed
 		ended(WollokTestState.OK)
 	}
-	
+
 	def void started() {
 		state = WollokTestState.RUNNING
 		startTime = System.currentTimeMillis
 	}
-	
-	def endedAssertError(String message, StackTraceElementDTO[] stackTrace, int lineNumber, String resource, long millisecondsElapsed) {
+
+	def endedAssertError(String message, StackTraceElementDTO[] stackTrace, int lineNumber, String resource,
+		long millisecondsElapsed) {
 		this.millisecondsElapsed = millisecondsElapsed
 		innerEnded(lineNumber, resource, WollokTestState.ASSERT)
 		this.exceptionAsString = message + System.lineSeparator + stackTrace.printStackTrace
 	}
-	
-	def endedError(String exceptionAsString, StackTraceElementDTO[] stackTrace, int lineNumber, String resource, long millisecondsElapsed) {
+
+	def endedError(String exceptionAsString, StackTraceElementDTO[] stackTrace, int lineNumber, String resource,
+		long millisecondsElapsed) {
 		this.millisecondsElapsed = millisecondsElapsed
 		innerEnded(lineNumber, resource, WollokTestState.ERROR)
 		this.exceptionAsString = exceptionAsString + System.lineSeparator + stackTrace.printStackTrace
 	}
-	
+
 	def innerEnded(int lineNumber, String resource, WollokTestState state) {
 		ended(state)
 		this.lineNumber = lineNumber
 		if (resource !== null)
 			this.errorResource = URI.createURI(resource)
 	}
-	
+
 	def ended(WollokTestState state) {
-		this.state = state 
+		this.state = state
 		endTime = System.currentTimeMillis
 	}
-	
+
 	override toString() {
 		"Test: " + testResource.toString + " State: " + state
 	}
-	
+
 	def getErrorOutput() {
 		exceptionAsString
 	}
 
 	def failed() {
-		#[WollokTestState.ASSERT, WollokTestState.ERROR].contains(state)		
+		#[WollokTestState.ASSERT, WollokTestState.ERROR].contains(state)
 	}
-	
+
+	override asText() {
+		testInfo.name
+	}
+
 }
