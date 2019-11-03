@@ -1,0 +1,23 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+object variableShouldBeConst {
+	var variable = 123
+	// XPECT warnings --> "Variable should be const" at "constante"
+	var constante = 321
+	
+	method doSomething() {
+		variable = 666
+		return variable + constante
+	}
+}
+
+
+object variableWithSingleAssignmentNotRaisesWarningIfProperty {
+	var variable = 123
+	var property constante = 321
+	
+	method doSomething() {
+		variable = 666
+		return variable + constante
+	}
+}
