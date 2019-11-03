@@ -4,19 +4,19 @@ program p {
 	// XPECT warnings --> "Unused variable" at "a"
 	const a = 23
 	
-	// XPECT errors --> "Couldn't resolve reference to Referenciable 'x'." at "x"
+	// XPECT errors --> "Couldn't resolve reference to 'x'." at "x"
 	console.println(x)
 	
 	// XPECT warnings --> "Unused variable" at "objetin"
 	const objetin = object {
 		var l = "ele"
 		method algoConLYZNoExiste() {
-			// XPECT errors --> "Couldn't resolve reference to Referenciable 'z'." at "z"
+			// XPECT errors --> "Couldn't resolve reference to 'z'." at "z"
 			l = l + z
 			
 			/* XPECT errors ---
-				"Couldn't resolve reference to Referenciable 'z'." at "z"
-				"Couldn't resolve reference to Referenciable 'z'." at "z"
+				"Couldn't resolve reference to 'z'." at "z"
+				"Couldn't resolve reference to 'z'." at "z"
 			--- */
 			z = z + 1    // z no existe !
 		}
