@@ -6,7 +6,6 @@ import org.junit.Test
 /**
  * @author jfernandes
  */
-// TODO: this could have more tests, with more complex cases :P
 class ExceptionPropagationInNativeTestCase extends AbstractWollokInterpreterTestCase {
 	
 	@Test
