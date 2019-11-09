@@ -23,7 +23,7 @@ class Ave {
 	var property energia = 10
 	const property peso = 5
 	var property color = "azul"
-	var alas = []
+	const alas = []
 
 	constructor() {
 		// XPECT errors --> "Property are only allowed in objects, classes and mixins" at "property"

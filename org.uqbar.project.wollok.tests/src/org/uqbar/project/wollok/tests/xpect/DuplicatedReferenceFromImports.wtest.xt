@@ -6,7 +6,7 @@ describe "duplicated references" {
 
 	test "with duplicated variable" {
 		// XPECT warnings --> "This name is already defined (imported from libForImports.wlk)" at "apu"
-		var apu = 2
+		const apu = 2
 		assert.equals(apu, 2)		
 	}
 }

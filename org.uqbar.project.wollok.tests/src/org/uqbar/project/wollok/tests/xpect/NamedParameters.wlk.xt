@@ -9,7 +9,7 @@ class Ave {
 	method volar() { energia -= 10 }
 }
 class Golondrina inherits Ave {
-	var peso
+	const peso
 	method estaGorda() = peso > 100
 }
 class Torcaza inherits Ave {
@@ -52,8 +52,8 @@ class Entrenador {
 }
 
 class Heroe {
-	var nombre = null
-	var traje = null
+	const nombre = null
+	const traje = null
 	
 	method quienSoy() = nombre
 	method tengoTraje() = traje != null
@@ -67,8 +67,8 @@ object deadpool inherits Heroe(apellido = "Wilson") {
 }
 object charlie {
 	// XPECT errors --> "Reference apellido not found in class Heroe" at "apellido = \"Fawcett\""
-	var angel1 = object inherits Heroe(apellido = "Fawcett") {}
-	var angel2 = object inherits Heroe(nombre = "") {}
+	const angel1 = object inherits Heroe(apellido = "Fawcett") {}
+	const angel2 = object inherits Heroe(nombre = "") {}
 	
 	method quienCumpleMision() = [angel1, angel2]
 }
