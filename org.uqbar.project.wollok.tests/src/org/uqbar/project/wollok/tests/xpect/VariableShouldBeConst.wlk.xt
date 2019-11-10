@@ -11,8 +11,82 @@ object variableShouldBeConst {
 	}
 }
 
+object localVariableInMethodShouldBeConst {
+	var variable = 123
+	
+	method doSomething() {
+		// XPECT warnings --> "Variable should be const" at "constante"
+		var constante = 321
+		variable = 666
+		return variable + constante
+	}
+}
 
-object variableWithSingleAssignmentNotRaisesWarningIfProperty {
+object variableWithSingleAssignmentAtInitializationNotRaisesWarningIfProperty {
+	var variable = 123
+	var property constante = 321
+	
+	method doSomething() {
+		variable = 666
+		return variable + constante
+	}
+}
+
+class VariableShouldBeConst {
+	var variable = 123
+	// XPECT warnings --> "Variable should be const" at "constante"
+	var constante = 321
+	
+	method doSomething() {
+		variable = 666
+		return variable + constante
+	}
+}
+
+class LocalVariableInMethodShouldBeConst {
+	var variable = 123
+	
+	method doSomething() {
+		// XPECT warnings --> "Variable should be const" at "constante"
+		var constante = 321
+		variable = 666
+		return variable + constante
+	}
+}
+
+class VariableWithSingleAssignmentAtInitializationNotRaisesWarningIfProperty {
+	var variable = 123
+	var property constante = 321
+	
+	method doSomething() {
+		variable = 666
+		return variable + constante
+	}
+}
+
+mixin VariableShouldBeConstMixin {
+	var variable = 123
+	// XPECT warnings --> "Variable should be const" at "constante"
+	var constante = 321
+	
+	method doSomething() {
+		variable = 666
+		return variable + constante
+	}
+}
+
+mixin LocalVariableInMethodShouldBeConstMixin {
+	var variable = 123
+	
+	method doSomething() {
+		// XPECT warnings --> "Variable should be const" at "constante"
+		var constante = 321
+		variable = 666
+		return variable + constante
+	}
+}
+
+mixin VariableWithSingleAssignmentAtInitializationNotRaisesWarningIfPropertyMixin {
 	var variable = 123
 	var property constante = 321
 	
