@@ -895,7 +895,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
 	def variableSingleAssignmentShouldBeConst(WVariableDeclaration it) {
-		val assignments = variable.assignments
+		val assignments = variable.assignments(container)
 		if (writeable && !isProperty && assignments.size === 1 && right !== null && !isGlobal) {
 			warning(WollokDslValidator_VARIABLE_SHOULD_BE_CONST, it, WVARIABLE_DECLARATION__VARIABLE,
 				WARNING_VARIABLE_SHOULD_BE_CONST)
