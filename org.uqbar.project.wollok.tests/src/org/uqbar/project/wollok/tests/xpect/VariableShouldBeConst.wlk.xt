@@ -126,10 +126,10 @@ object variableDefinedOutsideCatchWithReassignmentInCatchNotRaisesWarning {
 	method volar(minutos) {
 		try {
 			var minutosReales = minutos
+			energia -= minutosReales * 2
 		} catch e {
 			minutosReales = 10
 		}
-		energia -= minutosReales * 2
 	}
 }
 
