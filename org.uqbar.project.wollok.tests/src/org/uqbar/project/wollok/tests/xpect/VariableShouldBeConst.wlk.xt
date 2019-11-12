@@ -95,3 +95,65 @@ mixin VariableWithSingleAssignmentAtInitializationNotRaisesWarningIfPropertyMixi
 		return variable + constante
 	}
 }
+
+object variableWithReassignmentInIfNotRaisesWarning {
+	var energia = 100
+	
+	method volar(minutos) {
+		var minutosReales = minutos
+		if (1 > 2) {
+			minutosReales = 10
+		}
+		energia -= minutosReales * 2
+	}
+}
+
+object variableWithReassignmentInIfNotRaisesWarning2 {
+	var energia = 100
+	
+	method volar(minutos) {
+		var minutosReales = minutos
+		if (1 > 2) {
+			minutosReales = minutosReales + 2
+		}
+		energia -= minutosReales * 2
+	}
+}
+
+object variableDefinedOutsideCatchWithReassignmentInCatchNotRaisesWarning {
+	var energia = 100
+	
+	method volar(minutos) {
+		try {
+			var minutosReales = minutos
+		} catch e {
+			minutosReales = 10
+		}
+		energia -= minutosReales * 2
+	}
+}
+
+object variableDefinedInCatchWithReassignmentNotRaisesWarning {
+	var energia = 100
+	
+	method volar(minutos) {
+		try {
+		} catch e {
+			var minutosReales = minutos
+			minutosReales = 10
+			console.println(minutosReales)
+		}
+		energia -= 10
+	}
+}
+
+object variableDefinedInLambdaWithReassignmentNotRaisesWarning {
+	
+	method volar() {
+		[ 1, 2 ].map{ numero =>
+			//  XPECT warnings  --> "Variable should be const" at "otroNumero"
+			var otroNumero = numero + 1
+			return otroNumero + 2
+		}
+	}
+}

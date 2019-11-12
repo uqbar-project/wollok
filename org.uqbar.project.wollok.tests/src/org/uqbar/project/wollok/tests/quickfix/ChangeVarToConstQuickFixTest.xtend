@@ -56,6 +56,32 @@ class ChangeVarToConstQuickFixTest extends AbstractWollokQuickFixTestCase {
 		''']
 		assertQuickfix(initial, result, Messages.WollokDslQuickfixProvider_changeToConst_name)
 	}
+	
+	@Test
+	def testChangeVarToConstInLambda() {
+		val initial = #['''
+			object anObject {
+				method shouldBeConst() {
+					return [ 1, 2 ].map{ numero =>
+						var otroNumero = numero + 1
+						return otroNumero + 10
+					}
+				}
+			}
+		''']
+
+		val result = #['''
+			object anObject {
+				method shouldBeConst() {
+					return [ 1, 2 ].map{ numero =>
+						const otroNumero = numero + 1
+						return otroNumero + 10
+					}
+				}
+			}
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickfixProvider_changeToConst_name)
+	}
 
 	@Test
 	def testChangeVarToConstInClass() {
@@ -167,7 +193,7 @@ class ChangeVarToConstQuickFixTest extends AbstractWollokQuickFixTestCase {
 			describe "Variable should be const" {
 				var variable = 123
 				test "trivial" {
-				assert.notEquals(variable, 123)
+					assert.notEquals(variable, 123)
 				}
 			}
 		''']
@@ -176,7 +202,7 @@ class ChangeVarToConstQuickFixTest extends AbstractWollokQuickFixTestCase {
 			describe "Variable should be const" {
 				const variable = 123
 				test "trivial" {
-				assert.notEquals(variable, 123)
+					assert.notEquals(variable, 123)
 				}
 			}
 		''']
@@ -188,8 +214,8 @@ class ChangeVarToConstQuickFixTest extends AbstractWollokQuickFixTestCase {
 		val initial = #['''
 			describe "Variable should be const" {
 				test "trivial" {
-				var variable = 123
-				assert.notEquals(variable, 123)
+					var variable = 123
+					assert.notEquals(variable, 123)
 				}
 			}
 		''']
@@ -197,8 +223,8 @@ class ChangeVarToConstQuickFixTest extends AbstractWollokQuickFixTestCase {
 		val result = #['''
 			describe "Variable should be const" {
 				test "trivial" {
-				const variable = 123
-				assert.notEquals(variable, 123)
+					const variable = 123
+					assert.notEquals(variable, 123)
 				}
 			}
 		''']
