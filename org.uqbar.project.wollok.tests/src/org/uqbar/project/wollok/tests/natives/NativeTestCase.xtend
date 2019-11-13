@@ -4,6 +4,11 @@ import org.junit.Test
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 
 /**
+ * 
+ * If you want to run this test, you have to copy `wollok` folder with MyNative Java
+ * definitions into your `src` folder (or any other source folder that belongs to the
+ * classpath)
+ * 
  * @author jfernandes
  */
 class NativeTestCase extends AbstractWollokInterpreterTestCase {

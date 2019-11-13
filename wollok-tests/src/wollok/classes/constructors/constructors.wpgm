@@ -1,7 +1,0 @@
-import constructorsLib.*
-
-program constructors {
-	const direccion = new Direccion("Jose Marti", 155)
-	assert.equals("Jose Marti", direccion.getCalle())
-	assert.equals(155, direccion.getNumero())
-}

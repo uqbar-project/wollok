@@ -1,7 +1,0 @@
-import simpleInheritance.*
-
-program simpleInheritance {
-	const pepita = new Golondrina()
-	pepita.volar(40)
-	assert.equals(pepita.energia(), 60) // Mando mensaje en superclase
-}
