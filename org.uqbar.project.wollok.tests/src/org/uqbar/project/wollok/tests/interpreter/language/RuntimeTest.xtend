@@ -6,11 +6,11 @@ class RuntimeTest extends org.uqbar.project.wollok.tests.interpreter.AbstractWol
 	@Test
 	def void testInteractive() {
 		'''
-			import wollok.vm.runtime
-			
-			program p {
-				assert.notThat(runtime.isInteractive())
-			}
+		import wollok.vm.runtime
+		
+		program p {
+			assert.notThat(runtime.isInteractive())
+		}
 		'''.interpretPropagatingErrors
 	}
 }

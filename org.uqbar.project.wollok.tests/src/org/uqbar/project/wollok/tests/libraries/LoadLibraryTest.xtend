@@ -19,9 +19,8 @@ class LoadLibraryTest extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	
 	}
-	
-	
-/* probar cuando esté listo el problema de los directorios
+
+	/* probar cuando esté listo el problema de los directorios
 	@Test
 	def void testInnerLocationObjectExist() {
 		'''
@@ -32,8 +31,8 @@ class LoadLibraryTest extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	
 	}
-	
-*/	
+	*/	
+
 	@Test
 	def void nativeObjectInLibrary() {
 		'''
@@ -46,8 +45,6 @@ class LoadLibraryTest extends AbstractWollokInterpreterTestCase {
 			assert.notThat(f.value())
 		}
 		'''.interpretPropagatingErrors
-		
-		
 	}	
-	
+
 }
