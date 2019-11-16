@@ -3,8 +3,8 @@
 class Persona {
 	
 	// XPECT type at hambriento -->  { cena }
-	var hambriento = object {
-		var a = 0
+	const hambriento = object {
+		const a = 0
 	
 		// XPECT methodType at cena() --> () => Number	
 		method cena() {
@@ -13,13 +13,13 @@ class Persona {
 	}
 	
 	// XPECT type at charlatan -->  { habla }
-	var charlatan = object {
+	const charlatan = object {
 		// XPECT methodType at habla() --> () => String
 		method habla() = "Hola"
 	}
 	
 	// XPECT type at multifacetico -->  { habla; cena }
-	var multifacetico = object {
+	const multifacetico = object {
 		// XPECT methodType at habla() --> () => String
 		method habla() = "Chau"
 		
@@ -28,7 +28,7 @@ class Persona {
 	}
 	
 	// XPECT type at friki -->  { habla; cena }
-	var friki = object {
+	const friki = object {
 		// XPECT methodType at habla() --> () => Number
 		method habla() = 42
 		

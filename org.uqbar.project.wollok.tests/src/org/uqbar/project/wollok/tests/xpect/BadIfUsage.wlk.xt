@@ -1,7 +1,7 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 
 object joaquin {
-	var tocaEnGrupo = false
+	const tocaEnGrupo = false
 	var gradoAlegria 
 	
 	// XPECT errors --> "If-statements without else cannot be considered valid expressions as they cannot always yield a value" at "tocaEnGrupo"
@@ -118,7 +118,7 @@ object sarasita {
 	method ifInsideExpressionWithoutElseShouldFailInAssignment() {
 		// XPECT errors --> "If-statements without else cannot be considered valid expressions as they cannot always yield a value" at "1 == 2"
 		var failed = if(1 == 2) 2
-		var ok = if (1 == 2) 2 else 3
+		const ok = if (1 == 2) 2 else 3
 		failed = ok
 		return ok == 3
 	}

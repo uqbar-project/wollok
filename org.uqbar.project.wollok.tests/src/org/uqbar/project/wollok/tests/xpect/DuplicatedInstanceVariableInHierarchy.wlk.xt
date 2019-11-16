@@ -1,14 +1,14 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 
 class Levadura {
-	var biomasa = 100
+	const biomasa = 100
 	
 	method getBiomasa() = biomasa
 }
 
 class Ale inherits Levadura {
 	// XPECT errors --> "There is already an instance variable with this name in the hierarchy" at "biomasa"
-	var biomasa = 200
+	const biomasa = 200
 	
 	method algoConBiomasaParaEvitarWarning() {
 		return biomasa
@@ -24,7 +24,7 @@ class B inherits Levadura {
  */
 class C inherits B {
 	// XPECT errors --> "There is already an instance variable with this name in the hierarchy" at "biomasa"
-	var biomasa = 200
+	const biomasa = 200
 	
 		method algoConBiomasaParaEvitarWarning() {
 		return biomasa
@@ -34,7 +34,7 @@ class C inherits B {
 // same for objects
 object anObject inherits Levadura {
 	// XPECT errors --> "There is already an instance variable with this name in the hierarchy" at "biomasa"
-	var biomasa = 200
+	const biomasa = 200
 	
 		method algoConBiomasaParaEvitarWarning() {
 		return biomasa
