@@ -124,5 +124,5 @@ class Cyclic {
 
 class Cyclic2 {
 	// XPECT errors --> "Invalid super constructor call. Superclass has no explicit constructors." at "super(_param)"
-	constructor(_param) = super(_param)
+	constructor(_param) = super(_param)	
 }

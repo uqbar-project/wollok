@@ -674,12 +674,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		]
 	}
 	
-	def static WMethodDeclaration getInitMethod(WMethodContainer it) {
-		methods.findFirst [ m |
-			m.name.equals(INITIALIZE_METHOD) && m.arguments.isEmpty
-		]
-	}
-	
 	def static hasMethodWithSignature(WMethodContainer it, WMethodDeclaration method) {
 		methods.exists[m | m.hasSameSignatureThan(method) ]
 	}

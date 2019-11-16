@@ -83,11 +83,20 @@ class DefaultWollokTestsReporter implements WollokTestsReporter {
 	}
 	
 	def testFinished(WTest test) {
-		testTimeElapsed.get(test).to = System.currentTimeMillis
+		if (test.hasTimeElapsedRecord) {
+			testTimeElapsed.get(test).to = System.currentTimeMillis
+		}
 	}
 	
 	def getTotalTime(WTest test) {
-		testTimeElapsed.get(test).totalTime
+		if (test.hasTimeElapsedRecord) testTimeElapsed.get(test).totalTime else 0
+	}
+	
+	/**
+	 * If there was an error in the fixture, or in variable initialization, we won't be able to get the test in the map
+	 */
+	def hasTimeElapsedRecord(WTest test) {
+		testTimeElapsed.get(test) !== null
 	}
 }
 

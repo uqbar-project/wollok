@@ -1,0 +1,8 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+import libForImports.apu
+
+// XPECT warnings --> "Describe should not be empty" at ""apu""
+describe "apu" {
+
+}
