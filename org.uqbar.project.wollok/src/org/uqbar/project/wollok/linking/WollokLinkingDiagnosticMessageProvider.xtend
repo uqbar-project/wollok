@@ -37,7 +37,9 @@ class WollokLinkingDiagnosticMessageProvider extends LinkingDiagnosticMessagePro
 			}
 		}
 		if (msg.equals("")) {
-			msg = LINKING_COULD_NOT_RESOLVE_REFERENCE + referenceType.modelTypeName + " '" + linkText + "'."
+			val modelTypeName = referenceType.modelTypeName
+			val separator = if (modelTypeName === "") "" else " "
+			msg = LINKING_COULD_NOT_RESOLVE_REFERENCE + modelTypeName + separator + "'" + linkText + "'."
 		}
 		new DiagnosticMessage(msg, Severity.ERROR, Diagnostic.LINKING_DIAGNOSTIC)
 	}
