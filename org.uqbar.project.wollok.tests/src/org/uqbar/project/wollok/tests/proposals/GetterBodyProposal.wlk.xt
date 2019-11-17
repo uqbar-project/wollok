@@ -1,7 +1,7 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.proposals.WollokContentAssistTest END_SETUP */
 
 class Golondrina {
-	var energia = 100
+	const energia = 100
 	method getEnergia() {
 		/* XPECT proposals at 'energia' ---
 			"Value", #, (,

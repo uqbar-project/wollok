@@ -2,7 +2,7 @@
 
 class HechizoComercial {}
 class Personaje {
-	var hechizoPreferido = null
+	const hechizoPreferido = null
 	method hechizoPreferido() = hechizoPreferido
 }
 describe "entregas punto 3" {

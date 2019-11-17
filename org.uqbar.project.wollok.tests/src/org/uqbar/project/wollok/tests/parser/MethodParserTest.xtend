@@ -55,7 +55,7 @@ class MethodParserTest extends AbstractWollokInterpreterTestCase {
 	def void FourEqualsOperatorErrorMessage() {
 		'''
 		object pepita {
-			var energia = 0
+			const energia = 0
 			method estaCansada() {
 				return energia ==== 0
 			}
@@ -67,7 +67,7 @@ class MethodParserTest extends AbstractWollokInterpreterTestCase {
 	def void FourNotEqualsOperatorErrorMessage() {
 		'''
 		object pepita {
-			var energia = 0
+			const energia = 0
 			method estaConEnergia() {
 				return energia !=== 0
 			}
@@ -79,7 +79,7 @@ class MethodParserTest extends AbstractWollokInterpreterTestCase {
 	def void UnexistentMessageErrorMessage() {
 		'''
 		object pepita {
-			var energia = 0
+			const energia = 0
 			method estaCansada() {
 				return energia.esSiempreIgualA(0)
 			}
