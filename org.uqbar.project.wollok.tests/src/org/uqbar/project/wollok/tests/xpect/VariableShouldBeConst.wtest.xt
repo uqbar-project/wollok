@@ -1,0 +1,23 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+describe "Variable should be const" {
+	var variable = 123
+	// XPECT warnings --> "Variable should be const" at "constante"
+	var constante = 321
+	
+	test "666 es distinto a 321" {
+		variable = 666
+		assert.notEquals(variable, constante)
+	}
+}
+
+describe "Local variable in test should be const" {
+	var variable = 123
+	
+	test "666 es distinto a 321" {
+		// XPECT warnings --> "Variable should be const" at "constante"
+		var constante = 321
+		variable = 666
+		assert.notEquals(variable, constante)
+	}
+}

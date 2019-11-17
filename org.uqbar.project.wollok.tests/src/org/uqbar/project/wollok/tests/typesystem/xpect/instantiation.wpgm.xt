@@ -9,8 +9,8 @@ class Persona {
 
 // Clase sin constructores para instanciación directa
 class Direccion {
-	var calle = "Medrano"
-	var numero = 951
+	const calle = "Medrano"
+	const numero = 951
 
 	// Esto garantiza los tipos de calle y número
 	method tipar() = calle.charAt(numero)
@@ -18,7 +18,7 @@ class Direccion {
 
 // Clase sin constructores, instanciación directa usando variables de superclase
 class DireccionRemota inherits Direccion {
-	var ciudad = new Ciudad(km = 0)
+	const ciudad = new Ciudad(km = 0)
 	
 	override method tipar() = ciudad.nombreCiudad()
 }
@@ -47,7 +47,7 @@ class Point {
 
 // Clase con constructores heredados
 class Point3D inherits Point {
-	var z = 0
+	const z = 0
 	
 	override method tipar() = z.even()
 }

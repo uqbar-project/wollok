@@ -106,7 +106,7 @@ class MethodOnSelfDoesntExistsQuickFixTest extends AbstractWollokQuickFixTestCas
 		val initial = #['''
 			class MyClass{
 				method aMethod(){
-					var a = 1
+					const a = 1
 					if (a === 1)
 						self.otherMethod()
 				}
@@ -116,7 +116,7 @@ class MethodOnSelfDoesntExistsQuickFixTest extends AbstractWollokQuickFixTestCas
 		val result = #['''
 			class MyClass{
 				method aMethod(){
-					var a = 1
+					const a = 1
 					if (a === 1)
 						self.otherMethod()
 				}

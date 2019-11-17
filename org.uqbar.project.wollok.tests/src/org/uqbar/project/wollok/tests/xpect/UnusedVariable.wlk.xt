@@ -3,7 +3,7 @@
 class WithUnusedVariables {
 	var a = 123
 	// XPECT warnings --> "Unused variable" at "b"
-	var b = 123
+	const b = 123
 	var c 
 	var d
 	const x 
@@ -11,7 +11,7 @@ class WithUnusedVariables {
 	
 	const usedOnlyWithUnary = ""
 	
-	var equipos = []
+	const equipos = []
 	
 	method doSomething() {
 		a = a + 1 + c + x

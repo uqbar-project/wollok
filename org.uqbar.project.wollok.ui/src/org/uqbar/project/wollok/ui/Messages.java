@@ -100,6 +100,8 @@ public class Messages extends NLS {
 	public static String WollokDslQuickfixProvider_lowercase_description;
 	public static String WollokDslQuickfixProvider_changeToVar_name;
 	public static String WollokDslQuickfixProvider_changeToVar_description;
+	public static String WollokDslQuickfixProvider_changeToConst_name;
+	public static String WollokDslQuickfixProvider_changeToConst_description;
 	public static String WollokDslQuickfixProvider_createMethod_name;
 	public static String WollokDslQuickfixProvider_createMethod_description;
 	public static String WollokDslQuickfixProvider_createMethod_stub;	

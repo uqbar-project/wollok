@@ -12,14 +12,14 @@ class A {
 }
 
 class B {
-	var energia = 1
+	const energia = 1
 	constructor() {
 	}
 	method energia() = energia
 }
 
 class C {
-	var energia = 1
+	const energia = 1
 	method energia() = energia
 }
 

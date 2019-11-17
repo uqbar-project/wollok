@@ -4,20 +4,20 @@ program a {
    // XPECT errors --> "Cannot use 'self' keyword outside an object, class, mixin or describe." at "self"
    self.println()
    
-   var a = true
+   const a = true
    if (a) {
    		// XPECT errors --> "Cannot use 'self' keyword outside an object, class, mixin or describe." at "self"
    		self.println()
    }
    
-   var collection = ['a', 'b', 'c']
+   const collection = ['a', 'b', 'c']
    
    // XPECT errors --> "Cannot use 'self' keyword outside an object, class, mixin or describe." at "self"
    collection.contains(self)
    
    // safe !
    
-   var anObject = object {
+   const anObject = object {
    		method aMethod() {
    			return self
    		}
