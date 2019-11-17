@@ -20,7 +20,7 @@ class AbstractWollokFormatterTestCase {
 	@Inject protected extension ISerializer
 
 	def assertFormatting(String program, String expected) {
-		//program.parse.eContents.show(1)
+		// program.parse.eContents.show(1)
 		Assert.assertEquals(expected,
         program.parse.serialize(SaveOptions.newBuilder.format().getOptions()))		
 	}
