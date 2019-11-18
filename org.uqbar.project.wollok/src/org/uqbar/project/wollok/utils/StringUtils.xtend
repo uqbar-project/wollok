@@ -62,5 +62,8 @@ class StringUtils {
 	static def singularOrPlural(int amount, String text, String pluralText) {
 		if (amount === 1) text else pluralText
 	}
-		
+
+	static def boolean notEmpty(String value) {
+		value !== null && !value.equals("")
+	}
 }

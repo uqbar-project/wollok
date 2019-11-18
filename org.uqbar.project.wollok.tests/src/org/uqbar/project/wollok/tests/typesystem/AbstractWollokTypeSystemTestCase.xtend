@@ -71,7 +71,9 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	}
 	
 	def parseAndInferAll(CharSequence... files) {
-		(files.map[parse(resourceSet)].clone => [
+		(files.map[
+			parse(resourceSet)
+		].clone => [
 			forEach[validate]
 			forEach[analyse]
 			inferTypes

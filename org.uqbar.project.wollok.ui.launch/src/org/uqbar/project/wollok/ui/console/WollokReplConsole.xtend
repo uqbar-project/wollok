@@ -130,7 +130,7 @@ class WollokReplConsole extends TextConsole {
 	}
 	
 	def hasMainFile() {
-		return fileName() !== null && fileName.endsWith("." + WollokConstants.CLASS_OBJECTS_EXTENSION)
+		return fileName() !== null && fileName.endsWith("." + WollokConstants.WOLLOK_DEFINITION_EXTENSION)
 	}
 
 	def fileName() {

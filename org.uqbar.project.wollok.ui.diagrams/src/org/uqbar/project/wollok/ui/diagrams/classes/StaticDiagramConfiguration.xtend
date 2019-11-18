@@ -27,6 +27,7 @@ import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.utils.StringUtils.*
 
 @Accessors
 abstract class AbstractDiagramConfiguration extends Observable {
@@ -400,11 +401,11 @@ class StaticDiagramConfiguration extends AbstractDiagramConfiguration implements
 	}
 	
 	def getStaticDiagramFileName() {
-		originalFileName.replace(WollokConstants.CLASS_OBJECTS_EXTENSION, WollokConstants.STATIC_DIAGRAM_EXTENSION)
+		originalFileName.replace(WollokConstants.WOLLOK_DEFINITION_EXTENSION, WollokConstants.STATIC_DIAGRAM_EXTENSION)
 	}
 	
 	def resourceCanBeUsed() {
-		fullPath !== null && !fullPath.equals("") && originalFileName !== null && !originalFileName.equals("") && originalFileName.endsWith(WollokConstants.CLASS_OBJECTS_EXTENSION)
+		fullPath.notEmpty && originalFileName.notEmpty && originalFileName.endsWith(WollokConstants.WOLLOK_DEFINITION_EXTENSION)
 	}
 
 	/** 
@@ -443,7 +444,7 @@ class StaticDiagramConfiguration extends AbstractDiagramConfiguration implements
 	}
 	
 	def resourceIsForStaticDiagram() {
-		originalFileName.endsWith(WollokConstants.CLASS_OBJECTS_EXTENSION)
+		originalFileName.endsWith(WollokConstants.WOLLOK_DEFINITION_EXTENSION)
 	}
 	
 }
