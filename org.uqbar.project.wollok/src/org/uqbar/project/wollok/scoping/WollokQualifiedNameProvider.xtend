@@ -9,7 +9,7 @@ import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.model.ResourceUtils.*
 
 /**
  * Customizes FQN named provider for
@@ -34,7 +34,7 @@ class WollokQualifiedNameProvider extends DefaultDeclarativeQualifiedNameProvide
 	}
 	
 	def qualifiedName(WFile ele) {
-		QualifiedName.create(ele.implicitPackage.split("\\."))		
+		QualifiedName.create(ele.eResource.implicitPackageForImport.split("\\."))		
 	}
 	
 	def qualifiedName(WConstructor c) {
