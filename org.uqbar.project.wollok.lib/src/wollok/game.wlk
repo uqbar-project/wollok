@@ -242,14 +242,17 @@ object game {
   method errorReporter(visual) native
      
   /**
-   * Plays once a .mp3, .ogg or .wav audio file
+	 * Returns a sound object. Audio file must be a .mp3, .ogg or .wav file.
    */ 
-  method sound(audioFile) native
-    
+   method sound(audioFile) {
+     return new Sound(file=audioFile)
+   }
+     
   /** 
-  * @private
-  */
-  method doStart(isRepl) native
+	 * @private
+	 */
+	method doStart(isRepl) native
+
 }
 
 /**
@@ -257,6 +260,7 @@ object game {
  * It is an immutable object since Wollok 1.8.0
  */
 class Position {
+
   const property x = 0
   const property y = 0
   
@@ -468,4 +472,67 @@ class Key {
   method onPressDo(action) {
     keyCodes.forEach{ key => game.whenKeyPressedDo(key, action) } //TODO: Implement native
   }
+}
+
+
+class Sound {
+	const property file
+	
+	/**
+	 * Plays the file's sound. 
+	 * A sound can only be played once.
+	 */
+	method play() native
+	
+	/**
+	 * Answers whether the sound has been played or not.
+	 */
+	method played() native
+	
+	/** 
+	 * Stops playing the sound and disposes resources.
+	 */
+	method stop() native
+	
+	/** 
+	 * Pauses the sound. 
+	 * Throws error if the sound is already paused or if the sound hasn't been played yet.
+	 */
+	method pause() native
+	
+	/** 
+	 * Resumes playing the sound. 
+	 * Throws error if the sound is not paused.
+	 */
+	method resume() native
+	
+	/** 
+	 * Answers whether the sound is paused or not. 
+	 */
+	method paused() native
+	
+	/** 
+	 * Changes absolute volume, values must be between 0 and 1.
+	 *
+	 * Examples
+	 *		mySound.volume(0)  => The sound is now muted.
+	 *		mySound.volume(0.5)  => New volume is half of the original sound's volume
+	 *		mySound.volume(mySound.volume()*0.5) => New volume is half of the current volume
+	 */
+	method volume(newVolume) native
+	
+	/** 
+	 * Answers the volume of the sound. 
+	 */
+	method volume() native
+	
+	/**
+	 * Sets whether the sound should loop or not.
+	 */
+	method shouldLoop(looping) native
+	
+	/** 
+	 * Answers whether the sound is set to loop or not. 
+	 */
+	method shouldLoop() native
 }
