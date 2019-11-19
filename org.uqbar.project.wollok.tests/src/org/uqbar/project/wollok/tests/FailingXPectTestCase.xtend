@@ -1,9 +1,9 @@
 package org.uqbar.project.wollok.tests
 
+import org.eclipse.xpect.runner.XpectRunner
+import org.eclipse.xpect.xtext.lib.tests.XtextTests
 import org.junit.Ignore
 import org.junit.runner.RunWith
-import org.xpect.runner.XpectRunner
-import org.xpect.xtext.lib.tests.XtextTests
 
 /**
  * Just a dummy test class for xpect tests that are failing

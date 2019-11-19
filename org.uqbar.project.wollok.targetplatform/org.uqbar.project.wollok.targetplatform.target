@@ -1,12 +1,22 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target includeMode="feature" name="org.uqbar.project.wollok.targetplatform" sequenceNumber="60">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?>
+<target includeMode="feature" name="org.uqbar.project.wollok.targetplatform" sequenceNumber="61">
 <locations>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.xpect.sdk.feature.group" version="0.2.0.201611211350"/>
-<repository location="http://www.xpect-tests.org/updatesite/nightly/"/>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
+	<unit id="org.eclipse.xtext.sdk.feature.group" version="0.0.0"/>
+	<repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.19.0/"/>
 </location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.xtext.sdk.feature.group" version="2.11.0.v20170201-0242"/>
-<repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
+<unit id="org.eclipse.jdt.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.platform.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.pde.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.draw2d.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.emf.sdk.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.xpand" version="0.0.0"/>
+<unit id="org.eclipse.xtend" version="0.0.0"/>
+<unit id="org.eclipse.xtend.typesystem.emf" version="0.0.0"/>
+<unit id="org.eclipse.emf.mwe2.launcher.feature.group" version="0.0.0"/>
+<repository location="http://download.eclipse.org/releases/2019-09/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="de.itemis.xtext.antlr.feature.feature.group" version="2.1.1.v201405091103"/>
@@ -14,8 +24,8 @@
 <repository location="http://download.itemis.com/updates/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.babel.nls_eclipse_es.feature.group" version="4.6.0.v20160813060001"/>
-<repository location="http://archive.eclipse.org/technology/babel/update-site/R0.14.0/neon/"/>
+<unit id="org.eclipse.babel.nls_eclipse_es.feature.group" version="4.12.0.v20190713060001"/>
+<repository location="https://download.eclipse.org/technology/babel/update-site/R0.17.0/2019-06/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.equinox.sdk.feature.group" version="0.0.0"/>
@@ -27,7 +37,7 @@
 <unit id="org.eclipse.xtend" version="0.0.0"/>
 <unit id="org.eclipse.xtend.typesystem.emf" version="0.0.0"/>
 <unit id="org.eclipse.gef.sdk.feature.group" version="0.0.0"/>
-<repository location="http://download.eclipse.org/releases/neon/"/>
+<repository location="https://download.eclipse.org/releases/2019-09/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="com.google.guava" version="15.0.0.v201403281430"/>
@@ -36,10 +46,10 @@
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.egit.mylyn.feature.group" version="4.8.0.201706111038-r"/>
-<unit id="org.eclipse.egit.feature.group" version="4.8.0.201706111038-r"/>
-<unit id="org.eclipse.egit.source.feature.group" version="4.8.0.201706111038-r"/>
-<repository location="http://eclipse.c3sl.ufpr.br/egit/updates-4.8/"/>
+<unit id="org.eclipse.egit.mylyn.feature.group" version="5.5.1.201910021850-r"/>
+<unit id="org.eclipse.egit.feature.group" version="5.5.1.201910021850-r"/>
+<unit id="org.eclipse.egit.source.feature.group" version="5.5.1.201910021850-r"/>
+<repository location="http://eclipse.c3sl.ufpr.br/egit/updates-5.5.1/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="code.satyagraha.gfm.viewer.feature.feature.group" version="2.0.1"/>
@@ -50,6 +60,12 @@
 <unit id="SGit.source.feature.group" version="1.0.0.201904082030"/>
 <repository location="http://dl.bintray.com/wollok/sgit-update-site/"/>
 </location>
+	<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+		<repository location="https://ci.eclipse.org/xpect/job/Xpect/job/master/lastSuccessfulBuild/artifact/org.eclipse.xpect.releng/p2-repository/target/repository/"/>
+		<unit id="org.eclipse.xpect.sdk.feature.group" version="0.2.0.201907311039"/>
+		<unit id="org.eclipse.xpect.xtext.lib.feature.feature.group" version="0.2.0.201907311039"/>
+		<unit id="org.eclipse.xpect.xtext.xbase.lib.feature.feature.group" version="0.2.0.201907311039"/>
+	</location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 </target>

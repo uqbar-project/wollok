@@ -8,7 +8,7 @@ Import-Package: org.junit;version="4.11.0",
  org.uqbar.project.wollok.interpreter.core,
  org.uqbar.project.wollok.interpreter.nativeobj
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.xtend.lib;bundle-version="2.11.0",
+Require-Bundle: org.eclipse.xtend.lib;bundle-version="2.19.0",
  org.apache.log4j,
  org.uqbar.project.wollok,
  org.eclipse.osgi
