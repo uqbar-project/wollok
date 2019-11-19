@@ -90,7 +90,7 @@ class Superclase {
 }
 
 class InvalidInstanceAccessOnConstructorDelegation inherits Superclase {
-	var x = 1
+	const x = 1
 	
 	// XPECT warnings --> "Accessing instance methods within constructor delegation is dangerous because object might not be completely initialized." at "self"
 	constructor() = super(self.getX()) 
@@ -104,7 +104,7 @@ class InvalidInstanceAccessOnConstructorDelegation2 inherits Superclase {
 }
 
 class InvalidInstanceAccessOnConstructorDelegation3 inherits Superclase {
-	var x = 2
+	const x = 2
 
 	// XPECT errors --> "Accessing instance variables within constructor delegation is dangerous because object might not be completely initialized." at "x"
 	constructor() = super(x)
@@ -124,5 +124,5 @@ class Cyclic {
 
 class Cyclic2 {
 	// XPECT errors --> "Invalid super constructor call. Superclass has no explicit constructors." at "super(_param)"
-	constructor(_param) = super(_param)
+	constructor(_param) = super(_param)	
 }

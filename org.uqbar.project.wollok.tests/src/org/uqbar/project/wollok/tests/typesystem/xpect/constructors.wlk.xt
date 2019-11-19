@@ -9,7 +9,7 @@ object constructorTests {
 }
 
 class C {
-	var number
+	const number
 
 	constructor(n, dog) {
 		number = n * 2

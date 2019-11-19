@@ -2,6 +2,8 @@ package org.uqbar.project.wollok.launch.tests
 
 import java.util.List
 import org.eclipse.emf.common.util.URI
+import org.eclipse.xtend.lib.annotations.Accessors
+import org.eclipse.xtend.lib.annotations.Data
 import org.fusesource.jansi.AnsiConsole
 import org.uqbar.project.wollok.interpreter.WollokTestsFailedException
 import org.uqbar.project.wollok.wollokDsl.WFile
@@ -34,7 +36,10 @@ class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 	int testsFailed = 0
 	int testsErrored = 0
 	int testsRun = 0
-	
+	List<WTestFailed> reportTestsFailed = newArrayList
+
+	public static String FINAL_SEPARATOR = "====================================================================================================="
+		
 	override testsToRun(String suiteName, WFile file, List<WTest> tests) {
 		AnsiConsole.systemInstall
 		if (suiteName ?: '' !== '') {
@@ -50,14 +55,8 @@ class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 	override reportTestAssertError(WTest test, AssertionException assertionError, int lineNumber, URI resource) {
 		test.testFinished
 		incrementTestsFailed
-		println(ansi
-				.a("  ").fg(YELLOW).a(test.name).a(": ✗ FAILED (").a(test.totalTime).a("ms) => ").reset
-				.fg(YELLOW).a(assertionError.message).reset
-				.fg(YELLOW).a(" (").a(resource.trimFragment).a(":").a(lineNumber).a(")").reset
-				.a("\n    ")
-				.fg(YELLOW).a(assertionError.wollokException?.convertStackTrace.join("\n    ")).reset
-				.a("\n")
-		)
+		test.printAssertionException(assertionError, lineNumber, resource)
+		reportTestsFailed.add(new WTestFailed(test, assertionError, null, lineNumber, resource))
 	}
 	
 	override reportTestOk(WTest test) {
@@ -68,17 +67,30 @@ class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
 		test.testFinished
 		incrementTestsErrored
-		println(ansi.a("  ").fg(RED).a(test.name).a(": ✗ ERRORED (").a(test.totalTime).a("ms) => ").reset
-			.fg(RED).a(exception.convertToString).reset
-			.a("\n    ").fg(RED).a(exception.convertStackTrace.join("\n    ")).reset
-			.a("\n")
-		)
+		test.printException(exception, lineNumber, resource)
+		reportTestsFailed.add(new WTestFailed(test, null, exception, lineNumber, resource))
 	}
 
 	override finished() {
 		super.finished
-		printTestsResults(totalTestsRun, totalTestsFailed, totalTestsErrored, overallTimeElapsedInMilliseconds)
+
 		val ok = overallProcessWasOK
+		ok.printSeparator
+		val STATUS = if (ok) GREEN else RED
+		println(ansi
+			.fg(STATUS)
+			.bold
+			.a("FINAL REPORT")
+			.reset
+		)
+		if (!ok) {
+			printTestsFailed
+		}
+		println()
+		printTestsResults(totalTestsRun, totalTestsFailed, totalTestsErrored, overallTimeElapsedInMilliseconds)
+		println()
+		ok.printSeparator
+		
 		resetGroupTestsCount
 		if (!ok) throw new WollokTestsFailedException
 	}
@@ -136,5 +148,61 @@ class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 			.reset
 		)
 		AnsiConsole.systemUninstall
+	}
+	
+	private def printAssertionException(WTest test, AssertionException assertionError, int lineNumber, URI resource) {
+		println(ansi
+			.a("  ").fg(YELLOW).a(test.name).a(": ✗ FAILED (").a(test.totalTime).a("ms) => ").reset
+			.fg(YELLOW).a(assertionError.message).reset
+			.fg(YELLOW).a(" (").a(resource.trimFragment).a(":").a(lineNumber).a(")").reset
+			.a("\n    ")
+			.fg(YELLOW).a(assertionError.wollokException?.convertStackTrace.join("\n    ")).reset
+			.a("\n")
+		)
+	}
+	
+	private def printException(WTest test, Exception exception, int lineNumber, URI resource) {
+		println(ansi.a("  ").fg(RED).a(test.name).a(": ✗ ERRORED (").a(test.totalTime).a("ms) => ").reset
+			.fg(RED).a(exception.convertToString).reset
+			.a("\n    ").fg(RED).a(exception.convertStackTrace.join("\n    ")).reset
+			.a("\n")
+		)
+	}
+
+	private def printSeparator(boolean ok) {
+		val STATUS = if (ok) GREEN else RED
+		println(ansi
+			.fg(STATUS)
+			.bold
+			.a(FINAL_SEPARATOR)
+			.a("\n")
+			.reset
+		)
+	}
+
+	private def printTestsFailed() {
+		println(ansi
+			.fg(RED)
+			.a("\n")
+		)
+		reportTestsFailed.forEach [
+			if (assertionOrigin) test.printAssertionException(assertionException, lineNumber, resource)
+			else test.printException(exception, lineNumber, resource)
+		]
+	}
+
+}
+
+@Accessors
+@Data
+class WTestFailed {
+	WTest test
+	AssertionException assertionException
+	Exception exception
+	int lineNumber
+	URI resource
+	
+	def isAssertionOrigin() {
+		assertionException !== null
 	}
 }

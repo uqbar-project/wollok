@@ -29,9 +29,9 @@ class Persona {
 }
 
 class B {
-	var i = pepita.foo()
+	const i = pepita.foo()
 	// XPECT errors --> "pepita does not understand zoo()" at "zoo"
-	var x = pepita.zoo()
+	const x = pepita.zoo()
 	
 	method a() = i + x
 }

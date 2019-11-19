@@ -2,7 +2,7 @@
 
 class Golondrina {
 	var energia = 100
-	var nivelAturdimiento = 0
+	const nivelAturdimiento = 0
 	
 	method energia() {
 		// XPECT warnings --> "Super can only be used in an overriding method" at "super()"

@@ -36,7 +36,8 @@ class Closure implements NodeAware<WClosure>, Function1<WollokObject, Object> {
 		EObject
 	}
 	
-	// REVIEW: all the convertions between list, array, etc
+	// Wollok unification
+	def initialize() {}
 	
 	override Object apply(WollokObject args) {
 		val list = (args.wollokToJava(List) as List<WollokObject>)

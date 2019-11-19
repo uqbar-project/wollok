@@ -92,18 +92,23 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 
 	def synchronized objectsFromLocalImport(Resource context, Iterable<String> importsEntry,
 		Iterable<IEObjectDescription> objectsFromManifests) {
-		val imports = (importsEntry.map[#[it] + localScopeProvider.allRelativeImports(it, context.implicitPackage)].
-			flatten).toSet
+		val imports = (importsEntry
+			.map[
+				#[it] + localScopeProvider.allRelativeImports(it, context.implicitPackage)
+			]
+			.flatten
+		).toSet
 
 		val importedObjects = imports.filter [
 			it !== null && !objectsFromManifests.exists[o|o.matchesImport(it)]
 		].map [
 			toResource(context)
-		].filter[it !== null].map [ r |
+		].filter[
+			it !== null
+		].map [ r |
 			resourceDescriptionManager.getResourceDescription(r).exportedObjects
 		].flatten + objectsFromManifests
 		importedObjects
-		
 	}
 
 	def matchesImport(IEObjectDescription o, String importedNamespace) {
@@ -111,7 +116,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 			val pattern = importedNamespace.substring(0, importedNamespace.length - 2)
 			o.qualifiedName.toString.startsWith(pattern)
 		} else {
-			o.qualifiedName.toString == importedNamespace
+			o.qualifiedName.toString === importedNamespace
 		}
 	}
 
@@ -123,7 +128,6 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		try {
 			var uri = generateUri(resource, importedNamespace)
 			if(uri === null) return null
-
 			EcoreUtil2.getResource(resource, uri)
 		} catch (RuntimeException e) {
 			throw new WollokRuntimeException(NLS.bind(Messages.WollokScopeProvider_unresolvedImport, importedNamespace), e)
@@ -146,7 +150,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		var newUri = uri
 
 		while (newUri.segmentCount >= 1) {
-			val fileURI = newUri.appendFileExtension(CLASS_OBJECTS_EXTENSION)
+			val fileURI = newUri.appendFileExtension(WOLLOK_DEFINITION_EXTENSION)
 
 			if (fileURI.exists(context)) {
 				return fileURI.toString
@@ -155,7 +159,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 			newUri = newUri.trimSegments(1)
 		}
 
-		uri.appendFileExtension(CLASS_OBJECTS_EXTENSION).toString
+		uri.appendFileExtension(WOLLOK_DEFINITION_EXTENSION).toString
 	}
 
 	def static Boolean exists(URI fileURI, Resource context) {
@@ -167,4 +171,5 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 			false
 		}
 	}
+	
 }

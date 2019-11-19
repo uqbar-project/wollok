@@ -614,7 +614,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean isWritableVarRef(EObject it) { false }
 	
 	def static findProperty(WMethodContainer it, String propertyName, int parametersSize) {
-		variableDeclarations.findFirst [ variable | variable.matchesProperty(propertyName, parametersSize) ]
+		allVariableDeclarations.findFirst [ variable | variable.matchesProperty(propertyName, parametersSize) ]
 	} 
 	
 	def static dispatch boolean matchesProperty(EObject it, String propertyName, int parametersSize) { false }
@@ -671,12 +671,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			// accumulate requirements
 			if (e instanceof WMixin) scm.addAll(e.superCallingMethods)
 			scm
-		]
-	}
-	
-	def static WMethodDeclaration getInitMethod(WMethodContainer it) {
-		methods.findFirst [ m |
-			m.name.equals(INITIALIZE_METHOD) && m.arguments.isEmpty
 		]
 	}
 	

@@ -1,7 +1,7 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 
 class A {
-	var age = 2
+	const age = 2
 	
 	method getFirstName() { return "John" }
 	method getLastName() = "Doe"
@@ -19,7 +19,7 @@ class A {
 // same goes for objects
 
 object anObject {
-	var age = 23
+	const age = 23
 	
 	method getFirstName() { return "John" }
 	method getLastName() = "Doe"

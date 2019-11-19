@@ -9,7 +9,9 @@ object apu {
 	// XPECT warnings --> "This name is already defined (imported from libForImports.wlk)" at "mod"
 	var mod = 20
 	
-	method getMod() = mod
+	method addModSix() {
+		mod = mod + 6
+	} 
 }
 
 // XPECT warnings --> "This name is already defined (imported from libForImports.wlk)" at "Burns"
