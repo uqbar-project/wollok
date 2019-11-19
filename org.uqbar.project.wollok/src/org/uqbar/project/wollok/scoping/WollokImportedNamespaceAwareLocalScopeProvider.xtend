@@ -21,12 +21,11 @@ import org.eclipse.xtext.scoping.impl.MultimapBasedSelectable
 import org.eclipse.xtext.util.OnChangeEvictingCache
 
 import static java.util.Collections.singletonList
+import static org.uqbar.project.wollok.libraries.WollokLibExtensions.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.scoping.WollokScopeExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
-
-import static extension org.uqbar.project.wollok.libraries.WollokLibExtensions.*
 
 /**
  * @author tesonep
@@ -50,7 +49,6 @@ class WollokImportedNamespaceAwareLocalScopeProvider extends AbstractGlobalScope
 		synchronized(context.eResource)
 			synchronized(context.eResource.resourceSet)
 				context.computeScope(reference)
-
 	}
 
 	def Iterable<String> allRelativeImports(String importedNamespace, EObject context) {
@@ -88,8 +86,7 @@ class WollokImportedNamespaceAwareLocalScopeProvider extends AbstractGlobalScope
 
 	protected def localElementsScope(EObject context, IScope parent, EReference reference) {
 		val name = qualifiedNameProvider.getFullyQualifiedName(context)
-
-		if(name !== null) {
+		if (name !== null) {
 			val localNormalizer = new ImportNormalizer(name, true, reference.isIgnoreCase)
 			createImportScope(parent, singletonList(localNormalizer), null, reference.EReferenceType)
 		} else

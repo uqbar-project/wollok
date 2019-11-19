@@ -15,10 +15,10 @@ class Golondrina {
 		}
 		
 		// XPECT errors --> "Cannot assign a variable to itself. It does not have any effect" at "y"
-		var y = y 
+		const y = y 
 		var z = 24
 		z = y
-		var w = y
+		const w = y
 		
 		alimento.hacerAlgo(x,y,z,w)
 	}

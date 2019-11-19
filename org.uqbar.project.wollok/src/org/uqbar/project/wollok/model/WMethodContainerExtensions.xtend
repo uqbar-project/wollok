@@ -614,7 +614,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean isWritableVarRef(EObject it) { false }
 	
 	def static findProperty(WMethodContainer it, String propertyName, int parametersSize) {
-		variableDeclarations.findFirst [ variable | variable.matchesProperty(propertyName, parametersSize) ]
+		allVariableDeclarations.findFirst [ variable | variable.matchesProperty(propertyName, parametersSize) ]
 	} 
 	
 	def static dispatch boolean matchesProperty(EObject it, String propertyName, int parametersSize) { false }

@@ -73,6 +73,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_GLOBAL_VARIABLE_NOT_ALLOWED;
 	public static String WollokDslValidator_MISSING_ASSIGNMENTS_IN_CONSTRUCTOR_CALL;
 	public static String WollokDslValidator_VARIABLE_NEVER_USED;
+	public static String WollokDslValidator_VARIABLE_SHOULD_BE_CONST;
 	public static String WollokDslValidator_PARAMETER_NEVER_USED;
 	public static String WollokDslValidator_SUPER_ONLY_IN_CLASSES;
 	public static String WollokDslValidator_SUPER_ONLY_OVERRIDING_METHOD;
