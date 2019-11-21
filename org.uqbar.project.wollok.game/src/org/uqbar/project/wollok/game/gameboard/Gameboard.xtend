@@ -119,6 +119,10 @@ class Gameboard {
 	def alreadyInGame(WollokObject wObject) {
 		findComponentFor(wObject) !== null
 	}
+	
+	def colliders(VisualComponent component) {
+		component.position.getComponentsInPosition.clone.filter[it.WObject != component.WObject]
+	}
 
 	// Getters & Setters
 
