@@ -218,6 +218,20 @@ object game {
   method ground(image) native
   
   /**
+	 * Sets cells size.
+	 */			
+	method cellSize(size){
+		if(size<=0)
+			throw new Exception(message = "Cell size can't be 0 or lower")
+		self.doCellSize(size)
+	}
+	
+	/** 
+	* @private
+	*/
+	method doCellSize(size) native	
+  
+  /**
    * Sets full background image.
    */      
   method boardGround(image) native
