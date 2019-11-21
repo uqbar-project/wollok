@@ -31,9 +31,9 @@
 	</modules>
 
 	<properties>
-		<tycho-version>0.25.0</tycho-version>
+		<tycho-version>1.5.1</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<xtext.version>2.11.0</xtext.version>
+		<xtext.version>2.19.0</xtext.version>
 		<upload.p2.url>https://update.uqbar.org/upload/</upload.p2.url>
 		<upload.download.url>https://download.uqbar.org/upload/</upload.download.url>
 		<upload.server>updateWollok</upload.server>
@@ -197,7 +197,7 @@
 									<pluginExecutionFilter>
 										<groupId>org.eclipse.tycho</groupId>
 										<artifactId>tycho-compiler-plugin</artifactId>
-										<versionRange>[0.25.0,)</versionRange>
+										<versionRange>[1.5.1,)</versionRange>
 										<goals>
 											<goal>compile</goal>
 										</goals>
@@ -210,7 +210,7 @@
 									<pluginExecutionFilter>
 										<groupId>org.eclipse.tycho</groupId>
 										<artifactId>tycho-packaging-plugin</artifactId>
-										<versionRange>[0.25.0,)</versionRange>
+										<versionRange>[1.5.1,)</versionRange>
 										<goals>
 											<goal>build-qualifier</goal>
 											<goal>validate-id</goal>
@@ -261,7 +261,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.5.1</version>
+				<version>3.8.1</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
@@ -422,7 +422,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>2.5.3</version>
 				<configuration>
 					<preparationGoals>clean verify gitlog:generate
 						org.apache.maven.plugins:maven-scm-plugin:add
