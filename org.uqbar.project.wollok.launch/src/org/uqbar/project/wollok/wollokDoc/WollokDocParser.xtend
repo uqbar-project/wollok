@@ -156,7 +156,7 @@ class WollokDocParser extends WollokChecker {
 	}
 	
 	def String toHtmlFile(String fileName) {
-		fileName.replace(WollokConstants.CLASS_OBJECTS_EXTENSION, "html")
+		fileName.replace(WollokConstants.WOLLOK_DEFINITION_EXTENSION, "html")
 	}
 	
 	def String libraryName(String fileName) {

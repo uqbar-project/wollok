@@ -73,6 +73,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_GLOBAL_VARIABLE_NOT_ALLOWED;
 	public static String WollokDslValidator_MISSING_ASSIGNMENTS_IN_CONSTRUCTOR_CALL;
 	public static String WollokDslValidator_VARIABLE_NEVER_USED;
+	public static String WollokDslValidator_VARIABLE_SHOULD_BE_CONST;
 	public static String WollokDslValidator_PARAMETER_NEVER_USED;
 	public static String WollokDslValidator_SUPER_ONLY_IN_CLASSES;
 	public static String WollokDslValidator_SUPER_ONLY_OVERRIDING_METHOD;
@@ -92,6 +93,8 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_TESTS_CANNOT_BE_EMPTY;
 	public static String WollokDslValidator_FIXTURE_CANNOT_BE_EMPTY;
 	public static String WollokDslValidator_DESCRIBE_CANNOT_BE_EMPTY;
+	public static String WollokDslValidator_DESCRIBE_WITH_EMPTY_DESCRIPTION;
+	public static String WollokDslValidator_CANNOT_DUPLICATED_DESCRIBES_NAME;
 	public static String WollokDslValidator_NATIVE_METHOD_NO_BODY;
 	public static String WollokDslValidator_NATIVE_METHOD_NO_OVERRIDE;
 	public static String WollokDslValidator_NATIVE_METHOD_ONLY_IN_CLASSES;
@@ -134,6 +137,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_DONT_USE_LOCAL_VAR_ONLY_TO_RETURN;
 	
 	public static String WollokDslValidator_DONT_DUPLICATE_TEST_DESCRIPTION;
+	public static String WollokDslValidator_TEST_WITH_EMPTY_DESCRIPTION;
 	public static String WollokDslValidator_TEST_SHOULD_HAVE_AT_LEAST_ONE_ASSERT;
 	
 	public static String WollokDslValidator_OVERRIDING_A_METHOD_SHOULD_DO_SOMETHING_DIFFERENT;
@@ -233,6 +237,7 @@ public class Messages extends NLS {
 	public static String WollokConversion_MULTIPLE_MESSAGES_ERROR;
 	public static String WollokConversion_INVALID_ARGUMENTS_SIZE;
 	public static String WollokConversion_INVALID_ARGUMENTS_SIZE_IN_CLOSURE;
+	public static String WollokConversion_INVALID_ARGUMENTS_SIZE_IN_CLOSURE_WITH_VARARGS;
 	public static String WollokConversion_STRING_CONVERSION_FAILED;
 
 	public static String WollokMessage_ELEMENT_NOT_FOUND;

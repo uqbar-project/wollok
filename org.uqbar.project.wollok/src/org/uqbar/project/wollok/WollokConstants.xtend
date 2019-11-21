@@ -17,7 +17,7 @@ class WollokConstants {
 	public static val SOURCE_FOLDER = "src"
 	
 	public static val NATURE_ID = "org.uqbar.project.wollok.wollokNature"
-	public static val CLASS_OBJECTS_EXTENSION = "wlk"
+	public static val WOLLOK_DEFINITION_EXTENSION = "wlk"
 	public static val PROGRAM_EXTENSION = "wpgm"
 	public static val TEST_EXTENSION = "wtest"
 	public static val STATIC_DIAGRAM_EXTENSION = "wsdi"

@@ -63,10 +63,13 @@ class WollokDslFormatter extends AbstractFormatter2 {
 					^import.append [ newLine ]
 				}
 			]
-			elements.forEach [ format ]
+			elements.forEach [ element, i |
+				element.format
+				element.append [ setNewLines(2) ]
+			]
 			main.format
 			tests.formatTests(document)
-			suite.format
+			suites.formatSuites(document)
 		]
 	}
 
@@ -556,6 +559,13 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		]	
 	}
 
+	def void formatSuites(Iterable<WSuite> suites, extension IFormattableDocument document) {
+		suites.forEach [ suite, i |
+			suite.format
+			suite.append [ setNewLines(2) ]
+		]	
+	}
+	
 	def void formatTests(Iterable<WTest> tests, extension IFormattableDocument document) {
 		tests.forEach [ test, i |
 			test.format

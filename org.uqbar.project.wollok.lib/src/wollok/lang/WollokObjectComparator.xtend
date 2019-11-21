@@ -12,6 +12,7 @@ import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension wollok.lang.WollokObjectComparator.*
 
 /**
  * Definition for performance
@@ -28,16 +29,35 @@ class WollokObjectComparator implements Comparator<WollokObject> {
 	
 	override compare(WollokObject o1, WollokObject o2) {
 		try {
+			if (o1 === o2) return 0
 			if (o1 === null && o2 === null) return 0
 			if (o1 === null && o2 !== null) return -1
 			if (o1 !== null && o2 === null) return 1
 			val comparator = comparisonsStrategy.get(o1.kind.fqn) ?: new WollokObjectEqualsComparator		
 			return comparator.compare(o1, o2)
 		} catch (RuntimeException e) {
-			return o1.hashCode.compareTo(o2.hashCode)
+			return o1.defaultOrderingCompare(o2)
 		}
 	}
 	
+	/**
+	 * So, we tried everything and the two objects are not comparable, so we'll impose just any arbitrary but consistent order.
+	 * The objective of this ordering is to guarantee that, in a set of non-comparable objects (e.g. objects of different kind or objects 
+	 * not comparable by nature such as lists or sets), if you later add an object that is comparable to any one of the already existing ones,
+	 * the new object will be compared to the right objects.
+	 * 
+	 * This is achieved by the concatenation of:
+	 * (a) the object's kind's fully qualified name (to group objects of the same kind),
+	 * (b) the object's to string (that means that the toString of non comparable objects should be consistent with equality)
+	 * (c) the object's hashCode (just to ensure that any two objects that arrive here are considered different from each other).
+	 */
+	static def defaultOrderingCompare(WollokObject o1, WollokObject o2) {
+		return o1.defaultOrderingKey.compareTo(o2.defaultOrderingKey)
+	}
+
+	static def defaultOrderingKey(WollokObject object) {
+		object.kind.fqn + object.toString + object.hashCode
+	}	
 }
 
 /**
@@ -47,17 +67,20 @@ class WollokObjectEqualsComparator implements Comparator<WollokObject> {
 	protected extension WollokInterpreterAccess = new WollokInterpreterAccess
 
 	override compare(WollokObject o1, WollokObject o2) {
-		if (o1.hasEqualsMethod) {
-			return if (o1.wollokEquals(o2)) 0 else 1 // o1.compareGreaterThan(o2)
+		if (o1.hasEqualsMethod && o1.wollokEqualsMethod(o2)) {
+			return 0
+		} 
+		if (o2.hasEqualsMethod && o2.wollokEqualsMethod(o1)) {
+			return 0 
 		}
-		// default case
-		return o1.hashCode.compareTo(o2.hashCode)
-	}
-
-	def compareGreaterThan(WollokObject o1, WollokObject o2) {
 		if (o1.hasGreaterThanMethod) {
-			 if (o1.wollokGreaterThan(o2)) 1 else -1
-		} else 1
+			return if (o1.wollokGreaterThan(o2)) 1 else -1
+		}
+		if (o2.hasGreaterThanMethod) {
+			return if (o2.wollokGreaterThan(o1)) -1 else 1
+		}
+
+		return o1.defaultOrderingCompare(o2)
 	}
 }
 

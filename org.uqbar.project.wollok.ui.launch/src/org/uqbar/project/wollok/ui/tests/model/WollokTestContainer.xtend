@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.ui.tests.model
 import java.util.List
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.ui.launch.Activator
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
@@ -13,7 +14,6 @@ class WollokTestContainer {
 	var List<WollokTestResult> tests = newArrayList
 	var List<WollokTestResult> allTests = newArrayList
 	var boolean processingManyFiles = false
-	long millisecondsElapsed = 0
 	
 	override toString(){
 		mainResource.toString
@@ -27,6 +27,42 @@ class WollokTestContainer {
 		this.tests = newArrayList(allTests.filter [ result | result.failed || !shouldShowOnlyFailuresAndErrors ])
 	}
 	
+	def passed() {
+		tests.forall [ test | test.state === WollokTestState.OK ]
+	}
+	
+	def running() {
+		tests.exists [ test | test.state === WollokTestState.RUNNING ]
+	}
+	
+	def errored() {
+		tests.exists [ test | test.state === WollokTestState.ERROR ]
+	}
+	
+	def failed() {
+		tests.exists [ test | test.state === WollokTestState.ASSERT ]
+	}
+	
+	def getInternalImage() {
+		if (running) {
+			return "icons/suiterun.png"
+		}
+		if (errored) {
+			return "icons/suiteerr.png"
+		}
+		if (failed) {
+			return "icons/suitefail.png"
+		}
+		if (passed) {
+			return "icons/suiteok.png"
+		}
+		"icons/suite.png"
+	}
+
+	def getImage(){
+		Activator.getDefault.getImageDescriptor(internalImage)
+	}
+	
 	def void defineTests(List<WollokTestResult> tests, boolean shouldShowOnlyFailuresAndErrors) {
 		this.allTests = tests
 		filterTestByState(shouldShowOnlyFailuresAndErrors)
@@ -35,11 +71,6 @@ class WollokTestContainer {
 	
 	def testByName(String testName) {
 		this.allTests.findFirst[name == testName]
-	}
-	
-	def getProject() {
-		if (this.allTests.empty) return null
-		this.allTests.head.testResource.toIFile.project
 	}
 	
 	def asText() {

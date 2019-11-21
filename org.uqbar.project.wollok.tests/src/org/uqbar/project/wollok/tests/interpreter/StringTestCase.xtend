@@ -224,7 +224,7 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void charAtFail() {
 		'''
-		assert.throwsExceptionWithMessage("Cannot convert parameter \"a\" to type wollok.lang.Number", { "hola".charAt("a") })
+		assert.throwsExceptionWithMessage("a does not understand isInteger()", { "hola".charAt("a") })
 		'''.test
 	}
 	
@@ -235,6 +235,20 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 		'''.test
 	}
 	
+	@Test
+	def void concatHappyPath() {
+		'''
+		assert.equals("hey".concat("jude"), "heyjude")
+		'''.test
+	}
+	
+	@Test
+	def void concatWithNumbers() {
+		'''
+		assert.equals("u".concat(2), "u2")
+		'''.test
+	}
+
 	@Test
 	def void reverse() { 
 		'''

@@ -54,5 +54,16 @@ class StringUtils {
 		val float seconds = milliseconds / 1000f
 		new DecimalFormat("##########.###").format(seconds)
 	}
-		
+
+	static def singularOrPlural(int amount, String text) {
+		"" + amount + " " + amount.singularOrPlural(text, text + "s")		
+	} 
+
+	static def singularOrPlural(int amount, String text, String pluralText) {
+		if (amount === 1) text else pluralText
+	}
+
+	static def boolean notEmpty(String value) {
+		value !== null && !value.equals("")
+	}
 }

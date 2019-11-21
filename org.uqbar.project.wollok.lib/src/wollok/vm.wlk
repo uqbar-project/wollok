@@ -1,3 +1,3 @@
 object runtime {
-	method isInteractive() native
+  method isInteractive() native
 }

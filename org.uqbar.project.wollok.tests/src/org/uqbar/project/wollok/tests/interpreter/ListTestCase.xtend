@@ -6,7 +6,7 @@ import org.junit.Test
  * @author jfernandes
  */
 class ListTestCase extends CollectionTestCase {
-	
+
 	@Test
 	def void subList() {
 		'''
@@ -15,6 +15,10 @@ class ListTestCase extends CollectionTestCase {
 		assert.equals([22,2,10], numbers.subList(0,2))
 		assert.equals([2,10], numbers.subList(1,2))
 		assert.equals([2], numbers.subList(1,1))
+		assert.equals([], numbers.subList(5))
+		assert.equals([], numbers.subList(3))
+		assert.equals([], numbers.subList(5,6))
+		assert.equals([], [].subList(1, 2))
 		'''.test
 	}
 	
