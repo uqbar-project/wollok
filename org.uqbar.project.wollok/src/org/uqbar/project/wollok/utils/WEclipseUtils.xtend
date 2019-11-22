@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.IStatus
 import org.eclipse.core.runtime.NullProgressMonitor
 import org.eclipse.core.runtime.Path
 import org.eclipse.core.runtime.Status
-import org.eclipse.core.runtime.jobs.Job
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
@@ -33,8 +32,6 @@ import org.eclipse.jface.text.IDocument
 import org.eclipse.jface.text.IRegion
 import org.eclipse.jface.text.source.IVerticalRuler
 import org.eclipse.jface.text.source.IVerticalRulerInfo
-import org.eclipse.swt.widgets.Display
-import org.eclipse.ui.IEditorPart
 import org.eclipse.ui.IPageLayout
 import org.eclipse.ui.PartInitException
 import org.eclipse.ui.PlatformUI
@@ -70,17 +67,6 @@ class WEclipseUtils {
 	def static getProjectExplorer() {
 		findView(IPageLayout.ID_PROJECT_EXPLORER)
 	}
-
-	def static schedule(Display display, String message, ()=>void toDo) {
-		new Job(message) {
-			override run(IProgressMonitor monitor) {
-				toDo.apply
-				Status.OK_STATUS
-			}
-		}.schedule
-	}
-
-	def static display(IEditorPart editor) { editor.editorSite.shell.display }
 
 	def static imageDescriptor(String name) { PlatformUI.getWorkbench.getSharedImages.getImageDescriptor(name) }
 
