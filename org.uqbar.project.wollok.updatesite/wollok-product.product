@@ -40,7 +40,6 @@ http://wollok.org
    <launcher name="wollok">
       <linux icon="icons/icon_64x64.xpm"/>
       <macosx icon="icons/wollok-logo.icns"/>
-      <solaris/>
       <win useIco="true">
          <ico path="icons/wollok-logo.ico"/>
          <bmp/>
@@ -625,20 +624,19 @@ Library.
    </features>
 
    <configurations>
+      <plugin id="org.apache.felix.scr" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="2" />
-      <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.osgi" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.update.configurator" autoStart="true" startLevel="3" />
       <plugin id="org.uqbar.project.wollok" autoStart="false" startLevel="0" />
       <plugin id="org.uqbar.project.wollok.game" autoStart="false" startLevel="0" />
       <plugin id="org.uqbar.project.wollok.launch" autoStart="false" startLevel="0" />
       <plugin id="org.uqbar.project.wollok.product.ui" autoStart="true" startLevel="3" />
       <plugin id="org.uqbar.project.wollok.ui" autoStart="false" startLevel="0" />
-      <property name="eclipse.p2.data.area" value="@config.dir/../p2" />
       <property name="osgi.instance.area" value="./workspace" />
+      <property name="eclipse.p2.data.area" value="@config.dir/../p2" />
    </configurations>
 
    <repositories>
