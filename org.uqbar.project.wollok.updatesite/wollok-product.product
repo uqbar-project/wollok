@@ -7,12 +7,12 @@
       <image path="/org.uqbar.project.wollok.product/icons/wollok-logo-about.fw.png"/>
       <text>
          Wollok Programming Language and IDE
-Version 1.8.5
+Version 1.9.0
 
 http://uqbar-project.org
 http://wollok.org
 
-© Copyright 2014-2017, Uqbar Project Foundation, All right reserved
+© Copyright 2014-2019, Uqbar Project Foundation, All right reserved
       </text>
    </aboutInfo>
 
