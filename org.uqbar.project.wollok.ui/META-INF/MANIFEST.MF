@@ -47,3 +47,4 @@ Export-Package: org.uqbar.project.wollok.refactoring,
  org.uqbar.project.wollok.ui.quickfix,
  org.uqbar.project.wollok.ui.wizard
 Bundle-Activator: org.uqbar.project.wollok.ui.WollokActivator
+Automatic-Module-Name: org.uqbar.project.wollok.ui

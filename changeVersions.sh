@@ -12,7 +12,7 @@ for i in `find . -name "pom.xml" -not -path "./.metadata/*" -not -path "*/target
 done
 
 echo -e "\t - MANIFEST VERSIONS"
-for i in `find . -name "MANIFEST.MF" | grep -E "uqbar|xinterpreter" | grep -v "/target"`;	do
+for i in `find . -name "MANIFEST.MF" | grep -E "uqbar|xinterpreter" | grep -v "/target"`; do
     sed -e "s#Bundle-Version: \(.*\)#Bundle-Version: $NEW_VERSION.qualifier#g" $i > $i.tmp
     rm $i
     mv $i.tmp $i

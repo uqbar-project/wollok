@@ -65,3 +65,4 @@ Export-Package: org.uqbar.project.wollok,
  org.uqbar.project.wollok.wollokDsl.util,
  wollok.lang
 Bundle-Activator: org.uqbar.project.wollok.WollokActivator
+Automatic-Module-Name: org.uqbar.project.wollok

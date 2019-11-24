@@ -82,3 +82,4 @@ Export-Package: .,
  org.uqbar.project.wollok.game.helpers,
  org.uqbar.project.wollok.game.listeners
 Bundle-Vendor: Uqbar Project
+Automatic-Module-Name: org.uqbar.project.wollok.game

@@ -36,3 +36,4 @@ Export-Package: org.uqbar.project.wollok.interpreter,
  org.uqbar.project.wollok.interpreter.debugger,
  org.uqbar.project.wollok.interpreter.stack,
  org.uqbar.project.xtext.utils
+Automatic-Module-Name: org.uqbar.project.xinterpreter

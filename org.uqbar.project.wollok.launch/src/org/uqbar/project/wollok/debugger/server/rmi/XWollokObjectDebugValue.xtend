@@ -17,7 +17,7 @@ import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
  */
 class XWollokObjectDebugValue extends XDebugValue {
 	@Accessors(PUBLIC_GETTER) String typeName
-	String varName
+	@Accessors(PUBLIC_GETTER) String varName
 
 	new(String varName, WollokObject obj) {
 		super(obj.description, System.identityHashCode(obj))

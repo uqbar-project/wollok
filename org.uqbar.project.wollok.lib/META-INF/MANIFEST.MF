@@ -16,3 +16,4 @@ Export-Package: .,
  wollok.lib,
  wollok
 Bundle-Vendor: Uqbar Project
+Automatic-Module-Name: org.uqbar.project.wollok.lib

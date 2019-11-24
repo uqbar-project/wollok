@@ -29,6 +29,8 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
 import org.eclipse.xpect.xtext.lib.setup.ThisResource
 
+import static extension org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
+
 /**
  * Test class for extending xpect to have tests on static proposals (content assist)
  * 
@@ -63,7 +65,7 @@ class TypeSystemXpectTestCase extends AbstractWollokTypeSystemTestCase {
 	) {
 
 		var method = target.EObject.method
-//		expectation.assertEquals(method.functionType(typeSystem))
+		expectation.assertEquals(method.functionType(typeSystem))
 	}
 
 	@Xpect(liveExecution=LiveExecutionType.FAST)
@@ -75,7 +77,7 @@ class TypeSystemXpectTestCase extends AbstractWollokTypeSystemTestCase {
 		@ThisResource XtextResource resource,
 		@ThisModel EObject file
 	) {
-//		expectation.assertEquals(target.EObject.constructor.constructorType(typeSystem))
+		expectation.assertEquals(target.EObject.constructor.constructorType(typeSystem))
 	}
 
 	def dispatch method(EObject object) {

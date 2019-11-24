@@ -7,10 +7,11 @@ import org.eclipse.core.runtime.AssertionFailedException
 import org.eclipse.core.runtime.Platform
 import org.eclipse.core.runtime.Plugin
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.osgi.framework.BundleContext
+import org.uqbar.project.wollok.preferences.WollokCachedTypeSystemPreferences
 import org.uqbar.project.wollok.typesystem.preferences.DefaultWollokTypeSystemPreferences
 import org.uqbar.project.wollok.typesystem.preferences.WollokTypeSystemPreference
-import org.uqbar.project.wollok.preferences.WollokCachedTypeSystemPreferences
 
 /**
  * 
@@ -24,9 +25,9 @@ class WollokTypeSystemActivator extends Plugin {
 
 	val Logger log = Logger.getLogger(this.class)
 
-	private static WollokTypeSystemActivator plugin
-	private BundleContext context
-	private Collection<TypeSystem> typeSystems
+	static WollokTypeSystemActivator plugin
+	@Accessors(PUBLIC_GETTER) BundleContext context
+	Collection<TypeSystem> typeSystems
 	WollokTypeSystemPreference typeSystemPreferences
 
 	def synchronized getTypeSystems() {

@@ -53,3 +53,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: 
  org.uqbar.project.wollok.tests,
  org.uqbar.project.wollok.tests.interpreter.repl
+Automatic-Module-Name: org.uqbar.project.wollok.tests

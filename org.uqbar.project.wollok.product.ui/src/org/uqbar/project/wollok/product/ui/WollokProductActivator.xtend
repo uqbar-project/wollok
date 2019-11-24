@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.product.ui
 
 import org.eclipse.ui.plugin.AbstractUIPlugin
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.osgi.framework.BundleContext
 
 /**
@@ -12,7 +13,7 @@ import org.osgi.framework.BundleContext
  */
 class WollokProductActivator extends AbstractUIPlugin {
 	public static val PLUGIN_ID = "org.uqbar.project.wollok.product.ui"; //$NON-NLS-1$
-	static var WollokProductActivator plugin
+	@Accessors(PUBLIC_GETTER) static var WollokProductActivator plugin
 	
 	override start(BundleContext context) throws Exception {
 		super.start(context)

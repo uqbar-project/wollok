@@ -51,3 +51,4 @@ Export-Package: org.uqbar.project.wollok.debugger,
  org.uqbar.project.wollok.ui.tests.launch,
  org.uqbar.project.wollok.ui.tests.model,
  org.uqbar.project.wollok.ui.tests.shortcut
+Automatic-Module-Name: org.uqbar.project.wollok.ui.launch

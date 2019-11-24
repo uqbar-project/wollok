@@ -22,7 +22,7 @@ import org.uqbar.project.wollok.tests.debugger.util.matchers.InterpreterElementM
  * 
  * @author jfernandes
  */
-class AbstractInterpreterAssertion implements InterpreterAssertion {
+abstract class AbstractInterpreterAssertion implements InterpreterAssertion {
 	var InterpreterElementMatcher matcher
 	var InterpreterAsserter asserter
 	

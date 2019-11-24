@@ -54,7 +54,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.10</version>
 				<executions>
 					<execution>
 						<id>copy-dependencies</id>
@@ -75,7 +74,6 @@
 			<!-- create WDKs -->
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.5.4</version>
 				<configuration>
 					<descriptors>
 						<descriptor>assembly/wollok-assembly.xml</descriptor>

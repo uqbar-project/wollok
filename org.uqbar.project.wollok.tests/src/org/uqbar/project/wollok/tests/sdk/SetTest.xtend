@@ -51,7 +51,7 @@ class SetTest extends CollectionTestCase {
 	}
 	
 	@Test
-	override def void testToString() {
+	override void testToString() {
 		'''
 		const a = #{23, 2, 2}
 		const s = a.toString()

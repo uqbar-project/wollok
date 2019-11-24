@@ -15,7 +15,7 @@ import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
 
 class WDictionary implements JavaWrapper<Map<WollokObject, WollokObject>> {
 	
-	val WollokObject wollokInstance
+	@Accessors(PUBLIC_GETTER) val WollokObject wollokInstance
 	@Accessors var Map<WollokObject, WollokObject> wrapped
 	protected extension WollokInterpreterAccess = new WollokInterpreterAccess
 		 
