@@ -20,11 +20,9 @@ http://wollok.org
    </configIni>
 
    <launcherArgs>
-      <programArgsLin>--launcher.GTK_version 2
-      </programArgsLin>
       <programArgsWin>-Dfile.encoding=UTF-8
       </programArgsWin>
-      <vmArgs>-XX:PermSize=128M -XX:MaxPermSize=512M
+      <vmArgs>-XX:PermSize=512M -XX:MaxPermSize=768M
       </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
