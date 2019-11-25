@@ -14,12 +14,12 @@ import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrameVariable
  * @author jfernandes
  */
 class WollokStackFrame extends WollokDebugElement implements IStackFrame {
-	private WollokThread thread
-	private int id
+	WollokThread thread
+	int id
 	XDebugStackFrame frame
-	private IVariable[] variables = #[]
+	IVariable[] variables = #[]
 	// uris are not serializable
-	private transient URI uri  
+	transient URI uri  
 	
 	new(WollokThread thread, XDebugStackFrame frame, int id) {
 		super(thread.debugTarget)

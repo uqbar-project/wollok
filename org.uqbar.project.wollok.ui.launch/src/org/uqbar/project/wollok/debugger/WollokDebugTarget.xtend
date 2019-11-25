@@ -41,7 +41,7 @@ import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
  */
 class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 	protected String name
-	private IProcess process
+	IProcess process
 	protected ILaunch launch
 	
 	// commands
@@ -54,7 +54,7 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 	protected boolean fTerminated = false
 	
 	protected WollokThread wollokThread
-	private IThread[] wollokThreads
+	IThread[] wollokThreads
 	
 	IPreferenceStore prefs
 	
