@@ -29,7 +29,7 @@ for i in `find . -name "feature.xml" | grep -E "uqbar|xinterpreter" | grep -v "/
 done
 
 echo -e "\t - PRODUCT"
-for i in `find . -name "*.product" -type f"`; do
+for i in `find . -name "*.product" -type f`; do
   echo "  " $i
   sed -e "s#version=\"[0-9]\.[0-9]\.[0-9]\"#version=\"$NEW_VERSION\"#g" $i > $i.tmp
   rm $i
@@ -60,6 +60,11 @@ echo -e "\t - ABOUT TEXT"
 i="org.uqbar.project.wollok.product/plugin.xml"
 sed -e "s#Version [0-9]\.[0-9]\.[0-9]#Version $NEW_VERSION#g" $i > $i.tmp
 echo "  " $i
+rm $i
+mv $i.tmp $i
+
+CURRENT_YEAR=`date +'%Y'`
+sed -e "s#Copyright 2014-[0-9]*#Copyright 2014-$CURRENT_YEAR#g" $i > $i.tmp
 rm $i
 mv $i.tmp $i
 
