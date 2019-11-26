@@ -13,7 +13,10 @@ function replaceMultiline() {
   OLD_TEXT=$1
   NEW_TEXT=$2
   FILE=$3
-  cat $i | tr '\n' '\f' | replace $OLD_TEXT $NEW_TEXT $FILE
+  echo -e "\t" $FILE
+  cat $FILE | tr '\n' '\f' | sed -e "s#$OLD_TEXT#$NEW_TEXT#g" | tr '\f' '\n' > $FILE.tmp
+  rm $FILE
+  mv $FILE.tmp $FILE
 }
 
 NEW_VERSION=$1
@@ -21,9 +24,8 @@ NEW_VERSION=$1
 echo "Updating to version $NEW_VERSION:"
 
 echo -e "- POM"
-# TODO: usar maven?
 cd org.uqbar.project.wollok.releng
-mvn dependency:go-offline org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$NEW_VERSION
+mvn -q dependency:go-offline org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$NEW_VERSION
 cd ..
 
 echo -e "- MANIFEST VERSIONS"
