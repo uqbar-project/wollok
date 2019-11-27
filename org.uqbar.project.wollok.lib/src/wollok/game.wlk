@@ -1,1 +1,0 @@
-../../../wollok-language/src/wollok/game.wlk
