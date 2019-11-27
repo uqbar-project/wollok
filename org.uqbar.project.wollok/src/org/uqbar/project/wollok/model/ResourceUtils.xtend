@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.model
 
+import java.util.Map
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.resources.IWorkspace
@@ -7,14 +8,21 @@ import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.emf.common.util.URI
 
-import static org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
 import static org.uqbar.project.wollok.WollokConstants.*
+import static org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
 
 /**
  * Extension methods to Wollok semantic model related to files, resources and the Eclipse platform.
  */
 class ResourceUtils {
+
+	public static Map<String, String> implicitPackagePreffixes = #{
+		WOLLOK_DEFINITION_EXTENSION -> "",
+		TEST_EXTENSION -> "t_",
+		PROGRAM_EXTENSION -> "p_"
+	}
 
 	def static getProject(EObject obj) { obj.IFile.project }
 
@@ -52,7 +60,7 @@ class ResourceUtils {
 	}
 
 	def static implicitPackage(Resource it) {
-		if(it === null || it.URI === null || it.URI.toString === null) {
+		if(it === null || URI === null || URI.toString === null) {
 			return null
 		}
 		if(URI.toString.startsWith(CLASSPATH))
@@ -60,4 +68,17 @@ class ResourceUtils {
 		else
 			fullPackageName(it)
 	}
+	
+	def static implicitPackageForImport(Resource it) {
+		preffixPackage + implicitPackage
+	}
+	
+	def static preffixPackage(Resource it) {
+		URI.preffixForImport
+	}
+
+	def static preffixForImport(URI uri) {
+		implicitPackagePreffixes.get(uri.fileExtension) ?: ""
+	}
+
 }

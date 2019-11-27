@@ -63,4 +63,8 @@ class StringUtils {
 		"" + amount + " " + if (amount === 1) text else pluralText
 	}
 
+	static def boolean notEmpty(String value) {
+		value !== null && !value.equals("")
+	}
+
 }

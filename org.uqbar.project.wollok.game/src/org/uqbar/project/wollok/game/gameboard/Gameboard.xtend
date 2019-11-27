@@ -1,10 +1,7 @@
 package org.uqbar.project.wollok.game.gameboard;
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.audio.Sound
 import java.util.Collection
 import java.util.List
-import java.util.Map
 import org.apache.log4j.Logger
 import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
@@ -22,28 +19,31 @@ import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 @Accessors
 class Gameboard {
-	public static Gameboard instance
-	public static final int CELLZISE = 50
+	static Gameboard instance
 	
 	val Logger log = Logger.getLogger(this.class)	
-	
 	String title
 	String ground
 	String boardGround
 	int height
 	int width
+	@Accessors int cellsize = 50
 	Background background
 	List<VisualComponent> components = newArrayList
 	List<GameboardListener> listeners = newArrayList
 	VisualComponent character
 	@Accessors(NONE) VisualComponent errorReporter
-	Map<String, Sound> audioFiles = <String, Sound>newHashMap
+	
 		
 	def static getInstance() {
 		if (instance === null) {
-			instance = new Gameboard()
+			resetInstance
 		}
 		instance
+	}
+		
+	def static resetInstance() {
+		instance = new Gameboard()
 	}
 	
 	new() {
@@ -102,9 +102,9 @@ class Gameboard {
 		null
 	}
 
-	def pixelHeight() {	height * CELLZISE }
+	def pixelHeight() {	height * cellsize }
 
-	def pixelWidth() { width * CELLZISE }
+	def pixelWidth() { width * cellsize }
 	
 	def clear() {
 		components.clear()
@@ -122,6 +122,10 @@ class Gameboard {
 	
 	def alreadyInGame(WollokObject wObject) {
 		findComponentFor(wObject) !== null
+	}
+	
+	def colliders(VisualComponent component) {
+		component.position.getComponentsInPosition.clone.filter[it.WObject != component.WObject]
 	}
 
 	// Getters & Setters
@@ -177,29 +181,5 @@ class Gameboard {
 	
 	def VisualComponent errorReporter() {
 		errorReporter ?: somebody
-	}
-
-	def sound(String audioFile) {
-		val sound = audioFile.fetchSound
-		if (sound !== null) {
-			sound.play(1.0f)
-		}
-	}
-	
-	def fetchSound(String audioFile) {
-		if (Gdx.app === null)
-			throw new RuntimeException(Messages.WollokGame_SoundGameNotStarted)
-			
-		var sound = audioFiles.get(audioFile)
-		if (sound === null) {
-			try {
-				val soundFile = Gdx.files.internal(audioFile)
-				sound = Gdx.audio.newSound(soundFile)
-				audioFiles.put(audioFile, sound)
-			} catch (Exception e) {
-				println(NLS.bind(Messages.WollokGame_AudioNotFound, audioFile))
-			}
-		}
-		sound
 	}
 }

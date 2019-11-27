@@ -197,6 +197,8 @@ abstract class TypeDeclarations {
 
 	def Key() { classTypeAnnotation(KEY) }
 
+	def Sound() {classTypeAnnotation(SOUND)}
+	
 	def ExceptionType() { classTypeAnnotation(EXCEPTION) }
 
 	def StackTraceElement() { classTypeAnnotation(STACK_TRACE_ELEMENT) }
@@ -215,7 +217,7 @@ abstract class TypeDeclarations {
 	
 	def runtime() { objectTypeAnnotation(RUNTIME) }
 
-	def keyboard() { objectTypeAnnotation(KEYBOARD) }
+	def keyboard() { objectTypeAnnotation(KEYBOARD) }	
 
 	def PKEY() { PairType.param(GenericTypeInfo.KEY) }
 

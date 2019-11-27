@@ -40,6 +40,7 @@ import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WMixin
+import org.uqbar.project.wollok.wollokDsl.WNamed
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
@@ -152,6 +153,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	// WARNING KEYS
 	public static val WARNING_UNUSED_VARIABLE = "WARNING_UNUSED_VARIABLE"
 	public static val WARNING_UNUSED_PARAMETER = "WARNING_UNUSED_PARAMETER"
+	public static val WARNING_VARIABLE_SHOULD_BE_CONST = "WARNING_VARIABLE_SHOULD_BE_CONST"
 
 	def validatorExtensions() {
 		if (wollokValidatorExtensions !== null)
@@ -650,14 +652,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(WARN)
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
-	def duplicatedMethodContainerFromImports(WMethodContainer it) {
-		duplicatedReferenceFromImports(it)
-	}
-	
-	@Check
-	@DefaultSeverity(WARN)
-	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
-	def duplicatedAtributteFromImports(WVariable it) {
+	def duplicatedMethodContainerFromImports(WNamed it) {
 		duplicatedReferenceFromImports(it)
 	}
 	
@@ -889,6 +884,16 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
 	def unusedParameters(WConstructor it) {
 		checkUnusedParameters(it.parameters)
+	}
+	
+	@Check
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
+	def variableSingleAssignmentShouldBeConst(WVariableDeclaration it) {
+		val assignments = variable.assignments(container)
+		if (writeable && !isProperty && assignments.size === 1 && right !== null && !isGlobal) {
+			warning(WollokDslValidator_VARIABLE_SHOULD_BE_CONST, it, WVARIABLE_DECLARATION__VARIABLE,
+				WARNING_VARIABLE_SHOULD_BE_CONST)
+		}
 	}
 	
 	def void checkUnusedParameters(List<WParameter> parameters) {

@@ -25,7 +25,7 @@ class C inherits A {
 
 describe "group of tests" {
 	
-	var valor = 4
+	const valor = 4
 	
 	// XPECT errors --> "Property are only allowed in objects, classes and mixins" at "property"
 	var property valor2 = 0

@@ -26,7 +26,7 @@ class GameboardInputProcessor implements InputProcessor {
 
 	override boolean touchDown(int x, int y, int pointer, int button) {
 		val inverseY = Gameboard.getInstance().pixelHeight() - y
-		val position = new WGPosition(x / Gameboard.CELLZISE, inverseY / Gameboard.CELLZISE )
+		val position = new WGPosition(x / Gameboard.instance.cellsize, inverseY / Gameboard.instance.cellsize )
 		
 		val Iterable<VisualComponent> lista = Gameboard.getInstance.getComponentsInPosition(position)
 		

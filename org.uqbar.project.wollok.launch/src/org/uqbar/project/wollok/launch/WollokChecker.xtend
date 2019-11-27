@@ -142,7 +142,7 @@ class WollokChecker {
 	def void collectWollokFiles(File folder, List<File> classpath) {
 		classpath.addAll(
 			folder.listFiles [ dir, name |
-			name.endsWith("." + WollokConstants.CLASS_OBJECTS_EXTENSION) ||
+			name.endsWith("." + WollokConstants.WOLLOK_DEFINITION_EXTENSION) ||
 				name.endsWith("." + WollokConstants.PROGRAM_EXTENSION) ||
 				name.endsWith("." + WollokConstants.TEST_EXTENSION)
 		])

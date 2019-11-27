@@ -54,7 +54,7 @@ object chanchitoCasaMadera{
 }
 
 object chanchitoTrabajador{
-	var edad = 2
+	const edad = 2
 	
 	method peso(){
 		return edad * 5
@@ -80,7 +80,7 @@ object casaPaja{
 }
 
 object casaMadera{
-	var minutos = 15
+	const minutos = 15
 	var visitante
 //	var visitante = chanchito
 	
@@ -104,9 +104,9 @@ object casaMadera{
 
 
 object casaLadrillos{
-	var ladrillos = 10
+	const ladrillos = 10
 	var pesoOcupado = chanchitoTrabajador.peso()
-//	var pesoOcupado = 10
+//	const pesoOcupado = 10
 	
 	method llega(chanchito){
 		pesoOcupado = pesoOcupado + chanchito.peso()
@@ -133,7 +133,7 @@ object abuela{
 }
 
 object casaAbuela{
-	var minutos = 5
+	const minutos = 5
 	
 	method minutos(){
 		return minutos
@@ -141,7 +141,7 @@ object casaAbuela{
 }
 
 object oveja{
-	var nombre = "Dolly"
+	const nombre = "Dolly"
 	
 	method caloriasQueAporta(){
 		return nombre.size()*5
@@ -169,7 +169,7 @@ object bosque{
 }
 
 object canasta {
-	var cantidadManzanas = 2
+	const cantidadManzanas = 2
 	method peso() {
 		return 2 * cantidadManzanas
 	} 

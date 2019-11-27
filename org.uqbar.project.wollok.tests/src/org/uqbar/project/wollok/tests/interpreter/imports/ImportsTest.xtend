@@ -1,8 +1,8 @@
 package org.uqbar.project.wollok.tests.interpreter.imports
 
-import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
-import org.junit.Test
 import org.junit.Ignore
+import org.junit.Test
+import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 
 /**
  * Test the different combinations and functionality of imports.
@@ -49,6 +49,25 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 			}
 		'''
 		].interpretAsFilesPropagatingErrors
+	}
+
+	@Test
+	def void testSameNameTestAndWlk() {
+		try {
+			#['aves' -> '''
+				object pepita {
+					method energia() = 1
+				}
+			 ''',
+			  'aves' -> '''
+			    test "pepita energia" {
+			    	assert.equals(pepita.energia(), 1)
+			    }
+			  '''
+			].interpretAsFilesPropagatingErrors
+			fail("Should have failed missing import to pepita")
+		} catch (AssertionError e) {
+		}
 	}
 
 }

@@ -1,7 +1,7 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
 
 program p {
-	var bool = true
+	const bool = true
 	
 	// XPECT type at c1 --> {() => String}
 	const c1 = { "Hello" }

@@ -425,6 +425,19 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 	
+	@Fix(WollokDslValidator.WARNING_VARIABLE_SHOULD_BE_CONST)
+	def changeDeclarationToConst(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_changeToConst_name,
+			Messages.WollokDslQuickfixProvider_changeToConst_description, null) [ e, context |
+			if (e instanceof WVariableDeclaration) {
+				val varDef = e as WVariableDeclaration
+				val value = " =" + varDef.right.node.text
+				context.xtextDocument.replace(varDef.before, varDef.node.length,
+					CONST + " " + varDef.variable.name + value)
+			}
+		]
+	}
+	
 	@Fix(DONT_USE_WKONAME_WITHIN_IT)
 	def replaceWkoNameWithSelf(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_replace_wkoname_with_self_name,
