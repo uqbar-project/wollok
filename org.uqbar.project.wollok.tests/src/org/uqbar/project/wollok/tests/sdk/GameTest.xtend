@@ -31,7 +31,7 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 		'''.test
 	}
 	
-	// Deberíamos publicar una propiedad cellsize en Game para poder ejecutarlo en wollok-language
+	// We should publish a cellSize property in game wko to migrate this test to wollok-language
 	@Test
 	def void cellSize_works_correctly() {
 		'''

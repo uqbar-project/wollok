@@ -17,7 +17,7 @@ after_success:
     cd ..
   fi
 script:
-- "./wollokInstall.sh"
+- "./wollokInstallTravis.sh"
 - cd org.uqbar.project.wollok.releng/
 - export PROFILES=normalProfile
 - export UPDATE_SITE=none
