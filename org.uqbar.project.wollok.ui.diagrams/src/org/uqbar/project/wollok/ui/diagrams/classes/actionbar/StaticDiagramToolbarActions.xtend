@@ -162,7 +162,7 @@ class RememberShapePositionsToggleButton extends Action implements Observer {
 		this.configuration = configuration
 		this.configuration.addObserver(this)
 		this.checked = configuration.isRememberLocationsAndSizes
-		imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.ui/icons/full/ovr16/pinned_ovr@2x.png"))
+		imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.debug.ui/icons/full/elcl16/pin.png"))
 	}
 
 	override run() {
@@ -188,7 +188,7 @@ class CleanShapePositionsAction extends Action {
 	new(String title, StaticDiagramConfiguration configuration) {
 		super(title)
 		this.configuration = configuration
-		imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.e4.ui.workbench.swt/icons/full/etool16/clear_co.gif"))
+		imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.ui/icons/full/etool16/clear_co.png"))
 	}
 
 	override run() {
@@ -239,7 +239,7 @@ class CleanAllRelashionshipsAction extends Action {
 	new(String title, StaticDiagramConfiguration configuration) {
 		super(title)
 		this.configuration = configuration
-		imageDescriptor = ImageDescriptor.createFromFile(this.class, "/icons/association_delete_all.png")
+		imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.ui/icons/full/elcl16/removeall.png"))
 	}
 
 	override run() {
@@ -277,7 +277,7 @@ class ShowHiddenParts extends Action {
 	new(String title, StaticDiagramConfiguration configuration) {
 		super(title)
 		this.configuration = configuration
-		imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.jdt.doc.user/images/org.eclipse.debug.ui/elcl16/changevariablevalue_co.png"))
+		imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.debug.ui/icons/full/elcl16/changevariablevalue_co.png"))
 	}
 
 	override run() {
