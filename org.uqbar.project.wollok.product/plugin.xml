@@ -46,7 +46,7 @@
      	 <!-- INTRO -->
      	 <property
                name="introBrandingImage"
-               value="product:icons/icon_64x64.png">
+               value="platform:/plugin/org.uqbar.project.wollok.ui/icons/wollok-logo.iconset/icon_16x16.png">
          </property>
          <property
                name="introTitle"
