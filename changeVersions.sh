@@ -23,7 +23,7 @@ NEW_VERSION=$1
 
 echo "Updating to version $NEW_VERSION:"
 
-echo -e "- POM"
+echo -e "- POM (this could take a while)"
 cd org.uqbar.project.wollok.releng
 mvn -q dependency:go-offline org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$NEW_VERSION
 cd ..
