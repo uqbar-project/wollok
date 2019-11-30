@@ -22,7 +22,7 @@ import static org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants.*
  * @author jfernandes
  */
 class WDebugExtensions {
-	private static final Logger logger = Logger.getLogger(WDebugExtensions)
+	static final Logger logger = Logger.getLogger(WDebugExtensions)
 	
 	def static isWollokBreakpoint(IBreakpoint b) { b.modelIdentifier == WollokLaunchConstants.ID_DEBUG_MODEL }
 	

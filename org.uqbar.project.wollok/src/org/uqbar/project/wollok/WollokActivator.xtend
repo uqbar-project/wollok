@@ -11,8 +11,8 @@ import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 class WollokActivator extends Plugin {
 	public static val BUNDLE_NAME = "org.uqbar.project.wollok"
 	public static val WOLLOK_LIB_BUNDLE_NAME = "org.uqbar.project.wollok.lib"
-	private static WollokActivator plugin;
-	private BundleContext context  
+	static WollokActivator plugin;
+	BundleContext context  
 	
 	override start(BundleContext context) {
 		super.start(context)

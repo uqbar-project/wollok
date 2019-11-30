@@ -12,7 +12,7 @@ import org.uqbar.project.wollok.ui.diagrams.editparts.ConnectionEditPart
  * @author dodain
  * 
  */
-public class AssociationConnectionEditPart extends ConnectionEditPart {
+class AssociationConnectionEditPart extends ConnectionEditPart {
 
 	new() {
 		super()

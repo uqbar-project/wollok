@@ -29,9 +29,9 @@ import static extension org.eclipse.xtext.nodemodel.util.NodeModelUtils.*
  */
 class WOverrideIndicatorModelListener extends IXtextEditorCallback.NullImpl implements IXtextModelListener {
 	public static final String JOB_NAME = "Override Indicator Updater"
-	private static ISchedulingRule SCHEDULING_RULE = SchedulingRuleFactory.INSTANCE.newSequence()
-	private Job currentJob
-	private XtextEditor xtextEditor
+	static ISchedulingRule SCHEDULING_RULE = SchedulingRuleFactory.INSTANCE.newSequence()
+	Job currentJob
+	XtextEditor xtextEditor
 	var Set<Annotation> overrideIndicatorAnnotations = newHashSet()
 	
 	// listening

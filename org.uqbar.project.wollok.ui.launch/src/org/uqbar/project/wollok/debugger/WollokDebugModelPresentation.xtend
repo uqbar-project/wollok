@@ -23,7 +23,7 @@ import org.uqbar.project.wollok.ui.launch.Activator
  */
 // TODO: esto está todo dummy
 class WollokDebugModelPresentation extends LabelProvider implements IDebugModelPresentation {
-	private ResourceManager resourceManager
+	ResourceManager resourceManager
 	
 	override computeDetail(IValue value, IValueDetailListener listener) {
 		var detail = try
@@ -52,7 +52,7 @@ class WollokDebugModelPresentation extends LabelProvider implements IDebugModelP
 		resourceManager
 	}
 
-	override def dispose() {
+	override dispose() {
 		super.dispose
 		if (resourceManager !== null)
 			resourceManager.dispose

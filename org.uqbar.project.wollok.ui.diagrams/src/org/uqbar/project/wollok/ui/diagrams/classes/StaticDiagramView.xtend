@@ -481,7 +481,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 		}
 
 		val refreshJob = new UIJob(Messages.StaticDiagram_UpdateDiagramView) {
-			override def runInUIThread(IProgressMonitor monitor) {
+			override runInUIThread(IProgressMonitor monitor) {
 				diagram = createDiagramModel
 				initializeGraphicalViewer
 				Status.OK_STATUS

@@ -19,7 +19,7 @@ import org.uqbar.project.wollok.ui.WollokActivator
  * @author jfernandes
  */
 class WollokCodingPerspectiveFactory implements IPerspectiveFactory {
-	private IPageLayout factory
+	IPageLayout factory
 
 	override createInitialLayout(IPageLayout factory) {
 		this.factory = factory 
