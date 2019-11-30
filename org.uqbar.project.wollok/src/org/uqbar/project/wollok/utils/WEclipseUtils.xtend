@@ -229,7 +229,7 @@ class WEclipseUtils {
 	}
 
 	def static isWollokExtension(IResource file) {
-		#[PROGRAM_EXTENSION, TEST_EXTENSION, CLASS_OBJECTS_EXTENSION].contains(file.fileExtension)
+		#[PROGRAM_EXTENSION, TEST_EXTENSION, WOLLOK_DEFINITION_EXTENSION].contains(file.fileExtension)
 	}
 
 	def static dispatch String getFullPath(Object o) { "" }

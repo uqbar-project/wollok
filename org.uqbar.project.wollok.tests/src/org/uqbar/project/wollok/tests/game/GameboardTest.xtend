@@ -7,7 +7,6 @@ import org.uqbar.project.wollok.game.Messages
 import org.uqbar.project.wollok.game.Position
 import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.WGPosition
-import org.uqbar.project.wollok.game.WGVisualComponent
 import org.uqbar.project.wollok.game.gameboard.Background
 import org.uqbar.project.wollok.game.gameboard.CellsBackground
 import org.uqbar.project.wollok.game.gameboard.FullBackground

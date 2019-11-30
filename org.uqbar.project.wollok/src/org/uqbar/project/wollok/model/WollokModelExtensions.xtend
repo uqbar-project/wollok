@@ -89,8 +89,10 @@ import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
  */
 class WollokModelExtensions {
 
-	def static implicitPackage(EObject it) { file.implicitPackage }
-
+	def static implicitPackage(EObject it) {
+		file.implicitPackage
+	}
+	
 	def static file(EObject it) { eResource }
 
 	def static boolean isException(WClass it) { fqn == Exception.name || (parent !== null && parent.exception) }
@@ -778,7 +780,7 @@ class WollokModelExtensions {
 	
 	def static isValidImport(IEObjectDescription element) {
 		val fqn = element.name.toString
-		fqn.importRequired && !NON_IMPLICIT_IMPORTS.exists[it.equals(fqn)] && element.EObjectOrProxy.container !== null
+		fqn.importRequired && !NON_IMPLICIT_IMPORTS.exists[it.equals(fqn)] && element.EObjectURI.fileExtension.equals(WOLLOK_DEFINITION_EXTENSION) && element.EObjectOrProxy.container !== null
 	}
 
 	// *******************************

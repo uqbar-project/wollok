@@ -391,9 +391,8 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	def changeDeclarationToVar(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_changeToVar_name,
 			Messages.WollokDslQuickfixProvider_changeToVar_description, null) [ e, context |
-			val f = (e as WAssignment).feature.ref.eContainer
-			if (f instanceof WVariableDeclaration) {
-				val feature = f as WVariableDeclaration
+			val feature = (e as WAssignment).feature.ref.eContainer
+			if (feature instanceof WVariableDeclaration) {
 				val valueOrNothing = if (feature.right === null) "" else " =" + feature.right.node.text
 				context.xtextDocument.replace(feature.before, feature.node.length,
 					VAR + " " + feature.variable.name + valueOrNothing)
@@ -424,6 +423,19 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			val varDef = e as WVariableDeclaration
 			val code = (if (varDef.isWriteable) VAR else CONST) + " " + varDef.variable.name			
 			xtextDocument.replaceWith(e, code)
+		]
+	}
+	
+	@Fix(WollokDslValidator.WARNING_VARIABLE_SHOULD_BE_CONST)
+	def changeDeclarationToConst(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_changeToConst_name,
+			Messages.WollokDslQuickfixProvider_changeToConst_description, null) [ e, context |
+			if (e instanceof WVariableDeclaration) {
+				val varDef = e as WVariableDeclaration
+				val value = " =" + varDef.right.node.text
+				context.xtextDocument.replace(varDef.before, varDef.node.length,
+					CONST + " " + varDef.variable.name + value)
+			}
 		]
 	}
 	

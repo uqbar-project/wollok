@@ -5,7 +5,6 @@ import com.google.common.collect.Multimap
 import com.google.inject.Inject
 import com.google.inject.Provider
 import java.util.List
-import org.apache.log4j.Logger
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.OperationCanceledException
@@ -65,7 +64,7 @@ import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 //  - any unnecessary code (since it was based on xtend)
 @Accessors 
 class ExtractMethodRefactoring extends Refactoring {
-	static val Logger LOG = Logger.getLogger(ExtractMethodRefactoring)
+	// static val Logger LOG = Logger.getLogger(ExtractMethodRefactoring)
 	
 	@Inject ILocationInFileProvider locationInFileProvider;
 //	@Inject	NewFeatureNameUtil nameUtil
@@ -111,7 +110,7 @@ class ExtractMethodRefactoring extends Refactoring {
 		if (xtendClass === null || originalMethod === null)
 			return false
 		
-		val successorExpression = expressionUtil.findSuccessorExpressionForVariableDeclaration(lastExpression)
+//		val successorExpression = expressionUtil.findSuccessorExpressionForVariableDeclaration(lastExpression)
 //		nameUtil.setFeatureScopeContext(successorExpression)
 		rewriter = rewriterFactory.create(document, firstExpression.eResource as XtextResource)
 		true
@@ -149,7 +148,7 @@ class ExtractMethodRefactoring extends Refactoring {
 				}
 				
 				if (element instanceof WMemberFeatureCall) {
-					val featureCall = element as WMemberFeatureCall
+//					val featureCall = element as WMemberFeatureCall
 //					val String feature = featureCall.feature
 //					
 //					var isLocalFeature = EcoreUtil.isAncestor(expressions, feature)
@@ -202,7 +201,7 @@ class ExtractMethodRefactoring extends Refactoring {
 		val eContainer = lastExpression.eContainer
 		if (eContainer instanceof WBlockExpression) {
 			if (eContainer.eContainer == originalMethod) {
-				val siblings = (eContainer as WBlockExpression).expressions
+				val siblings = eContainer.expressions
 				return siblings.indexOf(lastExpression) == siblings.size -1
 			}
 		}

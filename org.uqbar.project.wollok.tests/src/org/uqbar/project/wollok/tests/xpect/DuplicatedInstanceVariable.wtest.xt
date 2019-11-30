@@ -12,7 +12,7 @@ class Camion {
 describe "Carga de camiones" {
 
 	var duplic = 2
-	var duplic2 = 0
+	const duplic2 = 0
 	
 	method camion(unEstado) = new Camion(pesoMaximo = 200, estado = unEstado)
 	
@@ -25,7 +25,7 @@ describe "Carga de camiones" {
 	
 	method conVariableDuplicada() {
 		// XPECT errors --> "Duplicated Name" at "duplic2"
-		var duplic2 = 3
+		const duplic2 = 3
 		return 0 + duplic2
 	}
 	

@@ -97,7 +97,7 @@ class QuickFixTest extends AbstractWollokQuickFixTestCase {
 	def testMethodWithExpressionNotReturning(){
 		val initial = #['''
 			class MyClass{
-				var y = 0
+				const y = 0
 				method getX(){
 					y + 1
 				}
@@ -106,7 +106,7 @@ class QuickFixTest extends AbstractWollokQuickFixTestCase {
 
 		val result = #['''
 			class MyClass{
-				var y = 0
+				const y = 0
 				method getX(){
 					return y + 1
 				}
@@ -119,14 +119,14 @@ class QuickFixTest extends AbstractWollokQuickFixTestCase {
 	def ifInsteadOfConditionalExpression(){
 		val initial = #['''
 			class MyClass{
-				var a = 1
+				const a = 1
 				method aIsEven() = if (a.even()) true else false
 			}
 		''']
 
 		val result = #['''
 			class MyClass{
-				var a = 1
+				const a = 1
 				method aIsEven() = a.even()
 			}
 		''']
@@ -137,7 +137,7 @@ class QuickFixTest extends AbstractWollokQuickFixTestCase {
 	def ifInsteadOfConditionalExpression2(){
 		val initial = #['''
 			class MyClass{
-				var a = 1
+				const a = 1
 				method aIsEven() {
 					if (a.even()) return true else return false
 				}
@@ -146,7 +146,7 @@ class QuickFixTest extends AbstractWollokQuickFixTestCase {
 
 		val result = #['''
 			class MyClass{
-				var a = 1
+				const a = 1
 				method aIsEven() {
 					return a.even()
 				}
@@ -159,14 +159,14 @@ class QuickFixTest extends AbstractWollokQuickFixTestCase {
 	def ifInsteadOfConditionalExpressionNot(){
 		val initial = #['''
 			class MyClass{
-				var a = 1
+				const a = 1
 				method aIsOdd() = if (a.even()) false else true
 			}
 		''']
 
 		val result = #['''
 			class MyClass{
-				var a = 1
+				const a = 1
 				method aIsOdd() = !(a.even())
 			}
 		''']

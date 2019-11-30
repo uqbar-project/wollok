@@ -105,8 +105,8 @@ class VisualComponent {
 		val yMouse = Gdx.input.y
 		val bottomX = position.xinPixels
 		val bottomY = Gameboard.getInstance().pixelHeight - position.yinPixels
-		val topX = bottomX + Gameboard.CELLZISE
-		val topY = bottomY - Gameboard.CELLZISE
+		val topX = bottomX + Gameboard.instance.cellsize
+		val topY = bottomY - Gameboard.instance.cellsize
 		return (xMouse > bottomX && xMouse < topX) && (yMouse < bottomY && yMouse > topY)
 	}
 
@@ -147,30 +147,4 @@ class VisualComponent {
 		if (position.x < Gameboard.instance.width - 1)
 			setPosition(getPosition.right())
 	}
-}
-
-@Accessors
-class WGVisualComponent extends VisualComponent {
-	Position _position
-	Image image
-	List<String> attributes
-
-	new(Position position, Image image) {
-		super(null)
-		this._position = position
-		this.image = image
-	}
-	
-	override Image getImage() {
-		image
-	}
-
-	override Position getPosition() {
-		_position
-	}
-
-	override setPosition(Position position) {
-		_position = position
-	}
-	
 }

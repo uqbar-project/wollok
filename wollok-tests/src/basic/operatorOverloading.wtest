@@ -1,0 +1,10 @@
+test "+ operator overloading" {
+  const sumable = object {
+    const value = 15
+    method +(otro) = value + otro.valor()
+  }
+  const otroSumable = object {
+    method valor() = 10
+  }
+  assert.equals(25, sumable + otroSumable)
+}

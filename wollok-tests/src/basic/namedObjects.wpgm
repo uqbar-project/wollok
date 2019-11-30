@@ -1,7 +1,0 @@
-import namedObjectsLib.named_object_pepita
-
-program namedObjects{
-	assert.equals(0, named_object_pepita.energyLevel())
-	named_object_pepita.addEnergy(10)
-	assert.equals(10, named_object_pepita.energyLevel())
-}

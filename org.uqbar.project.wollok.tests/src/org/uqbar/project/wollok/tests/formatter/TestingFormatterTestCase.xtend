@@ -25,6 +25,7 @@ class TestingFormatterTestCase extends AbstractWollokFormatterTestCase {
     	const b = new Sobreviviente()
     	test "aSimpleTest"{              assert.that(true)           }''', '''
 			const a = new Sobreviviente()
+			
 			const b = new Sobreviviente()
 
 			test "aSimpleTest" {

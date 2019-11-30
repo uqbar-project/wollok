@@ -1,0 +1,159 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+object variableShouldBeConst {
+	var variable = 123
+	// XPECT warnings --> "Variable should be const" at "constante"
+	var constante = 321
+	
+	method doSomething() {
+		variable = 666
+		return variable + constante
+	}
+}
+
+object localVariableInMethodShouldBeConst {
+	var variable = 123
+	
+	method doSomething() {
+		// XPECT warnings --> "Variable should be const" at "constante"
+		var constante = 321
+		variable = 666
+		return variable + constante
+	}
+}
+
+object variableWithSingleAssignmentAtInitializationNotRaisesWarningIfProperty {
+	var variable = 123
+	var property constante = 321
+	
+	method doSomething() {
+		variable = 666
+		return variable + constante
+	}
+}
+
+class VariableShouldBeConst {
+	var variable = 123
+	// XPECT warnings --> "Variable should be const" at "constante"
+	var constante = 321
+	
+	method doSomething() {
+		variable = 666
+		return variable + constante
+	}
+}
+
+class LocalVariableInMethodShouldBeConst {
+	var variable = 123
+	
+	method doSomething() {
+		// XPECT warnings --> "Variable should be const" at "constante"
+		var constante = 321
+		variable = 666
+		return variable + constante
+	}
+}
+
+class VariableWithSingleAssignmentAtInitializationNotRaisesWarningIfProperty {
+	var variable = 123
+	var property constante = 321
+	
+	method doSomething() {
+		variable = 666
+		return variable + constante
+	}
+}
+
+mixin VariableShouldBeConstMixin {
+	var variable = 123
+	// XPECT warnings --> "Variable should be const" at "constante"
+	var constante = 321
+	
+	method doSomething() {
+		variable = 666
+		return variable + constante
+	}
+}
+
+mixin LocalVariableInMethodShouldBeConstMixin {
+	var variable = 123
+	
+	method doSomething() {
+		// XPECT warnings --> "Variable should be const" at "constante"
+		var constante = 321
+		variable = 666
+		return variable + constante
+	}
+}
+
+mixin VariableWithSingleAssignmentAtInitializationNotRaisesWarningIfPropertyMixin {
+	var variable = 123
+	var property constante = 321
+	
+	method doSomething() {
+		variable = 666
+		return variable + constante
+	}
+}
+
+object variableWithReassignmentInIfNotRaisesWarning {
+	var energia = 100
+	
+	method volar(minutos) {
+		var minutosReales = minutos
+		if (1 > 2) {
+			minutosReales = 10
+		}
+		energia -= minutosReales * 2
+	}
+}
+
+object variableWithReassignmentInIfNotRaisesWarning2 {
+	var energia = 100
+	
+	method volar(minutos) {
+		var minutosReales = minutos
+		if (1 > 2) {
+			minutosReales = minutosReales + 2
+		}
+		energia -= minutosReales * 2
+	}
+}
+
+object variableDefinedOutsideCatchWithReassignmentInCatchNotRaisesWarning {
+	var energia = 100
+	
+	method volar(minutos) {
+		try {
+			var minutosReales = minutos
+			energia -= minutosReales * 2
+		} catch e {
+			minutosReales = 10
+		}
+	}
+}
+
+object variableDefinedInCatchWithReassignmentNotRaisesWarning {
+	var energia = 100
+	
+	method volar(minutos) {
+		try {
+		} catch e {
+			var minutosReales = minutos
+			minutosReales = 10
+			console.println(minutosReales)
+		}
+		energia -= 10
+	}
+}
+
+object variableDefinedInLambdaWithReassignmentNotRaisesWarning {
+	
+	method volar() {
+		[ 1, 2 ].map{ numero =>
+			//  XPECT warnings  --> "Variable should be const" at "otroNumero"
+			var otroNumero = numero + 1
+			return otroNumero + 2
+		}
+	}
+}

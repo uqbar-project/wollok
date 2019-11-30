@@ -64,7 +64,7 @@ class WollokConsoleAttributes implements Cloneable {
     // Eclipse console specific attributes (resolving color palette, default colors, etc.)
     def static updateRangeStyle(StyleRange range, WollokConsoleAttributes attribute) {
         val useWindowsMapping = getBoolean(WollokConsolePreferenceConstants.PREF_WINDOWS_MAPPING)
-        val WollokConsoleAttributes tempAttrib = attribute.clone as WollokConsoleAttributes
+        val tempAttrib = attribute.clone as WollokConsoleAttributes
 
         var hilite = false
 

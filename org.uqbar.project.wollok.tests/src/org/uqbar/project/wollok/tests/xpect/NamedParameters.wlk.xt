@@ -9,7 +9,7 @@ class Ave {
 	method volar() { energia -= 10 }
 }
 class Golondrina inherits Ave {
-	var peso
+	const peso
 	method estaGorda() = peso > 100
 }
 class Torcaza inherits Ave {
@@ -52,8 +52,8 @@ class Entrenador {
 }
 
 class Heroe {
-	var nombre = null
-	var traje = null
+	const nombre = null
+	const traje = null
 	
 	method quienSoy() = nombre
 	method tengoTraje() = traje != null
@@ -67,8 +67,8 @@ object deadpool inherits Heroe(apellido = "Wilson") {
 }
 object charlie {
 	// XPECT errors --> "Reference apellido not found in class Heroe" at "apellido = \"Fawcett\""
-	var angel1 = object inherits Heroe(apellido = "Fawcett") {}
-	var angel2 = object inherits Heroe(nombre = "") {}
+	const angel1 = object inherits Heroe(apellido = "Fawcett") {}
+	const angel2 = object inherits Heroe(nombre = "") {}
 	
 	method quienCumpleMision() = [angel1, angel2]
 }
@@ -88,7 +88,7 @@ class Villano inherits AntiHeroe {
 class ReVillano inherits AntiHeroe {
 	var nivelMaldad
 	/* XPECT errors ---
-		"Couldn't resolve reference to Referenciable 'ciudadesQueAma'." at "ciudadesQueAma"
+		"Couldn't resolve reference to 'ciudadesQueAma'." at "ciudadesQueAma"
 		"Named parameters are not allowed here" at "ciudadesQueAma = ["New York"]"
 	--- */
 	constructor(_fraseCabecera) = super(ciudadesQueAma = ["New York"]) {
@@ -106,14 +106,14 @@ class A {
 		a = _a
 	}
 	/* XPECT errors ---
-		"Couldn't resolve reference to Referenciable '_a'." at "_a"
+		"Couldn't resolve reference to '_a'." at "_a"
 		"Named parameters are not allowed here" at "_a = x"
 	--- */
 	constructor(x, y) = self(_a = x) {
 		b = y
 	}
 	/* XPECT errors ---
-		"Couldn't resolve reference to Referenciable 'inexistente'." at "inexistente"
+		"Couldn't resolve reference to 'inexistente'." at "inexistente"
 		"Named parameters are not allowed here" at "x = y, inexistente = 3"
 	--- */
 	constructor(x, y, z) = self(x = y, inexistente = 3) {

@@ -12,7 +12,7 @@ class Cell {
 
 	new(Position position, Image image) {
 		this.position = position
-		this.image = image => [ size = new CellSize(Gameboard.CELLZISE) ]
+		this.image = image => [ size = new CellSize(Gameboard.instance.cellsize) ]
 	}
 	
 	def draw(Window window) {

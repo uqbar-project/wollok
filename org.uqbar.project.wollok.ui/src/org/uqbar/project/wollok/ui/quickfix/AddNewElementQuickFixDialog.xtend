@@ -37,7 +37,6 @@ import org.eclipse.swt.widgets.Shell
 import org.eclipse.swt.widgets.Text
 import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.ui.editor.model.edit.IModificationContext
-import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.ui.WollokActivator
 import org.uqbar.project.wollok.validation.ElementNameValidation
@@ -189,7 +188,7 @@ class AddNewElementQuickFixDialog extends Dialog {
 		]
 
 		new Label(fileNameComposite, SWT.LEFT) => [
-			text = "." + WollokConstants.CLASS_OBJECTS_EXTENSION
+			text = "." + WOLLOK_DEFINITION_EXTENSION
 		]
 
 		errorMessage = new Label(composite,SWT.CENTER.bitwiseOr(SWT.BORDER)) => [
@@ -237,7 +236,7 @@ class AddNewElementQuickFixDialog extends Dialog {
 		]
 		treeWollokElements => [
 			// Show wollok files that have any valid method container
-			wollokFiles = project.allWollokFiles.filter [ it.fileExtension.equals(WollokConstants.CLASS_OBJECTS_EXTENSION) ].toList
+			wollokFiles = project.allWollokFiles.filter [ fileExtension.equals(WOLLOK_DEFINITION_EXTENSION) ].toList
 			control.layoutData = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 0) => [
 				heightHint = 220
 				widthHint = 250
@@ -295,7 +294,7 @@ class AddNewElementQuickFixDialog extends Dialog {
 	}
 	
 	def getFullNewFileName() {
-		newFileName + "." + CLASS_OBJECTS_EXTENSION 
+		newFileName + "." + WOLLOK_DEFINITION_EXTENSION 
 	}
 	
 	def getInputFileNameValidationMessage() {
@@ -433,10 +432,10 @@ class WollokMethodContainerLabelProvider extends LabelProvider {
 
 	def dispatch getImage(URI uri) {
 		val fileExtension = uri.fileExtension
-		if (fileExtension.equals(WollokConstants.TEST_EXTENSION)) {
+		if (fileExtension.equals(TEST_EXTENSION)) {
 			return showImage("wollok-icon-test_16.png")
 		}
-		if (fileExtension.equals(WollokConstants.PROGRAM_EXTENSION)) {
+		if (fileExtension.equals(PROGRAM_EXTENSION)) {
 			return showImage("wollok-icon-program_16.png")
 		}
 		return showImage("w.png")

@@ -1,9 +1,4 @@
-*/bin/
-/eclipse/*
-**/target/
-.metadata/*
 .DS_Store
-/target/
 */workspace/
 org.eclipse.*
 pom.xml.versionsBackup
@@ -11,13 +6,29 @@ pom.xml.versionsBackup
 CHANGELOG.txt
 changelog.txt
 CHANGELOG.md
+
+# Xtend generated files
+/target/
 xtend-gen
+*/bin/
+**/target/
+
+# Eclipse files
+.metadata/*
+/eclipse/*
 eclipse
 .classpath
 .project
 .recommenders
+
+# VSC - Git Lens
 .history
+
+# Release scripts
 scripts/libs
 scripts/jars
 scripts/wollok-site
 scripts/wollok-cli
+
+# Ignoring wollok-language files
+org.uqbar.project.wollok.lib/src/wollok/*.wlk

@@ -23,12 +23,12 @@
 		
 		method run() {
 			
-			var car = 23
+			const car = 23
 			
 			// XPECT warnings --> "Variable name should start with lowercase" at "Lota"
-			var Lota = "lota"
+			const Lota = "lota"
 			
-			var aBlock =
+			const aBlock =
 			// XPECT warnings --> "Parameter name should start with lowercase" at "A" 
 			{A 
 				=> A > 23
