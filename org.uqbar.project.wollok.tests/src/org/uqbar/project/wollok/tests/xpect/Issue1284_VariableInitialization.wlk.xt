@@ -15,7 +15,7 @@ class Producto {
 		self.precioRegular(valor1 + valor2)	
 	}
 	
- 	method initialize() {
+ 	override method initialize() {
 		self.initialize(0)
 	}
 

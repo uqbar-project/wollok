@@ -9,6 +9,7 @@ import org.uqbar.project.wollok.launch.WollokLauncherParameters
 import org.uqbar.project.wollok.launch.tests.DefaultWollokTestsReporter
 import org.uqbar.project.wollok.launch.tests.WollokConsoleTestsReporter
 import org.uqbar.project.wollok.launch.tests.WollokRemoteTestReporter
+import org.uqbar.project.wollok.launch.tests.WollokSimpleConsoleTestsReporter
 import org.uqbar.project.wollok.launch.tests.WollokTestsReporter
 import org.uqbar.project.wollok.launch.tests.json.WollokJSONTestsReporter
 import org.uqbar.project.wollok.launch.tests.json.WollokLauncherIssueHandlerJSON
@@ -52,7 +53,9 @@ class WollokLauncherModule extends WollokDslRuntimeModule {
 				return WollokRemoteTestReporter
 			if (params.jsonOutput)
 				return WollokJSONTestsReporter
-			return WollokConsoleTestsReporter
+			if (params.colored)
+				return WollokConsoleTestsReporter
+			return WollokSimpleConsoleTestsReporter
 		} else {
 			return DefaultWollokTestsReporter
 		}

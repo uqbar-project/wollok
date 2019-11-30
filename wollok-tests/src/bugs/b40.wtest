@@ -1,5 +1,0 @@
-import b40.*
-
-test "regression of bug #40" {
-	assert.equals(10, pajarera.menorValor())
-}

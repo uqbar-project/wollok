@@ -64,8 +64,8 @@ class WollokMultiInterpreterTest {
 	@Test
 	@Ignore
 	def void testRunALotOfPrograms() {
-		val numberOfThreads = 4
-		val numberOfTimes = 5
+		val numberOfThreads = 3
+		val numberOfTimes = 4
 		var startTime = System.currentTimeMillis
 
 		val parameters = new WollokLauncherParameters()
@@ -74,15 +74,15 @@ class WollokMultiInterpreterTest {
 
 		val program = '''
 			object pepita {
-				var energia = 100
+				var energia = 50
 				method energia() = energia
 				method volar() { energia -= 1 }
 			} 
 			
 			test "pepita vuela" {
-				(1..100).forEach{ i => 
+				(1..50).forEach{ i => 
 					pepita.volar()
-					assert.equals(100-i, pepita.energia())
+					assert.equals(50-i, pepita.energia())
 				}
 			}
 		'''

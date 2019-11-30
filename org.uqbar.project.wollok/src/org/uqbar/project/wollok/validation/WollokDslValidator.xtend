@@ -1074,7 +1074,10 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(WARN)
 	def classNameCannotBeCoreReservedWord(WClass c) {
-		if(WollokResourceCache.allCoreClasses.map[name].toList.contains(c.name) || isCoreLib(c.fqn)){
+		if (ALL_LIBS_FILE.contains(c.eResource.URI.lastSegment)) {
+			return
+		}
+		if ((WollokResourceCache.allCoreClasses.map[name].toList.contains(c.name) || isCoreLib(c.fqn))) {
 			report(NLS.bind(WollokDslValidator_CANNOT_USE_CORE_NAME,c.name),c,WNAMED__NAME)
 		}	
 	}

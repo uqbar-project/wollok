@@ -6,41 +6,12 @@ import static org.uqbar.project.wollok.WollokConstants.*
 
 /**
  * Test cases for operators such as: +=, -=, etc.
- * 
+ *
+ * This tests should remain as part of Wollok-Xtext implementation
+ *  
  * @author jfernandes
  */
 class MultiOpAssignTestCase extends AbstractWollokInterpreterTestCase {
-	@Test
-	def void testPlusEquals() {'''
-		program p {
-			var n = 1
-			n += 1
-			
-			assert.that(n == 2) 
-		}'''.interpretPropagatingErrors
-	}
-	
-	@Test
-	def void testMultiplyEquals() {'''
-		program p {
-			var n = 2
-			n *= 3
-			
-			assert.that(n == 6)
-		}'''.interpretPropagatingErrors
-	}
-	
-	@Test
-	def void testSubstractEquals() {'''
-		program p {
-			var n = 2
-			n -= 1
-			
-			assert.that(n == 1)
-		}'''.interpretPropagatingErrors
-	}
-	
-	// helper for impl
 	
 	@Test
 	def void testMatches() {
@@ -53,4 +24,5 @@ class MultiOpAssignTestCase extends AbstractWollokInterpreterTestCase {
 			assertFalse(s.matches(MULTIOPS_REGEXP))
 		]
 	}
+
 }

@@ -69,12 +69,14 @@ class DefaultNativeObjectFactory implements NativeObjectFactory {
 		val bundle = WollokActivator.getDefault
 		try {
 			if (bundle !== null)
-				try
+				try {
 					bundle.loadWollokLibClass(fqn, obj.behavior)
-				catch (ClassNotFoundException e)
+				} catch (ClassNotFoundException e) {
 					interpreter.classLoader.loadClass(fqn)
-			else
+				}
+			else {
 				interpreter.classLoader.loadClass(fqn)
+			}
 		} catch (ClassNotFoundException e) {
 			val message = NLS.bind(Messages.WollokDslInterpreter_native_class_not_found, fqn)
 			throw new WollokProgramExceptionWrapper(message.newWollokException)

@@ -10,6 +10,8 @@ import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WTest
 import wollok.lib.AssertionException
 
+import org.fusesource.jansi.Ansi
+
 import static org.fusesource.jansi.Ansi.*
 import static org.fusesource.jansi.Ansi.Color.*
 
@@ -27,6 +29,9 @@ import static extension org.uqbar.project.wollok.utils.StringUtils.*
  */
 class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 
+	public static int MIN_PERFORMANCE_TIME_ACCEPTED = 50
+	public static int MAX_PERFORMANCE_TIME_ACCEPTED = 100
+		
 	int totalTestsRun = 0
 	int totalTestsFailed = 0
 	int totalTestsErrored = 0
@@ -39,13 +44,23 @@ class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 	List<WTestFailed> reportTestsFailed = newArrayList
 
 	public static String FINAL_SEPARATOR = "====================================================================================================="
-		
-	override testsToRun(String suiteName, WFile file, List<WTest> tests) {
+	
+	new() {
 		AnsiConsole.systemInstall
+	}
+
+	override folderStarted(String folder) {
+		super.folderStarted(folder)
+		this.resetTotalTestsCount
+	}
+
+	override testsToRun(String suiteName, WFile file, List<WTest> tests) {
+		val fileSegments = file.eResource.URI.segments
+		val filename = fileSegments.get(fileSegments.length - 1)
 		if (suiteName ?: '' !== '') {
-			println('''Running all tests from describe «suiteName»''')
+			println(ansi.bold.a('''Describe «suiteName» from «filename»''').reset)
 		} else {
-			println('''Running «tests.size.singularOrPlural("test")» ...''')
+			println(ansi.bold.a('''Individual tests from «filename»''').reset)
 		}
 		testsRun += tests.size
 		testsGroupRun += tests.size
@@ -61,9 +76,9 @@ class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 	
 	override reportTestOk(WTest test) {
 		test.testFinished
-		println(ansi.a("  ").fg(GREEN).a(test.name).a(": √ OK (").a(test.totalTime).a("ms)").reset)
+		println(ansi.a("  ").bold.green("√ ").reset.gray(test.name).time(test.totalTime).reset)
 	}
-
+	
 	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
 		test.testFinished
 		incrementTestsErrored
@@ -116,6 +131,12 @@ class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 		testsGroupRun = 0
 		testsGroupFailed = 0
 		testsGroupErrored = 0
+	}
+	
+	def resetTotalTestsCount() {
+		totalTestsRun = 0
+		totalTestsFailed = 0
+		totalTestsErrored = 0
 	}
 	
 	def incrementTestsFailed() {
@@ -191,6 +212,35 @@ class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 		]
 	}
 
+	def green(Ansi ansi, String text) {
+		ansi.displayInColor(text, GREEN)
+	}
+	
+	def gray(Ansi ansi, String text) {
+		ansi.displayInColor(text, WHITE)
+	}
+	
+	def displayInColor(Ansi ansi, String text, Ansi$Color color) {
+		ansi.fg(color).a(text).reset
+	}
+	
+	def time(Ansi ansi, long time) {
+		if (time > MAX_PERFORMANCE_TIME_ACCEPTED) return ansi.displayInColor(" (" + time + "ms)", RED)
+		if (time >= MIN_PERFORMANCE_TIME_ACCEPTED && time < MAX_PERFORMANCE_TIME_ACCEPTED) return ansi.displayInColor(" (" + time + "ms)", YELLOW)
+		ansi
+	}
+
+}
+
+/**
+ * Internal console for sanity tests in Eclipse/Xtext build - without colors
+ */
+class WollokSimpleConsoleTestsReporter extends WollokConsoleTestsReporter {
+	
+	new() {
+		super()
+		Ansi.setEnabled = false		
+	}
 }
 
 @Accessors
