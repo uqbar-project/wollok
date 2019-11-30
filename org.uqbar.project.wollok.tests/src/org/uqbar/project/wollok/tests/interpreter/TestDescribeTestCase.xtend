@@ -11,26 +11,6 @@ import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
  */
 class TestDescribeTestCase extends AbstractWollokInterpreterTestCase {
 	
-	@Test(expected=AssertionError)
-	def void testShouldNotUseSameVariableDefinedInDescribe() {
-		'''
-		describe "pruebas generales" {
-			const a = 8
-			const b = 5
-			
-			test "Max between 5 and 8" {
-				const a = 3
-				const result = 5.max(8)
-				assert.equals(8, result)
-			}
-			test "Min between 5 and 8" {
-				const result = 5.min(8)
-				assert.equals(5, result)
-			}
-		}
-		'''.interpretPropagatingErrors
-	}
-	
 	@Test(expected=WollokProgramExceptionWrapper)
 	def void testFixtureErrorBreaksTestsInDescribe() {
 		'''
@@ -50,7 +30,7 @@ class TestDescribeTestCase extends AbstractWollokInterpreterTestCase {
 			}
 		
 			test "dos es dos" {
-				var dos = self.dos()
+				const dos = self.dos()
 				self.uno()
 				assert.equals(2, dos)
 			}

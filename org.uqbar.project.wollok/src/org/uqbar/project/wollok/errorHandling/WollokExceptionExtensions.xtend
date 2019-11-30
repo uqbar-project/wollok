@@ -222,9 +222,6 @@ class WollokExceptionExtensions {
 
 	def static dispatch shouldShowStackTraceInJava(WollokProgramExceptionWrapper e) { false }
 	def static dispatch shouldShowStackTraceInJava(WollokInterpreterException e) { false }
-	def static dispatch shouldShowStackTraceInJava(Throwable t) { 
-		// !t.class.name.equals(ASSERTION_EXCEPTION_FQN)
-		true
-	}
+	def static dispatch shouldShowStackTraceInJava(Throwable t) { true }
 	
 }

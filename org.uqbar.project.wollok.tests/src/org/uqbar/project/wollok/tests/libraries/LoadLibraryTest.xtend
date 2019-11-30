@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.tests.libraries
 
 import org.eclipse.xtext.testing.InjectWith
+import org.junit.Ignore
 import org.junit.Test
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 
@@ -20,7 +21,7 @@ class LoadLibraryTest extends AbstractWollokInterpreterTestCase {
 	
 	}
 
-	/* probar cuando esté listo el problema de los directorios
+	@Ignore
 	@Test
 	def void testInnerLocationObjectExist() {
 		'''
@@ -29,9 +30,7 @@ class LoadLibraryTest extends AbstractWollokInterpreterTestCase {
 			assert.equals('hola Don Pepito', jose.hola())
 		}
 		'''.interpretPropagatingErrors
-	
 	}
-	*/	
 
 	@Test
 	def void nativeObjectInLibrary() {
