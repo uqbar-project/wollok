@@ -43,7 +43,7 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 	IPreferenceStoreAccess preferenceStoreAccess
 
 	// Use RefreshUtil after switching to debug >= 3.6
-	private static final String ATTR_REFRESH_SCOPE = DebugPlugin.getUniqueIdentifier() + ".ATTR_REFRESH_SCOPE";
+	static final String ATTR_REFRESH_SCOPE = DebugPlugin.getUniqueIdentifier() + ".ATTR_REFRESH_SCOPE";
 
 	override launch(ILaunchConfiguration configuration, String mode, ILaunch launch,
 		IProgressMonitor monitor) throws CoreException {

@@ -1,3 +1,4 @@
+ 
 package org.uqbar.project.wollok.tests.debugger.util.assertions
 
 import org.eclipse.emf.ecore.EObject
@@ -5,6 +6,7 @@ import org.uqbar.project.wollok.interpreter.stack.XStackFrame
 import org.uqbar.project.wollok.tests.debugger.util.InterpreterAssertion
 import org.uqbar.project.wollok.tests.debugger.util.asserters.InterpreterAsserter
 import org.uqbar.project.wollok.tests.debugger.util.matchers.InterpreterElementMatcher
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**
  * Abstract base class for assertions.
@@ -26,7 +28,7 @@ abstract class AbstractInterpreterAssertion implements InterpreterAssertion {
 	var InterpreterElementMatcher matcher
 	var InterpreterAsserter asserter
 	
-	protected def checkAndAssert(Pair<EObject, XStackFrame> state) {
+	protected def checkAndAssert(Pair<EObject, XStackFrame<WollokObject>> state) {
 		if (matcher === null) throw new RuntimeException("You didn't set any matcher to this assertion !")
 		if (asserter === null) throw new RuntimeException("You didn't set any asserter to this assertion !")
 		
@@ -44,11 +46,11 @@ abstract class AbstractInterpreterAssertion implements InterpreterAssertion {
 		this
 	}
 	
-	override before(Pair<EObject, XStackFrame> state) {
+	override before(Pair<EObject, XStackFrame<WollokObject>> state) {
 		// does nothing
 	}
 	
-	override after(Pair<EObject, XStackFrame> state) {
+	override after(Pair<EObject, XStackFrame<WollokObject>> state) {
 		// does nothing
 	}
 	

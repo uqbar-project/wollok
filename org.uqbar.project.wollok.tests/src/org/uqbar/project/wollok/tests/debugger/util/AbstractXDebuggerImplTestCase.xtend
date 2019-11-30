@@ -11,6 +11,7 @@ import org.uqbar.project.wollok.debugger.server.rmi.DebugCommandHandler
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.stack.XStackFrame
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**
  * Base class for testing the debugger XDebuggerImpl'ementation
@@ -85,8 +86,8 @@ abstract class AbstractXDebuggerImplTestCase extends AbstractWollokInterpreterTe
 	// utils
 	
 	private def runSteppingInto(TestTextInterpreterEventPublisher clientSide, XDebuggerImpl realDebugger, String programContent) {
-		var List<XStackFrame> steps = newArrayList
-		var XStackFrame lastStackElement = null
+		var List<XStackFrame<WollokObject>> steps = newArrayList
+		var XStackFrame<WollokObject> lastStackElement = null
 		do {
 			clientSide.waitUntilSuspended
 			
@@ -104,7 +105,7 @@ abstract class AbstractXDebuggerImplTestCase extends AbstractWollokInterpreterTe
 		steps
 	}
 	
-	def code(XStackFrame element, String program) {
+	def code(XStackFrame<WollokObject> element, String program) {
 		// currently cannot resolve sourcecode from code outside of the test code.
 		if (!element.currentLocation.fileURI.startsWith(SYNTHETIC_FILE_PREFFIX))
 			return element.currentLocation.toString

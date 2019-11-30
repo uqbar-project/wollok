@@ -36,11 +36,11 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 	public static String MISSING_EOF = "<missing EOF>"
 	
 	@Inject
-	private ITokenDefProvider tokenDefProvider
+	ITokenDefProvider tokenDefProvider
 	@Inject
-	private WollokDslGrammarAccess grammarAccess
+	WollokDslGrammarAccess grammarAccess
 
-	private Set<SpecialMessage> syntaxDiagnosis = #{
+	Set<SpecialMessage> syntaxDiagnosis = #{
 		new SpecialMessage(VAR, Messages.SYNTAX_DIAGNOSIS_REFERENCES_BEFORE_CONSTRUCTOR_AND_METHODS),
 		new SpecialMessage(CONST, Messages.SYNTAX_DIAGNOSIS_REFERENCES_BEFORE_CONSTRUCTOR_AND_METHODS),
 		new SpecialMessage(CONSTRUCTOR, Messages.SYNTAX_DIAGNOSIS_CONSTRUCTOR_BEFORE_METHODS),

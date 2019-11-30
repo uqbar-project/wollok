@@ -866,11 +866,11 @@ class WollokModelExtensions {
 	// ************************************************************************
 	// ** Compound assignments (+=, -=, *=, /=)
 	// ************************************************************************
-	public static def isMultiOpAssignment(WBinaryOperation it) { feature.isMultiOpAssignment }
+	static def isMultiOpAssignment(WBinaryOperation it) { feature.isMultiOpAssignment }
 
-	public static def isMultiOpAssignment(String operator) { operator.matches(WollokConstants.MULTIOPS_REGEXP) }
+	static def isMultiOpAssignment(String operator) { operator.matches(WollokConstants.MULTIOPS_REGEXP) }
 
-	public static def operator(WBinaryOperation it) {
+	static def operator(WBinaryOperation it) {
 		if(isMultiOpAssignment)
 			feature.substring(0, 1)
 		else

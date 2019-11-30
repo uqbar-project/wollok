@@ -11,8 +11,8 @@ import org.uqbar.project.wollok.debugger.WollokDebugTarget
  */
 class WollokThread extends WollokDebugElement implements IThread {
 	/** Breakpoints this thread is suspended at or <code>null</code> if none. */
-	private IBreakpoint[] breakpoints
-	private boolean fStepping = false
+	IBreakpoint[] breakpoints
+	boolean fStepping = false
 	
 	new(WollokDebugTarget target) {
 		super(target)

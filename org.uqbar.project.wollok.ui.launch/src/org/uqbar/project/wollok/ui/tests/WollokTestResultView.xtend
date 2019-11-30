@@ -560,7 +560,7 @@ class WTestTreeLabelProvider extends LabelProvider {
 		element.testInfo.name
 	}
 
-	override def dispose() {
+	override dispose() {
 		super.dispose
 		resourceManager.dispose
 	}

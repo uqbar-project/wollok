@@ -70,7 +70,7 @@ class VariableModel extends Shape {
 		]
 	}
 	
-	public static def initVariableShapes() {
+	static def initVariableShapes() {
 		shapeHeightHandler = new ShapeHeightHandler()
 		VariableModel.allVariables = new HashMap()
 	}

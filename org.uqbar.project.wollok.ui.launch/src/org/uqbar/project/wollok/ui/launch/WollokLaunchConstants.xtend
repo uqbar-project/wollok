@@ -17,7 +17,7 @@ class WollokLaunchConstants {
 	public static val LAUNCH_TEST_CONFIGURATION_TYPE = "org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationType"
 	public static val ID_DEBUG_MODEL = "org.uqbar.project.wollok.debugger.model"
 	
-	public static final val LINE_BREAKPOINT_MARKER = "org.uqbar.project.wollok.ui.launch.lineBreakpoint.marker"
+	public static val LINE_BREAKPOINT_MARKER = "org.uqbar.project.wollok.ui.launch.lineBreakpoint.marker"
 	
 	// launch configurations custom attributes
 	public static val ATTR_WOLLOK_PROJECT = "WOLLOK_PROJECT"

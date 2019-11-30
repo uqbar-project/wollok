@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.tests.debugger.util.asserters
 
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.interpreter.stack.XStackFrame
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**
  * Performs an assertion while interpreting/debugging.
@@ -17,6 +18,6 @@ import org.uqbar.project.wollok.interpreter.stack.XStackFrame
  */
 interface InterpreterAsserter {
 	
-	def void assertIt(Pair<EObject, XStackFrame> pair)
+	def void assertIt(Pair<EObject, XStackFrame<WollokObject>> pair)
 	
 }
