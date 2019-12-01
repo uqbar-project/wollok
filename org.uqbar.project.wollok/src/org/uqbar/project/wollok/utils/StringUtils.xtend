@@ -66,5 +66,9 @@ class StringUtils {
 	static def boolean notEmpty(String value) {
 		value !== null && !value.equals("")
 	}
-
+	
+	static def getPackage(String name) {
+		name.copyUptoLast(".")
+	}
+		
 }

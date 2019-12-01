@@ -43,6 +43,7 @@ import org.eclipse.xtext.ui.editor.XtextEditor
 import org.eclipse.xtext.ui.editor.model.XtextDocumentUtil
 
 import static org.uqbar.project.wollok.WollokConstants.*
+import static extension org.uqbar.project.wollok.utils.StringUtils.*
 
 /**
  * Utilities on top of eclipse platform.
@@ -181,7 +182,7 @@ class WEclipseUtils {
 	def static ObjectInputStream asObjectInputStream(File file) { new ObjectInputStream(new FileInputStream(file)) }
 
 	def static nameWithoutExtension(IResource it) {
-		if(name.contains(".")) name.substring(0, name.lastIndexOf('.')) else name
+		if(name.contains(".")) name.getPackage else name
 	}
 
 	def static openEditor(ITextEditor textEditor, String fileName, int lineNumber) {
