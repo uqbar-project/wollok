@@ -26,8 +26,6 @@ You have two options to download an use Wollok.
 * http://update.uqbar.org/wollok/stable : for the latest stable release
 * http://update.uqbar.org/wollok/dev : for the current dev (work in progress) version
 
-Or drag and drop <a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=2420552" class="drag" title="Drag to your running Eclipse workspace to install Wollok"><img src="https://marketplace.eclipse.org/sites/all/themes/solstice/_themes/solstice_marketplace/public/images/btn-install.png" alt="Drag to your running Eclipse workspace to install Wollok" /></a>
-
 ## Wollok SDK standalone ##
 
 Finally if you just want the headless Development Kit (WDK), for example to use a different IDE than Eclipse, you can download it from
@@ -84,10 +82,8 @@ You can either use its IDE:
 * With: many **static code analysis**, **Quick-Fixes**, **Refactors**
 * An **interactive Console** (**REPL**)
 * **Visual representations**: Outline, Static diagram, Objects Diagrams
-* A **debugger**.
 
-Or use the WDK which has command line tools for running and checkin a program.
-This is also integrated with [Sublime Editor](https://github.com/uqbar-project/wollok-sublime-linter/blob/master/README.md).
+Or use the wollok-cli which has command line tools for running and checkin a program.
 
 ## How to Contribute ##
 
