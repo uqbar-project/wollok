@@ -20,6 +20,7 @@ import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
+import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructor
@@ -47,16 +48,19 @@ import org.uqbar.project.wollok.wollokDsl.WSuite
 import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
+import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
+
 import static extension org.eclipse.xtext.EcoreUtil2.*
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.notNullAnd
-import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * Extension methods for WMethodContainers.
@@ -248,8 +252,21 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		]
 	}
 	
-	def static variableDeclarations(WMethodContainer c) { c.members.filter(WVariableDeclaration) }
-	def static variableDeclarations(WTest p) { p.elements.filter(WVariableDeclaration) }
+	def static dispatch List<WVariableDeclaration> variableDeclarations(EObject o) { newArrayList }
+	def static dispatch List<WVariableDeclaration> variableDeclarations(WBlockExpression b) { b.expressions.filter(WVariableDeclaration).toList }
+	def static dispatch List<WVariableDeclaration> variableDeclarations(WMethodContainer c) { c.members.filter(WVariableDeclaration).toList }
+	def static dispatch List<WVariableDeclaration> variableDeclarations(WVariableDeclaration e) {
+		#[e]
+	}
+	def static dispatch List<WVariableDeclaration> variableDeclarations(WCatch c) {
+		c.expression.variableDeclarations
+	}
+	def static dispatch List<WVariableDeclaration> variableDeclarations(WTry t) { 
+		t.expression.variableDeclarations
+	}
+	def static dispatch List<WVariableDeclaration> variableDeclarations(WTest test) {
+		test.elements.flatMap [ variableDeclarations ].toList
+	}
 
 	def static dispatch EObject fixture(WMethodContainer c) { null }
 	def static dispatch EObject fixture(WSuite s) { s.fixture }
@@ -614,7 +631,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean isWritableVarRef(EObject it) { false }
 	
 	def static findProperty(WMethodContainer it, String propertyName, int parametersSize) {
-		variableDeclarations.findFirst [ variable | variable.matchesProperty(propertyName, parametersSize) ]
+		allVariableDeclarations.findFirst [ variable | variable.matchesProperty(propertyName, parametersSize) ]
 	} 
 	
 	def static dispatch boolean matchesProperty(EObject it, String propertyName, int parametersSize) { false }
@@ -671,12 +688,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			// accumulate requirements
 			if (e instanceof WMixin) scm.addAll(e.superCallingMethods)
 			scm
-		]
-	}
-	
-	def static WMethodDeclaration getInitMethod(WMethodContainer it) {
-		methods.findFirst [ m |
-			m.name.equals(INITIALIZE_METHOD) && m.arguments.isEmpty
 		]
 	}
 	

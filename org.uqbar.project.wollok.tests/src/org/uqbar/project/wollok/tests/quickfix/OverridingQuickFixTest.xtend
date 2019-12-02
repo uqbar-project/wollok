@@ -17,7 +17,7 @@ class OverridingQuickFixTest extends AbstractWollokQuickFixTestCase {
 			}
 			
 			class PirataEspecial inherits Pirata {
-				var misiones = []
+				const misiones = []
 				
 				method cantidadMisiones() = misiones.size()
 				
@@ -37,7 +37,7 @@ class OverridingQuickFixTest extends AbstractWollokQuickFixTestCase {
 			}
 			
 			class PirataEspecial inherits Pirata {
-				var misiones = []
+				const misiones = []
 				
 				method cantidadMisiones() = misiones.size()
 				
@@ -51,13 +51,13 @@ class OverridingQuickFixTest extends AbstractWollokQuickFixTestCase {
 	def removeUnnecesaryOverridenMethod2(){
 		val initial = #['''
 			class Pirata {
-				var bravura = 70
+				const bravura = 70
 				
 				method bravura() = bravura
 			}
 			
 			class PirataEspecial inherits Pirata {
-				var misiones = []
+				const misiones = []
 				
 				method cantidadMisiones() = misiones.size()
 				
@@ -67,13 +67,13 @@ class OverridingQuickFixTest extends AbstractWollokQuickFixTestCase {
 
 		val result = #['''
 			class Pirata {
-				var bravura = 70
+				const bravura = 70
 				
 				method bravura() = bravura
 			}
 			
 			class PirataEspecial inherits Pirata {
-				var misiones = []
+				const misiones = []
 				
 				method cantidadMisiones() = misiones.size()
 				

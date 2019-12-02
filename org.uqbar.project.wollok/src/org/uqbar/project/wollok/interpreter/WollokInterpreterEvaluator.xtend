@@ -200,8 +200,9 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 				cach.evaluate(e)
 			} else
 				throw e
-		} finally
+		} finally {
 			t.alwaysExpression?.eval
+		}
 	}
 
 	def evaluate(WCatch it, WollokProgramExceptionWrapper e) {

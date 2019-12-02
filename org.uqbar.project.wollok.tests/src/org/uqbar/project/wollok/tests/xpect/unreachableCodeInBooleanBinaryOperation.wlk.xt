@@ -6,7 +6,7 @@ object pepita {
 object p {
     method run() {
     	var cond = true
-    	var algo = true
+    	const algo = true
     	
     	//
     	// AND

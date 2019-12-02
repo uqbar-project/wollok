@@ -48,7 +48,7 @@ class A {
 
 	constructor(e) { energia = e }
 	method energia() = energia
-	// XPECT errors --> "Couldn't resolve reference to Referenciable 'e'." at "e"
+	// XPECT errors --> "Couldn't resolve reference to 'e'." at "e"
 	method setEnergia() { energia = e }
 }
 

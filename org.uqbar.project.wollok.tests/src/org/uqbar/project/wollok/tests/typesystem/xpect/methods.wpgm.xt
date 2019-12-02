@@ -65,7 +65,7 @@ class Entrenador {
 	
 	// XPECT methodType at alimentar --> (Golondrina, Number) => Void	
 	method alimentar(golondrina, comida) {
-		var c = { g => g.come(comida) } 
+		const c = { g => g.come(comida) } 
 		c.apply(golondrina)
 	}
 

@@ -78,6 +78,7 @@ import static extension org.uqbar.project.wollok.libraries.WollokLibExtensions.*
 import static extension org.uqbar.project.wollok.model.ResourceUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
+import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * Extension methods to Wollok semantic model.
@@ -88,8 +89,10 @@ import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.co
  */
 class WollokModelExtensions {
 
-	def static implicitPackage(EObject it) { file.implicitPackage }
-
+	def static implicitPackage(EObject it) {
+		file.implicitPackage
+	}
+	
 	def static file(EObject it) { eResource }
 
 	def static boolean isException(WClass it) { fqn == Exception.name || (parent !== null && parent.exception) }
@@ -106,6 +109,14 @@ class WollokModelExtensions {
 	def static dispatch String fqn(WNamedObject it) { nameWithPackage }
 	def static dispatch String fqn(WMixin it) { nameWithPackage }
 	def static dispatch String fqn(WSuite it) { nameWithPackage }
+
+
+	def static WMethodDeclaration getInitMethod(WMethodContainer it) {
+		methods.findFirst [ m |
+			m.name.equals(INITIALIZE_METHOD) && m.arguments.isEmpty
+		]
+	}
+
 
 	/** 
 	 * This method is intended to univocally identify every WMethodContainer
@@ -769,7 +780,7 @@ class WollokModelExtensions {
 	
 	def static isValidImport(IEObjectDescription element) {
 		val fqn = element.name.toString
-		fqn.importRequired && !NON_IMPLICIT_IMPORTS.exists[it.equals(fqn)] && element.EObjectOrProxy.container !== null
+		fqn.importRequired && !NON_IMPLICIT_IMPORTS.exists[it.equals(fqn)] && element.EObjectURI.fileExtension.equals(WOLLOK_DEFINITION_EXTENSION) && element.EObjectOrProxy.container !== null
 	}
 
 	// *******************************

@@ -18,6 +18,7 @@ class WollokLibExtensions {
 	public static val GAME_LIB = "wollok.game"
 	public static val MIRROR_LIB = "wollok.mirror"
 	
+	public static val ALL_LIBS_FILE = #["lang.wlk", "lib.wlk", "game.wlk", "mirror.wlk", "vm.wlk"]
 	public static val ALL_LIBS = #[LANG_LIB, LIB_LIB, VM_LIB, GAME_LIB, MIRROR_LIB]
 	public static val IMPLICIT_IMPORTS = #[LIB_LIB, LANG_LIB]
 	public static val NON_IMPLICIT_IMPORTS = #[GAME_LIB, VM_LIB, MIRROR_LIB]

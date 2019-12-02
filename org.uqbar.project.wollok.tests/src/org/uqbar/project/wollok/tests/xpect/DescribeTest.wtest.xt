@@ -17,3 +17,18 @@ describe "" {
 		assert.equals(2, 1 + 1)
 	}
 }
+
+describe "pruebas generales" {
+	const a = 8
+	
+	test "Max between 5 and 8" {
+		// XPECT errors --> "Duplicated Name" at "a"
+		const a = 3
+		const result = 5.max(a)
+		assert.equals(3, result)
+	}
+	test "Min between 5 and 8" {
+		const result = 5.min(a)
+		assert.equals(5, result)
+	}
+}

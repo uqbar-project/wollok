@@ -32,11 +32,6 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 	 *               BASIC MATHEMATICAL OPERATIONS
 	 * **********************************************************
 	 */
-	def div(BigDecimal other) { 
-		other.checkNotNull("div")
-		wrapped.divide(other, RoundingMode.HALF_UP).intValue
-	}
-
 	@NativeMessage("+")
 	def plus(WollokObject other) { 
 		other.checkNotNull("+")

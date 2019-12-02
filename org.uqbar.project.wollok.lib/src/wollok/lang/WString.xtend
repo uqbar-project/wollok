@@ -23,15 +23,10 @@ class WString extends AbstractJavaWrapper<String> {
 
 	def length() { wrapped.length }
 	
-	def charAt(BigDecimal index) {
-		index.checkNotNull("charAt")
-		wrapped.charAt(index.coerceToPositiveInteger).toString
-	}
-	
-	@NativeMessage("+")
 	def concat(Object other) { doConcatWith(other) }
-		def dispatch WollokObject doConcatWith(WString o) { newInstanceWithWrapped(this.wrapped + o.wrapped) }
-		def dispatch WollokObject doConcatWith(WollokObject it) { convertToWString.asWString.doConcatWith }
+
+	def dispatch WollokObject doConcatWith(WString o) { newInstanceWithWrapped(this.wrapped + o.wrapped) }
+	def dispatch WollokObject doConcatWith(WollokObject it) { convertToWString.asWString.doConcatWith }
 		
 	def startsWith(String other) { 
 		other.checkNotNull("startsWith")
