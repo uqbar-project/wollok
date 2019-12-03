@@ -25,7 +25,7 @@ echo "Updating to version $NEW_VERSION:"
 
 echo -e "- POM (this could take a while)"
 cd org.uqbar.project.wollok.releng
-mvn -q dependency:go-offline org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$NEW_VERSION
+mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$NEW_VERSION
 cd ..
 
 echo -e "- MANIFEST VERSIONS"
