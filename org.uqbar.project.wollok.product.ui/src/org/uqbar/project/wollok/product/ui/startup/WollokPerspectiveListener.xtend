@@ -276,7 +276,6 @@ class WollokPerspectiveListener implements IPerspectiveListener {
 	}
 
 	static val unwantedKeyBindings = #[
-		"org.eclipse.jdt.ui.navigate.open.type",
 		"org.eclipse.jdt.ui.edit.text.java.organize.imports",
 		"org.eclipse.jdt.ui.navigate.open.type.in.hierarchy",
 		"org.eclipse.jdt.ui.edit.text.java.open.call.hierarchy",

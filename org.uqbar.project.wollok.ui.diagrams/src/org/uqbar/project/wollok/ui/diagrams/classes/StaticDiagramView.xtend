@@ -95,6 +95,10 @@ import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.eclipse.ui.handlers.IHandlerService
+import org.eclipse.jface.commands.ActionHandler
+import org.uqbar.project.wollok.ui.diagrams.dynamic.WollokFlyoutPreferences
+import org.eclipse.core.runtime.Platform
 
 /**
  * 
@@ -299,303 +303,306 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 			add(
 				new CleanAllRelashionshipsAction(Messages.StaticDiagram_CleanAllRelationships_Description,
 					configuration))
-				add(new ShowHiddenComponents(Messages.StaticDiagram_ShowHiddenComponents_Description, configuration))
-				add(new ShowHiddenParts(Messages.StaticDiagram_ShowHiddenParts_Description, configuration))
-				add(new Separator)
-				add(new AddOutsiderClass(Messages.StaticDiagram_AddOutsiderClass_Description, configuration))
-				add(
-					new DeleteAllOutsiderClasses(Messages.StaticDiagram_DeleteAllOutsiderClasses_Description,
-						configuration))
+			add(new ShowHiddenComponents(Messages.StaticDiagram_ShowHiddenComponents_Description, configuration))
+			add(new ShowHiddenParts(Messages.StaticDiagram_ShowHiddenParts_Description, configuration))
+			add(new Separator)
+			add(new AddOutsiderClass(Messages.StaticDiagram_AddOutsiderClass_Description, configuration))
+			add(
+				new DeleteAllOutsiderClasses(Messages.StaticDiagram_DeleteAllOutsiderClasses_Description,
+					configuration))
 //			In a future could remain as options: "Open External wsdi" & "Save As..." 			
 //			add(new LoadStaticDiagramConfigurationAction(Messages.StaticDiagram_LoadConfiguration_Description, configuration, this))
 //			add(new SaveStaticDiagramConfigurationAction(Messages.StaticDiagram_SaveConfiguration_Description, configuration))
-			]
-		}
-
-		def configureGraphicalViewer() {
-			graphicalViewer.control.background = ColorConstants.listBackground
-
-			graphicalViewer.editPartFactory = new StaticDiagramEditPartFactory
-			graphicalViewer.rootEditPart = new ScalableFreeformRootEditPart
-			graphicalViewer.keyHandler = new GraphicalViewerKeyHandler(graphicalViewer)
-
-			// configure the context menu provider
-			val cmProvider = new StaticDiagramEditorContextMenuProvider(graphicalViewer, getActionRegistry)
-			graphicalViewer.contextMenu = cmProvider
-			site.registerContextMenu(cmProvider, graphicalViewer)
-		}
-
-		def hookGraphicalViewer() {
-			selectionSynchronizer.addViewer(graphicalViewer)
-			site.selectionProvider = graphicalViewer
-		}
-
-		def initializeGraphicalViewer() {
-			if (model !== null) {
-				graphicalViewer.contents = model
-				layout
-			}
-		}
-
-		def layout() {
-			// create graph
-			val graph = new DirectedGraph
-			graph.direction = PositionConstants.SOUTH
-
-			val parts = (classEditParts + objectsEditParts + mixinsEditParts)
-			val nodes = parts.map[e|e.createNode]
-
-			graph.edges.addAll(inheritanceConnectionsEditParts.map [ c |
-				new Edge(nodes.findFirst[n|n.data == c.source.model], nodes.findFirst[n|n.data == c.target.model])
-			])
-
-			// layout
-			val directedGraphLayout = new DirectedGraphLayout
-			directedGraphLayout.visit(graph)
-		}
-
-		def createNode(AbstractGraphicalEditPart e) {
-			new Node(e.model) => [
-				width = e.figure.preferredSize.width
-				height = e.figure.preferredSize.height
-			]
-		}
-
-		def getClassEditParts() { getEditPartsOfType(ClassEditPart) }
-
-		def getObjectsEditParts() { getEditPartsOfType(NamedObjectEditPart) }
-
-		def getMixinsEditParts() { getEditPartsOfType(MixinEditPart) }
-
-		def getInheritanceConnectionsEditParts() { getEditPartsOfType(InheritanceConnectionEditPart) }
-
-		def getAssociationConnectionsEditParts() { getEditPartsOfType(AssociationConnectionEditPart) }
-
-		def <T> Iterable<T> getEditPartsOfType(Class<T> t) {
-			(graphicalViewer.rootEditPart.children.get(0) as EditPart).children.filter(t)
-		}
-
-		def setGraphicalViewer(GraphicalViewer viewer) {
-			editDomain.addViewer(viewer)
-			graphicalViewer = viewer
-			graphicalViewer => [
-				addSelectionChangedListener(this)
-			]
-		}
-
-		override setFocus() {
-			graphicalViewer.control.setFocus
-		}
-
-		def getActionRegistry() {
-			if (actionRegistry === null)
-				actionRegistry = new ActionRegistry => [
-					registerAction(new DeleteElementAction(this, graphicalViewer, configuration))
-					registerAction(new ShowHiddenPartsElementAction(this, graphicalViewer, configuration))
-					// Adding zoom capabilities
-					val zoomManager = (graphicalViewer.rootEditPart as ScalableFreeformRootEditPart).zoomManager
-					zoomManager.setZoomLevelContributions(#[
-						ZoomManager.FIT_ALL,
-						ZoomManager.FIT_WIDTH,
-						ZoomManager.FIT_HEIGHT
-					])
-					zoomIn = new ZoomInAction(zoomManager)
-					zoomOut = new ZoomOutAction(zoomManager)
-					registerAction(zoomIn)
-					registerAction(zoomOut)
-
-					site.keyBindingService.registerAction(zoomIn)
-					site.keyBindingService.registerAction(zoomOut)
-				]
-			actionRegistry
-		}
-
-		def CommandStack getCommandStack() {
-			editDomain.commandStack
-		}
-
-		override getAdapter(Class type) {
-			if (type == PalettePage) {
-				if (splitter === null) {
-					page = createPalettePage
-					return page
-				}
-				return createPalettePage
-			}
-			if (type == IPropertySheetPage) {
-				return new UndoablePropertySheetPage(commandStack, getActionRegistry.getAction(ActionFactory.UNDO.id),
-					getActionRegistry.getAction(ActionFactory.REDO.id))
-			}
-			if (type == GraphicalViewer)
-				return graphicalViewer
-			if (type == CommandStack)
-				return commandStack
-			if (type == ActionRegistry)
-				return actionRegistry
-			if (type == EditPart && graphicalViewer !== null)
-				return graphicalViewer.rootEditPart
-			if (type == IFigure && graphicalViewer !== null)
-				return (graphicalViewer.rootEditPart as GraphicalEditPart).figure
-			if (type == ZoomManager)
-				return (graphicalViewer.rootEditPart as ScalableFreeformRootEditPart).zoomManager
-			super.getAdapter(type)
-		}
-
-		def createPalettePage() {
-			new CustomPalettePage(paletteViewerProvider, this);
-		}
-
-		def getSelectionSynchronizer() {
-			if (synchronizer === null)
-				synchronizer = new SelectionSynchronizer
-			synchronizer
-		}
-
-		def getModel() {
-			diagram
-		}
-
-		override dispose() {
-			site.workbenchWindow.selectionService.removeSelectionListener(this)
-			editDomain.activeTool = null
-			if(actionRegistry !== null) actionRegistry.dispose
-
-			super.dispose
-		}
-
-		override setSourceViewer(ISourceViewer sourceViewer) {
-			this.sourceViewer = sourceViewer
-			val document = sourceViewer.document
-			updateDocument(XtextDocumentUtil.get(document))
-		}
-
-		def updateDocument(IXtextDocument doc) {
-			if (doc !== null) {
-				if(xtextDocument !== null) xtextDocument.removeDocumentListener(this)
-				xtextDocument = doc
-				xtextDocument.addDocumentListener(this)
-				val IResource resource = xtextDocument.getAdapter(typeof(IResource))
-				configuration.resource = resource
-				refresh()
-			}
-		}
-
-		val refreshJob = new UIJob(Messages.StaticDiagram_UpdateDiagramView) {
-			override runInUIThread(IProgressMonitor monitor) {
-				diagram = createDiagramModel
-				initializeGraphicalViewer
-				Status.OK_STATUS
-			}
-		}
-
-		def refresh() {
-			refreshJob.schedule
-		}
-
-		// IDocumentListener
-		override documentAboutToBeChanged(DocumentEvent event) {}
-
-		override documentChanged(DocumentEvent event) {
-			refresh
-		}
-
-		// ****************************	
-		// ** Palette
-		// ****************************
-		def getSplitter() { splitter }
-
-		def getPaletteViewerProvider() {
-			if (provider === null)
-				provider = createPaletteViewerProvider
-			provider
-		}
-
-		def createPaletteViewerProvider() { new PaletteViewerProvider(editDomain) }
-
-		def getPalettePreferences() {
-			FlyoutPaletteComposite.createFlyoutPreferences(WollokDiagramsPlugin.getDefault.pluginPreferences)
-		}
-
-		// ****************************	
-		// ** Part listener (listen for open editor)
-		// ****************************
-		override partActivated(IWorkbenchPart part) {}
-
-		override partBroughtToTop(IWorkbenchPart part) {
-			if (part instanceof XtextEditor) {
-				if (part.languageName == WollokActivator.ORG_UQBAR_PROJECT_WOLLOK_WOLLOKDSL)
-					updateDocument(part.document)
-			}
-		}
-
-		override partClosed(IWorkbenchPart part) {}
-
-		override partDeactivated(IWorkbenchPart part) {}
-
-		override partOpened(IWorkbenchPart part) {}
-
-		// workbench -> gef editor
-		override selectionChanged(IWorkbenchPart part, ISelection selection) {
-			if(part == this) return;
-			if (selection instanceof StructuredSelection) {
-				// I think this is coupled with the outline view. It should use WClass instead of EObjectNode
-				// should we use getAdapter() ?
-				val selectedClassModels = selection.toList.filter(EObjectNode).filter [
-					EClass == WollokDslPackage.Literals.WCLASS
-				].fold(newArrayList()) [ list, c |
-					val cm = getClassEditParts.findFirst [ ep |
-						// mm.. i don't like comparing by name :( but our diagram seems to load 
-						// the xtext document (and model objects) again, so instances are different
-						ep.castedModel.getComponent.name == c.text.toString
-					]
-					if (cm !== null)
-						list += cm
-					list
-				]
-				if (!selectedClassModels.empty) {
-					graphicalViewer.selection = new StructuredSelection(selectedClassModels)
-				}
-			}
-		}
-
-		// SELECTION PROVIDER
-		val listeners = new ArrayList<ISelectionChangedListener>
-		var ISelection selection = null
-
-		override addSelectionChangedListener(ISelectionChangedListener listener) { listeners += listener }
-
-		override getSelection() { selection }
-
-		override setSelection(ISelection selection) {}
-
-		override removeSelectionChangedListener(ISelectionChangedListener listener) { listeners -= listener }
-
-		// ISelectionChangedListeners:
-		// listen for changes in the gef editor, publish selection using the model
-		override selectionChanged(SelectionChangedEvent event) {
-			val selection = event.selection
-			if (!selection.empty && selection instanceof StructuredSelection) {
-				val s = selection as StructuredSelection
-				if (s.size == 1) {
-					val model = (s.firstElement as EditPart).model
-					if (model instanceof ClassModel) {
-						val wclazz = model.getComponent
-						this.selection = new StructuredSelection(wclazz)
-						val e = new SelectionChangedEvent(this, this.selection)
-						listeners.forEach [ l |
-							l.selectionChanged(e)
-						]
-					}
-				}
-			}
-		}
-
-		/* Static Diagram Configuration Notifications */
-		override update(Observable o, Object event) {
-			if (event !== null && event.equals(StaticDiagramConfiguration.CONFIGURATION_CHANGED)) {
-				this.refresh
-			}
-		}
-
+		]
 	}
-	
+
+	def configureGraphicalViewer() {
+		graphicalViewer.control.background = ColorConstants.listBackground
+
+		graphicalViewer.editPartFactory = new StaticDiagramEditPartFactory
+		graphicalViewer.rootEditPart = new ScalableFreeformRootEditPart
+		graphicalViewer.keyHandler = new GraphicalViewerKeyHandler(graphicalViewer)
+
+		// configure the context menu provider
+		val cmProvider = new StaticDiagramEditorContextMenuProvider(graphicalViewer, getActionRegistry)
+		graphicalViewer.contextMenu = cmProvider
+		site.registerContextMenu(cmProvider, graphicalViewer)
+	}
+
+	def hookGraphicalViewer() {
+		selectionSynchronizer.addViewer(graphicalViewer)
+		site.selectionProvider = graphicalViewer
+	}
+
+	def initializeGraphicalViewer() {
+		if (model !== null) {
+			graphicalViewer.contents = model
+			layout
+		}
+	}
+
+	def layout() {
+		// create graph
+		val graph = new DirectedGraph
+		graph.direction = PositionConstants.SOUTH
+
+		val parts = (classEditParts + objectsEditParts + mixinsEditParts)
+		val nodes = parts.map[e|e.createNode]
+
+		graph.edges.addAll(inheritanceConnectionsEditParts.map [ c |
+			new Edge(nodes.findFirst[n|n.data == c.source.model], nodes.findFirst[n|n.data == c.target.model])
+		])
+
+		// layout
+		val directedGraphLayout = new DirectedGraphLayout
+		directedGraphLayout.visit(graph)
+	}
+
+	def createNode(AbstractGraphicalEditPart e) {
+		new Node(e.model) => [
+			width = e.figure.preferredSize.width
+			height = e.figure.preferredSize.height
+		]
+	}
+
+	def getClassEditParts() { getEditPartsOfType(ClassEditPart) }
+
+	def getObjectsEditParts() { getEditPartsOfType(NamedObjectEditPart) }
+
+	def getMixinsEditParts() { getEditPartsOfType(MixinEditPart) }
+
+	def getInheritanceConnectionsEditParts() { getEditPartsOfType(InheritanceConnectionEditPart) }
+
+	def getAssociationConnectionsEditParts() { getEditPartsOfType(AssociationConnectionEditPart) }
+
+	def <T> Iterable<T> getEditPartsOfType(Class<T> t) {
+		(graphicalViewer.rootEditPart.children.get(0) as EditPart).children.filter(t)
+	}
+
+	def setGraphicalViewer(GraphicalViewer viewer) {
+		editDomain.addViewer(viewer)
+		graphicalViewer = viewer
+		graphicalViewer => [
+			addSelectionChangedListener(this)
+		]
+	}
+
+	override setFocus() {
+		graphicalViewer.control.setFocus
+	}
+
+	def getActionRegistry() {
+		if (actionRegistry === null)
+			actionRegistry = new ActionRegistry => [
+				registerAction(new DeleteElementAction(this, graphicalViewer, configuration))
+				registerAction(new ShowHiddenPartsElementAction(this, graphicalViewer, configuration))
+				// Adding zoom capabilities
+				val zoomManager = (graphicalViewer.rootEditPart as ScalableFreeformRootEditPart).zoomManager
+				zoomManager.setZoomLevelContributions(#[
+					ZoomManager.FIT_ALL,
+					ZoomManager.FIT_WIDTH,
+					ZoomManager.FIT_HEIGHT
+				])
+				zoomIn = new ZoomInAction(zoomManager)
+				zoomOut = new ZoomOutAction(zoomManager)
+				registerAction(zoomIn)
+				registerAction(zoomOut)
+
+				val service = site.getService(IHandlerService)
+				service.activateHandler(zoomIn.getActionDefinitionId(), new ActionHandler(zoomIn))
+				service.activateHandler(zoomOut.getActionDefinitionId(), new ActionHandler(zoomOut))
+
+			]
+		actionRegistry
+	}
+
+	def CommandStack getCommandStack() {
+		editDomain.commandStack
+	}
+
+	override getAdapter(Class type) {
+		if (type == PalettePage) {
+			if (splitter === null) {
+				page = createPalettePage
+				return page
+			}
+			return createPalettePage
+		}
+		if (type == IPropertySheetPage) {
+			return new UndoablePropertySheetPage(commandStack, getActionRegistry.getAction(ActionFactory.UNDO.id),
+				getActionRegistry.getAction(ActionFactory.REDO.id))
+		}
+		if (type == GraphicalViewer)
+			return graphicalViewer
+		if (type == CommandStack)
+			return commandStack
+		if (type == ActionRegistry)
+			return actionRegistry
+		if (type == EditPart && graphicalViewer !== null)
+			return graphicalViewer.rootEditPart
+		if (type == IFigure && graphicalViewer !== null)
+			return (graphicalViewer.rootEditPart as GraphicalEditPart).figure
+		if (type == ZoomManager)
+			return (graphicalViewer.rootEditPart as ScalableFreeformRootEditPart).zoomManager
+		super.getAdapter(type)
+	}
+
+	def createPalettePage() {
+		new CustomPalettePage(paletteViewerProvider, this);
+	}
+
+	def getSelectionSynchronizer() {
+		if (synchronizer === null)
+			synchronizer = new SelectionSynchronizer
+		synchronizer
+	}
+
+	def getModel() {
+		diagram
+	}
+
+	override dispose() {
+		site.workbenchWindow.selectionService.removeSelectionListener(this)
+		editDomain.activeTool = null
+		if(actionRegistry !== null) actionRegistry.dispose
+
+		super.dispose
+	}
+
+	override setSourceViewer(ISourceViewer sourceViewer) {
+		this.sourceViewer = sourceViewer
+		val document = sourceViewer.document
+		updateDocument(new XtextDocumentUtil().getXtextDocument(document))
+	}
+
+	def updateDocument(IXtextDocument doc) {
+		if (doc !== null) {
+			if(xtextDocument !== null) xtextDocument.removeDocumentListener(this)
+			xtextDocument = doc
+			xtextDocument.addDocumentListener(this)
+			val IResource resource = xtextDocument.getAdapter(typeof(IResource))
+			configuration.resource = resource
+			refresh()
+		}
+	}
+
+	val refreshJob = new UIJob(Messages.StaticDiagram_UpdateDiagramView) {
+		override runInUIThread(IProgressMonitor monitor) {
+			diagram = createDiagramModel
+			initializeGraphicalViewer
+			Status.OK_STATUS
+		}
+	}
+
+	def refresh() {
+		refreshJob.schedule
+	}
+
+	// IDocumentListener
+	override documentAboutToBeChanged(DocumentEvent event) {}
+
+	override documentChanged(DocumentEvent event) {
+		refresh
+	}
+
+	// ****************************	
+	// ** Palette
+	// ****************************
+	def getSplitter() { splitter }
+
+	def getPaletteViewerProvider() {
+		if (provider === null)
+			provider = createPaletteViewerProvider
+		provider
+	}
+
+	def createPaletteViewerProvider() { new PaletteViewerProvider(editDomain) }
+
+	def getPalettePreferences() {
+		val preferencesService = Platform.getPreferencesService() // as PreferenceServices 
+		new WollokFlyoutPreferences(preferencesService.rootNode)
+		//FlyoutPaletteComposite.createFlyoutPreferences(WollokDiagramsPlugin.getDefault.pluginPreferences)
+	}
+
+	// ****************************	
+	// ** Part listener (listen for open editor)
+	// ****************************
+	override partActivated(IWorkbenchPart part) {}
+
+	override partBroughtToTop(IWorkbenchPart part) {
+		if (part instanceof XtextEditor) {
+			if (part.languageName == WollokActivator.ORG_UQBAR_PROJECT_WOLLOK_WOLLOKDSL)
+				updateDocument(part.document)
+		}
+	}
+
+	override partClosed(IWorkbenchPart part) {}
+
+	override partDeactivated(IWorkbenchPart part) {}
+
+	override partOpened(IWorkbenchPart part) {}
+
+	// workbench -> gef editor
+	override selectionChanged(IWorkbenchPart part, ISelection selection) {
+		if(part == this) return;
+		if (selection instanceof StructuredSelection) {
+			// I think this is coupled with the outline view. It should use WClass instead of EObjectNode
+			// should we use getAdapter() ?
+			val selectedClassModels = selection.toList.filter(EObjectNode).filter [
+				EClass == WollokDslPackage.Literals.WCLASS
+			].fold(newArrayList()) [ list, c |
+				val cm = getClassEditParts.findFirst [ ep |
+					// mm.. i don't like comparing by name :( but our diagram seems to load 
+					// the xtext document (and model objects) again, so instances are different
+					ep.castedModel.getComponent.name == c.text.toString
+				]
+				if (cm !== null)
+					list += cm
+				list
+			]
+			if (!selectedClassModels.empty) {
+				graphicalViewer.selection = new StructuredSelection(selectedClassModels)
+			}
+		}
+	}
+
+	// SELECTION PROVIDER
+	val listeners = new ArrayList<ISelectionChangedListener>
+	var ISelection selection = null
+
+	override addSelectionChangedListener(ISelectionChangedListener listener) { listeners += listener }
+
+	override getSelection() { selection }
+
+	override setSelection(ISelection selection) {}
+
+	override removeSelectionChangedListener(ISelectionChangedListener listener) { listeners -= listener }
+
+	// ISelectionChangedListeners:
+	// listen for changes in the gef editor, publish selection using the model
+	override selectionChanged(SelectionChangedEvent event) {
+		val selection = event.selection
+		if (!selection.empty && selection instanceof StructuredSelection) {
+			val s = selection as StructuredSelection
+			if (s.size == 1) {
+				val model = (s.firstElement as EditPart).model
+				if (model instanceof ClassModel) {
+					val wclazz = model.getComponent
+					this.selection = new StructuredSelection(wclazz)
+					val e = new SelectionChangedEvent(this, this.selection)
+					listeners.forEach [ l |
+						l.selectionChanged(e)
+					]
+				}
+			}
+		}
+	}
+
+	/* Static Diagram Configuration Notifications */
+	override update(Observable o, Object event) {
+		if (event !== null && event.equals(StaticDiagramConfiguration.CONFIGURATION_CHANGED)) {
+			this.refresh
+		}
+	}
+
+}
