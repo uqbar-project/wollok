@@ -76,9 +76,11 @@ class WollokChecker {
 		} catch (WollokTestsFailedException e) {
 			System.exit(1)
 		} catch (Throwable t) {
-			log.error("Checker error : " + t.class.name)
+			log.error("Checker error")
+			log.error("Parameters: " + args.map [ it ].join(", "))
+			if (t.message !== null) log.error(t.message) else log.error(t.class.name)
 			t.stackTrace.forEach [ ste |
-				log.error('''«ste.methodName» («ste.fileName»:«ste.lineNumber»)''')
+				log.error('''	«ste.methodName» («ste.fileName»:«ste.lineNumber»)''')
 			]
 			System.exit(1)
 		}

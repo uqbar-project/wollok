@@ -1,6 +1,8 @@
 version: '{build}'
 os: Windows Server 2012
 install:
+  - cd %APPVEYOR_BUILD_FOLDER%
+  - wollokInstall.bat
   - ps: |
       Add-Type -AssemblyName System.IO.Compression.FileSystem
       if (!(Test-Path -Path "C:\maven" )) {

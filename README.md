@@ -9,6 +9,10 @@
 
 A programming language and environment for teaching OOP.
 
+## Xtext-based implementation notes
+
+This is the main repository for the Wollok Xtext-based implementation, which is part of the [Wollok Language Specification](https://github.com/uqbar-project/wollok-language)
+
 ## Installation ##
 
 You have two options to download an use Wollok.
@@ -22,13 +26,11 @@ You have two options to download an use Wollok.
 * http://update.uqbar.org/wollok/stable : for the latest stable release
 * http://update.uqbar.org/wollok/dev : for the current dev (work in progress) version
 
-Or drag and drop <a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=2420552" class="drag" title="Drag to your running Eclipse workspace to install Wollok"><img src="https://marketplace.eclipse.org/sites/all/themes/solstice/_themes/solstice_marketplace/public/images/btn-install.png" alt="Drag to your running Eclipse workspace to install Wollok" /></a>
-
 ## Wollok SDK standalone ##
 
 Finally if you just want the headless Development Kit (WDK), for example to use a different IDE than Eclipse, you can download it from
 
-* http://download.uqbar.org/wollok/sdk/
+- https://github.com/uqbar-project/wollok-cli
 
 This is useful for example if you are going to develop with [Sublime](https://github.com/uqbar-project/wollok-sublime-linter/blob/master/README.md) or any other lightweight text editor
 
@@ -45,7 +47,7 @@ Refer to the [wiki](https://github.com/uqbar-project/wollok/wiki/Home) for docum
 * A **clean modern syntax** avoiding unnecessary symbols (java) while keeping it simple and even familiar for those who already have some experience in programming)
 * **Interpreted**: means that the code is being evaluated as it's being read. Although its **declarative syntax** makes it feel like a compiled language
 
-```xtend
+```wollok
 package fliers {
 
    object superman {
@@ -71,7 +73,7 @@ package fliers {
   [ superman, new Plane(), aBird ].forEach { o => o.fly() }
 ```
 
-Check out our [Language Reference](https://github.com/uqbar-project/wollok/wiki/LanguageReference) for a concrete idea of the syntax
+Check out our [Language Reference](https://www.wollok.org/en/documentation/concepts/) for a concrete idea of the syntax
 
 ## How is the Environment ? ##
 
@@ -80,10 +82,8 @@ You can either use its IDE:
 * With: many **static code analysis**, **Quick-Fixes**, **Refactors**
 * An **interactive Console** (**REPL**)
 * **Visual representations**: Outline, Static diagram, Objects Diagrams
-* A **debugger**.
 
-Or use the WDK which has command line tools for running and checkin a program.
-This is also integrated with [Sublime Editor](https://github.com/uqbar-project/wollok-sublime-linter/blob/master/README.md).
+Or use the wollok-cli which has command line tools for running and checkin a program.
 
 ## How to Contribute ##
 
@@ -123,14 +123,11 @@ Distributed under the terms of LGPLv3
 * [Estefanía Miguel](https://github.com/orgs/uqbar-project/people/estefaniamiguel)
 
 ## Metrics ##
-[![Throughput Graph](https://graphs.waffle.io/uqbar-project/wollok/throughput.svg)](https://waffle.io/uqbar-project/wollok/metrics)
 
 [![PRs](https://img.shields.io/github/issues-pr/uqbar-project/wollok.svg?maxAge=2592000)]()
 [![closed PRs](https://img.shields.io/github/issues-pr-closed/uqbar-project/wollok.svg?maxAge=2592000)]()
 
 [![issues](https://img.shields.io/github/issues-raw/badges/uqbar-project/wollok.svg?maxAge=2592000)]()
 [![issue resolution](http://isitmaintained.com/badge/resolution/uqbar-project/wollok.svg)](http://isitmaintained.com/project/uqbar-project/wollok "Average time to resolve an issue")
-
-[![Stories in Ready](https://badge.waffle.io/uqbar-project/wollok.png?label=ready&title=Ready)](https://waffle.io/uqbar-project/wollok)
 
 [![open issues](http://isitmaintained.com/badge/open/uqbar-project/wollok.svg)](http://isitmaintained.com/project/uqbar-project/wollok "Percentage of issues still open")

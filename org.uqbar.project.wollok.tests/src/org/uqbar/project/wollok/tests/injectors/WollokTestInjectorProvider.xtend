@@ -10,7 +10,20 @@ class WollokTestInjectorProvider extends WollokDslInjectorProvider {
 		new WollokTestSetup(params).createInjectorAndDoEMFRegistration
 	}
 	
-	def protected createParameters(){
+	def protected createParameters() {
 		new WollokLauncherParameters
+	}
+}
+
+class WollokSanityTestInjectorProvider extends WollokTestInjectorProvider {
+	
+	override createParameters() {
+		new WollokLauncherParameters => [
+			severalFiles = true
+			tests = true
+			jsonOutput = false
+			exitOnBuildFailure = false
+			colored = false
+		]
 	}
 }

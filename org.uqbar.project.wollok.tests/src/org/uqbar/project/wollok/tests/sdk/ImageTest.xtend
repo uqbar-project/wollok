@@ -9,6 +9,12 @@ import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.Image
 import org.junit.Before
 
+/**
+ * Nota de dodain
+ * 
+ * Estos métodos no fueron enteramente reemplazados por su versión en wollok-language
+ * ya que validan parte de la implementación de image
+ */
 class ImageTest extends AbstractWollokParameterizedInterpreterTest {
 	@Parameter(0)
 	public String convention

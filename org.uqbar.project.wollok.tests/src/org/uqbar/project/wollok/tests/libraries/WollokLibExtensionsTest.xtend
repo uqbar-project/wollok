@@ -6,30 +6,33 @@ import org.uqbar.project.wollok.libraries.WollokLibExtensions
 import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertTrue
 
-class WollokLibExtensionsTest  {
-	
-	static class IsCoreLibTest{
+class WollokLibExtensionsTest {
+
+	static class IsCoreLibTest {
+
 		@Test()
-		def void whenPassALangFqnResponseTrue() {
+		def void libFQNisACoreLibrary() {
 			val String exceptionFqn = "wollok.lang.Exception"
 			assertTrue(WollokLibExtensions.isCoreLib(exceptionFqn))
 		}
-		
+
 		@Test()
-		def void whenPassALibFqnResponseTrue() {
+		def void langFQNisACoreLibrary() {
 			val String libFqn = "wollok.lib"
 			assertTrue(WollokLibExtensions.isCoreLib(libFqn))
 		}
-		
+
 		@Test()
-		def void whenPassANullResponseFalse() {
+		def void nullIsNotACoreLibrary() {
 			assertFalse(WollokLibExtensions.isCoreLib(null))
 		}
+
 		@Test()
-		def void whenPassAFqnIsNotCoreLibResponseFalse() {
+		def void customClassIsNotACoreLibrary() {
 			val String randomFqn = "randomfqn.aClass"
 			assertFalse(WollokLibExtensions.isCoreLib(randomFqn))
 		}
+
 	}
-	
+
 }
