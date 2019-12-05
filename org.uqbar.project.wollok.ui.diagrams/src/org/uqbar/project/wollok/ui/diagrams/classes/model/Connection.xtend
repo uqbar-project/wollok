@@ -14,7 +14,7 @@ import static extension org.uqbar.project.wollok.utils.StringUtils.*
  * @author jfernandes
  */
 class Connection extends ModelElement {
-	static final val SOLID_STR = "Solid"
+	static val SOLID_STR = "Solid"
 	static val DASHED_STR = "Dashed"
 	
 	public static val MAX_LABEL_FOR_PRINTING = 16
