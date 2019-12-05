@@ -135,16 +135,6 @@ deploy:
   on:
     all_branches: true
     condition: "$UPDATE_SITE =~ ^dev|stable$"
-- provider: releases
-  skip_cleanup: true
-  api_key:
-    secure: ZGDMxFYXbp/LgNqtGourJXgQS2itBxHWzLqDKnSd1YV6sDHnYzvrq8aCoLHujMCI0yLkRAI12raylJkXHzQHcN3JDF0SyJostz59x1KEJ4cpv8K5bb2bs8BsV/BuZlQssu6yqqgaIXOALF52wUGgVg8nBjWA0LdRL5DDFs8ExR0=
-  file_glob: true    
-  file: results-products/*.zip
-  on:
-    tags: true
-    all_branches: true  
-    repo: uqbar-project/wollok
 env:
   global:
     secure: IJCZW9xrLlUjs/HRkrpagk06zo2+FvKaMygUk6K9Fdim3uSsLmn4UyBazNli0a62oq3XuNpscsCmdVtofUCfZphEHnyIUUTToQ+u6j1KxbICjfIGFMmUEoY/7tZVscQ5SBgiqtEVfUvolN6v4YUtx2FwaS27FW5SV3/x8j6toPw=
