@@ -52,7 +52,7 @@ public class Activator extends AbstractUIPlugin {
 			}
 			
 			if (name.contains("platform:")) {
-				URL u = new URL(getDefault().getStateLocation().toFile().toURL(), name);
+				URL u = new URL(getDefault().getStateLocation().toFile().toURI().toURL(), name);
 				return ImageDescriptor.createFromURL(u);
 			} else {
 				Bundle bundle = Platform.getBundle(PLUGIN_ID);

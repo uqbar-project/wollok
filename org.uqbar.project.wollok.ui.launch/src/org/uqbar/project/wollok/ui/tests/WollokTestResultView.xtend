@@ -106,7 +106,6 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 	// Second toolbar
 	Label lblMilliseconds
-	Button copyTextOutputToClipboard
 
 //	static IViewPart previousActivePart
 
@@ -386,7 +385,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 			]
 		]
 
-		copyTextOutputToClipboard = new Button(parentToolbar, SWT.PUSH) => [
+		new Button(parentToolbar, SWT.PUSH) => [
 			toolTipText = Messages.WollokTestResultView_copySelectedResultToClipboard
 			val pathImage = Activator.getDefault.getImageDescriptor(
 				"platform:/plugin/org.eclipse.pde.ui/icons/obj16/copyviewtoclipboard_tsk.png")
