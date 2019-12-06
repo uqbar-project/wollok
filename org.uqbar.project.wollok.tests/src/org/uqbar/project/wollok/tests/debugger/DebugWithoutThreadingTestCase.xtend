@@ -393,7 +393,7 @@ object assert {
 }
 
 @Accessors
-class PostEvaluationTestDebugger extends XDebuggerOff {
+class PostEvaluationTestDebugger extends XDebuggerOff<WollokObject> {
 	val Logger log = Logger.getLogger(this.class)
 	
 	var boolean childrenFirst = true

@@ -21,6 +21,8 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.eclipse.draw2d.ChopboxAnchor
 import org.uqbar.project.wollok.ui.diagrams.classes.view.StaticDiagramColors
 import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
+import java.util.List
+import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
 
 /**
  * 
@@ -55,10 +57,11 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 			layoutManager = new StackLayout
 		
 			val c = colorFor(castedModel)
-			add(this.ellipse = createShape() => [
+			this.ellipse = createShape() => [
 				backgroundColor = c
 				opaque = true
-			])
+			]
+			add(this.ellipse)
 			add(new Label => [
 				text = castedModel.valueString
 				setSize(75, 25)
@@ -105,8 +108,8 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 			new EllipseAnchor(figure)
 	}
 	
-	override getModelSourceConnections() { castedModel.sourceConnections }
-	override getModelTargetConnections() { castedModel.targetConnections }
+	override List<Connection> getModelSourceConnections() { castedModel.sourceConnections }
+	override List<Connection> getModelTargetConnections() { castedModel.targetConnections }
 
 	// anchors
 		

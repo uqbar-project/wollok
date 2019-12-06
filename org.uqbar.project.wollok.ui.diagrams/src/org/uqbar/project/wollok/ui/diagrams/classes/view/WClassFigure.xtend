@@ -19,12 +19,9 @@ class WClassFigure extends Figure {
 	Label nameLabel
 	Figure attributesFigure
 	Figure methodsFigure
-	AbstractModel castedModel
 
 	new(String name, Color fgColor, Color bgColor, AbstractModel castedModel) {
 		super()
-
-		this.castedModel = castedModel
 		
 		layoutManager = new ToolbarLayout => [
 			stretchMinorAxis =  true

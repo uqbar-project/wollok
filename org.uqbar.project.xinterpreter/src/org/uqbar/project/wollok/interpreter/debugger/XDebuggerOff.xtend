@@ -11,7 +11,7 @@ import org.uqbar.project.wollok.interpreter.api.XDebugger
  * 
  * @author jfernandes
  */
-class XDebuggerOff implements XDebugger {
+class XDebuggerOff<T> implements XDebugger<T> {
 	
 	override aboutToEvaluate(EObject element) { }
 	override evaluated(EObject element) { }

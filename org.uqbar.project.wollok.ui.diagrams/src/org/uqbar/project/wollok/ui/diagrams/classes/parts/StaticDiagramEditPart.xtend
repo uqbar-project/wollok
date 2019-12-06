@@ -19,6 +19,8 @@ import org.uqbar.project.gef.SquareConnectionRouter
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.commands.MoveOrResizeCommand
+import org.uqbar.project.wollok.ui.diagrams.classes.model.AbstractModel
+import java.util.List
 
 /**
  * 
@@ -62,7 +64,7 @@ class StaticDiagramEditPart extends AbstractGraphicalEditPart implements Propert
 	}
 	
 	def getModelElement() { model as StaticDiagram }
-	override getModelChildren() { modelElement.getChildren }
+	override List<AbstractModel> getModelChildren() { modelElement.getChildren }
 
 	override propertyChange(PropertyChangeEvent evt) {
 		val prop = evt.propertyName
