@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -17,9 +18,14 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.5.2</version>
+		</dependency>
+		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
-			<version>1.9.5</version>
+			<version>1.10.19</version>
 		</dependency>
 		<!-- It is not the same version as the lib in launcher project (debugger) 
 			But it is the only one I could find in maven -->
@@ -32,6 +38,7 @@
 
 	<build>
 		<testSourceDirectory>src</testSourceDirectory>
+
 		<plugins>
 
 			<!-- add extra source foldes -->
@@ -120,7 +127,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.18.1</version>
+				<version>3.0.0-M4</version>
 				<inherited>true</inherited>
 				<executions>
 					<execution>
@@ -147,15 +154,6 @@
 						</goals>
 					</execution>
 				</executions>
-
-				<dependencies>
-					<!-- Force using the latest JUnit 47 provider -->
-					<dependency>
-						<groupId>org.apache.maven.surefire</groupId>
-						<artifactId>surefire-junit47</artifactId>
-						<version>2.8</version>
-					</dependency>
-				</dependencies>
 			</plugin>
 			<!-- -->
 		</plugins>

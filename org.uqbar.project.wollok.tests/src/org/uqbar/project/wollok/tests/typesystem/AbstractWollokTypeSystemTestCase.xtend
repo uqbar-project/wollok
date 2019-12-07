@@ -141,11 +141,11 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	// ************************************************************
 
 	def assertTypeOf(EObject program, WollokType expectedType, String programToken) {
-		assertEquals("Unmatched type for '" + programToken + "'", expectedType, program.findByText(programToken).type)
+		assertEquals(expectedType, program.findByText(programToken).type, "Unmatched type for '" + programToken + "'")
 	}
 
 	def assertTypeOfAsString(EObject program, String expectedType, String token) {
-		assertEquals("Unmatched type for '" + token + "'", expectedType, program.findByText(token).type.name)
+		assertEquals(expectedType, program.findByText(token).type.name, "Unmatched type for '" + token + "'")
 	}
 
 	def assertConstructorType(EObject program, String className, String paramsSignature) {
@@ -199,7 +199,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 		.findFirst [ n |
 			escapeNodeTextToCompare(n.text.trim) == token && n.hasDirectSemanticElement
 		]
-		assertNotNull("Could NOT find program token '" + token + "'", found)
+		assertNotNull(found, "Could NOT find program token '" + token + "'")
 		found.semanticElement
 	}
 

@@ -1,8 +1,8 @@
 package org.uqbar.project.wollok.tests.game
 
 import org.eclipse.xtext.xbase.lib.Functions.Function1
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.uqbar.project.wollok.game.Image
 import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.WGPosition
@@ -11,6 +11,7 @@ import org.uqbar.project.wollok.game.listeners.CollisionListener
 import org.uqbar.project.wollok.game.listeners.InstantCollisionListener
 
 import static org.mockito.Mockito.*
+import org.uqbar.project.wollok.tests.game.mock.VisualComponentMock
 
 class CollisionListenerTest {
 	CollisionListener listener
@@ -21,14 +22,14 @@ class CollisionListenerTest {
 	VisualComponent otherCoin
 	(VisualComponent)=>Object block
 
-	@Before
+	@BeforeEach
 	def void init() {
 		gameboard = new Gameboard
 
 		var image = new Image("path")
-		mario = new WGVisualComponent(new WGPosition(2, 2), image)
-		aCoin = new WGVisualComponent(new WGPosition(3, 3), image)
-		otherCoin = new WGVisualComponent(new WGPosition(4, 4), image)
+		mario = new VisualComponentMock(new WGPosition(2, 2), image)
+		aCoin = new VisualComponentMock(new WGPosition(3, 3), image)
+		otherCoin = new VisualComponentMock(new WGPosition(4, 4), image)
 
 		gameboard.addComponents(newArrayList(mario, aCoin, otherCoin))
 

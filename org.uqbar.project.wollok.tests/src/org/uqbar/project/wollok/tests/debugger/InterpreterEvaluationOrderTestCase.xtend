@@ -52,7 +52,7 @@ class InterpreterEvaluationOrderTestCase extends AbstractXDebuggerImplTestCase {
 		verify(debugger, times(9)).evaluated(evaluatedCaptor.capture)
 		
 		assertEquals(aboutToEvaluateCaptor.allValues.size, evaluatedCaptor.allValues.size)
-		aboutToEvaluateCaptor.allValues.forEach[ assertTrue("About was not evaluated: " + it, evaluatedCaptor.allValues.contains(it)) ]
+		aboutToEvaluateCaptor.allValues.forEach[ assertTrue(evaluatedCaptor.allValues.contains(it), "About was not evaluated: " + it) ]
 	}
 	
 	

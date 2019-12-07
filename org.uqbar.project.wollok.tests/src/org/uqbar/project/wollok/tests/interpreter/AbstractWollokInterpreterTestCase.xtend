@@ -9,9 +9,9 @@ import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.validation.ValidationTestHelper
-import org.junit.After
-import org.junit.Assert
-import org.junit.Before
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeEach
 import org.junit.runner.RunWith
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
@@ -29,14 +29,14 @@ import static wollok.lang.WDate.*
  */
 @RunWith(XtextRunner)
 @InjectWith(WollokTestInjectorProvider)
-abstract class AbstractWollokInterpreterTestCase extends Assert {
+abstract class AbstractWollokInterpreterTestCase extends Assertions {
 	@Inject protected extension WollokParseHelper
 	@Inject protected extension ValidationTestHelper
 	@Inject protected XtextResourceSet resourceSet
 	@Inject	protected extension WollokInterpreter interpreter
 	public static val EXAMPLES_PROJECT_PATH = "../wollok-tests"
 
-	@Before
+	@BeforeEach
 	def void setUp() {
 		interpreter.classLoader = AbstractWollokInterpreterTestCase.classLoader
 
@@ -47,7 +47,7 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 		new File("target/test-files/WOLLOK.ROOT").createNewFile
 	}
 
-	@After
+	@AfterEach
 	def void tearDown() {
 		interpreter = null
 		new File("target/test-files")
@@ -75,9 +75,9 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 			fail("1 issue expected, found " + issues.length + ": " + issues) 
 		}
 		val issue = issues.findFirst [ message == expectedMessage ]
-		Assert.assertNotNull("No issue found with message " + expectedMessage + ". Issues were: " + issues, issue)
+		assertNotNull(issue, "No issue found with message " + expectedMessage + ". Issues were: " + issues)
 		if (shouldBeSyntaxError) {
-			Assert.assertTrue("Issue " + issue + " is not a syntax error.", issue.isSyntaxError)
+			assertTrue(issue.isSyntaxError, "Issue " + issue + " is not a syntax error.")
 		}
 	}
 
@@ -87,7 +87,7 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 
 	def expectsNoSyntaxError(CharSequence programAsString) {
 		val issues = programAsString.parse.validate
-		Assert.assertEquals("No issues were expected. Issues were: " + issues, 0, issues.length)
+		assertEquals(issues.length, 0, "No issues were expected. Issues were: " + issues)
 	}
 	
 	def test(CharSequence testCode) {

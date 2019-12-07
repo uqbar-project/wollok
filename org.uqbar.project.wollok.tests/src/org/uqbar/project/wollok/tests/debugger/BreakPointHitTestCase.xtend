@@ -69,7 +69,7 @@ class BreakPointHitTestCase extends AbstractXDebuggingTestCase {
 						assertEquals(1, frames.get(0).variables.size)
 						frames.get(0).variables.get(0) => [
 							assertEquals("aList", variable.name)
-							assertTrue(value.stringValue + " didn't match List", value.stringValue.startsWith("List (id="))
+							assertTrue(value.stringValue.startsWith("List (id="), value.stringValue + " didn't match List")
 							
 							assertEquals(XWollokCollectionDebugValue, value.class)	
 							

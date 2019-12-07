@@ -2,12 +2,11 @@ package org.uqbar.project.wollok.tests.game;
 
 import static org.mockito.Mockito.*;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import org.uqbar.project.wollok.game.gameboard.Gameboard;
 import org.uqbar.project.wollok.game.listeners.KeyboardListener;
 import org.uqbar.project.wollok.game.helpers.Keyboard
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class KeyboardListenerTest {
 	
@@ -16,7 +15,7 @@ class KeyboardListenerTest {
 	Keyboard keyboard
 	Runnable action
 	
-	@Before
+	@BeforeEach
 	def void init() {
 		val ANY_KEY = 0
 		gameboard = mock(Gameboard)

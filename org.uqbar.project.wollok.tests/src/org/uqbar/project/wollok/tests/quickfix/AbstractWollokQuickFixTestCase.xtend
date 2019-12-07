@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*
 import static extension org.uqbar.project.wollok.utils.ReflectionExtensions.*
 
 abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterTestCase {
-	
+
 	WollokDslQuickfixProvider issueResolutionProvider
 	val Logger log = Logger.getLogger(this.class)
 
@@ -35,7 +35,7 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 	def void assertQuickfix(List<String> initial, List<String> result, String quickFixDescription) {
 		assertQuickfix(initial, result, quickFixDescription, 1)
 	}
-	
+
 	/**
 	 * Used to test the quickfix, receives two lists of files.
 	 * To allow easy includes the "virtual" files are named fileX.wlk, where X is the order (of course starting in 0)
@@ -45,7 +45,8 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 		assertQuickfix(initial, result, quickFixDescription, numberOfIssues, null)
 	}
 
-	def void assertQuickfix(List<String> initial, List<String> result, String quickFixDescription, int numberOfIssues, String issueDescription) {
+	def void assertQuickfix(List<String> initial, List<String> result, String quickFixDescription, int numberOfIssues,
+		String issueDescription) {
 		val sources = <QuickFixTestSource>newArrayList()
 		val issues = <Issue>newArrayList()
 
@@ -63,10 +64,13 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 			])
 		]
 
-		assertEquals("The number of issues should be exactly " + numberOfIssues + ": " + issues, issues.size, numberOfIssues)
-		
-		val testedIssue = if (issueDescription === null) issues.get(0) else issues.findFirst [ issueDescription.equalsIgnoreCase(message) ]
-		
+		assertEquals(issues.size, numberOfIssues,
+			"The number of issues should be exactly " + numberOfIssues + ": " + issues)
+
+		val testedIssue = if(issueDescription === null) issues.get(0) else issues.findFirst [
+				issueDescription.equalsIgnoreCase(message)
+			]
+
 		val Answer<XtextDocument> answerXtextDocument = [ call |
 			val uri = if(call.arguments.size == 0) testedIssue.uriToProblem else (call.arguments.get(0) as URI)
 			val value = uri.trimFragment.toString
@@ -78,35 +82,34 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 			when(getXtextDocument(any(URI))).then(answerXtextDocument)
 		]
 
-		val IssueModificationContext.Factory issueFactory = mock(IssueModificationContext.Factory) => [ 
+		val IssueModificationContext.Factory issueFactory = mock(IssueModificationContext.Factory) => [
 			when(createModificationContext(any(Issue))).thenReturn(issueModificationContext)
-		] 
+		]
 
 		issueResolutionProvider = new WollokDslQuickfixProvider => [
-			issueResolutionAcceptorProvider = [ new IssueResolutionAcceptor[issueModificationContext] ]
+			issueResolutionAcceptorProvider = [new IssueResolutionAcceptor[issueModificationContext]]
 //			For now this is not necessary and running maven tests fails to find wollok.ui.WollokDslQuickfixProvider
 			it.assign("modificationContextFactory", issueFactory)
 		]
-		
-		assertTrue("There is no solution for the issue: " + testedIssue, issueResolutionProvider.hasResolutionFor(testedIssue.code))
+
+		assertTrue(issueResolutionProvider.hasResolutionFor(testedIssue.code), "There is no solution for the issue: " + testedIssue)
 
 		val resolutions = issueResolutionProvider.getResolutions(testedIssue)
-	
+
 		val resolution = resolutions.findFirst[it.label == quickFixDescription]
-		
-		assertNotNull("Could not find a quickFix with the description " + quickFixDescription, resolution)
+
+		assertNotNull(resolution, "Could not find a quickFix with the description " + quickFixDescription)
 
 		resolution.apply
-		
+
 		log.debug("Expected code")
 		log.debug("*************")
-		log.debug(sources.map [ expectedCode.toString ])
+		log.debug(sources.map[expectedCode.toString])
 		log.debug("vs.")
-		log.debug(sources.map [ xtextDocument.get.toString ])
+		log.debug(sources.map[xtextDocument.get.toString])
 		log.debug("====================")
-		sources.forEach [ assertEquals(expectedCode.toString, xtextDocument.get.toString)  ]
+		sources.forEach[assertEquals(expectedCode.toString, xtextDocument.get.toString)]
 	}
-
 
 }
 

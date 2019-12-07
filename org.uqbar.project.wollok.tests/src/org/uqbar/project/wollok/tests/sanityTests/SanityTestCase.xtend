@@ -45,11 +45,11 @@ class SanityTestCase extends AbstractWollokInterpreterTestCase {
 					failed.add(file.toString)
 				}
 			]
-		assertTrue('''
+		assertTrue(failed.isEmpty, '''
 		There were «failed.size.singularOrPlural("file", "files")»  with errors in the sanity tests. 
 		Check your log for details.
 		«failed.join("\n")»
-		''', failed.isEmpty)
+		''')
 	}
 	
 }

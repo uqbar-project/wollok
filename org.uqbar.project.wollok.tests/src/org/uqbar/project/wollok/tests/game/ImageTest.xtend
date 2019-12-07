@@ -1,18 +1,18 @@
 package org.uqbar.project.wollok.tests.game
 
-import org.junit.Before
-import org.junit.Test
 import org.uqbar.project.wollok.game.CellSize
 import org.uqbar.project.wollok.game.GameSize
 import org.uqbar.project.wollok.game.TextureSize
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 
-import static org.junit.Assert.*
+import static org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class ImageTest {
 	var Gameboard gameboard 
 	
-	@Before
+	@BeforeEach
 	def void init() {
 		gameboard = new Gameboard => [ 
 			width = 3

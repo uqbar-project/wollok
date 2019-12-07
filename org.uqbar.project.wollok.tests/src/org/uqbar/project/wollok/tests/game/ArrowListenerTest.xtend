@@ -1,8 +1,5 @@
 package org.uqbar.project.wollok.tests.game
 
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
 import org.uqbar.project.wollok.game.Image
 import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.WGPosition
@@ -12,6 +9,10 @@ import org.uqbar.project.wollok.game.listeners.ArrowListener
 
 import static org.mockito.Mockito.*
 import static org.uqbar.project.wollok.game.helpers.Keyboard.*
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import static org.junit.jupiter.api.Assertions.*
+import org.uqbar.project.wollok.tests.game.mock.VisualComponentMock
 
 class ArrowListenerTest {
 		
@@ -20,13 +21,13 @@ class ArrowListenerTest {
 	ArrowListener arrowListener
 	VisualComponent character
 	
-	@Before
+	@BeforeEach
 	def void init() {
 		gameboard = Gameboard.getInstance 
 		keyboard = mock(Keyboard)
 		Keyboard.instance = keyboard
 		
-		character = new WGVisualComponent(new WGPosition(0, 0), new Image(""))
+		character = new VisualComponentMock(new WGPosition(0, 0), new Image(""))
 		
 		arrowListener = new ArrowListener(character)
 	}
@@ -36,7 +37,7 @@ class ArrowListenerTest {
 		this.press("UP")
 		
 		arrowListener.notify(gameboard)
-		Assert.assertEquals(new WGPosition(0, 1), character.position) 
+		assertEquals(new WGPosition(0, 1), character.position) 
 	}
 	
 	@Test
@@ -44,7 +45,7 @@ class ArrowListenerTest {
 		this.press("DOWN")
 		
 		arrowListener.notify(gameboard)
-		Assert.assertEquals(new WGPosition(0, 0), character.position) 
+		assertEquals(new WGPosition(0, 0), character.position) 
 	}
 	
 	@Test
@@ -52,7 +53,7 @@ class ArrowListenerTest {
 		this.press("LEFT")
 		
 		arrowListener.notify(gameboard)
-		Assert.assertEquals(new WGPosition(0, 0), character.position) 
+		assertEquals(new WGPosition(0, 0), character.position) 
 	}
 	
 	@Test
@@ -61,7 +62,7 @@ class ArrowListenerTest {
 		this.press("LEFT")
 
 		arrowListener.notify(gameboard)
-		Assert.assertEquals(new WGPosition(1, 2), character.position) 
+		assertEquals(new WGPosition(1, 2), character.position) 
 	}
 	
 	@Test
@@ -69,7 +70,7 @@ class ArrowListenerTest {
 		this.press("RIGHT")
 		
 		arrowListener.notify(gameboard)
-		Assert.assertEquals(new WGPosition(1, 0), character.position) 
+		assertEquals(new WGPosition(1, 0), character.position) 
 	}
 
 	def press(String key) {

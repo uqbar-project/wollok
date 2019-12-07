@@ -1,7 +1,5 @@
 package org.uqbar.project.wollok.tests.game
 
-import org.junit.Before
-import org.junit.Test
 import org.uqbar.project.wollok.game.Image
 import org.uqbar.project.wollok.game.Messages
 import org.uqbar.project.wollok.game.Position
@@ -18,10 +16,13 @@ import org.uqbar.project.wollok.game.listeners.GameboardListener
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
-import static org.junit.Assert.*
 import static org.mockito.Mockito.*
 import static org.uqbar.project.wollok.game.helpers.Application.*
 import static org.uqbar.project.wollok.game.helpers.Keyboard.*
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import static org.junit.jupiter.api.Assertions.*
+import org.uqbar.project.wollok.tests.game.mock.VisualComponentMock
 
 class GameboardTest {
 	Gameboard gameboard
@@ -30,7 +31,7 @@ class GameboardTest {
 	VisualComponent character
 	Window window
 
-	@Before
+	@BeforeEach
 	def void init() {
 		Keyboard.instance = mock(Keyboard)
 		Application.instance = mock(Application)
@@ -172,7 +173,7 @@ class GameboardTest {
 	}
 
 	def newComponent(Position p) {
-		spy(new WGVisualComponent(p, new Image("")) => [ hideAttributes ])
+		spy(new VisualComponentMock(p, new Image("")) => [ hideAttributes ])
 	}
 	
 	def listenerThrowError() { listenerThrowErrorWithMessage(newWollokException("ERROR", null)) }

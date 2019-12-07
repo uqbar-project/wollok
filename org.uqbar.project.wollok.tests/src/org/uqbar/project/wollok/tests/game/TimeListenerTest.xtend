@@ -1,15 +1,15 @@
 package org.uqbar.project.wollok.tests.game
 
 import org.eclipse.xtext.xbase.lib.Functions.Function0
-import org.junit.Before
-import org.junit.Test
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.listeners.GameboardListener
 import org.uqbar.project.wollok.game.listeners.ScheduleListener
 import org.uqbar.project.wollok.game.listeners.TimeListener
 
-import static org.junit.Assert.*
+import static org.junit.jupiter.api.Assertions.*
 import static org.mockito.Mockito.*
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class TimeListenerTest {
 	TimeListener interval
@@ -17,7 +17,7 @@ class TimeListenerTest {
 	Gameboard gameboard
 	()=>Object block
 	
-	@Before
+	@BeforeEach
 	def void init() {
 		gameboard = new Gameboard
 		block = mock(Function0)

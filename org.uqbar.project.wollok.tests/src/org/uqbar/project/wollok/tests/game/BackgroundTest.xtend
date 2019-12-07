@@ -1,12 +1,11 @@
 package org.uqbar.project.wollok.tests.game
 
-import org.junit.Test
 import org.uqbar.project.wollok.game.GameSize
 import org.uqbar.project.wollok.game.gameboard.CellsBackground
 import org.uqbar.project.wollok.game.gameboard.FullBackground
 import org.uqbar.project.wollok.game.gameboard.Gameboard
-
-import static org.junit.Assert.*
+import org.junit.jupiter.api.Test
+import static org.junit.jupiter.api.Assertions.*
 
 class BackgroundTest {
 	val path = "image.png"

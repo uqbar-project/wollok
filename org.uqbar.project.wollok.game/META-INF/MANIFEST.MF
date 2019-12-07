@@ -3,8 +3,7 @@ Bundle-Name: Wollok Game
 Bundle-SymbolicName: org.uqbar.project.wollok.game
 Bundle-Version: 1.9.2
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.junit;version="4.11.0",
- org.osgi.framework;version="1.3.0",
+Import-Package: org.osgi.framework;version="1.3.0",
  org.uqbar.project.wollok.interpreter.core,
  org.uqbar.project.wollok.interpreter.nativeobj
 Bundle-ActivationPolicy: lazy
