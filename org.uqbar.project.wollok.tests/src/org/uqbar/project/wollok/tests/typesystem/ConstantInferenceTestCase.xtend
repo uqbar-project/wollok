@@ -2,8 +2,6 @@ package org.uqbar.project.wollok.tests.typesystem
 
 import org.junit.Ignore
 import org.junit.jupiter.api.Test
-import org.junit.runners.Parameterized.Parameters
-import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 
 import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
@@ -14,12 +12,12 @@ import static org.uqbar.project.wollok.sdk.WollokSDK.*
  */
 class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 
-	@Parameters(name = "{index}: {0}")
-	static def Object[] typeSystems() {
-		#[
-			ConstraintBasedTypeSystem
-		]
-	}
+//	@Parameters(name = "{index}: {0}")
+//	static def Object[] typeSystems() {
+//		#[
+//			ConstraintBasedTypeSystem
+//		]
+//	}
 
 	@Test
 	def void numberLiteral() { 	'''program p {
@@ -109,5 +107,10 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 		'''.parseAndInfer.asserting [
 			assertIssues("a = b", "Expecting super type of <<Number>> but found <<String>> which is not")
 		]
-	}		
+	}
+	
+//	override getTypeSystemClass() {
+//		ConstraintBasedTypeSystem
+//	}
+	
 }

@@ -1,12 +1,10 @@
 package org.uqbar.project.wollok.tests.typesystem
 
-import org.junit.Ignore
 import org.junit.jupiter.api.Test
-import org.junit.runners.Parameterized.Parameters
-import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 
 import static org.uqbar.project.wollok.sdk.WollokSDK.*
+import org.junit.jupiter.api.Disabled
 
 /**
  * Groups together all test cases for method type inference.
@@ -17,15 +15,15 @@ import static org.uqbar.project.wollok.sdk.WollokSDK.*
  */
 class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 
-	@Parameters(name="{index}: {0}")
-	static def Object[] typeSystems() {
-		#[
-			ConstraintBasedTypeSystem
-		]
-	}
+//	@Parameters(name="{index}: {0}")
+//	static def Object[] typeSystems() {
+//		#[
+//			ConstraintBasedTypeSystem
+//		]
+//	}
 
 	@Test
-	@Ignore
+	@Disabled
 	def void coreWKOMethodSignature() {
 		'''
 			program p {

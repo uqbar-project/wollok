@@ -1,8 +1,6 @@
 package org.uqbar.project.wollok.tests.typesystem
 
 import org.junit.jupiter.api.Test
-import org.junit.runners.Parameterized.Parameters
-import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 
 /**
  * 
@@ -10,12 +8,12 @@ import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
  */
 class ConstructorTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	
-	@Parameters(name = "{index}: {0}")
-	static def Object[] typeSystems() {
-		#[
-			ConstraintBasedTypeSystem
-		]
-	}
+//	@Parameters(name = "{index}: {0}")
+//	static def Object[] typeSystems() {
+//		#[
+//			ConstraintBasedTypeSystem
+//		]
+//	}
 	
 	@Test
 	def void testConstructorParameterTypeInferredFromInstVarAssignment() {	 '''

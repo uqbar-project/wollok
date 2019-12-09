@@ -1,19 +1,17 @@
 package org.uqbar.project.wollok.tests.typesystem
 
 import org.junit.jupiter.api.Test
-import org.junit.runners.Parameterized.Parameters
-import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 
 import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 class CollectionInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 
-	@Parameters(name="{index}: {0}")
-	static def Object[] typeSystems() {
-		#[
-			ConstraintBasedTypeSystem
-		]
-	}
+//	@Parameters(name="{index}: {0}")
+//	static def Object[] typeSystems() {
+//		#[
+//			ConstraintBasedTypeSystem
+//		]
+//	}
 
 	@Test
 	def void listLiteral() {
@@ -108,4 +106,9 @@ class CollectionInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			noIssues
 		]
 	}
+	
+//	override getTypeSystemClass() {
+//		ConstraintBasedTypeSystem
+//	}
+	
 }

@@ -2,8 +2,8 @@ package org.uqbar.project.wollok.tests.sdk
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.runners.Parameterized.Parameter
-import org.junit.runners.Parameterized.Parameters
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
 import org.uqbar.project.wollok.game.Image
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.lib.WollokConventionExtensions
@@ -16,24 +16,24 @@ import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterprete
  * ya que validan parte de la implementación de image
  */
 class ImageTest extends AbstractWollokParameterizedInterpreterTest {
-	@Parameter(0)
-	public String convention
 
-	@Parameters(name="{0}")
-	static def Iterable<Object[]> data() {
-		WollokConventionExtensions.IMAGE_CONVENTIONS.asParameters
+	static def data() {
+		WollokConventionExtensions.IMAGE_CONVENTIONS.asArguments
 	}
-
+	
 	var image = '''"image.png"'''
 	var gameboard = Gameboard.getInstance
-
+	
 	@BeforeEach
 	def void init() {
+		//this.convention = WollokConventionExtensions.IMAGE_CONVENTIONS.get(0) 
 		gameboard.clear
 	}
 	
-	@Test
-	def void imageCanBeAccessedByGetterMethod() {
+	
+	@ParameterizedTest
+	@MethodSource("data")
+	def void imageCanBeAccessedByGetterMethod(String convention) {
 		'''
 		import wollok.game.*
 		
@@ -53,8 +53,9 @@ class ImageTest extends AbstractWollokParameterizedInterpreterTest {
 		validateImage
 	}
 
-	@Test
-	def void imageCanBeAccessedByProperty() {
+	@ParameterizedTest
+	@MethodSource("data")
+	def void imageCanBeAccessedByProperty(String convention) {
 		'''
 		import wollok.game.*
 		
@@ -69,8 +70,9 @@ class ImageTest extends AbstractWollokParameterizedInterpreterTest {
 		validateImage
 	}
 
-	@Test
-	def void imageCannotBeAccessedByAttribute() {
+	@ParameterizedTest
+	@MethodSource("data")
+	def void imageCannotBeAccessedByAttribute(String convention) {
 		'''
 		import wollok.game.*
 		

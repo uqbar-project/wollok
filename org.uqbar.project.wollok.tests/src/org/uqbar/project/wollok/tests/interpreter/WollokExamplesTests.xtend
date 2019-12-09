@@ -4,10 +4,9 @@ import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
 import org.apache.log4j.Logger
-import org.junit.runners.Parameterized.Parameter
-import org.junit.runners.Parameterized.Parameters
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
 import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
-import org.junit.jupiter.api.Test
 
 /**
  * Runs all the examples in the wollok-example project that works as a unit test
@@ -17,21 +16,18 @@ import org.junit.jupiter.api.Test
  */
 class WollokExamplesTests extends AbstractWollokParameterizedInterpreterTest {
 	static val path = EXAMPLES_PROJECT_PATH + "/src/"
-
-	@Parameter(0)
-	public File program
-
-	@Parameters(name="{0}")
-	static def Iterable<Object[]> data() {
+	
+	static def data() {
 		val files = newArrayList => [
 			addAll(path.listWollokPrograms)
 		]
 		
-		files.asParameters
+		files.asArguments
 	}
 	
-	@Test
-	def void runWollok() throws Exception {
+	@ParameterizedTest
+	@MethodSource("data")
+	def void runWollok(File program) throws Exception {
 		program.interpretPropagatingErrors
 	}
 	

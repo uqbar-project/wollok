@@ -10,7 +10,6 @@ import org.eclipse.xtext.junit4.validation.ValidatorTester
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.validation.AbstractValidationDiagnostic
 import org.junit.jupiter.api.BeforeEach
-import org.junit.runners.Parameterized.Parameter
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
 import org.uqbar.project.wollok.typesystem.ClassInstanceType
@@ -29,6 +28,7 @@ import static org.eclipse.xtext.validation.ValidationMessageAcceptor.INSIGNIFICA
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
+import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 
 /**
  * Abstract base class for all type system test cases.
@@ -38,8 +38,8 @@ import static extension org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
  * @author jfernandes
  */
 abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameterizedInterpreterTest {
-	@Parameter
-	public Class<? extends TypeSystem> tsystemClass
+//	@Parameter
+//	public Class<? extends TypeSystem> tsystemClass
 
 	@Accessors
 	extension TypeSystem tsystem
@@ -55,9 +55,13 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 
 	ValidatorTester<WollokDslValidator> tester
 
+	def Class<? extends TypeSystem> getTypeSystemClass() {
+		ConstraintBasedTypeSystem
+	}
+	
 	@BeforeEach
 	def void setupTypeSystem() {
-		tsystem = tsystemClass.newInstance
+		tsystem = this.getTypeSystemClass().newInstance
 		injector.injectMembers(tsystem)
 	}
 	
