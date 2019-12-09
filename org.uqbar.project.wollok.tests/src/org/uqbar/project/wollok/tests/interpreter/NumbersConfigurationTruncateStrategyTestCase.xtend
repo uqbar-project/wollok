@@ -1,22 +1,22 @@
 package org.uqbar.project.wollok.tests.interpreter
 
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
 import org.uqbar.project.wollok.interpreter.nativeobj.TruncateDecimalsCoercingStrategy
 import org.uqbar.project.wollok.interpreter.nativeobj.WollokNumbersPreferences
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Test
 
 /**
  * @author dodain
  */
 class NumbersConfigurationTruncateStrategyTestCase extends AbstractWollokInterpreterTestCase {
 	
-	@Before
+	@BeforeEach
 	def void init() {
 		WollokNumbersPreferences.instance.numberCoercingStrategy = new TruncateDecimalsCoercingStrategy
 	}
 	
-	@After
+	@AfterEach
 	def void end() {
 		WollokNumbersPreferences.instance => [
 			decimalPositions = WollokNumbersPreferences.DECIMAL_POSITIONS_DEFAULT

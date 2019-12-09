@@ -1,7 +1,8 @@
 package org.uqbar.project.wollok.tests.interpreter
 
-import org.junit.Test
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Assertions
 
 /**
  * 
@@ -11,9 +12,9 @@ import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
  */
 class TestDescribeTestCase extends AbstractWollokInterpreterTestCase {
 	
-	@Test(expected=WollokProgramExceptionWrapper)
-	def void testFixtureErrorBreaksTestsInDescribe() {
-		'''
+	@Test
+	def void testFixtureErrorBreaksTestsInDescribe() throws Exception {
+		Assertions.assertThrows(WollokProgramExceptionWrapper, ['''
 		describe "conjunto de tests re locos" {
 		
 			var uno
@@ -37,6 +38,7 @@ class TestDescribeTestCase extends AbstractWollokInterpreterTestCase {
 			
 		}
 		'''.interpretPropagatingErrors
+	])
 	}
 
 }

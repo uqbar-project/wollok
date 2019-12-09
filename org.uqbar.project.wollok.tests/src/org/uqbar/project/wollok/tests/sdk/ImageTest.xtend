@@ -1,13 +1,13 @@
 package org.uqbar.project.wollok.tests.sdk
 
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.junit.runners.Parameterized.Parameter
 import org.junit.runners.Parameterized.Parameters
+import org.uqbar.project.wollok.game.Image
+import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.lib.WollokConventionExtensions
 import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
-import org.uqbar.project.wollok.game.gameboard.Gameboard
-import org.uqbar.project.wollok.game.Image
-import org.junit.Before
 
 /**
  * Nota de dodain
@@ -27,7 +27,7 @@ class ImageTest extends AbstractWollokParameterizedInterpreterTest {
 	var image = '''"image.png"'''
 	var gameboard = Gameboard.getInstance
 
-	@Before
+	@BeforeEach
 	def void init() {
 		gameboard.clear
 	}

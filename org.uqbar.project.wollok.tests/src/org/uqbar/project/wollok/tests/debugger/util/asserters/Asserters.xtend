@@ -1,8 +1,8 @@
 package org.uqbar.project.wollok.tests.debugger.util.asserters
 
-import org.junit.Assert
 import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.context.WVariable
+import org.junit.jupiter.api.Assertions
 
 /**
  * Factory methods for DSL like tests
@@ -11,15 +11,15 @@ import org.uqbar.project.wollok.interpreter.context.WVariable
  * 
  * @author jfernandes
  */
-class Asserters extends Assert {
+class Asserters extends Assertions {
 
 	def static InterpreterAsserter noVariables() {
 		[ pair |
 			val context = pair.value.context
 			assertEquals(
-				"Expecting no variables but there: " + context.allReferenceNames.map[WVariable it|name].join(', '),
 				0,
-				context.allReferenceNames.length
+				context.allReferenceNames.length,
+				"Expecting no variables but there: " + context.allReferenceNames.map[WVariable it|name].join(', ')
 			)
 		]
 	}
@@ -32,7 +32,7 @@ class Asserters extends Assert {
 				assertEquals("Expecting variable '" + name + "' to be " + value, value,
 					context.resolve(name).toString())
 			} catch (UnresolvableReference e) {
-				Assert.fail(
+				fail(
 					'''Expecting variable '«name»' to be «value» But it was not resolvable in the current context: ''' +
 						context.allReferenceNames.map[name + '=' + value].join(', '))
 			}

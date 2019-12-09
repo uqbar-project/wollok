@@ -1,12 +1,12 @@
 package org.uqbar.project.wollok.tests.interpreter
 
-import org.junit.Test
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WProgram
+import org.junit.jupiter.api.Test
 
 /**
  * Tests that the validation of unused variables works as expected.

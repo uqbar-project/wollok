@@ -4,10 +4,10 @@ import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
 import org.apache.log4j.Logger
-import org.junit.Test
 import org.junit.runners.Parameterized.Parameter
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
+import org.junit.jupiter.api.Test
 
 /**
  * Runs all the examples in the wollok-example project that works as a unit test

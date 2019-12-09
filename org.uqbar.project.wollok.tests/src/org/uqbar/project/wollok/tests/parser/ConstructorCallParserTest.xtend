@@ -1,7 +1,7 @@
 package org.uqbar.project.wollok.tests.parser
 
-import org.junit.Test
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
+import org.junit.jupiter.api.Test
 
 /** 
  * Test representative error messages for constructors calls

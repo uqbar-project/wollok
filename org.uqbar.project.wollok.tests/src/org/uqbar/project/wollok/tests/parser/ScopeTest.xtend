@@ -1,6 +1,6 @@
 package org.uqbar.project.wollok.tests.parser
 
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WClass

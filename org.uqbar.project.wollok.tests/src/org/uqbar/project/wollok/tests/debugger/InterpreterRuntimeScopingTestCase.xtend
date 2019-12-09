@@ -1,10 +1,10 @@
 package org.uqbar.project.wollok.tests.debugger
 
-import org.junit.Test
 import org.uqbar.project.wollok.tests.debugger.util.AbstractXDebuggerTestCase
 
 import static org.uqbar.project.wollok.tests.debugger.util.asserters.Asserters.*
 import static org.uqbar.project.wollok.tests.debugger.util.DebuggingSessionAsserter.*
+import org.junit.jupiter.api.Test
 
 /**
  * Tests the interpreter evaluation asserting the evaluation context (scope)

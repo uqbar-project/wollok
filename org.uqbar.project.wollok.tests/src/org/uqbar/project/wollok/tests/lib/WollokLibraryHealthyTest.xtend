@@ -4,10 +4,10 @@ import com.google.inject.name.Named
 import javax.inject.Inject
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtext.diagnostics.Severity
-import org.junit.Test
 import org.uqbar.project.wollok.libraries.AbstractWollokLib
 import org.uqbar.project.wollok.libraries.WollokLib
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
+import org.junit.jupiter.api.Test
 
 /**
  * This test validates that the library is statically correct

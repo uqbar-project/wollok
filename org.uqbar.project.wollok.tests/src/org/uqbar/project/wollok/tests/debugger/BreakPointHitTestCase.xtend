@@ -1,8 +1,8 @@
 package org.uqbar.project.wollok.tests.debugger
 
-import org.junit.Test
-import org.junit.Ignore
 import org.uqbar.project.wollok.debugger.server.rmi.XWollokCollectionDebugValue
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 
 /**
  * Tests a breakpoint being hit by the debugger/interpreter
@@ -15,7 +15,7 @@ class BreakPointHitTestCase extends AbstractXDebuggingTestCase {
 // some how it break trying to link the sockets :(
 
 	@Test	
-	@Ignore // damn travis
+	@Disabled // damn travis
 	def void hittingABreakPointShouldRiseAndEvent() {
 		'''
 			program abc {
@@ -47,7 +47,7 @@ class BreakPointHitTestCase extends AbstractXDebuggingTestCase {
 	}
 	
 	@Test
-	@Ignore // damn travis
+	@Disabled // damn travis
 	def void listShouldHaveElements() {
 		'''
 			program abc {

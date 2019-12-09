@@ -9,7 +9,7 @@ import org.eclipse.xtext.junit4.validation.AssertableDiagnostics
 import org.eclipse.xtext.junit4.validation.ValidatorTester
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.validation.AbstractValidationDiagnostic
-import org.junit.Before
+import org.junit.jupiter.api.BeforeEach
 import org.junit.runners.Parameterized.Parameter
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
@@ -55,7 +55,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 
 	ValidatorTester<WollokDslValidator> tester
 
-	@Before
+	@BeforeEach
 	def void setupTypeSystem() {
 		tsystem = tsystemClass.newInstance
 		injector.injectMembers(tsystem)

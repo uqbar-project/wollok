@@ -4,18 +4,18 @@ import java.util.List
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.junit.Ignore
-import org.junit.Test
+
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.debugger.XDebuggerOff
 import org.uqbar.project.wollok.interpreter.stack.XStackFrame
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 
-import static org.junit.Assert.*
-
 import static extension org.uqbar.project.wollok.tests.debugger.util.DebuggingSessionAsserter.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Disabled
+import static org.junit.jupiter.api.Assertions.*
 
 /**
  * Tests the debugger without the sockets communication
@@ -38,7 +38,7 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 		debugger
 	}
 	
-	@Ignore
+	@Disabled
 	@Test
 	def void evaluatedCalled() {
 		val deb = debugger()
@@ -135,7 +135,7 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 		 ])
 	}
 	
-	@Ignore
+	@Disabled
 	@Test
 	def void aboutToEvaluateCalled() {
 		val deb = debugger()

@@ -7,12 +7,12 @@ import java.time.format.DateTimeFormatter
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.testing.InjectWith
-import org.eclipse.xtext.testing.XtextRunner
+import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.^extension.ExtendWith
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.tests.injectors.WollokTestInjectorProvider
@@ -27,7 +27,7 @@ import static wollok.lang.WDate.*
  * 
  * @author jfernandes
  */
-@RunWith(XtextRunner)
+@ExtendWith(InjectionExtension)
 @InjectWith(WollokTestInjectorProvider)
 abstract class AbstractWollokInterpreterTestCase extends Assertions {
 	@Inject protected extension WollokParseHelper

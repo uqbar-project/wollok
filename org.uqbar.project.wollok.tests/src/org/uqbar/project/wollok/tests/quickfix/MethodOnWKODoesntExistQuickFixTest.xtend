@@ -1,6 +1,6 @@
 package org.uqbar.project.wollok.tests.quickfix
 
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.uqbar.project.wollok.ui.Messages
 
 class MethodOnWKODoesntExistQuickFixTest extends AbstractWollokQuickFixTestCase {

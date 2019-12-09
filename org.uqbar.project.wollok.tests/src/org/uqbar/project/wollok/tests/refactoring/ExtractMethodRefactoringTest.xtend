@@ -20,7 +20,7 @@ import org.eclipse.xtext.ui.refactoring.impl.StatusWrapper
 import org.eclipse.xtext.xbase.ui.document.DocumentRewriter
 import org.eclipse.xtext.xbase.ui.imports.ReplaceConverter
 import org.eclipse.xtext.xbase.ui.refactoring.ExpressionUtil
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.uqbar.project.wollok.refactoring.ExtractMethodRefactoring
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 import org.uqbar.project.wollok.wollokDsl.WExpression

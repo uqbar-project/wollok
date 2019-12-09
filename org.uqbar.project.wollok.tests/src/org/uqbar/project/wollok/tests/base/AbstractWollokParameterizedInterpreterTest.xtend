@@ -1,7 +1,7 @@
 package org.uqbar.project.wollok.tests.base
 
-import org.junit.Before
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.^extension.ExtendWith
 import org.junit.runners.Parameterized
 import org.uqbar.project.wollok.tests.injectors.WollokTestInjectorProvider
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
@@ -9,14 +9,14 @@ import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestC
 /**
  * Helper class to allow parameterized interpreter tests
  */
-@RunWith(Parameterized)
+@ExtendWith(Parameterized)
 abstract class AbstractWollokParameterizedInterpreterTest extends AbstractWollokInterpreterTestCase {
 
 	/**
 	 * Inject dependencies into this test. 
 	 * This is necessary because @link Parameterized does not allow to define a runner for the child tests.
 	 */
-	@Before
+	@BeforeEach
 	override setUp() {
 		new WollokTestInjectorProvider().injector.injectMembers(this)
 		super.setUp

@@ -1,10 +1,9 @@
 package org.uqbar.project.wollok.tests.libraries
 
-import org.junit.Test
 import org.uqbar.project.wollok.libraries.WollokLibExtensions
 
-import static org.junit.Assert.assertFalse
-import static org.junit.Assert.assertTrue
+import static org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
 
 class WollokLibExtensionsTest {
 

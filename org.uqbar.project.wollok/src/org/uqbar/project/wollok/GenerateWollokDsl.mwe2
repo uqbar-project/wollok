@@ -99,6 +99,9 @@ Workflow {
 			fragment = ui.refactoring.RefactorElementNameFragment2 auto-inject {
 				useJdtRefactoring = true
 			}
+			junitSupport = {
+				junitVersion = "5"
+			}
 		}
 	}
 

@@ -1,6 +1,6 @@
 package org.uqbar.project.wollok.tests.debugger.util
 
-import org.junit.Assert
+import static org.junit.jupiter.api.Assertions.*
 import org.uqbar.project.wollok.debugger.server.rmi.DebugCommandHandler
 
 /**
@@ -41,7 +41,7 @@ class DebugEventListenerAsserter implements DebuggerEventListener {
 	override started(DebugCommandHandler vm) { }
 	override terminated(DebugCommandHandler vm) {
 		if (!ran)
-			Assert.fail("Debug event didn't execute !" + this)
+			fail("Debug event didn't execute !" + this)
 	}
 	override suspended(DebugCommandHandler vm) { }
 	override resumed(DebugCommandHandler vm) {}

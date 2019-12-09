@@ -4,8 +4,6 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ScheduledThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 import org.apache.log4j.Logger
-import org.junit.Ignore
-import org.junit.Test
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterException
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
@@ -15,6 +13,8 @@ import org.uqbar.project.wollok.tests.injectors.WollokTestSetup
 import org.uqbar.project.wollok.tests.interpreter.WollokParseHelper
 
 import static org.junit.Assert.*
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Disabled
 
 /**
  * 
@@ -62,7 +62,7 @@ class WollokMultiInterpreterTest {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	def void testRunALotOfPrograms() {
 		val numberOfThreads = 3
 		val numberOfTimes = 4

@@ -1,9 +1,9 @@
 package org.uqbar.project.wollok.tests.interpreter
 
-import org.junit.Assert
-import org.junit.Test
 import org.uqbar.project.wollok.interpreter.WollokInterpreterException
 import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Assertions
 
 /**
  * @author tesonep
@@ -27,7 +27,7 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 			'''.interpretPropagatingErrorsWithoutStaticChecks
 			fail("Should have failed with unresolved reference to pepa")
 		} catch (WollokInterpreterException e) {
-			Assert.assertEquals("Couldn't resolve reference to pepa", e.originalCause.message)
+			Assertions.assertEquals("Couldn't resolve reference to pepa", e.originalCause.message)
 		}
 	}
 	
@@ -47,7 +47,7 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 			'''.interpretPropagatingErrorsWithoutStaticChecks
 			fail("Should have failed with unresolved reference to pepa")
 		} catch (WollokInterpreterException e) {
-			Assert.assertEquals("Couldn't resolve reference to pepa", e.originalCause.message)
+			Assertions.assertEquals("Couldn't resolve reference to pepa", e.originalCause.message)
 		}
 	}
 	

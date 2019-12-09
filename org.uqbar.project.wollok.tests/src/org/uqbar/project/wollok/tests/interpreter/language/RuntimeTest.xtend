@@ -1,6 +1,6 @@
 package org.uqbar.project.wollok.tests.interpreter.language
 
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class RuntimeTest extends org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase {
 	@Test

@@ -1,12 +1,12 @@
 package org.uqbar.project.wollok.tests.sdk
 
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.junit.runners.Parameterized.Parameter
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.lib.WollokConventionExtensions
 import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
+import org.junit.jupiter.api.BeforeEach
 
 class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 	@Parameter(0)
@@ -20,7 +20,7 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 	var position = "new Position(x = 0, y = 0)"
 	var gameboard = Gameboard.getInstance
 
-	@Before
+	@BeforeEach
 	def void init() {
 		gameboard.clear
 	}

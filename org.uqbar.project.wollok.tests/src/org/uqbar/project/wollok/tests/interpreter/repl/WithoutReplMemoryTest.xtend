@@ -1,9 +1,9 @@
 package org.uqbar.project.wollok.tests.interpreter.repl
 
 import org.eclipse.xtext.testing.InjectWith
-import org.junit.Test
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 import org.uqbar.project.wollok.tests.injectors.WollokTestInjectorProvider
+import org.junit.jupiter.api.Test
 
 /**
  * Tests that the default implementation of the interpreter

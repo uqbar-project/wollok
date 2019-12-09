@@ -2,13 +2,14 @@ package org.uqbar.project.wollok.tests
 
 import com.google.inject.Inject
 import org.eclipse.xtext.testing.InjectWith
-import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.uqbar.project.wollok.wollokDsl.WFile
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.^extension.ExtendWith
 import org.uqbar.project.wollok.tests.injectors.WollokTestInjectorProvider
+import org.uqbar.project.wollok.wollokDsl.WFile
+
+import static org.junit.jupiter.api.Assertions.*
+import org.eclipse.xtext.testing.extensions.InjectionExtension
 
 /**
  * This test is not adding anything. However, we have to keep it because Xtext generates it as an example, if it does not find it.
@@ -16,7 +17,7 @@ import org.uqbar.project.wollok.tests.injectors.WollokTestInjectorProvider
  * 
  * @author tesonep
  */
-@RunWith(XtextRunner)
+@ExtendWith(InjectionExtension)
 @InjectWith(WollokTestInjectorProvider)
 class WollokDslParsingTest {
 	@Inject
@@ -29,7 +30,7 @@ class WollokDslParsingTest {
 				assert.that(1+1 > 1)
 			}
 		''')
-		Assert.assertNotNull(result)
-		Assert.assertTrue(result.eResource.errors.isEmpty)
+		assertNotNull(result)
+		assertTrue(result.eResource.errors.isEmpty)
 	}
 }

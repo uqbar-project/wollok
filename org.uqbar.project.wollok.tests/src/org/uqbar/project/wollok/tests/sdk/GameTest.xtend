@@ -1,21 +1,21 @@
 package org.uqbar.project.wollok.tests.sdk
 
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
-import org.junit.After
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.AfterEach
 
 class GameTest extends AbstractWollokInterpreterTestCase {
 	
 	val gameboard = Gameboard.getInstance
 	
-	@Before
+	@BeforeEach
 	def void init() {
 		gameboard.clear
 	}
 	
-	@After
+	@AfterEach
 	def void finish() {
 		Gameboard.resetInstance
 	}

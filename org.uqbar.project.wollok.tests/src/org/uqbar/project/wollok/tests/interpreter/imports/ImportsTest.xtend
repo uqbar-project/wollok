@@ -1,8 +1,8 @@
 package org.uqbar.project.wollok.tests.interpreter.imports
 
-import org.junit.Ignore
-import org.junit.Test
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Disabled
 
 /**
  * Test the different combinations and functionality of imports.
@@ -14,7 +14,7 @@ import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestC
 class ImportsTest extends AbstractWollokInterpreterTestCase {
 	
 	@Test
-	@Ignore // No puedo armar una gramática válida que funcione. 
+	@Disabled // No puedo armar una gramática válida que funcione. 
 	def void mustUseFullNameToReferenceObjectFromSameFileButDifferentPackage() {
 		'''
 			package aves {

@@ -1,12 +1,12 @@
 package org.uqbar.project.wollok.tests.debugger
 
 import org.eclipse.emf.ecore.EObject
-import org.junit.Test
 import org.mockito.ArgumentCaptor
 import org.uqbar.project.wollok.interpreter.api.XDebugger
 import org.uqbar.project.wollok.tests.debugger.util.AbstractXDebuggerImplTestCase
 
 import static extension org.mockito.Mockito.*
+import org.junit.jupiter.api.Test
 
 /**
  * Tests the wollok interpreter debugging functions.

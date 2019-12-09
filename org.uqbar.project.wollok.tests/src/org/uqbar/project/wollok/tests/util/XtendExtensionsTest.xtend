@@ -1,11 +1,11 @@
 package org.uqbar.project.wollok.tests.util
 
-import org.junit.Assert
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.uqbar.project.wollok.utils.XtendExtensions
 import java.util.List
+import org.junit.jupiter.api.Assertions
 
-class XtendExtensionsTest extends Assert {
+class XtendExtensionsTest extends Assertions {
 	@Test
 	def void testSubsetsOfSizeTrivial() {
 		assertArrayOfArrayEquals(#[#[1, 2, 3]], XtendExtensions.subsetsOfSize(#[1, 2, 3], 3))

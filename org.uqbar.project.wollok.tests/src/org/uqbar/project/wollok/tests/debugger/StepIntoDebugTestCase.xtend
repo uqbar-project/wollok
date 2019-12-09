@@ -1,8 +1,8 @@
 package org.uqbar.project.wollok.tests.debugger
 
-import org.junit.Ignore
-import org.junit.Test
 import org.uqbar.project.wollok.tests.debugger.util.AbstractXDebuggerImplTestCase
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Disabled
 
 /**
  * Tests step into implementation of the debugger
@@ -11,7 +11,7 @@ import org.uqbar.project.wollok.tests.debugger.util.AbstractXDebuggerImplTestCas
  */
 class StepIntoDebugTestCase extends AbstractXDebuggerImplTestCase {
 	
-	@Ignore
+	@Disabled
 	@Test
 	def void stepByStepEvaluationSummingTwoNumbers() {
 		'''
@@ -31,7 +31,7 @@ class StepIntoDebugTestCase extends AbstractXDebuggerImplTestCase {
 		]
 	}
 	
-	@Ignore
+	@Disabled
 	@Test
 	def void stepByStepEvaluationWithAForEach() {
 		'''

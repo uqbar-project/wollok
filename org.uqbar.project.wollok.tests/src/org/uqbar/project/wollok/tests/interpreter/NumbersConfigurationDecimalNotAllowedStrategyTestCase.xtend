@@ -1,8 +1,8 @@
 package org.uqbar.project.wollok.tests.interpreter
 
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.uqbar.project.wollok.interpreter.nativeobj.DecimalsNotAllowedCoercingStrategy
 import org.uqbar.project.wollok.interpreter.nativeobj.WollokNumbersPreferences
 
@@ -11,7 +11,7 @@ import org.uqbar.project.wollok.interpreter.nativeobj.WollokNumbersPreferences
  */
 class NumbersConfigurationDecimalNotAllowedStrategyTestCase extends AbstractWollokInterpreterTestCase {
 	
-	@Before
+	@BeforeEach
 	def void init() {
 		WollokNumbersPreferences.instance => [
 			numberCoercingStrategy = new DecimalsNotAllowedCoercingStrategy
@@ -19,7 +19,7 @@ class NumbersConfigurationDecimalNotAllowedStrategyTestCase extends AbstractWoll
 		]
 	}
 	
-	@After
+	@AfterEach
 	def void end() {
 		WollokNumbersPreferences.instance => [
 			decimalPositions = WollokNumbersPreferences.DECIMAL_POSITIONS_DEFAULT

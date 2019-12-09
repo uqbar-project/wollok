@@ -1,10 +1,10 @@
 package org.uqbar.project.wollok.tests.interpreter
 
-import org.junit.ComparisonFailure
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.wollokToJava
+import junit.framework.ComparisonFailure
 
 class WollokComparisonFailure extends ComparisonFailure {
 	val String originalMessage

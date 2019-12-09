@@ -1,7 +1,7 @@
 package org.uqbar.project.wollok.tests.interpreter.mixins
 
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 /**
  * 

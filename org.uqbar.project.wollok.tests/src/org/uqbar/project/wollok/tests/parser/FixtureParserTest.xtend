@@ -1,14 +1,14 @@
 package org.uqbar.project.wollok.tests.parser
 
-import org.junit.Test
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
-import org.junit.Ignore
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 
 /** 
  * Test representative error messages for fixtures
  * @author dodain
  */
-@Ignore
+@Disabled
 class FixtureParserTest extends AbstractWollokInterpreterTestCase {
 	
 	@Test
@@ -67,7 +67,7 @@ class FixtureParserTest extends AbstractWollokInterpreterTestCase {
 		'''.expectsSyntaxError("Fixture is not allowed in this definition.", false)
 	} 
 
-	@Ignore // it works on IDE but EObject is null when parsing this file
+	@Disabled // it works on IDE but EObject is null when parsing this file
 	@Test
 	def void fixtureAlone() {
 		'''

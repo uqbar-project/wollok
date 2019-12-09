@@ -1,7 +1,7 @@
 package org.uqbar.project.wollok.tests.interpreter.namedobjects
 
-import org.junit.Test
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
+import org.junit.jupiter.api.Test
 
 /**
  * 

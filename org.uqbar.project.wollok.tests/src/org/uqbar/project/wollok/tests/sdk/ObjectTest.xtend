@@ -1,7 +1,7 @@
 package org.uqbar.project.wollok.tests.sdk
 
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 /**
  * Test for the wollok.lang.Object class

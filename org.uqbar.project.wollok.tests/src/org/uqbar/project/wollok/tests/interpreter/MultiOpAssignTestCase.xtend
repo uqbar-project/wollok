@@ -1,8 +1,8 @@
 package org.uqbar.project.wollok.tests.interpreter
 
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
-import org.junit.Test
 import static org.uqbar.project.wollok.WollokConstants.*
+import org.junit.jupiter.api.Test
 
 /**
  * Test cases for operators such as: +=, -=, etc.

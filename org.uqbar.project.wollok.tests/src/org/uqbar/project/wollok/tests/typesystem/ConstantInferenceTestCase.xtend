@@ -1,7 +1,7 @@
 package org.uqbar.project.wollok.tests.typesystem
 
 import org.junit.Ignore
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 

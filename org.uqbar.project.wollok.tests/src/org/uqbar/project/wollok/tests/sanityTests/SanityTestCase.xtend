@@ -5,9 +5,9 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.time.format.DateTimeFormatter
 import org.eclipse.xtext.testing.InjectWith
-import org.eclipse.xtext.testing.XtextRunner
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.eclipse.xtext.testing.extensions.InjectionExtension
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.^extension.ExtendWith
 import org.uqbar.project.wollok.tests.injectors.WollokSanityTestInjectorProvider
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 import wollok.lang.WDate
@@ -25,7 +25,7 @@ import static extension org.uqbar.project.wollok.utils.StringUtils.*
  * 
  * @author dodain
  */
-@RunWith(XtextRunner)
+@ExtendWith(InjectionExtension)
 @InjectWith(WollokSanityTestInjectorProvider) 
 class SanityTestCase extends AbstractWollokInterpreterTestCase {
 	val path = "../wollok-language/test/sanity"

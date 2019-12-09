@@ -5,10 +5,9 @@ import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.resource.SaveOptions
 import org.eclipse.xtext.serializer.ISerializer
-import org.junit.Assert
 import org.uqbar.project.wollok.tests.interpreter.WollokParseHelper
 import org.uqbar.project.wollok.wollokDsl.WAssignment
-
+import static org.junit.jupiter.api.Assertions.*
 /**
  * Tests wollok code formatter
  * 
@@ -21,7 +20,7 @@ abstract class AbstractWollokFormatterTestCase {
 
 	def assertFormatting(String program, String expected) {
 		// program.parse.eContents.show(1)
-		Assert.assertEquals(expected,
+		assertEquals(expected,
         program.parse.serialize(SaveOptions.newBuilder.format().getOptions()))		
 	}
 	

@@ -1,9 +1,9 @@
 package org.uqbar.project.wollok.tests.libraries
 
 import org.eclipse.xtext.testing.InjectWith
-import org.junit.Ignore
-import org.junit.Test
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Disabled
 
 //This injector creates lib parameter 
 @InjectWith(LoadLibraryWollokTestInjector)
@@ -21,7 +21,7 @@ class LoadLibraryTest extends AbstractWollokInterpreterTestCase {
 	
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	def void testInnerLocationObjectExist() {
 		'''
