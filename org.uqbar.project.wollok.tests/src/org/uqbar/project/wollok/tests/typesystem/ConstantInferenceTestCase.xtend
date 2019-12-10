@@ -4,6 +4,7 @@ import org.junit.Ignore
 import org.junit.jupiter.api.Test
 
 import static org.uqbar.project.wollok.sdk.WollokSDK.*
+import org.junit.jupiter.api.Disabled
 
 /**
  * The most basic inference tests
@@ -95,7 +96,7 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	}
 	
 
-	@Ignore("As of 29/6/17 type system rules allow this assignment.")
+	@Disabled("As of 29/6/17 type system rules allow this assignment.")
 	@Test
 	def void incompatibleTypesAssignment() {
 		''' 

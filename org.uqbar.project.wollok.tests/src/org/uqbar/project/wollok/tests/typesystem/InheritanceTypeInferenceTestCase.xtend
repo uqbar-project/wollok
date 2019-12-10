@@ -6,6 +6,7 @@ import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 
 import org.junit.Ignore
 import static org.uqbar.project.wollok.sdk.WollokSDK.*
+import org.junit.jupiter.api.Disabled
 
 /**
  * 
@@ -104,7 +105,7 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	def void testAbstractMethodParameterInferredFromOverridingMethodsInSubclassesWithBasicTypes() {
 		'''
 			class NumberOperation {
@@ -131,7 +132,7 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 	 * <<<<< ESTE ES MAS HEAVY QUE EL DIABLO !!! >>>>>
 	 */
 	@Test
-	@Ignore("Este test está mal")
+	@Disabled("Este test está mal")
 	def void testAbstractMethodParameterInferredFromOverridingMethodsInSubclassesThroughStructuralTypes() {
 		'''
 			class Animal {}
