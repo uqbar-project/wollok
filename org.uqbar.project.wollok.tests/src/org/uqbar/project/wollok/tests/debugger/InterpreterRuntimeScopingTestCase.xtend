@@ -5,6 +5,7 @@ import org.uqbar.project.wollok.tests.debugger.util.AbstractXDebuggerTestCase
 import static org.uqbar.project.wollok.tests.debugger.util.asserters.Asserters.*
 import static org.uqbar.project.wollok.tests.debugger.util.DebuggingSessionAsserter.*
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Disabled
 
 /**
  * Tests the interpreter evaluation asserting the evaluation context (scope)
@@ -17,6 +18,7 @@ class InterpreterRuntimeScopingTestCase extends AbstractXDebuggerTestCase {
 	// TODO: add more tests
 	
 	@Test
+	@Disabled
 	def void aLocalVariableWillBeAvailableInAProgramScopeJustAfterItsDecl() {
 		debugger()
 			.assertThat
