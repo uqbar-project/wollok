@@ -1,18 +1,32 @@
 package org.uqbar.project.wollok.tests.validations
 
+import com.google.inject.Inject
+import org.eclipse.xtext.resource.XtextResourceSet
+import org.eclipse.xtext.testing.InjectWith
+import org.eclipse.xtext.testing.extensions.InjectionExtension
+import org.eclipse.xtext.testing.validation.ValidationTestHelper
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
+import org.junit.jupiter.api.^extension.ExtendWith
+import org.uqbar.project.wollok.tests.WollokDslInjectorProvider
+import org.uqbar.project.wollok.tests.interpreter.WollokParseHelper
 import org.uqbar.project.wollok.validation.WollokDslValidator
 
-class FileNameTest extends AbstractWollokInterpreterTestCase {
+@ExtendWith(InjectionExtension)
+@InjectWith(WollokDslInjectorProvider)
+class FileNameTest {
+	@Inject	WollokParseHelper parseHelper
+	@Inject XtextResourceSet resourceSet
+	@Inject protected extension ValidationTestHelper
+
 	@Test
 	def void testValidName() {
 		val files = "model" -> '''
 			class Tren {}
 		'''
-
-		val model = parse(files, resourceSet)
-		model.assertNoErrors
+		var result = parseHelper.parse(files, resourceSet)
+		val errors = result.eResource.errors
+		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
 	}
 
 	@Test
@@ -21,8 +35,8 @@ class FileNameTest extends AbstractWollokInterpreterTestCase {
 			class Tren {}
 		'''
 
-		val model = parse(files, resourceSet)
-		model.assertError(model.eClass, WollokDslValidator.INVALID_NAME_FOR_FILE)
+		var errors = parseHelper.parse(files, resourceSet).validate
+		Assertions.assertEquals(errors.head.code, WollokDslValidator.INVALID_NAME_FOR_FILE)
 	}
 
 	@Test
@@ -31,8 +45,8 @@ class FileNameTest extends AbstractWollokInterpreterTestCase {
 			class Tren {}
 		'''
 
-		val model = parse(files, resourceSet)
-		model.assertError(model.eClass, WollokDslValidator.INVALID_NAME_FOR_FILE)
+		var errors = parseHelper.parse(files, resourceSet).validate
+		Assertions.assertEquals(errors.head.code, WollokDslValidator.INVALID_NAME_FOR_FILE)
 	}
 
 	@Test
@@ -41,8 +55,8 @@ class FileNameTest extends AbstractWollokInterpreterTestCase {
 			class Tren {}
 		'''
 
-		val model = parse(files, resourceSet)
-		model.assertError(model.eClass, WollokDslValidator.INVALID_NAME_FOR_FILE)
+		var errors = parseHelper.parse(files, resourceSet).validate
+		Assertions.assertEquals(errors.head.code, WollokDslValidator.INVALID_NAME_FOR_FILE)
 	}
 
 }
