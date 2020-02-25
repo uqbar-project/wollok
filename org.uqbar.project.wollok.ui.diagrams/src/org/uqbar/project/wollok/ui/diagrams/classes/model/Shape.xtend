@@ -15,7 +15,7 @@ import org.uqbar.project.wollok.wollokDsl.WClass
  * 
  * @author jfernandes
  */
-public abstract class Shape extends ModelElement {
+abstract class Shape extends ModelElement {
 	public static val LOCATION_PROP = "Shape.Location"
 	public static val SIZE_PROP = "Shape.Size"
 	public static val SOURCE_CONNECTIONS_PROP = "Shape.SourceConn"
@@ -25,7 +25,7 @@ public abstract class Shape extends ModelElement {
 	static val XPOS_PROP = "Shape.xPos"
 	static val YPOS_PROP = "Shape.yPos"
 	static List<TextPropertyDescriptor> descriptors
-	private static AbstractDiagramConfiguration configuration
+	static AbstractDiagramConfiguration configuration
 	
 	Point location = new Point(0, 0)
 	Dimension size = new Dimension(100, 100)

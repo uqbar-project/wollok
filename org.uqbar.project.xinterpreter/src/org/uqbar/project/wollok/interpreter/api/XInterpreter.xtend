@@ -10,7 +10,7 @@ import org.eclipse.emf.ecore.EObject
  */
 interface XInterpreter<E extends EObject, T> {
 
-	def XThread getCurrentThread()
+	def XThread<T> getCurrentThread()
 	
 	// TODO: return value should be WollokObject
 	def T interpret(E program)

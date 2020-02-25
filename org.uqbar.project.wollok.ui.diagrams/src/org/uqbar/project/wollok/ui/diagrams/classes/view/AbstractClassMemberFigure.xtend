@@ -28,7 +28,7 @@ abstract class AbstractClassMemberFigure<T> extends Label {
 	}
 	
 	def Rectangle calculateSize() {
-		val size = TextUtilities.INSTANCE.getStringExtents(text, font);
+		val size = TextUtilities.INSTANCE.getStringExtents(text, localFont);
 		new Rectangle(new Point(bounds.x, bounds.y), size)
 	}
 

@@ -16,7 +16,7 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
  * 
  * @author jfernandes
  */
-class AbstractJavaWrapper<T> implements JavaWrapper<T> {
+abstract class AbstractJavaWrapper<T> implements JavaWrapper<T> {
 	protected WollokInterpreterAccess interpreterAccess = new WollokInterpreterAccess // re-use a singleton ?
 	protected val WollokObject obj
 	protected val WollokInterpreter interpreter

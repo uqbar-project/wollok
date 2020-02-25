@@ -1,75 +1,63 @@
 #!/bin/bash
+function replace() {
+  OLD_TEXT=$1
+  NEW_TEXT=$2
+  FILE=$3
+  echo -e "\t" $FILE
+  sed -e "s#$OLD_TEXT#$NEW_TEXT#g" $FILE > $FILE.tmp
+  rm $FILE
+  mv $FILE.tmp $FILE
+}
+
+function replaceMultiline() {
+  OLD_TEXT=$1
+  NEW_TEXT=$2
+  FILE=$3
+  echo -e "\t" $FILE
+  cat $FILE | tr '\n' '\f' | sed -e "s#$OLD_TEXT#$NEW_TEXT#g" | tr '\f' '\n' > $FILE.tmp
+  rm $FILE
+  mv $FILE.tmp $FILE
+}
 
 NEW_VERSION=$1
 
 echo "Updating to version $NEW_VERSION:"
 
-echo -e "\t - POM"
-for i in `find . -name "pom.xml" -not -path "./.metadata/*" -not -path "*/target/*" -not -path "*/META-INF/maven/*"`; do
-    sed -e "s#\(.*\)<version>[0-9][\.0-9]*-SNAPSHOT</version>\(.*\)#\1<version>$NEW_VERSION-SNAPSHOT</version>\2#g" $i > $i.tmp
-    rm $i
-    mv $i.tmp $i
-done
+echo -e "- POM (this could take a while)"
+cd org.uqbar.project.wollok.releng
+mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=$NEW_VERSION
+cd ..
 
-echo -e "\t - MANIFEST VERSIONS"
-for i in `find . -name "MANIFEST.MF" | grep -E "uqbar|xinterpreter" | grep -v "/target"`;	do
-    sed -e "s#Bundle-Version: \(.*\)#Bundle-Version: $NEW_VERSION.qualifier#g" $i > $i.tmp
-    rm $i
-    mv $i.tmp $i
-done
-
-echo -e "\t - MANIFESTS DEPENDENCIES"
+echo -e "- MANIFEST VERSIONS"
 for i in `find . -name "MANIFEST.MF" | grep -E "uqbar|xinterpreter" | grep -v "/target"`; do
-    grep "bundle-version=\"" $i | grep -E "uqbar|xinterpreter" > /dev/null
-    if [ $? -eq 0 ] ; then
- 	# echo "Modifying $i..."
-	sed -e "s#\(.*\)org\.uqbar\(.*\)bundle-version=\"[0-9][\.0-9]*\"\(.*\)#\1org\.uqbar\2bundle-version=\"$NEW_VERSION\"\3#g" $i > $i.tmp
-    	rm $i
-    	mv $i.tmp $i
-    fi
+  replace "Bundle-Version: \(.*\)" "Bundle-Version: $NEW_VERSION" $i
 done
 
-echo -e "\t - FEATURES"
+echo -e "- FEATURES"
 for i in `find . -name "feature.xml" | grep -E "uqbar|xinterpreter" | grep -v "/target"`; do
-    sed -e "s#\(.*\)version=\"[0-9][\.0-9]*\.qualifier\"\(.*\)#\1version=\"$NEW_VERSION.qualifier\"\2#g" $i > $i.tmp
-    rm $i
-    mv $i.tmp $i
-
-    sed -e "s#\(.*\)plugin=\"org\.uqbar\.project\.wollok\" version=\"[0-9][\.0-9]*\"\(.*\)#\1plugin=\"org.uqbar.project.wollok\" version=\"$NEW_VERSION\"\2#g" $i > $i.tmp
-    rm $i
-    mv $i.tmp $i
-
+  replaceMultiline "label=\"Wollok Language Feature\"\f      version=\"[0-9][\.0-9]*\"" "label=\"Wollok Language Feature\"\f      version=\"$NEW_VERSION\"" $i
 done
 
-echo -e "\t - PRODUCT"
-for i in `find . -name "*.product" -type f | grep -E "uqbar|xinterpreter" | grep -v "/target"`; do
-    sed -e "s#[0-9]\.[0-9]\.[0-9]\.qualifier#$NEW_VERSION.qualifier#g" $i > $i.tmp
-    rm $i
-    mv $i.tmp $i
-
-    sed -e "s#Version\ [0-9]\.[0-9]\.[0-9]#Version\ $NEW_VERSION#g" $i > $i.tmp
-    rm $i
-    mv $i.tmp $i
+echo -e "- PRODUCT"
+for i in `find . -name "*.product" -type f`; do
+  replace "version=\"[0-9]\.[0-9]\.[0-9]\"" "version=\"$NEW_VERSION\"" $i
+  replace "Version\ [0-9]\.[0-9]\.[0-9]" "Version\ $NEW_VERSION" $i
 done
 
-
-echo -e "\t - CATEGORY"
+echo -e "- CATEGORY"
 for i in `find . -name "category.xml" -type f | grep -E "uqbar|xinterpreter" | grep -v "/target"`; do
-    sed -e "s#[0-9]\.[0-9]\.[0-9]\.qualifier#$NEW_VERSION.qualifier#g" $i > $i.tmp
-    rm $i
-    mv $i.tmp $i
+  replace "[0-9]\.[0-9]\.[0-9]" "$NEW_VERSION" $i
 done
 
-echo -e "\t - CODE"
-i=`find . -name "Wollok.xtend" -not -path "*/target/*" `
-sed -e "s#[0-9]\.[0-9]\.[0-9]#$NEW_VERSION#g" $i > $i.tmp
-rm $i
-mv $i.tmp $i
+echo -e "- CODE"
+i=`find . -name "Wollok.xtend" -not -path "*/target/*"`
+replace "[0-9]\.[0-9]\.[0-9]" "$NEW_VERSION" $i
 
-echo -e "\t - ABOUT TEXT"
+echo -e "- ABOUT TEXT"
 i="org.uqbar.project.wollok.product/plugin.xml"
-sed -e "s#Version [0-9]\.[0-9]\.[0-9]#Version $NEW_VERSION#g" $i > $i.tmp
-rm $i
-mv $i.tmp $i
+replace "Version [0-9]\.[0-9]\.[0-9]" "Version $NEW_VERSION" $i
+
+CURRENT_YEAR=`date +'%Y'`
+replace "Copyright 2014-[0-9]*" "Copyright 2014-$CURRENT_YEAR" $i
 
 echo "Done !"

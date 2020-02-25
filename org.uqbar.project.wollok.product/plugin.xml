@@ -46,7 +46,7 @@
      	 <!-- INTRO -->
      	 <property
                name="introBrandingImage"
-               value="icons/icon_64x64.png">
+               value="icons/icon_32x32.png">
          </property>
          <property
                name="introTitle"

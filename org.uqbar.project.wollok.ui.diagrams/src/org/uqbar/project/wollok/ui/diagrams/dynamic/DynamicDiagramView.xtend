@@ -4,6 +4,8 @@ import java.util.ArrayList
 import java.util.Collections
 import java.util.List
 import java.util.Map
+import org.eclipse.core.runtime.Platform
+import org.eclipse.core.runtime.preferences.IEclipsePreferences
 import org.eclipse.debug.core.model.IStackFrame
 import org.eclipse.draw2d.ColorConstants
 import org.eclipse.draw2d.IFigure
@@ -24,6 +26,7 @@ import org.eclipse.gef.ui.actions.ZoomComboContributionItem
 import org.eclipse.gef.ui.actions.ZoomInAction
 import org.eclipse.gef.ui.actions.ZoomOutAction
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite
+import org.eclipse.gef.ui.palette.FlyoutPaletteComposite.FlyoutPreferences
 import org.eclipse.gef.ui.palette.PaletteViewerProvider
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer
@@ -31,6 +34,7 @@ import org.eclipse.gef.ui.parts.SelectionSynchronizer
 import org.eclipse.gef.ui.properties.UndoablePropertySheetPage
 import org.eclipse.jface.action.IAction
 import org.eclipse.jface.action.Separator
+import org.eclipse.jface.commands.ActionHandler
 import org.eclipse.jface.text.source.ISourceViewer
 import org.eclipse.jface.viewers.ISelection
 import org.eclipse.jface.viewers.ISelectionChangedListener
@@ -45,13 +49,13 @@ import org.eclipse.ui.IViewSite
 import org.eclipse.ui.IWorkbenchPart
 import org.eclipse.ui.PartInitException
 import org.eclipse.ui.actions.ActionFactory
+import org.eclipse.ui.handlers.IHandlerService
 import org.eclipse.ui.part.ViewPart
 import org.eclipse.ui.views.properties.IPropertySheetPage
 import org.eclipse.xtext.ui.editor.ISourceViewerAware
 import org.uqbar.project.wollok.contextState.server.XContextStateListener
 import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrameVariable
 import org.uqbar.project.wollok.ui.console.RunInUI
-import org.uqbar.project.wollok.ui.diagrams.classes.WollokDiagramsPlugin
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ExportAction
 import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.palette.CustomPalettePage
@@ -241,8 +245,9 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 				registerAction(zoomIn)
 				registerAction(zoomOut)
 	
-				site.keyBindingService.registerAction(zoomIn)
-				site.keyBindingService.registerAction(zoomOut)
+				val service = site.getService(IHandlerService)
+				service.activateHandler(zoomIn.getActionDefinitionId(), new	ActionHandler(zoomIn))
+				service.activateHandler(zoomOut.getActionDefinitionId(), new ActionHandler(zoomOut))
 			]
 		}
 		actionRegistry
@@ -358,7 +363,9 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	def createPaletteViewerProvider() { new PaletteViewerProvider(editDomain) }
 
 	def getPalettePreferences() {
-		FlyoutPaletteComposite.createFlyoutPreferences(WollokDiagramsPlugin.getDefault.pluginPreferences)
+		val preferencesService = Platform.getPreferencesService() //as PreferenceServices 
+		new WollokFlyoutPreferences(preferencesService.rootNode)
+		//FlyoutPaletteComposite.createFlyoutPreferences(WollokDiagramsPlugin.getDefault.pluginPreferences)
 	}
 
 	// ****************************	
@@ -455,6 +462,40 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 			updateDynamicDiagram(this.currentVariables)
 		]
 		
+	}
+	
+}
+
+class WollokFlyoutPreferences implements FlyoutPreferences {
+	static final String PALETTE_DOCK_LOCATION = "org.wollok.eclipse.gef.pdock"; //$NON-NLS-1$
+	static final String PALETTE_SIZE = "org.wollok.eclipse.gef.psize"; //$NON-NLS-1$
+	static final String PALETTE_STATE = "org.wollok.eclipse.gef.pstate"; //$NON-NLS-1$
+	IEclipsePreferences prefs
+	new(IEclipsePreferences _prefs) {
+		prefs = _prefs
+	}
+	override getDockLocation() {
+		prefs.getInt(PALETTE_DOCK_LOCATION, PositionConstants.ALWAYS_LEFT);
+	}
+	
+	override getPaletteState() {
+		prefs.getInt(PALETTE_STATE, FlyoutPaletteComposite.STATE_COLLAPSED)
+	}
+	
+	override getPaletteWidth() {
+		prefs.getInt(PALETTE_SIZE, -1)
+	}
+	
+	override setDockLocation(int location) {
+		prefs.putInt(PALETTE_DOCK_LOCATION, location)
+	}
+	
+	override setPaletteState(int state) {
+		prefs.putInt(PALETTE_STATE, state)
+	}
+	
+	override setPaletteWidth(int width) {
+		prefs.putInt(PALETTE_SIZE, width)
 	}
 	
 }

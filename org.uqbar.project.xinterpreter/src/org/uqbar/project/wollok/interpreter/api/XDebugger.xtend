@@ -15,7 +15,7 @@ import org.uqbar.project.wollok.interpreter.stack.XStackFrame
  * 
  * @author jfernandes
  */
-interface XDebugger extends Serializable, XInterpreterListener {
+interface XDebugger<T> extends Serializable, XInterpreterListener {
 	
 	// *****************************************
 	// METHODS CALLED FROM THE REMOTE DEBUGGER (won't be called if it's not in debug mode)
@@ -31,7 +31,7 @@ interface XDebugger extends Serializable, XInterpreterListener {
 	def void stepReturn()
 	def void pause()
 	def void resume()
-	def Stack<XStackFrame> getStack()
+	def Stack<XStackFrame<T>> getStack()
 		
 	// BPs
 	def void setBreakpoint(String fileURI, int line)

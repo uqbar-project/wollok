@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.typesystem.constraints.types
 
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
@@ -16,7 +17,7 @@ import static extension org.uqbar.project.wollok.utils.XtendExtensions.notNullAn
  * @author npasserini
  */
 class MessageLookupExtensions {
-	TypeVariablesRegistry registry
+	@Accessors(PUBLIC_GETTER) TypeVariablesRegistry registry
 	extension MethodTypeProvider methodTypes
 
 	new(TypeVariablesRegistry registry) {

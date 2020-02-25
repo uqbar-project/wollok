@@ -35,7 +35,7 @@ class VariableAssignmentsVisitor extends AbstractWollokVisitor {
 	@Accessors
 	WVariable lookedFor
 
-	def static assignmentOf(WVariable lookedFor, EObject container) {
+	def static List<EObject> assignmentOf(WVariable lookedFor, EObject container) {
 		(new VariableAssignmentsVisitor => [
 			it.lookedFor = lookedFor
 			visit(container)

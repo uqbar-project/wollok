@@ -23,12 +23,12 @@ interface ReplOutputFormatter {
 }
 
 class RegularReplOutputFormatter implements ReplOutputFormatter {
-	override def errorStyle(CharSequence msg) { msg.toString }
-	override def importantMessageStyle(CharSequence msg) { msg.toString }
-	override def messageStyle(CharSequence msg) { msg.toString }
-	override def returnStyle(CharSequence msg) { msg.toString }
-	override def linkStyle(CharSequence msg) { msg.toString }
-	override def normalStyle(CharSequence msg) { msg.toString }
+	override errorStyle(CharSequence msg) { msg.toString }
+	override importantMessageStyle(CharSequence msg) { msg.toString }
+	override messageStyle(CharSequence msg) { msg.toString }
+	override returnStyle(CharSequence msg) { msg.toString }
+	override linkStyle(CharSequence msg) { msg.toString }
+	override normalStyle(CharSequence msg) { msg.toString }
 }
 
 
@@ -39,13 +39,13 @@ class AnsiColoredReplOutputFormatter implements ReplOutputFormatter {
 	static val COLOR_LINK_FILE = BLUE
 	static val COLOR_DEFAULT = DEFAULT
 	
-	override def errorStyle(CharSequence msg) { ansi.fg(COLOR_ERROR).a(msg).reset.toString() }
-	override def importantMessageStyle(CharSequence msg) { ansi.fg(COLOR_REPL_MESSAGE).bold.a(msg).reset.toString() }
-	override def messageStyle(CharSequence msg) { ansi.fg(COLOR_REPL_MESSAGE).a(msg).reset.toString() }
-	override def returnStyle(CharSequence msg) { ansi().fg(COLOR_RETURN_VALUE).a(msg).reset.toString() }
-	override def linkStyle(CharSequence msg) { 
+	override errorStyle(CharSequence msg) { ansi.fg(COLOR_ERROR).a(msg).reset.toString() }
+	override importantMessageStyle(CharSequence msg) { ansi.fg(COLOR_REPL_MESSAGE).bold.a(msg).reset.toString() }
+	override messageStyle(CharSequence msg) { ansi.fg(COLOR_REPL_MESSAGE).a(msg).reset.toString() }
+	override returnStyle(CharSequence msg) { ansi().fg(COLOR_RETURN_VALUE).a(msg).reset.toString() }
+	override linkStyle(CharSequence msg) { 
 		// https://mihai-nita.net/2013/06/03/eclipse-plugin-ansi-in-console/
 		ansi.fg(COLOR_LINK_FILE).a(Ansi.Attribute.UNDERLINE).boldOff.a(msg).reset.a(Ansi.Attribute.UNDERLINE_OFF).bold.a(Ansi.Attribute.RESET).toString
 	}
-	override def normalStyle(CharSequence msg) { ansi.fg(COLOR_DEFAULT).a(msg).reset.toString() }
+	override normalStyle(CharSequence msg) { ansi.fg(COLOR_DEFAULT).a(msg).reset.toString() }
 }

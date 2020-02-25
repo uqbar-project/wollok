@@ -14,3 +14,4 @@ Require-Bundle: org.eclipse.ui,
  org.uqbar.project.wollok.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Uqbar Project
+Automatic-Module-Name: org.uqbar.project.wollok.product.ui

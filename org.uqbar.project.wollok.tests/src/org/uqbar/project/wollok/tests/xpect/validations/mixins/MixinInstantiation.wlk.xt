@@ -69,7 +69,7 @@ object p {
 
 mixin M3 {
 	method blah() {
-		// XPECT warnings --> "Method does not exist or invalid number of arguments" at "sarasa"
+		// XPECT errors --> "Method does not exist or invalid number of arguments" at "sarasa"
 		self.sarasa()
 	}
 }

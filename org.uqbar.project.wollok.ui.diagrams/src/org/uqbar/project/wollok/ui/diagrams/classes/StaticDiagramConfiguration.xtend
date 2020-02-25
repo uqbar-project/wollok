@@ -302,10 +302,12 @@ class StaticDiagramConfiguration extends AbstractDiagramConfiguration implements
 		this.notifyObservers(CONFIGURATION_CHANGED)
 	}
 	
-	override protected setChanged() {
+	override protected synchronized setChanged() {
 		super.setChanged()
 		this.saveConfiguration()
 	}
+
+
 
 	/** 
 	 ******************************************************

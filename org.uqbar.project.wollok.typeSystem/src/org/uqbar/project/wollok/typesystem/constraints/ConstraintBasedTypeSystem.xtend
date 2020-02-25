@@ -84,7 +84,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	 */
 	Set<TypeFactory> allTypes
 
-	override def name() { Constants.TS_CONSTRAINTS_BASED }
+	override name() { Constants.TS_CONSTRAINTS_BASED }
 
 	override validate(WFile file, ConfigurableDslValidator validator) {
 		// Dodain - only Builder now is responsible for analyzing and inferring types

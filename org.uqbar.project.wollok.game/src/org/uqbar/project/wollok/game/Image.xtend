@@ -24,7 +24,7 @@ class Image {
 		this.path = path
 	}
 
-	override public int hashCode() {
+	override int hashCode() {
 		val prime = 31
 		prime + getPath.hashCode
 	}

@@ -106,7 +106,6 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 	// Second toolbar
 	Label lblMilliseconds
-	Button copyTextOutputToClipboard
 
 //	static IViewPart previousActivePart
 
@@ -236,7 +235,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 		showFailuresAndErrors = new ToolItem(toolbar, SWT.CHECK) => [
 			toolTipText = Messages.WollokTestResultView_showOnlyFailuresAndErrors
 			val pathImage = Activator.getDefault.getImageDescriptor(
-				"platform:/plugin/org.eclipse.jdt.junit/icons/full/obj16/failures.gif")
+				"platform:/plugin/org.eclipse.jdt.junit/icons/full/obj16/failures.png")
 			image = resManager.createImage(pathImage)
 			addListener(SWT.Selection)[this.toggleShowFailuresAndErrors]
 			enabled = true
@@ -245,7 +244,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 		runAgain = new ToolItem(toolbar, SWT.PUSH) => [
 			toolTipText = Messages.WollokTestResultView_runAgain
 			val pathImage = Activator.getDefault.getImageDescriptor(
-				"platform:/plugin/org.eclipse.jdt.junit/icons/full/elcl16/relaunch.gif")
+				"platform:/plugin/org.eclipse.jdt.junit/icons/full/elcl16/relaunch.png")
 			image = resManager.createImage(pathImage)
 			addListener(SWT.Selection)[this.relaunch]
 			enabled = false
@@ -386,10 +385,10 @@ class WollokTestResultView extends ViewPart implements Observer {
 			]
 		]
 
-		copyTextOutputToClipboard = new Button(parentToolbar, SWT.PUSH) => [
+		new Button(parentToolbar, SWT.PUSH) => [
 			toolTipText = Messages.WollokTestResultView_copySelectedResultToClipboard
 			val pathImage = Activator.getDefault.getImageDescriptor(
-				"platform:/plugin/org.eclipse.compare/icons/full/elcl16/copycont_r_co.gif")
+				"platform:/plugin/org.eclipse.pde.ui/icons/obj16/copyviewtoclipboard_tsk.png")
 			image = resManager.createImage(pathImage)
 			addListener(SWT.Selection)[this.copySelectedTextOutputToClipboard]
 			enabled = true
@@ -523,14 +522,14 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 class WTestTreeLabelProvider extends LabelProvider {
 
-	private ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources());
+	ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources());
 
 	def dispatch getImage(WollokTestResult element) {
 		element.state.getImage(resourceManager)
 	}
 
 	def dispatch getImage(Object element) {
-		var imageDescriptor = Activator.getDefault.getImageDescriptor("icons/w.png")
+		val imageDescriptor = Activator.getDefault.getImageDescriptor("icons/w.png")
 		resourceManager.createImage(imageDescriptor)
 	}
 	
@@ -560,7 +559,7 @@ class WTestTreeLabelProvider extends LabelProvider {
 		element.testInfo.name
 	}
 
-	override def dispose() {
+	override dispose() {
 		super.dispose
 		resourceManager.dispose
 	}

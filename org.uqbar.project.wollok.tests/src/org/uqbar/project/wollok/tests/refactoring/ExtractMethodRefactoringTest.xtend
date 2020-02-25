@@ -8,6 +8,7 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.ltk.core.refactoring.RefactoringStatus
 import org.eclipse.ui.IWorkbenchPartSite
 import org.eclipse.ui.texteditor.IDocumentProvider
+import org.eclipse.xpect.util.ReflectionUtil
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.resource.DefaultLocationInFileProvider
 import org.eclipse.xtext.ui.editor.XtextEditor
@@ -25,7 +26,6 @@ import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestC
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
-import org.xpect.util.ReflectionUtil
 
 import static org.mockito.Matchers.*
 import static org.mockito.Mockito.*

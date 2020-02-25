@@ -20,7 +20,7 @@ class WollokNumbersPreferences {
 	public static val NUMBER_COERCING_STRATEGY_DEFAULT = new RoundingDecimalsCoercingStrategy()
 	public static val NUMBER_PRINTING_STRATEGY_DEFAULT = new DecimalPrintingStrategy()
 
-	private static WollokNumbersPreferences instance	
+	static WollokNumbersPreferences instance	
 	 
 	static def getInstance() {
 		if (instance === null) {
@@ -35,7 +35,7 @@ class WollokNumbersPreferences {
 		numberPrintingStrategy = NUMBER_PRINTING_STRATEGY_DEFAULT
 	}
 		
-	public def setNumberCoercingStrategyByName(String coercingName) {
+	def setNumberCoercingStrategyByName(String coercingName) {
 		val value = coercingStrategies.findFirst[ name == coercingName ]
 		if(value === null){
 			throw new RuntimeException(NLS.bind(WollokNumberPreferences_COERCING_STRATEGY_NOTFOUND, coercingName))
@@ -44,7 +44,7 @@ class WollokNumbersPreferences {
 		numberCoercingStrategy = value
 	}
 	
-	public def setNumberPrintingStrategyByName(String printingName) {
+	def setNumberPrintingStrategyByName(String printingName) {
 		val value = printingStrategies.findFirst[ name == printingName ]
 		if(value === null){
 			throw new RuntimeException(NLS.bind(WollokNumberPreferences_PRINTING_STRATEGY_NOTFOUND, printingName))

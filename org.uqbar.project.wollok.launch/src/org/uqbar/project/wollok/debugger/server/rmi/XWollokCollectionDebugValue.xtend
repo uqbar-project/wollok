@@ -77,7 +77,7 @@ class XWollokDictionaryDebugValue extends XWollokCollectionDebugValue {
 		wrapped.keys.get(i).asString
 	}
 
-	override def getElements(WollokObject collection, String concreteNativeType) {
+	override getElements(WollokObject collection, String concreteNativeType) {
 		val wrapped = collection.getNativeObject(concreteNativeType) as WDictionary
 		if (wrapped === null) Collections.EMPTY_LIST else wrapped.values
 	}

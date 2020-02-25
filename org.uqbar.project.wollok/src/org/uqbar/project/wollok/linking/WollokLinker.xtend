@@ -31,7 +31,7 @@ class WollokLinker extends LazyLinker {
 	@Inject
 	var SyntheticLinkingSupport syntheticLinkingSupport
 	
-	override def installProxies(EObject obj, IDiagnosticProducer producer,
+	override installProxies(EObject obj, IDiagnosticProducer producer,
 		Multimap<EStructuralFeature.Setting, INode> settingsToLink) {
 
 		super.installProxies(obj, producer, settingsToLink)

@@ -53,7 +53,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * @author jfernandes
  * @author npasserini
  */
-class AbstractWollokVisitor {
+abstract class AbstractWollokVisitor {
 
 	// ************************************************************************
 	// ** Main structure 

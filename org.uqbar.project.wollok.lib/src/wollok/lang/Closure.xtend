@@ -23,7 +23,7 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 class Closure implements NodeAware<WClosure>, Function1<WollokObject, Object> {
 	@Accessors WClosure EObject
 	extension WollokInterpreter interpreter
-	WollokObject obj
+	@Accessors(PUBLIC_GETTER) WollokObject obj
 	EvaluationContext<WollokObject> container
 	
 	new(WollokObject obj, WollokInterpreter interpreter) {

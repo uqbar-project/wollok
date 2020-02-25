@@ -196,9 +196,9 @@ class GenericTypeInfo extends TypeInfo {
 	public static val ELEMENT = "element"
 	public static val RETURN = "return"
 
-	public static def PARAM(int position) { "arg" + position }
+	static def PARAM(int position) { "arg" + position }
 
-	public static def PARAMS(int parameterCount) {
+	static def PARAMS(int parameterCount) {
 		if(parameterCount > 0) (0 .. parameterCount - 1).map[PARAM] else #[]
 	}
 

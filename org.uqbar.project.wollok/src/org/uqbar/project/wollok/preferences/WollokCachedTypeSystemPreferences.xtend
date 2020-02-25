@@ -9,7 +9,7 @@ import org.uqbar.project.wollok.validation.CheckSeverity
  */
 class WollokCachedTypeSystemPreferences {
 	
-	private static WollokCachedTypeSystemPreferences instance
+	static WollokCachedTypeSystemPreferences instance
 
 	@Accessors CheckSeverity typeSystemSeverity
 	@Accessors boolean typeSystemEnabled

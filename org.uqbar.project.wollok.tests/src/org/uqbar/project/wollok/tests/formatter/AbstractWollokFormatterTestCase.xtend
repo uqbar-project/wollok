@@ -15,7 +15,7 @@ import org.uqbar.project.wollok.wollokDsl.WAssignment
  * @author jfernandes
  * @author tesonep
  */
-class AbstractWollokFormatterTestCase {
+abstract class AbstractWollokFormatterTestCase {
 	@Inject protected extension WollokParseHelper
 	@Inject protected extension ISerializer
 

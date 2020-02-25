@@ -9,7 +9,7 @@ import org.uqbar.project.wollok.launch.Messages
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
 @Accessors
-public class WollokTestGlobalContainer {
+class WollokTestGlobalContainer {
 	var List<WollokTestFileContainer> testFiles = new ArrayList
 	var boolean processingManyFiles = false
 	long millisecondsElapsed = 0

@@ -5,6 +5,7 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.debugger.XDebuggerOff
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**
  * A test implementation for the debugger
@@ -20,7 +21,7 @@ import org.uqbar.project.wollok.interpreter.debugger.XDebuggerOff
  * @author jfernandes
  */
 @Accessors
-class TestDebugger extends XDebuggerOff {
+class TestDebugger extends XDebuggerOff<WollokObject> {
 	val WollokInterpreter interpreter
 	List<InterpreterAssertion> assertions = newArrayList
 	

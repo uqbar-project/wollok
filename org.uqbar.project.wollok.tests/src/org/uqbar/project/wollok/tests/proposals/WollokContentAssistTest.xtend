@@ -9,6 +9,14 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.jface.text.contentassist.ICompletionProposal
+import org.eclipse.xpect.expectation.CommaSeparatedValuesExpectation
+import org.eclipse.xpect.expectation.ICommaSeparatedValuesExpectation
+import org.eclipse.xpect.parameter.ParameterParser
+import org.eclipse.xpect.runner.Xpect
+import org.eclipse.xpect.runner.XpectRunner
+import org.eclipse.xpect.xtext.lib.setup.ThisModel
+import org.eclipse.xpect.xtext.lib.setup.ThisOffset
+import org.eclipse.xpect.xtext.lib.setup.ThisResource
 import org.eclipse.xtext.ISetup
 import org.eclipse.xtext.junit4.ui.AbstractContentAssistProcessorTest
 import org.eclipse.xtext.junit4.ui.ContentAssistProcessorTestBuilder
@@ -19,17 +27,9 @@ import org.eclipse.xtext.ui.editor.contentassist.ConfigurableCompletionProposal
 import org.junit.Ignore
 import org.junit.runner.RunWith
 import org.uqbar.project.wollok.ui.tests.WollokDslUiInjectorProvider
-import org.xpect.expectation.CommaSeparatedValuesExpectation
-import org.xpect.expectation.ICommaSeparatedValuesExpectation
-import org.xpect.parameter.ParameterParser
-import org.xpect.runner.Xpect
-import org.xpect.runner.XpectRunner
-import org.xpect.xtext.lib.setup.ThisModel
-import org.xpect.xtext.lib.setup.ThisOffset
-import org.xpect.xtext.lib.setup.ThisResource
 
 /**
- * Test class for extending XPECT to have tests on static proposals (content assist)
+ * Test class for extending X PECT to have tests on static proposals (content assist)
  * 
  * @author jfernandes
  */
