@@ -69,10 +69,10 @@ class WString extends AbstractJavaWrapper<String> {
 		wrapped.substring(index.coerceToPositiveInteger)
 	}
 	
-	def substring(BigDecimal startIndex, BigDecimal length) { 
+	def substring(BigDecimal startIndex, BigDecimal endIndex) { 
 		startIndex.checkNotNull("substring")
-		length.checkNotNull("substring")
-		wrapped.substring(startIndex.coerceToPositiveInteger, length.coerceToPositiveInteger)
+		endIndex.checkNotNull("substring")
+		wrapped.substring(startIndex.coerceToPositiveInteger, endIndex.coerceToPositiveInteger)
 	}
 	
 	@NativeMessage("toString")
