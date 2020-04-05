@@ -35,7 +35,7 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void toString1() {
+	def void toStringMixedMethodContainer1Mixin() {
 		'''
 		«toStringFixture»
 		test "toString de un mixed method container con 1 mixin" {
@@ -46,7 +46,7 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void toString2() {
+	def void toStringMixedContainerWith2Mixins() {
 		'''
 		«toStringFixture»
 		test "toString de un mixed method container con 2 mixins" {

@@ -44,7 +44,7 @@ program natives {
 				assert.equals(1, true)
 			} catch e {
 				assert.equals(e.getStackTraceAsString(), 
-		"wollok.lib.AssertionException: Expected [1] but found [true]
+		"wollok.lib.AssertionException: Expected <1> but found <true>
 			at wollok.lib.assert.equals(expected,actual) [/lib.wlk:72]
 			at  [/assertTest.wpgm:3]
 		"
