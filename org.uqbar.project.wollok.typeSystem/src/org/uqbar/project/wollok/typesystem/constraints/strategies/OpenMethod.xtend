@@ -31,7 +31,8 @@ class OpenMethod extends SimpleTypeInferenceStrategy {
 			registry.methodTypes.methodTypeDo(type, it) [ methodType |
 				changed = true
 				methodType.parameters.biForEach(arguments)[param, arg|
-					param.beSupertypeOf(arg)
+					param.addSubtype(arg)
+					arg.addMessageParameter(param)
 				]				
 				methodType.returnType.beSubtypeOf(returnType)
 			]

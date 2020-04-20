@@ -24,6 +24,10 @@ describe "with fixture" {
 		n = self.number()
 		// XPECT type at s --> String
 		var s = ""
+		/* XPECT warnings --- 
+			"Type system: expected <<String>> but found <<Number>>" at "s"
+			"Type system: expected <<Number>> but found <<String>>" at "n"
+		--- */
 		assert.equals(n, s)
 	}
 }

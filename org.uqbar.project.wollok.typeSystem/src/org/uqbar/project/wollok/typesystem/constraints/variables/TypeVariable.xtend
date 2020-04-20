@@ -29,6 +29,9 @@ class TypeVariable extends ITypeVariable {
 
 	@Accessors
 	val Set<TypeVariable> supertypes = newHashSet
+	
+	@Accessors
+	val Set<TypeVariable> messageParameters = newHashSet
 
 	@Accessors
 	List<TypeSystemException> errors = newArrayList
@@ -115,6 +118,10 @@ class TypeVariable extends ITypeVariable {
 		this.addSubtype(subtype)
 		subtype.addSupertype(this)
 	}
+	
+	def addMessageParameter(TypeVariable param) {
+		messageParameters.add(param)
+	}
 
 	def dispatch beSubtypeOf(ITypeVariable supertype) {
 		supertype.beSupertypeOf(this)
@@ -128,7 +135,7 @@ class TypeVariable extends ITypeVariable {
 	/**
 	 * Internal method, do not call directly, use {@link #beSupertypeOf(TypeVariable)} instead.
 	 */
-	protected def addSubtype(TypeVariable subtype) {
+	def addSubtype(TypeVariable subtype) {
 		this.subtypes.add(subtype)
 		if(typeInfo !== null) typeInfo.subtypeAdded(subtype)
 	}
@@ -136,7 +143,7 @@ class TypeVariable extends ITypeVariable {
 	/**
 	 * Internal method, do not call directly, use {@link #beSupertypeOf(TypeVariable)} instead.
 	 */
-	protected def addSupertype(TypeVariable supertype) {
+	def addSupertype(TypeVariable supertype) {
 		this.supertypes.add(supertype)
 		if(typeInfo !== null) typeInfo.supertypeAdded(supertype)
 	}
