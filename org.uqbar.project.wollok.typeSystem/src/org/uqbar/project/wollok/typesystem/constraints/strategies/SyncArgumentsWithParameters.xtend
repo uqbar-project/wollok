@@ -13,18 +13,22 @@ class SyncArgumentsWithParameters extends PropagateMinimalTypes {
 		val supertypes = tvar.messageParameters
 		if (supertypes.empty) { return }
 
-//		TODO: Think better
-//		supertypes.forEach [
-//			if (it.typeInfo !== null) {				
-//				(it.typeInfo as GenericTypeInfo).minTypes.statesWithValueDo(Pending, it) [
-//					tvar.propagateMinType(type, newHashSet(tvar), it)
-//				]
-//			}
-//		]
-
 		typeInfo.minTypes.statesWithValueDo(Pending, tvar) [
 			tvar.propagateMinType(type, supertypes, it)
 		]
+		
+//		TODO: Think better
+		supertypes.forEach [ tvarParam |
+			if (tvarParam.typeInfo !== null && tvarParam.typeInfo instanceof GenericTypeInfo) {
+				val paramMinTypes = (tvarParam.typeInfo as GenericTypeInfo).minTypes
+				if (!typeInfo.minTypes.keySet.exists[paramMinTypes.keySet.contains(it)]) { // if no intersection					
+					paramMinTypes.statesWithValueDo(Pending, tvarParam) [
+						tvarParam.propagateMinType(type, newHashSet(tvar), it)
+					]
+				} 
+			}
+		]
+		
 	}
 
 	override shouldPropagateMinTypes(TypeVariable origin, TypeVariable destination) {

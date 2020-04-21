@@ -43,7 +43,9 @@ object juan {
 	// XPECT methodType at agarrar --> ((banquito|remera)) => Void
 	method agarrar(obj) { objeto = obj }
 	// XPECT methodType at pintar --> () => Void
-	method pintar() { banquito.color(rojo) }
+	method pintar() { 
+		banquito.color(rojo) 
+	}
 }
 
 object testing {
