@@ -141,10 +141,11 @@ class GenericTypeInfo extends TypeInfo {
 	}
 
 	def validateType(WollokType type, TypeVariable offender) {
-		val readyMinTypes = minTypes.filter[k, value| value != Error ].keySet
-		if(sealed && !readyMinTypes.empty && !readyMinTypes.exists[isSuperTypeOf(type)]) {
-			throw new RejectedMinTypeException(offender, type, readyMinTypes)
-		}
+// 		Filter incompatible basic types
+//		val readyMinTypes = minTypes.filter[k, value| value != Error ].keySet
+//		if(sealed && !readyMinTypes.empty && !readyMinTypes.exists[isSuperTypeOf(type)]) {
+//			throw new RejectedMinTypeException(offender, type, readyMinTypes)
+//		}
 
 		validMessages.forEach [
 			if(!type.respondsTo(it, false)) 
