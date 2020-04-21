@@ -15,6 +15,7 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.Concrete
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.MessageLookupExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.SubtypingRules.isSuperTypeOf
+import static extension org.uqbar.project.wollok.typesystem.constraints.types.CompatibilityTypes.isCompatible
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.AnalysisResultReporter.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
 
@@ -141,11 +142,10 @@ class GenericTypeInfo extends TypeInfo {
 	}
 
 	def validateType(WollokType type, TypeVariable offender) {
-// 		Filter incompatible basic types
-//		val readyMinTypes = minTypes.filter[k, value| value != Error ].keySet
-//		if(sealed && !readyMinTypes.empty && !readyMinTypes.exists[isSuperTypeOf(type)]) {
-//			throw new RejectedMinTypeException(offender, type, readyMinTypes)
-//		}
+		val validMinTypes = minTypes.filter[k, value| value != Error ].keySet
+		if(sealed && !validMinTypes.empty && validMinTypes.exists[!isCompatible(type)]) {
+			throw new RejectedMinTypeException(offender, type, validMinTypes)
+		}
 
 		validMessages.forEach [
 			if(!type.respondsTo(it, false)) 
