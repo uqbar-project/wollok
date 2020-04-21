@@ -56,7 +56,7 @@ class WollokObjectComparator implements Comparator<WollokObject> {
 	}
 
 	static def defaultOrderingKey(WollokObject object) {
-		object.hashCode
+		object.kind.fqn + object.hashCode
 	}
 }
 
