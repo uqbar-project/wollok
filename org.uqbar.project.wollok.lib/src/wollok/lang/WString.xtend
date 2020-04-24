@@ -28,14 +28,14 @@ class WString extends AbstractJavaWrapper<String> {
 	def dispatch WollokObject doConcatWith(WString o) { newInstanceWithWrapped(this.wrapped + o.wrapped) }
 	def dispatch WollokObject doConcatWith(WollokObject it) { convertToWString.asWString.doConcatWith }
 		
-	def startsWith(String other) { 
-		other.checkNotNull("startsWith")
-		wrapped.startsWith(other)
+	def startsWith(String prefix) { 
+		prefix.checkNotNull("startsWith")
+		wrapped.startsWith(prefix)
 	}
 	
-	def endsWith(String other) { 
-		other.checkNotNull("endsWith")
-		wrapped.endsWith(other)
+	def endsWith(String suffix) { 
+		suffix.checkNotNull("endsWith")
+		wrapped.endsWith(suffix)
 	}
 
 	def indexOf(String other) { 
@@ -54,9 +54,9 @@ class WString extends AbstractJavaWrapper<String> {
 		result
 	}
 	
-	def contains(String other) {
-		other.checkNotNull("contains")
-		wrapped.contains(other)
+	def contains(String element) {
+		element.checkNotNull("contains")
+		wrapped.contains(element)
 	}
 	
 	def toLowerCase() { wrapped.toLowerCase }
