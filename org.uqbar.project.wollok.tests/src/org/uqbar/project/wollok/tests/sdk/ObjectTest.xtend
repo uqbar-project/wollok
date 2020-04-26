@@ -26,15 +26,15 @@ class ObjectTest extends AbstractWollokInterpreterTestCase {
 			program p {
 				const perro = new Perro()
 				
-				assert.equals('a Perro[nombre="Colita", edad=7]', perro.toString())
-				assert.equals('casa[ambientes=3, direccion="San Juan 1234"]', casa.toString())
+				assert.equals('a Perro', perro.toString())
+				assert.equals('casa', casa.toString())
 				
 				const anonymousObject = object {
 					var edad = 23
 					var altura = 2
 				}
 				
-				assert.equals("an Object[altura=2, edad=23]", anonymousObject.toString())
+				assert.equals("an Object", anonymousObject.toString())
 			}
 		'''.interpretPropagatingErrors
 	}
@@ -48,7 +48,7 @@ class ObjectTest extends AbstractWollokInterpreterTestCase {
 			}
 			
 			program p {
-				assert.equals("persona[altura=1.7, edad=23]", persona.toString())
+				assert.equals("persona", persona.toString())
 			}
 		'''.interpretPropagatingErrors
 	}

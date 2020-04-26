@@ -112,12 +112,6 @@ object numberTest {
 		return a.isPrime()
 	}
 
-	// XPECT methodType at m28 --> (Number, List<Object>) => String
-	method m28(n, b) = n.coerceToInteger().internalToSmartString(b)
-	
-	// XPECT methodType at m29 --> () => String
-	method m29() = 4.4.simplifiedToSmartString()
-	
 	// XPECT methodType at m30 --> (Number) => String
 	method m30(n) = n.stringValue()
 	

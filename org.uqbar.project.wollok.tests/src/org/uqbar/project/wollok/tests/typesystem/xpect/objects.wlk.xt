@@ -38,16 +38,6 @@ object objectTests {
 	// XPECT methodType at errorObject --> (Object, String) => Void
 	method errorObject(o, message) = o.error(message)
 	
-	
-	// XPECT methodType at toSmartString --> (Object, List<Object>) => String
-	method toSmartString(o, alreadyShown) = o.toSmartString(alreadyShown)
-	
-	// XPECT methodType at internalToSmartStringObject --> (Object, List<Object>) => String
-	method internalToSmartStringObject(o, alreadyShown) = o.internalToSmartString(alreadyShown)
-	
-	// XPECT methodType at simplifiedToSmartString --> (Object) => String
-	method simplifiedToSmartString(o) = o.simplifiedToSmartString()
-	
 	// XPECT methodType at messageNotUnderstood --> (Object, String, List<Object>) => Void
 	method messageNotUnderstood(o, name, parameters) = o.messageNotUnderstood(name, parameters)
 	
