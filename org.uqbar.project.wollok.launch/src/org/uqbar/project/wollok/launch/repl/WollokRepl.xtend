@@ -21,6 +21,7 @@ import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static org.uqbar.project.wollok.WollokConstants.*
 
 /**
  * 
@@ -145,7 +146,7 @@ class WollokRepl {
 	}
 
 	def dispatch doPrintReturnValue(WollokObject wo) {
-		val toStringMethod = if (wo.kind.fqn.equals(STRING)) "printString" else "toString"
+		val toStringMethod = if (wo.kind.fqn.equals(STRING)) TO_STRING_PRINTABLE else TO_STRING
 		println(wo?.call(toStringMethod).toString.returnStyle)
 	}
 

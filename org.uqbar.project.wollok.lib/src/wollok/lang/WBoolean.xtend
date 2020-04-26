@@ -35,7 +35,6 @@ class WBoolean extends AbstractJavaWrapper<Boolean> {
 	
 	@NativeMessage("toString")
 	def wollokToString() { wrapped.toString }
-	def toSmartString(Object alreadyShown) { wollokToString }
 	
 	@NativeMessage("==")
 	def wollokEquals(WollokObject other) {
