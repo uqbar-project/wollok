@@ -6,6 +6,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
+import static org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrame.*
 import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
@@ -20,7 +21,19 @@ class XDebugStackFrameVariable implements Serializable {
 
 	new(WVariable variable, WollokObject value) {
 		this.variable = variable
-		this.value = if (value === null) null else value.asRemoteValue
+		if (value === null) {
+			this.value = null
+			return
+		}
+		val valueIdentifier = value.call("identity").toString
+		val allVariableIds = XDebugStackFrame.allVariables.map [ id.toString ]
+		if (allVariableIds.contains(valueIdentifier)) {
+			this.value = null
+		} else {
+			allVariables.add(variable)
+			allValues.put(variable, value)
+			this.value = value.asRemoteValue
+		}
 	}
 
 	def asRemoteValue(WollokObject object) {

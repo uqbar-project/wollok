@@ -44,16 +44,17 @@ class XDebugStackFrame implements Serializable {
 
 	def static toVariable(WVariable variable, EvaluationContext<WollokObject> context) {
 		if (allVariables.contains(variable)) {
-			return new XDebugStackFrameVariable(variable, null) // Evita que el listener entre en loop infinito por referencias circulares. Luego el diagrama de objetos enlaza los objetos por id interno.
+			// Evita que el listener entre en loop infinito por referencias circulares. (parte 1) 
+			// Luego el diagrama de objetos enlaza los objetos por id interno.
+			return new XDebugStackFrameVariable(variable, null)
 		}
 		val value = allValues.get(variable)
 		if (value !== null) {
 			return new XDebugStackFrameVariable(variable, value)
 		}
-		allVariables.add(variable)
 		val newValue = context.resolve(variable.name)
-		allValues.put(variable, newValue)
-		new XDebugStackFrameVariable(variable, newValue)
+		val result = new XDebugStackFrameVariable(variable, newValue)
+		result
 	}
 
 	def static initAllVariables() {
