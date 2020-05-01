@@ -11,7 +11,7 @@ object instanceVariableMirrorTest {
 	// XPECT methodType at value --> () => Any
 	method value() = self.construction(null, null).value()
 	
-	// XPECT methodType at valueToSmartString --> (InstanceVariableMirror, List<Object>) => String
-	method valueToSmartString(mirror, alreadyShown) = mirror.valueToSmartString(alreadyShown)
+	// XPECT methodType at valueToString --> (InstanceVariableMirror) => String
+	method valueToString(mirror) = mirror.valueToString()
 }
 
