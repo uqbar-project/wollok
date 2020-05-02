@@ -35,7 +35,8 @@ class DefaultNativeObjectFactory implements NativeObjectFactory {
 		STRING -> "wollok.lang.WString",
 		BOOLEAN -> "wollok.lang.WBoolean",
 		DATE -> "wollok.lang.WDate",
-		SOUND -> "wollok.game.WSound"
+		SOUND -> "wollok.game.WSound",
+		OBJECT_MIRROR -> "wollok.mirror.WObjectMirror"
 	}
 	
 	override createNativeObject(WClass it, WollokObject obj, WollokInterpreter interpreter) {

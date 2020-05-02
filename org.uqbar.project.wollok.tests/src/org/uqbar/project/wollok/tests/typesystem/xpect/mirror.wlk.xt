@@ -15,3 +15,14 @@ object instanceVariableMirrorTest {
 	method valueToString(mirror) = mirror.valueToString()
 }
 
+object objectMirrorTest {
+	// XPECT methodType at resolve --> (ObjectMirror, String) => Any
+	method resolve(o, name) = o.resolve(name)
+	
+	// XPECT methodType at instanceVariableFor --> (ObjectMirror, String) => InstanceVariableMirror
+	method instanceVariableFor(o, name) = o.instanceVariableFor(name)
+
+	// XPECT methodType at instanceVariables --> (ObjectMirror) => List<InstanceVariableMirror>
+	method instanceVariables(o) = o.instanceVariables()
+	
+}

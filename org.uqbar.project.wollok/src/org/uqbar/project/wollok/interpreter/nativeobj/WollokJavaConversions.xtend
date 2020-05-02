@@ -17,6 +17,7 @@ import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 import static org.uqbar.project.wollok.sdk.WollokSDK.*
+import static org.uqbar.project.wollok.WollokConstants.*
 
 /**
  * Holds common extensions for Wollok to Java and Java to Wollok conversions.
@@ -78,7 +79,7 @@ class WollokJavaConversions {
 			primitive)
 			return o
 
-		throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_CONVERSION, (o as WollokObject).call("printString"), conversionTypes.get(t) ?: t.simpleName))
+		throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_CONVERSION, (o as WollokObject).call(TO_STRING_PRINTABLE), conversionTypes.get(t) ?: t.simpleName))
 	}
 
 	def static dispatch isNativeType(Object o, String type) { false }
@@ -112,11 +113,11 @@ class WollokJavaConversions {
 	def static dispatch WollokObject convertJavaToWollok(Set<?> o) { evaluator.newInstanceWithWrapped(SET, o) }
 
 	def static dispatch WollokObject convertJavaToWollok(LocalDate o) { evaluator.newInstanceWithWrapped(DATE, o) }
-
+	
 	def static dispatch WollokObject convertJavaToWollok(WollokObject it) { it }
 
 	def static dispatch WollokObject convertJavaToWollok(Object o) {
-		throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_UNSUPPORTED_CONVERSION_JAVA_WOLLOK, (o as WollokObject).call("printString"), o.class.name))
+		throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_UNSUPPORTED_CONVERSION_JAVA_WOLLOK, (o as WollokObject).call(TO_STRING_PRINTABLE), o.class.name))
 	}
 
 	/**
@@ -146,9 +147,9 @@ class WollokJavaConversions {
 		try {
 			result = o.asNumber.coerceToInteger
 		} catch (NumberFormatException e) {
-			throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_CONVERSION, o.call("printString"), "Number"))
+			throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_CONVERSION, o.call(TO_STRING_PRINTABLE), "Number"))
 		} catch (ClassCastException c) {
-			throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_CONVERSION, o.call("printString"), "Number"))
+			throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_CONVERSION, o.call(TO_STRING_PRINTABLE), "Number"))
 		}
 		result
 	} 

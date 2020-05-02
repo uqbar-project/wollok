@@ -23,6 +23,10 @@ class WollokLibTypeDeclarations extends TypeDeclarations {
 		InstanceVariableMirror >> "value" === #[] => T //TODO: should return variable type
 		InstanceVariableMirror >> "valueToString" === #[] => String
 
+		ObjectMirror >> "resolve" === #[String] => T
+		ObjectMirror >> "instanceVariableFor" === #[String] => InstanceVariableMirror
+		ObjectMirror >> "instanceVariables" === #[] => List.of(InstanceVariableMirror)
+
 		StringPrinter >> "println" === #[T] => Void
 		StringPrinter >> "getBuffer" === #[] => String
 		
