@@ -31,22 +31,6 @@ class CompatibilityTypes {
 		return subtype.types.exists[isCompatible(supertype)]
 	}
 
-//	TODO: AnyType compatibility?	
-//	/** Any is only compatible with itself */
-//	static def dispatch boolean isCompatible(AnyType supertype, AnyType subtype) {
-//		false
-//	}
-//	
-//	/** Any is not compatible with another type */
-//	static def dispatch boolean isCompatible(AnyType supertype, WollokType subtype) {
-//		false
-//	}
-//
-//	/** Any is not compatible with another type */
-//	static def dispatch boolean isCompatible(WollokType supertype, AnyType subtype) {
-//		false
-//	}
-
 	/** TODO Structural types */
 	static def dispatch boolean isCompatible(WollokType supertype, StructuralType subtype) {
 		throw new UnsupportedOperationException(Messages.RuntimeTypeSystemException_STRUCTURAL_TYPES_NOT_SUPPORTED)
