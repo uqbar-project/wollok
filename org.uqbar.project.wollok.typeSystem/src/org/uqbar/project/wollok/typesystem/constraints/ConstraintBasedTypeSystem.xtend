@@ -37,8 +37,8 @@ import org.uqbar.project.wollok.typesystem.constraints.strategies.MaxTypesFromMe
 import org.uqbar.project.wollok.typesystem.constraints.strategies.OpenMethod
 import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagateMaximalTypes
 import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagateMinimalTypes
+import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagateMinimalTypesParameters
 import org.uqbar.project.wollok.typesystem.constraints.strategies.SealVariables
-import org.uqbar.project.wollok.typesystem.constraints.strategies.SyncArgumentsWithParameters
 import org.uqbar.project.wollok.typesystem.constraints.strategies.UnifyVariables
 import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.AnnotatedTypeRegistry
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
@@ -169,7 +169,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		#[UnifyVariables],
 		#[PropagateMaximalTypes, MaxTypesFromMessages],
 		#[SealVariables],
-		#[GuessMinTypeFromMaxType, SyncArgumentsWithParameters]
+		#[GuessMinTypeFromMaxType, PropagateMinimalTypesParameters]
 	]
 
 	/**

@@ -18,7 +18,7 @@ class SealVariables extends AbstractInferenceStrategy {
 	
 	def shouldBeSealed(TypeVariable it) {
 		!subtypes.empty 
-		&& !owner.isParameter //TODO: use polymorphism
+		&& !owner.isParameter //TODO: use polymorphism?
 		&& subtypes.forall[sealed] 
 		&& !type.isAny 
 	}

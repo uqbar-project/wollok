@@ -7,17 +7,26 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.Concrete
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.AnalysisResultReporter.*
 
-class SyncArgumentsWithParameters extends PropagateMinimalTypes {
+class PropagateMinimalTypesParameters extends PropagateMinimalTypes {
 
 	override dispatch analiseVariable(TypeVariable tvar, GenericTypeInfo typeInfo) {
-		val supertypes = tvar.messageParameters
-		if (supertypes.empty) { return }
+		if (tvar.messageParameters.empty) {
+			return
+		}
 
+		tvar.propagateMinTypesToParameters(typeInfo)
+		tvar.propagateMinTypesFromParameters(typeInfo)
+	}
+	
+	def propagateMinTypesToParameters(TypeVariable tvar, GenericTypeInfo typeInfo) {
+		val supertypes = tvar.messageParameters
 		typeInfo.minTypes.statesWithValueDo(Pending, tvar) [
 			tvar.propagateMinType(type, supertypes, it)
-		]
-		
-//		TODO: Think better
+		]		
+	}
+	
+	def propagateMinTypesFromParameters(TypeVariable tvar, GenericTypeInfo typeInfo) {
+		val supertypes = tvar.messageParameters
 		supertypes.forEach [ tvarParam |
 			if (tvarParam.typeInfo !== null && tvarParam.typeInfo instanceof GenericTypeInfo) {
 				val paramMinTypes = (tvarParam.typeInfo as GenericTypeInfo).minTypes
@@ -25,10 +34,9 @@ class SyncArgumentsWithParameters extends PropagateMinimalTypes {
 					paramMinTypes.statesWithValueDo(Pending, tvarParam) [
 						tvarParam.propagateMinType(type, newHashSet(tvar), it)
 					]
-				} 
+				}
 			}
-		]
-		
+		]		
 	}
-
+	
 }
