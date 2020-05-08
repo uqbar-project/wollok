@@ -254,6 +254,24 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				"Number does not understand isBig(true, 1)")
 		]
 	}
+	
+	@Test
+	def void unionType() {
+		'''
+			object testing {
+				method test1() {
+					obj.x("")
+					obj.x(0)
+				} 				
+			}
+			object obj {
+				method x(_x) { }
+			}
+		'''.parseAndInfer.asserting [
+			noIssues
+			assertMethodSignature("((Number|String)) => Void", "obj.x")
+		]
+	}
 
 	@Test
 	def void badAnyInference() {
@@ -271,22 +289,6 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			assertTypeOf(classTypeFor(NUMBER), "sueldo")
-		]
-	}
-
-	@Test
-	def void typeParameterIncompatibleInference() {
-		'''
-			program {
-				const n = 0
-				const s = ""
-				assert.equals(n, s)
-			}
-		'''.parseAndInfer.asserting [
-			findByText("assert.equals(n, s)", WMemberFeatureCall).assertAnyIssueInElement(
-				"Type system: expected <<String>> but found <<Number>>",
-				"Type system: expected <<Number>> but found <<String>>"
-			)
 		]
 	}
 }
