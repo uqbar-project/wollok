@@ -31,12 +31,4 @@ class SyncArgumentsWithParameters extends PropagateMinimalTypes {
 		
 	}
 
-	override shouldPropagateMinTypes(TypeVariable origin, TypeVariable destination) {
-		true
-	}
-
-	override targetMinTypeState() {
-		Ready
-	}
-
 }

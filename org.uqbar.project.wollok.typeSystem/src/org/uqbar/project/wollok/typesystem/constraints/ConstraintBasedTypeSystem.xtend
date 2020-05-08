@@ -36,8 +36,7 @@ import org.uqbar.project.wollok.typesystem.constraints.strategies.GuessMinTypeFr
 import org.uqbar.project.wollok.typesystem.constraints.strategies.MaxTypesFromMessages
 import org.uqbar.project.wollok.typesystem.constraints.strategies.OpenMethod
 import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagateMaximalTypes
-import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagatePendingMinimalTypes
-import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagatePostponedMinimalTypes
+import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagateMinimalTypes
 import org.uqbar.project.wollok.typesystem.constraints.strategies.SealVariables
 import org.uqbar.project.wollok.typesystem.constraints.strategies.SyncArgumentsWithParameters
 import org.uqbar.project.wollok.typesystem.constraints.strategies.UnifyVariables
@@ -165,11 +164,10 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	 * Definition of the strategies to run in each stage
 	 */
 	Iterable<Iterable<Class<? extends AbstractInferenceStrategy>>> stages = #[
-		#[PropagatePendingMinimalTypes],
+		#[PropagateMinimalTypes],
 		#[OpenMethod],
 		#[UnifyVariables],
 		#[PropagateMaximalTypes, MaxTypesFromMessages],
-		#[PropagatePostponedMinimalTypes],
 		#[SealVariables],
 		#[GuessMinTypeFromMaxType, SyncArgumentsWithParameters]
 	]
