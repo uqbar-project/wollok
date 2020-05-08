@@ -189,7 +189,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertMethodSignature("(Number) => Void", 'GolondrinaIneficiente.comer')
 		]
 	}
-	
+
 	@Test
 	def void testMethodInferredFromSuperMethodWithSuperInvocation() {
 		'''
@@ -250,11 +250,11 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			assertTypeOf(classTypeFor(NUMBER), "number")
-			findByText("number.div(1).isBig(true, 1)", WMemberFeatureCall).assertIssuesInElement("Number does not understand isBig(true, 1)")
+			findByText("number.div(1).isBig(true, 1)", WMemberFeatureCall).assertIssuesInElement(
+				"Number does not understand isBig(true, 1)")
 		]
 	}
-	
-	
+
 	@Test
 	def void badAnyInference() {
 		'''
@@ -271,6 +271,22 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			assertTypeOf(classTypeFor(NUMBER), "sueldo")
+		]
+	}
+
+	@Test
+	def void typeParameterIncompatibleInference() {
+		'''
+			program {
+				const n = 0
+				const s = ""
+				assert.equals(n, s)
+			}
+		'''.parseAndInfer.asserting [
+			findByText("assert.equals(n, s)", WMemberFeatureCall).assertAnyIssueInElement(
+				"Type system: expected <<String>> but found <<Number>>",
+				"Type system: expected <<Number>> but found <<String>>"
+			)
 		]
 	}
 }

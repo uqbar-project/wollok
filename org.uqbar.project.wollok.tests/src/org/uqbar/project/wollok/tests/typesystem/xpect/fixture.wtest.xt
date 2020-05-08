@@ -22,10 +22,8 @@ describe "with fixture" {
 	
 	test "test with self" {
 		n = self.number()
-		// XPECT type at s --> String
-		var s = ""
-		//TODO: Move to junit test
-		//XPECT warnings --> "Type system: expected <<Number>> but found <<String>>" at "assert.equals(n, "")"
-		assert.equals(n, "")
+		// XPECT type at expected --> Number
+		var expected
+		assert.equals(n, expected)
 	}
 }
