@@ -94,9 +94,6 @@ class UnifyVariables extends AbstractInferenceStrategy {
 	def dispatch isEmpty(VoidTypeInfo it) { true }
 	def dispatch isEmpty(GenericTypeInfo it) { minTypes.isEmpty && maximalConcreteTypes === null }
 
-	def dispatch hasPostponedMinType(VoidTypeInfo it) { false }
-	def dispatch hasPostponedMinType(GenericTypeInfo it) { minTypes.values.contains(Postponed)}
-
 	// ************************************************************************
 	// ** Unification conditions
 	// ************************************************************************
@@ -158,8 +155,6 @@ class UnifyVariables extends AbstractInferenceStrategy {
 			if(isReadyIn(t1) && isReadyIn(t2))
 				// It was already present and ready in both originating typeInfo's
 				Ready
-			else if (isPostponedIn(t1) || isPostponedIn(t2))
-				Postponed
 			else
 				// Mark this concrete type to be further propagated.
 				Pending
@@ -172,10 +167,6 @@ class UnifyVariables extends AbstractInferenceStrategy {
 	 */
 	def boolean isReadyIn(WollokType wollokType, GenericTypeInfo type) {
 		wollokType.isStateIn(type, Ready)
-	}
-	
-	def boolean isPostponedIn(WollokType wollokType, GenericTypeInfo type) {
-		wollokType.isStateIn(type, Postponed)
 	}
 
 	def boolean isStateIn(WollokType wollokType, GenericTypeInfo type, ConcreteTypeState state) {

@@ -44,7 +44,7 @@ class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
 		supertypes.evaluate [ supertype |
 			val newState = propagateMinType(origin, supertype, type)
 			reporter.newState(newState)
-			(newState != Ready && newState != Postponed) => [
+			(newState != Ready) => [
 				if (it) {
 					log.debug('''  Propagated min(«type») from: «origin» to «supertype» => «newState»''')
 					changed = true
