@@ -49,7 +49,7 @@ class Point {
 class Point3D inherits Point {
 	const z = 0
 	
-	override method tipar() = z.even()
+	override method tipar() = super() + z
 }
 
 class TestConstructors {
