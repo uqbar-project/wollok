@@ -58,11 +58,6 @@ class UnifyVariables extends AbstractInferenceStrategy {
 			return Cancel
 		}
 
-		// Do not unify args with params
-		if(subtype.isArgOf(supertype)) {
-			return Cancel
-		}
-		
 		// We can only unify in absence of errors, this aims for avoiding error propagation 
 		// and further analysis of the (maybe) correct parts of the program.
 		if(subtype.hasErrors || supertype.hasErrors) {
@@ -94,12 +89,6 @@ class UnifyVariables extends AbstractInferenceStrategy {
 		} else {
 			Cancel
 		}
-	}
-
-	def isArgOf(TypeVariable subtype, TypeVariable supertype) { 
-		subtype.typeInfo !== null && 
-		(subtype.typeInfo.isEmpty || subtype.typeInfo.hasPostponedMinType) && 
-		supertype.owner.isParameter
 	}
 
 	def dispatch isEmpty(VoidTypeInfo it) { true }
