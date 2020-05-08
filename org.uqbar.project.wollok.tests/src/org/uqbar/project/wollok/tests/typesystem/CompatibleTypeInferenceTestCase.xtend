@@ -27,7 +27,7 @@ class CompatibleTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertTypeOfAsString("(Number|String)", "x")
 		]
 	}
-		
+
 	@Test
 	def void variableWithWKOs() {
 		'''
@@ -42,7 +42,6 @@ class CompatibleTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertTypeOfAsString("(obj1|obj2)", "x")
 		]
 	}
-	
 
 	@Test
 	def void variableWithBasicTypeAndWKO() {
@@ -57,7 +56,43 @@ class CompatibleTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertTypeOfAsString("(Number|obj)", "x")
 		]
 	}
-	
+
+	@Test
+	def void propertyWithBasicTypes() {
+		'''
+			object testing {
+				method test1() {
+					obj.n("")
+				} 				
+			}
+			object obj { 
+				var property n = 0
+			}
+		'''.parseAndInfer.asserting [
+			findByText('''""''').assertIncompatibleTypesIssue("String", "Number")
+		]
+	}
+
+	@Test
+	def void propertyWithWKOs() {
+		'''
+			object obj1 { }
+			object obj2 { }
+			object testing {
+				method test1() {
+					obj.x(obj2)
+				} 				
+			}
+			object obj { 
+				var property x = obj1
+			}
+		'''.parseAndInfer.asserting [
+			// FIXME
+//			noIssues
+			findByText('''obj2''').assertIncompatibleTypesIssue("obj1", "obj2")
+		]
+	}
+
 	@Test
 	def void parameterType() {
 		'''
@@ -74,7 +109,7 @@ class CompatibleTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertMethodSignature("(Boolean) => Number", "obj.boolean")
 		]
 	}
-	
+
 	@Test
 	def void returnType() {
 		'''
@@ -100,12 +135,12 @@ class CompatibleTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			findByText("assert.equals(n, s)", WMemberFeatureCall).assertIncompatibleTypesIssue("String", "Number")
 		]
 	}
-	
+
 	def assertIncompatibleTypesIssue(EObject element, String type1, String type2) {
 		element.assertAnyIssueInElement(
-				'''Type system: expected <<«type1»>> but found <<«type2»>>''',
-				'''Type system: expected <<«type2»>> but found <<«type1»>>'''
-			)
+			'''Type system: expected <<«type1»>> but found <<«type2»>>''',
+			'''Type system: expected <<«type2»>> but found <<«type1»>>'''
+		)
 	}
-	
+
 }
