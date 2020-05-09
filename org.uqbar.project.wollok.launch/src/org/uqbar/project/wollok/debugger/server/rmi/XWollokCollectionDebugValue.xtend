@@ -72,7 +72,8 @@ class XWollokDictionaryDebugValue extends XWollokCollectionDebugValue {
 	
 	override getVariableName(int i, WollokObject collection, String concreteNativeType) {
 		val wrapped = collection.getNativeObject(concreteNativeType) as WDictionary
-		wrapped.keys.get(i).asString
+		val key = wrapped.keys.get(i) 
+		if (key !== null) key.asString else "null"
 	}
 
 	override getElements(WollokObject collection, String concreteNativeType) {

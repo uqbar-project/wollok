@@ -25,15 +25,18 @@ class XDebugStackFrameVariable implements Serializable {
 			this.value = null
 			return
 		}
+		this.value = variable.getRemoteValue(value)
+	}
+
+	def getRemoteValue(WVariable variable, WollokObject value) {
 		val valueIdentifier = value.call("identity").toString
 		val allVariableIds = XDebugStackFrame.allVariables.map [ id.toString ]
 		if (allVariableIds.contains(valueIdentifier)) {
-			this.value = null
-		} else {
-			allVariables.add(variable)
-			allValues.put(variable, value)
-			this.value = value.asRemoteValue
+			return null
 		}
+		allVariables.add(variable)
+		allValues.put(variable, value)
+		value.asRemoteValue
 	}
 
 	def asRemoteValue(WollokObject object) {
