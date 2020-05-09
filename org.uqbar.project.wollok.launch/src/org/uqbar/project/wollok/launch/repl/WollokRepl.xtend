@@ -17,9 +17,11 @@ import org.uqbar.project.wollok.launch.WollokLauncher
 import org.uqbar.project.wollok.wollokDsl.WFile
 
 import static org.uqbar.project.wollok.launch.Messages.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static org.uqbar.project.wollok.WollokConstants.*
 
 /**
  * 
@@ -144,12 +146,8 @@ class WollokRepl {
 	}
 
 	def dispatch doPrintReturnValue(WollokObject wo) {
-		println(wo?.call("printString").toString.returnStyle)
-	}
-
-	// Unused
-	def dispatch doPrintReturnValue(String obj) {
-		println(('"' + obj + '"').returnStyle)
+		val toStringMethod = if (wo.kind.fqn.equals(STRING)) TO_STRING_PRINTABLE else TO_STRING
+		println(wo?.call(toStringMethod).toString.returnStyle)
 	}
 
 	def parseRepl(CharSequence content, File mainFile) {

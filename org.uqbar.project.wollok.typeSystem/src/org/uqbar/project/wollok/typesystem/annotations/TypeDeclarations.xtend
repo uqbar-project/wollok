@@ -205,6 +205,8 @@ abstract class TypeDeclarations {
 
 	def InstanceVariableMirror() { classTypeAnnotation(INSTANCE_VARIABLE_MIRROR) }
 
+	def ObjectMirror() { classTypeAnnotation(OBJECT_MIRROR) }
+	
 	def StringPrinter() { classTypeAnnotation(STRING_PRINTER) }
 
 	def console() { objectTypeAnnotation(CONSOLE) }

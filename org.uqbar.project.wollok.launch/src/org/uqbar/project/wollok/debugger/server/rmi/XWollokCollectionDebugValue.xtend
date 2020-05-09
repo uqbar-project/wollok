@@ -22,13 +22,11 @@ abstract class XWollokCollectionDebugValue extends XDebugValue {
 	new(WollokObject collection, String concreteNativeType, String collectionType) {
 		super(collectionType, System.identityHashCode(collection))
 		this.concreteNativeType = concreteNativeType
-		var i = 0
 		val result = newArrayList
 		val elements = collection.getElements(concreteNativeType)
-		for (e : elements) {
-			result.add(new XDebugStackFrameVariable(new WVariable(i.getVariableName(collection, concreteNativeType), System.identityHashCode(e), false), e))
-			i++
-		}
+		elements.forEach [ element, i |
+			result.add(new XDebugStackFrameVariable(new WVariable(i.getVariableName(collection, concreteNativeType), System.identityHashCode(element), false), element))
+		]
 		variables = newArrayList(result)
 	}
 	
@@ -74,7 +72,8 @@ class XWollokDictionaryDebugValue extends XWollokCollectionDebugValue {
 	
 	override getVariableName(int i, WollokObject collection, String concreteNativeType) {
 		val wrapped = collection.getNativeObject(concreteNativeType) as WDictionary
-		wrapped.keys.get(i).asString
+		val key = wrapped.keys.get(i) 
+		if (key !== null) key.asString else "null"
 	}
 
 	override getElements(WollokObject collection, String concreteNativeType) {

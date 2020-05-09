@@ -76,7 +76,7 @@ class WObject {
 		instVarName.checkNotNull("resolve")
 		obj.resolve(instVarName)
 	}
-
+		
 	def newInstance(String className, Object... arguments) {
 		val wArgs = arguments.map[javaToWollok]
 		(interpreter.evaluator as WollokInterpreterEvaluator).newInstance(className, wArgs)
