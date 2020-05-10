@@ -28,5 +28,6 @@ class WollokValue extends WollokDebugElement implements IValue {
 	override hasVariables() throws DebugException { false }
 	
 	override isAllocated() throws DebugException { true }
-	
+
+	def isWKO() { false }	
 }

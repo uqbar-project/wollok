@@ -215,7 +215,7 @@ class VariableModel extends Shape {
 	def int getYValueForAnchor() {
 		YItShouldHave + (this.size.height / 2) - PADDING
 	}
-
+		
 }
 
 class ShapeHeightHandler {

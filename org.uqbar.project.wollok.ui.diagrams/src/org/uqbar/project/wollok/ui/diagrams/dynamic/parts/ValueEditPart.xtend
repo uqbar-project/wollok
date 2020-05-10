@@ -2,12 +2,12 @@ package org.uqbar.project.wollok.ui.diagrams.dynamic.parts
 
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
+import java.util.List
 import org.eclipse.draw2d.ConnectionAnchor
 import org.eclipse.draw2d.Ellipse
 import org.eclipse.draw2d.EllipseAnchor
 import org.eclipse.draw2d.Figure
 import org.eclipse.draw2d.Label
-import org.eclipse.draw2d.RectangleFigure
 import org.eclipse.draw2d.StackLayout
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.gef.ConnectionEditPart
@@ -17,12 +17,10 @@ import org.eclipse.gef.NodeEditPart
 import org.eclipse.gef.Request
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart
 import org.eclipse.gef.editpolicies.ComponentEditPolicy
-import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
-import org.eclipse.draw2d.ChopboxAnchor
-import org.uqbar.project.wollok.ui.diagrams.classes.view.StaticDiagramColors
-import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
-import java.util.List
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
+import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
+import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
+import org.uqbar.project.wollok.ui.diagrams.classes.view.DiagramColors
 
 /**
  * 
@@ -70,28 +68,17 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 	}
 	
 	def createShape() {
-		if (castedModel.isCollection)
-			new RectangleFigure
-		else
-			new Ellipse
+		new Ellipse
 	}
 	
 	def colorFor(VariableModel model) {
 		val v = model.valueString
 		if (v == "null")
-			StaticDiagramColors.OBJECTS_VALUE_NULL
-		else if (model.isNumeric)
-			StaticDiagramColors.OBJECTS_VALUE_NUMERIC_BACKGROUND
-		else if (model.isCollection)
-			StaticDiagramColors.OBJECTS_VALUE_COLLECTION_BACKGROUND
-		else if (model.isString)
-			StaticDiagramColors.OBJECTS_VALUE_STRING_BACKGROUND
-		else if (model.isNative)
-			StaticDiagramColors.OBJECTS_VALUE_NATIVE_BACKGROUND
+			DiagramColors.OBJECTS_VALUE_NULL
 		else if (model.isUserDefined)
-			StaticDiagramColors.OBJECT_USER_DEFINED_BACKGROUND
+			DiagramColors.OBJECTS_CUSTOM_BACKGROUND
 		else
-			StaticDiagramColors.CLASS_BACKGROUND
+			DiagramColors.OBJECTS_WRE_BACKGROUND
 	}
 	
 	def getCastedModel() { model as VariableModel }
@@ -102,10 +89,7 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 	}
 	
 	def createConnectionAnchor() {
-		if (castedModel.isCollection)
-			new ChopboxAnchor(figure)
-		else
-			new EllipseAnchor(figure)
+		new EllipseAnchor(figure)
 	}
 	
 	override List<Connection> getModelSourceConnections() { castedModel.sourceConnections }
@@ -137,6 +121,5 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 	}
 	
 	def getBounds(Shape it) { new Rectangle(location, size) }
-//	def getBounds() { new Rectangle((Math.random * 200).intValue, (Math.random * 200).intValue, 75, 75) }
 
 }

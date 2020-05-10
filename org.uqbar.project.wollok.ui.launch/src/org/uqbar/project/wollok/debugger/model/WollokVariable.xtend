@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.debugger.model
 
+import java.util.List
 import org.eclipse.debug.core.model.IValue
 import org.eclipse.debug.core.model.IVariable
 import org.uqbar.project.wollok.debugger.WollokDebugTarget
@@ -70,4 +71,29 @@ class WollokVariable extends WollokDebugElement implements IVariable {
 	override hashCode() {
 		this.toString.hashCode
 	}
+		
+	def shouldShowRootArrow(List<IVariable> variables) {
+		val finalValue = getActualValue(variables)
+		finalValue === null || !isGlobalReferenceToWKO(finalValue)
+	}
+
+	def IValue getActualValue(List<IVariable> variables) {
+		if (this.value === null) {
+			// If value was already taken, find it
+			val replacedVariable = variables.findFirst [ toString.equals(adaptee.identifier) ]
+			if (replacedVariable !== null) {
+				return replacedVariable.value
+			}
+		}
+		return this.value
+	}
+
+	def dispatch isGlobalReferenceToWKO(WollokValue value) {
+		value.isWKO && adaptee.name.equals(value.referenceTypeName)
+	}
+	
+	def dispatch isGlobalReferenceToWKO(IValue value) {
+		false
+	}
+
 }

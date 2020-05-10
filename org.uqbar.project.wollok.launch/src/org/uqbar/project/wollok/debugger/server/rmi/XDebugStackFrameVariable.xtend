@@ -76,6 +76,15 @@ class XDebugStackFrameVariable implements Serializable {
 	}
 	
 	def isCustom() {
-		!this.variable.name.startsWith("wollok.")	
+		!this.variable.name.startsWith("wollok.")
 	}
+
+	def getIdentifier() {
+		this.variable.id.toString
+	}
+
+	def getName() {
+		this.variable.name
+	}
+
 }

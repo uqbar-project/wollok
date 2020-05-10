@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Display
  * 
  * @author jfernandes
  */
-class StaticDiagramColors {
+class DiagramColors {
 	
 	public static val CLASS_FOREGROUND = new Color(null, 0, 0, 0)
 	public static val CLASS_BACKGROUND = new Color(null, 255, 229, 236)
@@ -24,15 +24,14 @@ class StaticDiagramColors {
 	public static val MIXIN_FOREGROUND = new Color(null, 0, 0, 0)
 	public static val MIXIN_BACKGROUND = new Color(null, 144, 195, 212)
 	
-	// Object-diagram
-	
-	public static val OBJECTS_VALUE_DEFAULT = CLASS_BACKGROUND
-	public static val OBJECTS_VALUE_NULL = new Color(null, 255, 255, 255)
-	public static val OBJECTS_VALUE_NUMERIC_BACKGROUND = new Color(null, 199, 224, 217)
-	public static val OBJECTS_VALUE_COLLECTION_BACKGROUND = new Color(null, 224, 199, 206)
-	public static val OBJECTS_VALUE_STRING_BACKGROUND = new Color(null, 199, 224, 217)
-	public static val OBJECTS_VALUE_NATIVE_BACKGROUND = new Color(null, 199, 224, 217)
-	public static val OBJECT_USER_DEFINED_BACKGROUND = new Color(null, 199, 206, 224)
+	// Dynamic Diagram
+	public static val DYNAMIC_DIAGRAM_WHITE = new Color(null, 255, 255, 255)
+	public static val DYNAMIC_DIAGRAM_GREEN = new Color(null, 199, 224, 217)
+	public static val DYNAMIC_DIAGRAM_BLUE = new Color(null, 199, 206, 224)
+
+	public static val OBJECTS_VALUE_NULL = DYNAMIC_DIAGRAM_WHITE
+	public static val OBJECTS_WRE_BACKGROUND = DYNAMIC_DIAGRAM_GREEN
+	public static val OBJECTS_CUSTOM_BACKGROUND = DYNAMIC_DIAGRAM_BLUE
 	
 	// FONTS
 	

@@ -365,7 +365,6 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	def getPalettePreferences() {
 		val preferencesService = Platform.getPreferencesService() //as PreferenceServices 
 		new WollokFlyoutPreferences(preferencesService.rootNode)
-		//FlyoutPaletteComposite.createFlyoutPreferences(WollokDiagramsPlugin.getDefault.pluginPreferences)
 	}
 
 	// ****************************	
@@ -397,7 +396,6 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 
 	override selectionChanged(SelectionChangedEvent event) {}
 
-	// posta
 	override setStackFrame(IStackFrame stackframe) {
 		updateDynamicDiagram(stackframe)
 	}

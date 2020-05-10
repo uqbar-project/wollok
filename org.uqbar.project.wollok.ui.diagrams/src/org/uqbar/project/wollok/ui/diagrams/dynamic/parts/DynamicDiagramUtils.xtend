@@ -1,6 +1,8 @@
 package org.uqbar.project.wollok.ui.diagrams.dynamic.parts
 
+import java.util.List
 import org.eclipse.debug.core.model.IVariable
+import org.uqbar.project.wollok.debugger.model.WollokVariable
 
 class DynamicDiagramUtils {
 	public static int WIDTH_SIZE = 140
@@ -24,4 +26,13 @@ class DynamicDiagramUtils {
 		if (allVariables.isEmpty) return 1
 		allVariables.fold(0, [ acum, ref | acum + ref.childrenSizeForHeight ])
 	}
+
+	static def dispatch shouldShowRootArrow(WollokVariable variable, List<IVariable> variables) {
+		variable.shouldShowRootArrow(variables)
+	}
+	
+	static def dispatch shouldShowRootArrow(IVariable variable, List<IVariable> variables) {
+		false
+	}
+
 }

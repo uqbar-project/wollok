@@ -20,7 +20,7 @@ class WSeparatorBorder extends MarginBorder {
 
 	override paint(IFigure figure, Graphics graphics, Insets insets) {
 		val rec = getPaintRectangle(figure, insets)
-		graphics.foregroundColor = StaticDiagramColors.CLASS_INNER_BORDER
+		graphics.foregroundColor = DiagramColors.CLASS_INNER_BORDER
 		graphics.drawLine(rec.x, rec.y, rec.right(), rec.y)
 	}
 
