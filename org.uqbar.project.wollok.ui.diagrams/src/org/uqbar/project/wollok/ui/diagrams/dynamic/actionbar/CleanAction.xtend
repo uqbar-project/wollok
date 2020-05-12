@@ -32,6 +32,40 @@ class CleanAction extends Action {
 	
 }
 
+/**
+ * Clean dynamic diagram
+ */ 
+class ColorBlindAction extends Action implements Observer {
+	
+	DynamicDiagramConfiguration configuration
+	DynamicDiagramView diagram
+
+	new(DynamicDiagramView diagram) {
+		super(Messages.DynamicDiagram_ColorBlind_Description, AS_CHECK_BOX)
+		this.diagram = diagram
+		init
+	}
+	
+	def void init() {
+		toolTipText = Messages.DynamicDiagram_ColorBlind_Description
+		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/eye.png")
+		this.configuration = DynamicDiagramConfiguration.instance
+		this.checked = configuration.colorBlindEnabled	
+	}
+	
+	override run() {
+		configuration.colorBlindEnabled = !configuration.colorBlindEnabled
+		diagram.refreshView
+	}
+	
+	override update(Observable o, Object event) {
+		if (event !== null && event.equals(DynamicDiagramConfiguration.CONFIGURATION_CHANGED)) {
+			this.checked = configuration.colorBlindEnabled
+		}
+	}
+	
+}
+
 class RememberObjectPositionAction extends Action implements Observer {
 	
 	DynamicDiagramConfiguration configuration

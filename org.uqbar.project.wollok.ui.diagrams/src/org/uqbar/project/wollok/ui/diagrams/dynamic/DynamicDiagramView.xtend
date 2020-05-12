@@ -60,6 +60,7 @@ import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ExportAction
 import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.palette.CustomPalettePage
 import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.CleanAction
+import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.ColorBlindAction
 import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.RememberObjectPositionAction
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.DynamicDiagramEditPartFactory
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.ValueEditPart
@@ -86,6 +87,7 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	// Toolbar - actions
 	RememberObjectPositionAction rememberAction
 	CleanAction cleanAction
+	ColorBlindAction colorBlindAction
 	ExportAction exportAction
 	IAction zoomIn
 	IAction zoomOut
@@ -165,6 +167,8 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 			diagram = this
 		]
 		
+		colorBlindAction = new ColorBlindAction(this)
+
 		exportAction = new ExportAction => [
 			viewer = graphicalViewer
 		]
@@ -177,6 +181,7 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 			} as String[]))
 			add(zoomIn)
 			add(zoomOut)
+			add(colorBlindAction)
 			add(new Separator)
 			add(rememberAction)
 			add(new Separator)

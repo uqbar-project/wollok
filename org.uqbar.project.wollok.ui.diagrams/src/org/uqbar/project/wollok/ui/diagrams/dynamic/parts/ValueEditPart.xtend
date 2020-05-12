@@ -19,8 +19,8 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart
 import org.eclipse.gef.editpolicies.ComponentEditPolicy
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
-import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
 import org.uqbar.project.wollok.ui.diagrams.classes.view.DiagramColors
+import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
 
 /**
  * 
@@ -54,9 +54,9 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 		new Figure => [
 			layoutManager = new StackLayout
 		
-			val c = colorFor(castedModel)
 			this.ellipse = createShape() => [
-				backgroundColor = c
+				backgroundColor = colorFor(castedModel)
+				lineWidth = lineWidthFor(castedModel)				
 				opaque = true
 			]
 			add(this.ellipse)
@@ -72,15 +72,19 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 	}
 	
 	def colorFor(VariableModel model) {
-		val v = model.valueString
-		if (v == "null")
+		val configuration = DynamicDiagramConfiguration.instance
+		if (model.valueString == "null")
 			DiagramColors.OBJECTS_VALUE_NULL
 		else if (model.isUserDefined)
-			DiagramColors.OBJECTS_CUSTOM_BACKGROUND
+			if (configuration.colorBlindEnabled) DiagramColors.OBJECTS_CUSTOM_BACKGROUND_COLORBLIND else DiagramColors.OBJECTS_CUSTOM_BACKGROUND
 		else
-			DiagramColors.OBJECTS_WRE_BACKGROUND
+			if (configuration.colorBlindEnabled) DiagramColors.OBJECTS_WRE_BACKGROUND_COLORBLIND else DiagramColors.OBJECTS_WRE_BACKGROUND
 	}
-	
+
+	def lineWidthFor(VariableModel model) {
+		if (model.isUserDefined && DynamicDiagramConfiguration.instance.colorBlindEnabled) 2 else 1
+	}
+
 	def getCastedModel() { model as VariableModel }
 
 	def getConnectionAnchor() {

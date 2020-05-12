@@ -14,4 +14,6 @@ class DynamicDiagramConfiguration extends AbstractDiagramConfiguration {
 		}
 		instance
 	}
+	
+	boolean colorBlindEnabled = false
 }
