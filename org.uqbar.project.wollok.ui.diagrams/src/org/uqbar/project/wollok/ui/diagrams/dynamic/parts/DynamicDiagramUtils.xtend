@@ -34,5 +34,14 @@ class DynamicDiagramUtils {
 	static def dispatch shouldShowRootArrow(IVariable variable, List<IVariable> variables) {
 		false
 	}
+	
+	static def void traverseNonNullVariables(List<IVariable> variables, List<IVariable> allVariables) {
+		variables.forEach [ variable |
+			if (variable.value !== null) {
+				allVariables.add(variable)
+				variable.value.variables.traverseNonNullVariables(allVariables)
+			}
+		]
+	}
 
 }

@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.ui.diagrams.dynamic.parts
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 import java.util.List
+import java.util.Map
 import org.eclipse.debug.core.model.IStackFrame
 import org.eclipse.debug.core.model.IVariable
 import org.eclipse.draw2d.ConnectionLayer
@@ -67,14 +68,24 @@ abstract class AbstractStackFrameEditPart<T> extends AbstractGraphicalEditPart i
 	abstract def List<IVariable> getVariables()
 
 	override List<VariableModel> getModelChildren() {
-		val mapVariables = (this.variables.fold(newHashMap()) [ resultingMap, variable |
+		// Obtaining all non-null values
+		//   That's because repeated objects are received as null and recreated
+		//     in order to avoid an infinite loop cycle
+		//   And to distinguish root wko references we need to get the real value 
+		val allVariables = <IVariable>newArrayList 
+		this.variables.traverseNonNullVariables(allVariables)
+		
+		// Creating root connections
+		val Map<IVariable, VariableModel> mapVariables = (this.variables.fold(newHashMap()) [ resultingMap, variable |
 			val variableModel = VariableModel.getVariableModelFor(variable, 0)
-			resultingMap.put(variable, variableModel)
-			if (variable.shouldShowRootArrow(variables)) {
+			if (variable.shouldShowRootArrow(allVariables)) {
 				new Connection(variable.name, null, variableModel, RelationType.ASSOCIATION)
 			}
+			resultingMap.put(variable, variableModel)
 			resultingMap
 		])
+		
+		// Creating rest of connections
 		mapVariables.values.<VariableModel>clone.forEach[model|model.createConnections(mapVariables)]
 		mapVariables.values.toList
 	}
