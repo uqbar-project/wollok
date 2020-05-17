@@ -28,7 +28,7 @@ class DynamicDiagramUtils {
 	}
 
 	static def dispatch shouldShowRootArrow(WollokVariable variable, List<IVariable> variables) {
-		variable.shouldShowRootArrow(variables)
+		variable.shouldShowRootConnection(variables)
 	}
 	
 	static def dispatch shouldShowRootArrow(IVariable variable, List<IVariable> variables) {

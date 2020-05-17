@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.ui.diagrams.dynamic
 
 import java.util.ArrayList
 import java.util.Collections
+import java.util.HashMap
 import java.util.List
 import java.util.Map
 import org.eclipse.core.runtime.Platform
@@ -57,11 +58,13 @@ import org.uqbar.project.wollok.contextState.server.XContextStateListener
 import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrameVariable
 import org.uqbar.project.wollok.ui.console.RunInUI
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ExportAction
+import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.palette.CustomPalettePage
 import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.CleanAction
 import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.ColorBlindAction
 import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.RememberObjectPositionAction
+import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.DynamicDiagramEditPartFactory
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.ValueEditPart
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.VariableModel
@@ -101,8 +104,9 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	PaletteViewerProvider provider
 
 	List<XDebugStackFrameVariable> currentVariables = newArrayList
-	
-	public static Map<String, XDebugStackFrameVariable> variableValues
+
+	public static Map<String, XDebugStackFrameVariable> variableValues = newHashMap
+	public static Map<String, XDebugStackFrameVariable> oldVariableValues = newHashMap
 
 	new() {
 		editDomain = new DefaultEditDomain(null)
@@ -422,8 +426,9 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 		if (splitter.disposed) {
 			return
 		}
+		oldVariableValues = new HashMap(variableValues)
 		variableValues = newHashMap
-		variables.forEach[ variable | variable.collectValues(variableValues) ]
+		variables.forEach [ variable | variable.collectValues(variableValues) ]
 		this.currentVariables = variables
 			.filter [ isCustom ]
 			.toList
@@ -461,10 +466,26 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	}
 	
 	def refreshView() {
+		val configuration = DynamicDiagramConfiguration.instance
 		RunInUI.runInUI [
+			configuration.firstTimeRefreshView = configuration.hasEffectTransition
 			updateDynamicDiagram(this.currentVariables)
 		]
+		if (configuration.hasEffectTransition) {
+			Thread.sleep(configuration.effectTransitionDelay)
+			RunInUI.runInUI [
+				configuration.firstTimeRefreshView = false
+				updateDynamicDiagram(this.currentVariables)
+			]		
+		}
+	}
 		
+	def static dispatch hadVariable(VariableModel variableModel) {
+		variableModel.variable.value === null || oldVariableValues.get(variableModel.variable.toString) !== null
+	}
+
+	def static dispatch hadVariable(Shape shape) {
+		false
 	}
 	
 }

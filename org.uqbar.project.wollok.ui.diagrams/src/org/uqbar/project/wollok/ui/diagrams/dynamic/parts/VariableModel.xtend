@@ -8,6 +8,7 @@ import org.eclipse.debug.core.model.IVariable
 import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d.geometry.PrecisionPoint
+import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.debugger.model.WollokVariable
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
@@ -16,8 +17,9 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.dynamic.DynamicDiagramView
 import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
 
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
+
 import static extension org.uqbar.project.wollok.ui.diagrams.dynamic.parts.DynamicDiagramUtils.*
-import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * 
@@ -117,19 +119,21 @@ class VariableModel extends Shape {
 		if (variable === null || variable.value === null || variable.value.variables === null) return;
 		val allVariables = variable.value.variables.toList
 		val sameReferences = newHashMap
-		allVariables.forEach [ v |
-			val destination = get(context, v)
+		allVariables.forEach [ variable |
+			val destination = get(context, variable)
 			val variables = sameReferences.get(destination)
 			if (variables === null) {
-				sameReferences.put(destination, newArrayList(v.name))
+				sameReferences.put(destination, newArrayList(variable.name))
 			} else {
-				variables.add(v.name)
+				variables.add(variable.name)
 				sameReferences.put(destination, variables)
 			}
 		]
-		allVariables.toList.forEach [v| 
-			val destination = get(context, v)
-			new Connection(sameReferences.get(destination).join(", "), this, destination, RelationType.ASSOCIATION) 
+		allVariables.toList.forEach [ variable | 
+			if (variable.shouldShowRootArrow(allVariables)) {
+				val destination = get(context, variable)
+				new Connection(sameReferences.get(destination).join(", "), this, destination, RelationType.ASSOCIATION) 
+			}
 		]
 	}
 	
@@ -215,7 +219,15 @@ class VariableModel extends Shape {
 	def int getYValueForAnchor() {
 		YItShouldHave + (this.size.height / 2) - PADDING
 	}
-		
+
+	override getBounds() {
+		if (DynamicDiagramConfiguration.instance.firstTimeRefreshView && !DynamicDiagramView.hadVariable(this)) {
+			new Rectangle(new Point(location.x, location.y + 15), size)
+		} else {
+			super.getBounds()
+		}
+	}
+	
 }
 
 class ShapeHeightHandler {

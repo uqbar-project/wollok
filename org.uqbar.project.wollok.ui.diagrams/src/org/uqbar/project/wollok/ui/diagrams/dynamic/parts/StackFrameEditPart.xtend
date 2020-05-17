@@ -26,6 +26,7 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.RelationType
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.commands.MoveOrResizeCommand
+
 import static extension org.uqbar.project.wollok.ui.diagrams.dynamic.parts.DynamicDiagramUtils.*
 
 /**
@@ -66,17 +67,16 @@ abstract class AbstractStackFrameEditPart<T> extends AbstractGraphicalEditPart i
 	abstract def List<IVariable> getVariables()
 
 	override List<VariableModel> getModelChildren() {
-		val map = (this.variables.fold(newHashMap()) [ resultingMap, variable |
+		val mapVariables = (this.variables.fold(newHashMap()) [ resultingMap, variable |
 			val variableModel = VariableModel.getVariableModelFor(variable, 0)
 			resultingMap.put(variable, variableModel)
-			// root arrow
-			if (variable.shouldShowRootArrow(this.variables)) {
+			if (variable.shouldShowRootArrow(variables)) {
 				new Connection(variable.name, null, variableModel, RelationType.ASSOCIATION)
 			}
 			resultingMap
 		])
-		map.values.<VariableModel>clone.forEach[model|model.createConnections(map)]
-		map.values.toList
+		mapVariables.values.<VariableModel>clone.forEach[model|model.createConnections(mapVariables)]
+		mapVariables.values.toList
 	}
 
 	override propertyChange(PropertyChangeEvent evt) {

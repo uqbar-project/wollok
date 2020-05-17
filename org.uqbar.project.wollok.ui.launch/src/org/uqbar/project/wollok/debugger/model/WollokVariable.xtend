@@ -72,7 +72,7 @@ class WollokVariable extends WollokDebugElement implements IVariable {
 		this.toString.hashCode
 	}
 		
-	def shouldShowRootArrow(List<IVariable> variables) {
+	def shouldShowRootConnection(List<IVariable> variables) {
 		val finalValue = getActualValue(variables)
 		finalValue === null || !isGlobalReferenceToWKO(finalValue)
 	}

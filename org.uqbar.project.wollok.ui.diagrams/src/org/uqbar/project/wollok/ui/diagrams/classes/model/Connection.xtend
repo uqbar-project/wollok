@@ -4,6 +4,8 @@ import org.eclipse.draw2d.Graphics
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.ui.diagrams.Messages
+import org.uqbar.project.wollok.ui.diagrams.dynamic.DynamicDiagramView
+import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.VariableModel
 
 import static extension org.uqbar.project.wollok.utils.StringUtils.*
@@ -55,6 +57,11 @@ class Connection extends ModelElement {
 	def getLineStyle() {
 		lineStyle
 	}
+	
+	def lineWidth() {
+		if (DynamicDiagramConfiguration.instance.firstTimeRefreshView && !DynamicDiagramView.hadVariable(this.target)) 3 else 1
+	}
+	
 
 	override getPropertyDescriptors() {
 		descriptors
@@ -134,5 +141,5 @@ class Connection extends ModelElement {
 	def nameForPrinting() {
 		name.truncate(MAX_LABEL_FOR_PRINTING)
 	}
-	
+		
 }

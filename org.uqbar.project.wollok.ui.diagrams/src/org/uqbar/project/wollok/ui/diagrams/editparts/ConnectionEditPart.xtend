@@ -32,6 +32,7 @@ abstract class ConnectionEditPart extends AbstractConnectionEditPart implements 
 		super.createFigure as PolylineConnection => [
 			targetDecoration = createEdgeDecoration()
 			lineStyle = castedModel.lineStyle
+			lineWidth = castedModel.lineWidth
 			if (castedModel.name !== null)
 				add(new Label(castedModel.nameForPrinting) => [ opaque = true ], createConnectionLocator)
 		]
