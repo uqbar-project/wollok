@@ -70,6 +70,7 @@ import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.ValueEditPart
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.VariableModel
 import org.uqbar.project.wollok.ui.diagrams.editparts.ConnectionEditPart
 import org.uqbar.project.wollok.ui.launch.Activator
+import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.EffectTransitionAction
 
 /**
  * 
@@ -90,6 +91,7 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	// Toolbar - actions
 	RememberObjectPositionAction rememberAction
 	CleanAction cleanAction
+	EffectTransitionAction effectTransitionAction
 	ColorBlindAction colorBlindAction
 	ExportAction exportAction
 	IAction zoomIn
@@ -165,14 +167,16 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	def configureToolbar() {
 		getActionRegistry
 
+		colorBlindAction = new ColorBlindAction(this)
+
 		rememberAction = new RememberObjectPositionAction(this)
 		
 		cleanAction = new CleanAction => [
 			diagram = this
 		]
 		
-		colorBlindAction = new ColorBlindAction(this)
-
+		effectTransitionAction = new EffectTransitionAction(this)
+		
 		exportAction = new ExportAction => [
 			viewer = graphicalViewer
 		]
@@ -190,6 +194,7 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 			add(rememberAction)
 			add(new Separator)
 			add(cleanAction)
+			add(effectTransitionAction)
 			add(exportAction)
 			add(new Separator)
 		]

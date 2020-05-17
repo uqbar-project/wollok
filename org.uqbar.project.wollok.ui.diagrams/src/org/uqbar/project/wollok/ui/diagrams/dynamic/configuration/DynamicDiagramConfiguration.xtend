@@ -19,5 +19,5 @@ class DynamicDiagramConfiguration extends AbstractDiagramConfiguration {
 	boolean firstTimeRefreshView = false
 
 	boolean hasEffectTransition = true
-	int effectTransitionDelay = 500   // puede ser 250, 500, 1000, 2000
+	int effectTransitionDelay = 500   // TODO: configure 250, 500, 1000, 2000
 }

@@ -94,3 +94,34 @@ class RememberObjectPositionAction extends Action implements Observer {
 	}
 	
 }
+
+/**
+ * Defines whether diagram should show an animation when references change
+ */ 
+class EffectTransitionAction extends Action implements Observer {
+	
+	DynamicDiagramConfiguration configuration
+
+	new(DynamicDiagramView diagram) {
+		super(Messages.DynamicDiagram_EffectTransition_Description, AS_CHECK_BOX)
+		init
+	}
+	
+	def void init() {
+		toolTipText = Messages.DynamicDiagram_EffectTransition_Description
+		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/transition2.png")
+		this.configuration = DynamicDiagramConfiguration.instance
+		this.checked = configuration.hasEffectTransition
+	}
+	
+	override run() {
+		configuration.hasEffectTransition = !configuration.hasEffectTransition
+	}
+	
+	override update(Observable o, Object event) {
+		if (event !== null && event.equals(DynamicDiagramConfiguration.CONFIGURATION_CHANGED)) {
+			this.checked = configuration.hasEffectTransition
+		}
+	}
+	
+}
