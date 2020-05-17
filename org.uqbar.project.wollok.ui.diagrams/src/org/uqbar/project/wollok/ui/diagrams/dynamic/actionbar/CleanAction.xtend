@@ -55,7 +55,7 @@ class ColorBlindAction extends Action implements Observer {
 	
 	override run() {
 		configuration.colorBlindEnabled = !configuration.colorBlindEnabled
-		diagram.refreshView
+		diagram.refreshView(false)
 	}
 	
 	override update(Observable o, Object event) {

@@ -74,6 +74,7 @@ class WollokVariable extends WollokDebugElement implements IVariable {
 		
 	def shouldShowRootConnection(List<IVariable> variables) {
 		val finalValue = getActualValue(variables)
+		// es null 
 		finalValue === null || !isGlobalReferenceToWKO(finalValue)
 	}
 

@@ -466,12 +466,16 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	}
 	
 	def refreshView() {
+		this.refreshView(true)
+	}
+
+	def refreshView(boolean withEffectTransition) {
 		val configuration = DynamicDiagramConfiguration.instance
 		RunInUI.runInUI [
 			configuration.firstTimeRefreshView = configuration.hasEffectTransition
 			updateDynamicDiagram(this.currentVariables)
 		]
-		if (configuration.hasEffectTransition) {
+		if (configuration.hasEffectTransition && withEffectTransition) {
 			Thread.sleep(configuration.effectTransitionDelay)
 			RunInUI.runInUI [
 				configuration.firstTimeRefreshView = false
