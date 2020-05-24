@@ -48,12 +48,12 @@ abstract class AbstractStackFrameEditPart<T> extends AbstractGraphicalEditPart i
 	}
 	
 	override createFigure() {
-		new FreeformLayer => [ f |
-			f.border = new MarginBorder(3)
-			f.layoutManager = new FreeformLayout
+		new FreeformLayer => [
+			border = new MarginBorder(3)
+			layoutManager = new FreeformLayout
 
 			val connLayer = getLayer(LayerConstants.CONNECTION_LAYER) as ConnectionLayer
-			connLayer.connectionRouter = new ShortestPathConnectionRouter(f)
+			connLayer.connectionRouter = new ShortestPathConnectionRouter(it)
 		]
 	}
 

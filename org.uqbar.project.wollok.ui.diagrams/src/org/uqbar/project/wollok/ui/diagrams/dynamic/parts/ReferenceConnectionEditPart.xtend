@@ -1,11 +1,14 @@
 package org.uqbar.project.wollok.ui.diagrams.dynamic.parts
 
+import org.eclipse.draw2d.ManhattanConnectionRouter
 import org.eclipse.draw2d.PolygonDecoration
 import org.eclipse.draw2d.PolylineConnection
 import org.eclipse.draw2d.XYAnchor
 import org.eclipse.draw2d.geometry.Point
+import org.uqbar.project.wollok.ui.diagrams.classes.anchors.SelfReferenceConnectionAnchor
 import org.uqbar.project.wollok.ui.diagrams.editparts.ConnectionEditPart
 import org.uqbar.project.wollok.ui.diagrams.editparts.ReferenceLocator
+import org.uqbar.project.wollok.ui.diagrams.editparts.SelfReferenceLocator
 
 /**
  * 
@@ -19,12 +22,27 @@ class ReferenceConnectionEditPart extends ConnectionEditPart {
 	}
 	
 	override createConnectionLocator(PolylineConnection connection) {
-		new ReferenceLocator(connection)
+		if (castedModel.source === castedModel.target) new SelfReferenceLocator(connection) else new ReferenceLocator(connection)
 	}
 	
+	def nonRootConnection() {
+		this.source !== null || !(this.target instanceof ValueEditPart)
+	}
+
+	def selfReference() {
+		this.source !== null && this.source === this.target
+	}
+
 	override getSourceConnectionAnchor() {
-		if (source !== null || !(this.target instanceof ValueEditPart)) 
+		if (selfReference) {
+			this.connectionFigure.connectionRouter = new ManhattanConnectionRouter
+			return new SelfReferenceConnectionAnchor((this.target as ValueEditPart).figure)
+		}
+		
+		if (nonRootConnection) 
 			return super.sourceConnectionAnchor
+			
+		// Implementation for root connector
 		val object = (this.target as ValueEditPart).castedModel
 		var y = object.YValueForAnchor
 		try {
