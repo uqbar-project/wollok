@@ -63,6 +63,7 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.palette.CustomPalettePage
 import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.CleanAction
 import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.ColorBlindAction
+import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.EffectTransitionAction
 import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.RememberObjectPositionAction
 import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.DynamicDiagramEditPartFactory
@@ -70,7 +71,6 @@ import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.ValueEditPart
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.VariableModel
 import org.uqbar.project.wollok.ui.diagrams.editparts.ConnectionEditPart
 import org.uqbar.project.wollok.ui.launch.Activator
-import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.EffectTransitionAction
 
 /**
  * 
@@ -477,7 +477,9 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	def refreshView(boolean withEffectTransition) {
 		val configuration = DynamicDiagramConfiguration.instance
 		RunInUI.runInUI [
-			configuration.firstTimeRefreshView = configuration.hasEffectTransition
+			if (withEffectTransition) {
+				configuration.firstTimeRefreshView = configuration.hasEffectTransition
+			}
 			updateDynamicDiagram(this.currentVariables)
 		]
 		if (configuration.hasEffectTransition && withEffectTransition) {
