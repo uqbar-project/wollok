@@ -13,6 +13,7 @@ import static org.uqbar.project.wollok.sdk.WollokSDK.*
  * A variable within a stack execution.
  * 
  * @author jfernandes
+ * @author dodain        Refactored in order to avoid cyclic references
  */
 @Accessors
 class XDebugStackFrameVariable implements Serializable {

@@ -24,8 +24,6 @@ class CompositeEvaluationContext<O> implements EvaluationContext<O> {
 	}
 	
 	override allReferenceNames() {
-//		(if (outer instanceof WollokObject) #[THIS] else outer.allReferenceNames)
-//			+ inner.allReferenceNames 
 		outer.allReferenceNames + inner.allReferenceNames 
 	}
 
@@ -47,13 +45,13 @@ class CompositeEvaluationContext<O> implements EvaluationContext<O> {
 			outer.setReference(name, value)
 	}
 
-	override addReference(String variable, O value) {
-		inner.addReference(variable, value)
+	override addReference(String variable, O value, boolean constant) {
+		inner.addReference(variable, value, constant)
 		value
 	}
 	
-	override addGlobalReference(String name, O value) {
-		outer.addGlobalReference(name,value)
+	override addGlobalReference(String name, O value, boolean constant) {
+		outer.addGlobalReference(name, value, constant)
 	}
 	
 	override removeGlobalReference(String name) {

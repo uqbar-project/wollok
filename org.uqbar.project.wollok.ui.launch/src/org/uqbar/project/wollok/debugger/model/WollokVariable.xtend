@@ -95,5 +95,9 @@ class WollokVariable extends WollokDebugElement implements IVariable {
 	def dispatch isGlobalReferenceToWKO(IValue value) {
 		false
 	}
+		
+	def isConstantReference() {
+		adaptee.variable.constant
+	}
 
 }

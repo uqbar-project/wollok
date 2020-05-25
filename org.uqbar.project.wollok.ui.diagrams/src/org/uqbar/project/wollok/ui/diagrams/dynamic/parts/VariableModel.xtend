@@ -18,8 +18,7 @@ import org.uqbar.project.wollok.ui.diagrams.dynamic.DynamicDiagramView
 import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
 
 import static org.uqbar.project.wollok.sdk.WollokSDK.*
-
-import static extension org.uqbar.project.wollok.ui.diagrams.dynamic.parts.DynamicDiagramUtils.*
+import static extension org.uqbar.project.wollok.ui.utils.WollokDynamicDiagramUtils.*
 
 /**
  * 

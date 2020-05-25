@@ -25,7 +25,7 @@ abstract class XWollokCollectionDebugValue extends XDebugValue {
 		val result = newArrayList
 		val elements = collection.getElements(concreteNativeType)
 		elements.forEach [ element, i |
-			result.add(new XDebugStackFrameVariable(new WVariable(i.getVariableName(collection, concreteNativeType), System.identityHashCode(element), false), element))
+			result.add(new XDebugStackFrameVariable(new WVariable(i.getVariableName(collection, concreteNativeType), System.identityHashCode(element), false, true), element))
 		]
 		variables = newArrayList(result)
 	}

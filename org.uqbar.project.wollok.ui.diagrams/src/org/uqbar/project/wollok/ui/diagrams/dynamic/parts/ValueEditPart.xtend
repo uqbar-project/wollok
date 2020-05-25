@@ -22,6 +22,8 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.view.DiagramColors
 import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
 
+import static extension org.uqbar.project.wollok.ui.utils.WollokDynamicDiagramUtils.*
+
 /**
  * 
  * @author jfernandes
@@ -126,4 +128,7 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 	
 	def getBounds(Shape it) { new Rectangle(location, size) }
 
+	def isConstantReference() {
+		castedModel.variable.isConstant
+	}
 }

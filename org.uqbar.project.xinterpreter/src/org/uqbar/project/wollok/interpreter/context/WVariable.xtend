@@ -12,11 +12,13 @@ class WVariable implements Serializable {
 	String name
 	Integer id
 	boolean local
+	boolean constant
 	
-	new(String name, Integer id, boolean local) {
+	new(String name, Integer id, boolean local, boolean constant) {
 		this.name = name
 		this.local = local
 		this.id = id
+		this.constant = constant
 	}
 	
 	override toString() {

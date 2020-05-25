@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.ui.diagrams.editparts
 
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
+import java.net.URL
 import org.eclipse.draw2d.ConnectionLocator
 import org.eclipse.draw2d.Label
 import org.eclipse.draw2d.MidpointLocator
@@ -10,7 +11,10 @@ import org.eclipse.draw2d.RotatableDecoration
 import org.eclipse.gef.EditPolicy
 import org.eclipse.gef.editparts.AbstractConnectionEditPart
 import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy
+import org.eclipse.jface.resource.ImageDescriptor
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
+
+import static extension org.uqbar.project.wollok.ui.utils.WollokDynamicDiagramUtils.*
 
 /**
  * @author jfernandes
@@ -34,7 +38,14 @@ abstract class ConnectionEditPart extends AbstractConnectionEditPart implements 
 			lineStyle = castedModel.lineStyle
 			lineWidth = castedModel.lineWidth
 			if (castedModel.name !== null) {
-				add(new Label(castedModel.nameForPrinting) => [ 
+				var Label label
+				if (target !== null && target.isConstant) {
+					val image = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.jdt.debug.ui/icons/full/elcl16/deadlock_view.gif")).createImage
+					label = new Label(castedModel.nameForPrinting, image)
+				} else {
+					label = new Label(castedModel.nameForPrinting)
+				}
+				add(label => [ 
 					opaque = true
 				], createConnectionLocator)
 			}

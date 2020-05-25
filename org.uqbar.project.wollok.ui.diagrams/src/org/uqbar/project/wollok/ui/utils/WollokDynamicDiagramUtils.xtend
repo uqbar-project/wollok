@@ -1,10 +1,12 @@
-package org.uqbar.project.wollok.ui.diagrams.dynamic.parts
+package org.uqbar.project.wollok.ui.utils
 
 import java.util.List
 import org.eclipse.debug.core.model.IVariable
+import org.eclipse.gef.EditPart
 import org.uqbar.project.wollok.debugger.model.WollokVariable
+import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.ValueEditPart
 
-class DynamicDiagramUtils {
+class WollokDynamicDiagramUtils {
 	public static int WIDTH_SIZE = 140
 	public static int WIDTH_MARGIN = 100
 	public static int MIN_WIDTH = 25
@@ -44,4 +46,13 @@ class DynamicDiagramUtils {
 		]
 	}
 
+	static def dispatch boolean isConstant(WollokVariable variable) {
+		variable.isConstantReference
+	}
+	
+	static def dispatch boolean isConstant(IVariable variable) { false }
+
+	static def dispatch boolean isConstant(ValueEditPart part) { part.isConstantReference }
+	
+	static def dispatch boolean isConstant(EditPart part) { false }
 }
