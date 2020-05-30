@@ -93,7 +93,8 @@ class VariableModel extends Shape {
 	def void calculateInitialLocation(int level) {
 		val manualValue = configuration.getLocation(this)
 		if (manualValue === null) {
-			val originalLocation = new Point(WIDTH_MARGIN + level * WIDTH_SIZE, shapeHeightHandler.getHeight(this))
+			val lastWidthSize = Math.max(WIDTH_SIZE, shapeHeightHandler.maxWidth + WIDTH_MARGIN)
+			val originalLocation = new Point(WIDTH_MARGIN + level * lastWidthSize, shapeHeightHandler.getHeight(this))
 			this.location = originalLocation
 		} else {
 			this.location = manualValue
@@ -105,9 +106,9 @@ class VariableModel extends Shape {
 		if (manualValue !== null) return manualValue
 
 		if (isNumeric)
-			new Dimension(50, DEFAULT_HEIGHT)
+			new Dimension(MIN_WIDTH, DEFAULT_HEIGHT)
 		else if (isCollection)
-			new Dimension(50, 30)
+			new Dimension(MIN_WIDTH, 30)
 		else {
 			val size = Math.max(Math.min(valueString.length * LETTER_WIDTH, MAX_ELEMENT_WIDTH), MIN_WIDTH)
 			new Dimension(size, Math.min(size, DEFAULT_HEIGHT))
@@ -181,7 +182,6 @@ class VariableModel extends Shape {
 		variable.value.referenceTypeName	
 	}
 	
-	@Deprecated
 	def moveCloseTo(Shape shape) {
 		// a random value in [0, 2PI] for the angle in radians
 		val angle = new Random().nextFloat() * 2 * Math.PI 
@@ -212,7 +212,7 @@ class VariableModel extends Shape {
 	}
 	
 	def int y() {
-		this.bounds.top.y
+		location.y
 	}
 
 	def int getYValueForAnchor() {
@@ -301,6 +301,10 @@ class ShapeHeightHandler {
 		if (level === 0) {
 			rootVariables.add(variableModel)
 		}
+	}
+	
+	def maxWidth() {
+		allVariables.values.map [ size.width ].max
 	}
 
 }
