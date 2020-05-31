@@ -5,6 +5,7 @@ import org.eclipse.debug.core.model.IVariable
 import org.eclipse.gef.EditPart
 import org.uqbar.project.wollok.debugger.model.WollokVariable
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.ValueEditPart
+import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
 
 class WollokDynamicDiagramUtils {
 	public static int WIDTH_SIZE = 150
@@ -31,7 +32,7 @@ class WollokDynamicDiagramUtils {
 	}
 
 	static def dispatch shouldShowRootArrow(WollokVariable variable, List<IVariable> variables) {
-		variable.shouldShowRootConnection(variables)
+		!DynamicDiagramConfiguration.instance.shouldHide(variable) && variable.shouldShowRootConnection(variables)
 	}
 	
 	static def dispatch shouldShowRootArrow(IVariable variable, List<IVariable> variables) {

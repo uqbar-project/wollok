@@ -117,7 +117,12 @@ class VariableModel extends Shape {
 	
 	def void createConnections(Map<IVariable, VariableModel> context) {
 		if (variable === null || variable.value === null || variable.value.variables === null) return;
-		val allVariables = variable.value.variables.toList
+		val allVariables = variable
+			.value
+			.variables
+			.filter [ !DynamicDiagramConfiguration.instance.shouldHide(it) ]
+			.toList
+
 		val sameReferences = newHashMap
 		allVariables.forEach [ variable |
 			val destination = get(context, variable)
@@ -225,6 +230,10 @@ class VariableModel extends Shape {
 		} else {
 			super.getBounds()
 		}
+	}
+		
+	def canBeHidden() {
+		this.variable.value !== null
 	}
 	
 }

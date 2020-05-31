@@ -61,10 +61,12 @@ import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ExportAction
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.palette.CustomPalettePage
-import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.CleanAction
 import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.ColorBlindAction
+import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.DeleteObjectAction
+import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.DynamicDiagramEditorContextMenuProvider
 import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.EffectTransitionAction
 import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.RememberObjectPositionAction
+import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.ShowHiddenObjectsAction
 import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.DynamicDiagramEditPartFactory
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.ValueEditPart
@@ -90,7 +92,7 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 
 	// Toolbar - actions
 	RememberObjectPositionAction rememberAction
-	CleanAction cleanAction
+	ShowHiddenObjectsAction showHiddenObjectsAction
 	EffectTransitionAction effectTransitionAction
 	ColorBlindAction colorBlindAction
 	ExportAction exportAction
@@ -107,12 +109,13 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 
 	List<XDebugStackFrameVariable> currentVariables = newArrayList
 
+	DynamicDiagramConfiguration configuration = DynamicDiagramConfiguration.instance
+
 	public static Map<String, XDebugStackFrameVariable> variableValues = newHashMap
 	public static Map<String, XDebugStackFrameVariable> oldVariableValues = newHashMap
 
 	new() {
 		editDomain = new DefaultEditDomain(null)
-//		editDomain.paletteRoot = ClassDiagramPaletterFactory.create
 	}
 
 	override init(IViewSite site) throws PartInitException {
@@ -168,15 +171,9 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 		getActionRegistry
 
 		colorBlindAction = new ColorBlindAction(this)
-
 		rememberAction = new RememberObjectPositionAction(this)
-		
-		cleanAction = new CleanAction => [
-			diagram = this
-		]
-		
+		showHiddenObjectsAction = new ShowHiddenObjectsAction(this)
 		effectTransitionAction = new EffectTransitionAction(this)
-		
 		exportAction = new ExportAction => [
 			viewer = graphicalViewer
 		]
@@ -193,7 +190,7 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 			add(new Separator)
 			add(rememberAction)
 			add(new Separator)
-			add(cleanAction)
+			add(showHiddenObjectsAction)
 			add(effectTransitionAction)
 			add(exportAction)
 			add(new Separator)
@@ -215,11 +212,15 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	}
 
 	def configureGraphicalViewer() {
-		graphicalViewer.control.background = ColorConstants.listBackground
+		graphicalViewer => [
+			control.background = ColorConstants.listBackground
+			editPartFactory = new DynamicDiagramEditPartFactory
+			rootEditPart = new ScalableFreeformRootEditPart
+			keyHandler = new GraphicalViewerKeyHandler(it)
 
-		graphicalViewer.editPartFactory = new DynamicDiagramEditPartFactory
-		graphicalViewer.rootEditPart = new ScalableFreeformRootEditPart
-		graphicalViewer.keyHandler = new GraphicalViewerKeyHandler(graphicalViewer)
+			val cmProvider = new DynamicDiagramEditorContextMenuProvider(it, getActionRegistry)
+			contextMenu = cmProvider
+		]
 	}
 
 	def hookGraphicalViewer() {
@@ -237,7 +238,9 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	def setGraphicalViewer(GraphicalViewer viewer) {
 		editDomain.addViewer(viewer)
 		graphicalViewer = viewer
-//		graphicalViewer.addSelectionChangedListener(this)
+		graphicalViewer => [
+			addSelectionChangedListener(this)
+		]
 	}
 
 	override setFocus() {
@@ -247,6 +250,9 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	def getActionRegistry() {
 		if (actionRegistry === null) {
 			actionRegistry = new ActionRegistry => [
+				// Contextual menu for objects
+				registerAction(new DeleteObjectAction(this, graphicalViewer, configuration))
+				
 				// Adding zoom capabilities
 				val zoomManager = (graphicalViewer.rootEditPart as ScalableFreeformRootEditPart).zoomManager
 				zoomManager.setZoomLevelContributions(#[
@@ -420,13 +426,6 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 
 	def getNewModels() { childrenEditParts.map[ep|ep.model as VariableModel] }
 
-	def relocateSolitaryNodes(List<VariableModel> models) {
-		/*val nodesReferencedByJustOne = models.filter[m|m.targetConnections.size == 1]
-		 * nodesReferencedByJustOne.forEach [ m |
-		 * 	m.moveCloseTo(m.targetConnections.get(0).source)
-		 ]*/
-	}
-
 	override stateChanged(List<XDebugStackFrameVariable> variables) {
 		if (splitter.disposed) {
 			return
@@ -443,27 +442,9 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	def void updateDynamicDiagram(Object variables) {
 		VariableModel.initVariableShapes
 
-		// backup nodes positions
-		/*val oldRootPart = graphicalViewer.contents as AbstractStackFrameEditPart<?>
-		 * val map = new HashMap<String, Shape>()
-		 * if (oldRootPart !== null) {
-		 * 	oldRootPart.children.<ValueEditPart>forEach [ it |
-		 * 		map.put((it.model as VariableModel).valueString, it.model as Shape)
-		 * 	]
-		 }*/
 		// set new stack
 		graphicalViewer.contents = variables
-
 		layout()
-
-	// recover old positions
-	/*val newModels = newModels
-	 * val alreadyDisplaying = newModels.filter[map.containsKey(valueString)].toList
-	 * alreadyDisplaying.forEach [ vm |
-	 * 	val oldShape = map.get(vm.valueString)
-	 * 	vm.location = oldShape.location
-	 * 	vm.size = oldShape.size
-	 ]*/
 	}
 	
 	def cleanDiagram() {
@@ -473,9 +454,8 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	def refreshView() {
 		this.refreshView(true)
 	}
-
+	
 	def refreshView(boolean withEffectTransition) {
-		val configuration = DynamicDiagramConfiguration.instance
 		RunInUI.runInUI [
 			if (withEffectTransition) {
 				configuration.firstTimeRefreshView = configuration.hasEffectTransition
@@ -487,7 +467,7 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 			RunInUI.runInUI [
 				configuration.firstTimeRefreshView = false
 				updateDynamicDiagram(this.currentVariables)
-			]		
+			]
 		}
 	}
 		

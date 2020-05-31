@@ -131,4 +131,9 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 	def isConstantReference() {
 		castedModel.variable.isConstant
 	}
+		
+	def canBeHidden() {
+		castedModel.canBeHidden
+	}
+		
 }

@@ -13,28 +13,6 @@ import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagram
 /**
  * Clean dynamic diagram
  */ 
-class CleanAction extends Action {
-	
-	@Accessors DynamicDiagramView diagram
-	
-	new() {
-		init
-	}
-	
-	def void init() {
-		toolTipText = Messages.DynamicDiagram_Clean_Description
-		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/eraser.png")	
-	}
-	
-	override run() {
-		diagram.cleanDiagram()
-	}
-	
-}
-
-/**
- * Clean dynamic diagram
- */ 
 class ColorBlindAction extends Action implements Observer {
 	
 	DynamicDiagramConfiguration configuration
@@ -122,6 +100,32 @@ class EffectTransitionAction extends Action implements Observer {
 		if (event !== null && event.equals(DynamicDiagramConfiguration.CONFIGURATION_CHANGED)) {
 			this.checked = configuration.hasEffectTransition
 		}
+	}
+	
+}
+
+/**
+ * Show hidden objects from the diagram
+ */ 
+class ShowHiddenObjectsAction extends Action {
+	
+	@Accessors DynamicDiagramView diagram
+	DynamicDiagramConfiguration configuration
+	
+	new(DynamicDiagramView diagram) {
+		this.diagram = diagram
+		init
+	}
+	
+	def void init() {
+		configuration = DynamicDiagramConfiguration.instance
+		toolTipText = Messages.DynamicDiagram_ShowHiddenObjects_Description
+		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/show-hidden-objects.png")	
+	}
+	
+	override run() {
+		configuration.resetHiddenObjects
+		diagram.refreshView(false)
 	}
 	
 }

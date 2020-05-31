@@ -29,6 +29,7 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.commands.MoveOrResizeCommand
 
 import static extension org.uqbar.project.wollok.ui.utils.WollokDynamicDiagramUtils.*
+import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
 
 /**
  * 
@@ -114,7 +115,11 @@ class StackFrameEditPart extends AbstractStackFrameEditPart<IStackFrame> impleme
  */
 class VariablesEditPart extends AbstractStackFrameEditPart<List<XDebugStackFrameVariable>> implements PropertyChangeListener {
 
-	override getModelElement() { model as List<XDebugStackFrameVariable> }
+	DynamicDiagramConfiguration configuration = DynamicDiagramConfiguration.instance
+	
+	override getModelElement() { 
+		(model as List<XDebugStackFrameVariable>).filter [ !configuration.shouldHide(it) ].toList
+	}
 	
 	override getVariables() {
 		modelElement.map [ new WollokVariable(null, it) ]
