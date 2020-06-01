@@ -22,7 +22,7 @@ class WVariable implements Serializable {
 	}
 	
 	override toString() {
-		(this.name ?: "") + (if (id === null) "" else " (" + id + ")")
+		(this.name ?: "") + (if (id === null) "" else " (" + id + ")" + (if (constant) " - constant" else ""))
 	}
 	
 	override equals(Object obj) {

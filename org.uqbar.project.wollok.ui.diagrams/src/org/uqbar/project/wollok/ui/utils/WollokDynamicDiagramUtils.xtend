@@ -2,10 +2,11 @@ package org.uqbar.project.wollok.ui.utils
 
 import java.util.List
 import org.eclipse.debug.core.model.IVariable
-import org.eclipse.gef.EditPart
 import org.uqbar.project.wollok.debugger.model.WollokVariable
-import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.ValueEditPart
+import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
+import org.uqbar.project.wollok.ui.diagrams.dynamic.DynamicDiagramView
 import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
+import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.VariableModel
 
 class WollokDynamicDiagramUtils {
 	public static int WIDTH_SIZE = 150
@@ -54,7 +55,16 @@ class WollokDynamicDiagramUtils {
 	
 	static def dispatch boolean isConstant(IVariable variable) { false }
 
-	static def dispatch boolean isConstant(ValueEditPart part) { part.isConstantReference }
-	
-	static def dispatch boolean isConstant(EditPart part) { false }
+	static def dispatch boolean isConstant(VariableModel variableModel, String name) {
+		if (variableModel.variable === null) return false
+		val allVariables = DynamicDiagramView.variableValues
+		val originalReference = allVariables.get(variableModel.variable.toString)
+		if (originalReference === null) false else {
+			val attributes = originalReference.value.variables
+			val selectedAttribute = attributes.findFirst [ variable.name.equals(name) ]			
+			selectedAttribute.variable.constant
+		}
+	}
+
+	static def dispatch boolean isConstant(Shape shape, String name) { false }
 }

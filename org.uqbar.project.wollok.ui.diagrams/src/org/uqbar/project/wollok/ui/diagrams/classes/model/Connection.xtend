@@ -58,7 +58,7 @@ class Connection extends ModelElement {
 		lineStyle
 	}
 	
-	def lineWidth() {
+	def int lineWidth() {
 		if (DynamicDiagramConfiguration.instance.firstTimeRefreshView && !DynamicDiagramView.hadVariable(this.target)) 3 else 1
 	}
 	

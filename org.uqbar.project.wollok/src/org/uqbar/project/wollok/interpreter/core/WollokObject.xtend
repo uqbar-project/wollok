@@ -63,7 +63,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 
 	def void addMember(WVariableDeclaration declaration, boolean initializeIt) {
 		val variableName = declaration.variable.name
-		instanceVariables.put(declaration.variable.name, interpreter.performOnStack(declaration, this) [|
+		instanceVariables.put(variableName, interpreter.performOnStack(declaration, this) [|
 			if (initializeIt) declaration.right?.eval else null
 		])
 		if (!declaration.writeable) {

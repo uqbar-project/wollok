@@ -38,7 +38,7 @@ class VariableModel extends Shape {
 	/** 
 	 * All shapes by variable name 
 	 */
-	static Map<String, VariableModel> allVariables = new HashMap()
+	public static Map<String, VariableModel> allVariables = new HashMap()
 	
 	IVariable variable
 	int level
@@ -235,7 +235,7 @@ class VariableModel extends Shape {
 	def canBeHidden() {
 		this.variable.value !== null
 	}
-	
+		
 }
 
 class ShapeHeightHandler {
