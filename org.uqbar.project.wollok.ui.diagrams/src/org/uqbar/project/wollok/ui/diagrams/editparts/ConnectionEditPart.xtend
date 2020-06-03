@@ -13,6 +13,8 @@ import org.eclipse.gef.editparts.AbstractConnectionEditPart
 import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy
 import org.eclipse.jface.resource.ImageDescriptor
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
+import org.uqbar.project.wollok.ui.diagrams.dynamic.DynamicDiagramView
+import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.VariableModel
 
 import static extension org.uqbar.project.wollok.ui.utils.WollokDynamicDiagramUtils.*
 
@@ -39,7 +41,7 @@ abstract class ConnectionEditPart extends AbstractConnectionEditPart implements 
 			lineWidth = castedModel.lineWidth
 			if (castedModel.name !== null) {
 				var Label label
-				if (castedModel.source !== null && castedModel.source.isConstant(castedModel.name)) {
+				if (castedModel.isConstant) {
 					val image = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.jdt.debug.ui/icons/full/elcl16/deadlock_view.gif")).createImage
 					label = new Label(castedModel.nameForPrinting, image)
 				} else {
@@ -51,7 +53,16 @@ abstract class ConnectionEditPart extends AbstractConnectionEditPart implements 
 			}
 		]
 	}
-		
+
+	def isConstant(Connection connection) {
+		if (castedModel.source !== null) 
+			castedModel.source.isConstant(castedModel.name)
+		else {
+			val variableModel = DynamicDiagramView.currentVariables.findFirst [ name === castedModel.name && variable.id.toString.equals((castedModel.target as VariableModel).variable.toString) ]
+			variableModel.variable.constant
+		}
+	}
+
 	def ConnectionLocator createConnectionLocator(PolylineConnection connection) {
 		new MidpointLocator(connection, 0)
 	}

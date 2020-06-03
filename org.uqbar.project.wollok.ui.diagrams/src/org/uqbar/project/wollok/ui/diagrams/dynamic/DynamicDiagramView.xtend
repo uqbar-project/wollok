@@ -107,7 +107,7 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	CustomPalettePage page
 	PaletteViewerProvider provider
 
-	List<XDebugStackFrameVariable> currentVariables = newArrayList
+	public static List<XDebugStackFrameVariable> currentVariables = newArrayList
 
 	DynamicDiagramConfiguration configuration = DynamicDiagramConfiguration.instance
 
@@ -433,7 +433,7 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 		oldVariableValues = new HashMap(variableValues)
 		variableValues = newHashMap
 		variables.forEach [ variable | variable.collectValues(variableValues) ]
-		this.currentVariables = variables
+		currentVariables = variables
 			.filter [ isCustom ]
 			.toList
 		this.refreshView
@@ -460,13 +460,13 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 			if (withEffectTransition) {
 				configuration.firstTimeRefreshView = configuration.hasEffectTransition
 			}
-			updateDynamicDiagram(this.currentVariables)
+			updateDynamicDiagram(currentVariables)
 		]
 		if (configuration.hasEffectTransition && withEffectTransition) {
 			Thread.sleep(configuration.effectTransitionDelay)
 			RunInUI.runInUI [
 				configuration.firstTimeRefreshView = false
-				updateDynamicDiagram(this.currentVariables)
+				updateDynamicDiagram(currentVariables)
 			]
 		}
 	}

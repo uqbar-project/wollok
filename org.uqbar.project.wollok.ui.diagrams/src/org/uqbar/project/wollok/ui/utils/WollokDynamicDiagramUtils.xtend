@@ -65,6 +65,7 @@ class WollokDynamicDiagramUtils {
 			selectedAttribute.variable.constant
 		}
 	}
-
+	
 	static def dispatch boolean isConstant(Shape shape, String name) { false }
+	
 }
