@@ -87,7 +87,6 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	ActionRegistry actionRegistry
 
 	StaticDiagram diagram
-
 	IViewSite site
 
 	// Toolbar - actions
@@ -107,10 +106,9 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	CustomPalettePage page
 	PaletteViewerProvider provider
 
-	public static List<XDebugStackFrameVariable> currentVariables = newArrayList
-
 	DynamicDiagramConfiguration configuration = DynamicDiagramConfiguration.instance
 
+	public static List<XDebugStackFrameVariable> currentVariables = newArrayList
 	public static Map<String, XDebugStackFrameVariable> variableValues = newHashMap
 	public static Map<String, XDebugStackFrameVariable> oldVariableValues = newHashMap
 

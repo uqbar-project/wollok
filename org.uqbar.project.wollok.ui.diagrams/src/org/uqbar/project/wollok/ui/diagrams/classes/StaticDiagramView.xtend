@@ -115,9 +115,14 @@ import org.eclipse.core.runtime.Platform
  * 
  */
 class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceViewerAware, IPartListener, ISelectionProvider, ISelectionChangedListener, IDocumentListener, Observer {
+
+	// Common
 	DefaultEditDomain editDomain
 	GraphicalViewer graphicalViewer
 	SelectionSynchronizer synchronizer
+	ActionRegistry actionRegistry
+	// Common
+
 	IXtextDocument xtextDocument
 	StaticDiagram diagram
 	IViewSite site
@@ -127,7 +132,6 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	CustomPalettePage page
 	PaletteViewerProvider provider
 
-	ActionRegistry actionRegistry
 
 	// Toolbar - actions
 	ExportAction exportAction

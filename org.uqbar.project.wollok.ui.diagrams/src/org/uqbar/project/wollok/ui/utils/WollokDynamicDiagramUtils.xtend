@@ -61,8 +61,8 @@ class WollokDynamicDiagramUtils {
 		val originalReference = allVariables.get(variableModel.variable.toString)
 		if (originalReference === null) false else {
 			val attributes = originalReference.value.variables
-			val selectedAttribute = attributes.findFirst [ variable.name.equals(name) ]			
-			selectedAttribute.variable.constant
+			val selectedAttribute = attributes.findFirst [ variable.name.equals(name) ]
+			if (selectedAttribute === null) false else selectedAttribute.variable.constant
 		}
 	}
 	
