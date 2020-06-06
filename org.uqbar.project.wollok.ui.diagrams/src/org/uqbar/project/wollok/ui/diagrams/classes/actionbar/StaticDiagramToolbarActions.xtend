@@ -135,7 +135,7 @@ class ShowVariablesToggleButton extends Action implements Observer {
 		this.configuration = configuration
 		this.configuration.addObserver(this)
 		this.checked = configuration.showVariables
-		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/wollok-icon-variable_16.png")
+		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/show-variables-3.png")
 	}
 
 	override run() {
@@ -161,8 +161,10 @@ class RememberShapePositionsToggleButton extends Action implements Observer {
 		this.configuration = configuration
 		this.configuration.addObserver(this)
 		this.checked = configuration.isRememberLocationsAndSizes
-		imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.debug.ui/icons/full/elcl16/pin.png"))
+		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/remember-position.png")
 	}
+	
+	
 
 	override run() {
 		configuration.rememberLocationAndSizeShapes = !configuration.isRememberLocationsAndSizes
