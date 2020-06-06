@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.ui.diagrams.classes
 
-import java.util.ArrayList
 import java.util.Comparator
 import java.util.List
 import java.util.Map
@@ -9,7 +8,6 @@ import java.util.Observer
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.Status
-import org.eclipse.draw2d.ColorConstants
 import org.eclipse.draw2d.IFigure
 import org.eclipse.draw2d.PositionConstants
 import org.eclipse.draw2d.graph.DirectedGraph
@@ -27,42 +25,25 @@ import org.eclipse.gef.editparts.ScalableFreeformRootEditPart
 import org.eclipse.gef.editparts.ZoomManager
 import org.eclipse.gef.ui.actions.ActionRegistry
 import org.eclipse.gef.ui.actions.ZoomComboContributionItem
-import org.eclipse.gef.ui.actions.ZoomInAction
-import org.eclipse.gef.ui.actions.ZoomOutAction
-import org.eclipse.gef.ui.palette.FlyoutPaletteComposite
-import org.eclipse.gef.ui.palette.PaletteViewerProvider
-import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler
-import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer
-import org.eclipse.gef.ui.parts.SelectionSynchronizer
 import org.eclipse.gef.ui.properties.UndoablePropertySheetPage
 import org.eclipse.gef.ui.views.palette.PalettePage
-import org.eclipse.jface.action.IAction
 import org.eclipse.jface.action.Separator
 import org.eclipse.jface.text.DocumentEvent
 import org.eclipse.jface.text.IDocumentListener
 import org.eclipse.jface.text.source.ISourceViewer
 import org.eclipse.jface.viewers.ISelection
-import org.eclipse.jface.viewers.ISelectionChangedListener
-import org.eclipse.jface.viewers.ISelectionProvider
 import org.eclipse.jface.viewers.SelectionChangedEvent
 import org.eclipse.jface.viewers.StructuredSelection
-import org.eclipse.swt.SWT
-import org.eclipse.swt.widgets.Composite
-import org.eclipse.ui.IPartListener
-import org.eclipse.ui.ISelectionListener
-import org.eclipse.ui.IViewSite
 import org.eclipse.ui.IWorkbenchPart
-import org.eclipse.ui.PartInitException
 import org.eclipse.ui.actions.ActionFactory
-import org.eclipse.ui.part.ViewPart
 import org.eclipse.ui.progress.UIJob
 import org.eclipse.ui.views.properties.IPropertySheetPage
-import org.eclipse.xtext.ui.editor.ISourceViewerAware
 import org.eclipse.xtext.ui.editor.XtextEditor
 import org.eclipse.xtext.ui.editor.model.IXtextDocument
 import org.eclipse.xtext.ui.editor.model.XtextDocumentUtil
 import org.eclipse.xtext.ui.editor.outline.impl.EObjectNode
 import org.uqbar.project.wollok.ui.WollokActivator
+import org.uqbar.project.wollok.ui.diagrams.AbstractDiagramView
 import org.uqbar.project.wollok.ui.diagrams.Messages
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.AddOutsiderClass
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.CleanAllRelashionshipsAction
@@ -95,10 +76,6 @@ import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.eclipse.ui.handlers.IHandlerService
-import org.eclipse.jface.commands.ActionHandler
-import org.uqbar.project.wollok.ui.diagrams.dynamic.WollokFlyoutPreferences
-import org.eclipse.core.runtime.Platform
 
 /**
  * 
@@ -114,52 +91,22 @@ import org.eclipse.core.runtime.Platform
  * @author dodain
  * 
  */
-class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceViewerAware, IPartListener, ISelectionProvider, ISelectionChangedListener, IDocumentListener, Observer {
-
-	// Common
-	DefaultEditDomain editDomain
-	GraphicalViewer graphicalViewer
-	SelectionSynchronizer synchronizer
-	ActionRegistry actionRegistry
-	// Common
+class StaticDiagramView extends AbstractDiagramView implements IDocumentListener, Observer {
 
 	IXtextDocument xtextDocument
-	StaticDiagram diagram
-	IViewSite site
-
-	// splitter and palette
-	FlyoutPaletteComposite splitter
-	CustomPalettePage page
-	PaletteViewerProvider provider
-
 
 	// Toolbar - actions
 	ExportAction exportAction
-	IAction zoomIn
-	IAction zoomOut
 
 	// Static diagram state and configuration
 	StaticDiagramConfiguration configuration
 
-	// @Inject WollokClassFinder finder
 	new() {
 		editDomain = new DefaultEditDomain(null)
 		editDomain.paletteRoot = StaticDiagramPaletterFactory.create
 		configuration = new StaticDiagramConfiguration
 		configuration.addObserver(this)
 		Shape.useConfiguration(configuration)
-	}
-
-	override init(IViewSite site) throws PartInitException {
-		super.init(site)
-		this.site = site
-		// listen for selection
-		site.workbenchWindow.selectionService.addSelectionListener(this)
-		site.workbenchWindow.activePage.addPartListener(this)
-	}
-
-	def getAction(String actionId) {
-		actionRegistry.getAction(actionId)
 	}
 
 	def createDiagramModel() {
@@ -172,7 +119,6 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 		}
 
 		new StaticDiagram(configuration, xtextDocument.readOnly[allElements].toList) => [
-
 			// all objects
 			val objects = xtextDocument.readOnly[namedObjects]
 
@@ -246,41 +192,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 		] as Comparator<WMethodContainer>
 	}
 
-	override createPartControl(Composite parent) {
-		splitter = new FlyoutPaletteComposite(parent, SWT.NONE, site.page, paletteViewerProvider, palettePreferences)
-		createViewer(splitter)
-
-		splitter.graphicalControl = graphicalViewer.control
-		if (page !== null) {
-			splitter.externalViewer = page.getPaletteViewer
-			page = null
-		}
-
-		// Create toolbar		
-		configureToolbar
-
-		// set initial content based on active editor (if any)
-		partBroughtToTop(site.page.activeEditor)
-
-		// we provide selection
-		site.selectionProvider = this
-	}
-
-	def createViewer(Composite parent) {
-		val viewer = new ScrollingGraphicalViewer
-		viewer.createControl(parent)
-
-		setGraphicalViewer(viewer)
-
-		configureGraphicalViewer
-		hookGraphicalViewer
-		initializeGraphicalViewer
-
-		// provides selection
-		site.selectionProvider = graphicalViewer
-	}
-
-	def configureToolbar() {
+	override configureToolbar() {
 		exportAction = new ExportAction => [
 			viewer = graphicalViewer
 		]
@@ -320,32 +232,13 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 		]
 	}
 
-	def configureGraphicalViewer() {
-		graphicalViewer.control.background = ColorConstants.listBackground
+	override shouldRegisterContextMenu() { true }
 
-		graphicalViewer.editPartFactory = new StaticDiagramEditPartFactory
-		graphicalViewer.rootEditPart = new ScalableFreeformRootEditPart
-		graphicalViewer.keyHandler = new GraphicalViewerKeyHandler(graphicalViewer)
-
-		// configure the context menu provider
-		val cmProvider = new StaticDiagramEditorContextMenuProvider(graphicalViewer, getActionRegistry)
-		graphicalViewer.contextMenu = cmProvider
-		site.registerContextMenu(cmProvider, graphicalViewer)
+	override getContextMenuProvider(GraphicalViewer graphicalViewer, ActionRegistry actionRegistry) {
+		new StaticDiagramEditorContextMenuProvider(graphicalViewer, getActionRegistry)
 	}
 
-	def hookGraphicalViewer() {
-		selectionSynchronizer.addViewer(graphicalViewer)
-		site.selectionProvider = graphicalViewer
-	}
-
-	def initializeGraphicalViewer() {
-		if (model !== null) {
-			graphicalViewer.contents = model
-			layout
-		}
-	}
-
-	def layout() {
+	override layout() {
 		// create graph
 		val graph = new DirectedGraph
 		graph.direction = PositionConstants.SOUTH
@@ -383,48 +276,13 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 		(graphicalViewer.rootEditPart.children.get(0) as EditPart).children.filter(t)
 	}
 
-	def setGraphicalViewer(GraphicalViewer viewer) {
-		editDomain.addViewer(viewer)
-		graphicalViewer = viewer
-		graphicalViewer => [
-			addSelectionChangedListener(this)
-		]
+	override doGetActionRegistry(ActionRegistry actionRegistry) {
+		// Contextual menu for objects
+		actionRegistry.registerAction(new DeleteElementAction(this, graphicalViewer, configuration))
+		actionRegistry.registerAction(new ShowHiddenPartsElementAction(this, graphicalViewer, configuration))
 	}
 
-	override setFocus() {
-		graphicalViewer.control.setFocus
-	}
-
-	def getActionRegistry() {
-		if (actionRegistry === null)
-			actionRegistry = new ActionRegistry => [
-				registerAction(new DeleteElementAction(this, graphicalViewer, configuration))
-				registerAction(new ShowHiddenPartsElementAction(this, graphicalViewer, configuration))
-				// Adding zoom capabilities
-				val zoomManager = (graphicalViewer.rootEditPart as ScalableFreeformRootEditPart).zoomManager
-				zoomManager.setZoomLevelContributions(#[
-					ZoomManager.FIT_ALL,
-					ZoomManager.FIT_WIDTH,
-					ZoomManager.FIT_HEIGHT
-				])
-				zoomIn = new ZoomInAction(zoomManager)
-				zoomOut = new ZoomOutAction(zoomManager)
-				registerAction(zoomIn)
-				registerAction(zoomOut)
-
-				val service = site.getService(IHandlerService)
-				service.activateHandler(zoomIn.getActionDefinitionId(), new ActionHandler(zoomIn))
-				service.activateHandler(zoomOut.getActionDefinitionId(), new ActionHandler(zoomOut))
-
-			]
-		actionRegistry
-	}
-
-	def CommandStack getCommandStack() {
-		editDomain.commandStack
-	}
-
-	override getAdapter(Class type) {
+	override getAdapter(@SuppressWarnings("rawtypes") Class type) {
 		if (type == PalettePage) {
 			if (splitter === null) {
 				page = createPalettePage
@@ -452,25 +310,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	}
 
 	def createPalettePage() {
-		new CustomPalettePage(paletteViewerProvider, this);
-	}
-
-	def getSelectionSynchronizer() {
-		if (synchronizer === null)
-			synchronizer = new SelectionSynchronizer
-		synchronizer
-	}
-
-	def getModel() {
-		diagram
-	}
-
-	override dispose() {
-		site.workbenchWindow.selectionService.removeSelectionListener(this)
-		editDomain.activeTool = null
-		if(actionRegistry !== null) actionRegistry.dispose
-
-		super.dispose
+		new CustomPalettePage(paletteViewerProvider, this)
 	}
 
 	override setSourceViewer(ISourceViewer sourceViewer) {
@@ -510,29 +350,8 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	}
 
 	// ****************************	
-	// ** Palette
-	// ****************************
-	def getSplitter() { splitter }
-
-	def getPaletteViewerProvider() {
-		if (provider === null)
-			provider = createPaletteViewerProvider
-		provider
-	}
-
-	def createPaletteViewerProvider() { new PaletteViewerProvider(editDomain) }
-
-	def getPalettePreferences() {
-		val preferencesService = Platform.getPreferencesService() // as PreferenceServices 
-		new WollokFlyoutPreferences(preferencesService.rootNode)
-		//FlyoutPaletteComposite.createFlyoutPreferences(WollokDiagramsPlugin.getDefault.pluginPreferences)
-	}
-
-	// ****************************	
 	// ** Part listener (listen for open editor)
 	// ****************************
-	override partActivated(IWorkbenchPart part) {}
-
 	override partBroughtToTop(IWorkbenchPart part) {
 		if (part instanceof XtextEditor) {
 			if (part.languageName == WollokActivator.ORG_UQBAR_PROJECT_WOLLOK_WOLLOKDSL)
@@ -540,62 +359,47 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 		}
 	}
 
-	override partClosed(IWorkbenchPart part) {}
-
-	override partDeactivated(IWorkbenchPart part) {}
-
-	override partOpened(IWorkbenchPart part) {}
-
 	// workbench -> gef editor
 	override selectionChanged(IWorkbenchPart part, ISelection selection) {
-		if(part == this) return;
+		if (part == this) return;
 		if (selection instanceof StructuredSelection) {
 			// I think this is coupled with the outline view. It should use WClass instead of EObjectNode
 			// should we use getAdapter() ?
-			val selectedClassModels = selection.toList.filter(EObjectNode).filter [
-				EClass == WollokDslPackage.Literals.WCLASS
-			].fold(newArrayList()) [ list, c |
-				val cm = getClassEditParts.findFirst [ ep |
-					// mm.. i don't like comparing by name :( but our diagram seems to load 
-					// the xtext document (and model objects) again, so instances are different
-					ep.castedModel.getComponent.name == c.text.toString
+			val selectedClassModels = selection
+				.toList
+				.filter(EObjectNode)
+				.filter [ EClass == WollokDslPackage.Literals.WCLASS ]
+				.fold(newArrayList()) [ classModels, clazz |
+					val classModel = getClassEditParts.findFirst [ editPart |
+						// mm.. i don't like comparing by name :( but our diagram seems to load 
+						// the xtext document (and model objects) again, so instances are different
+						editPart.castedModel.getComponent.name == clazz.text.toString
+					]
+					if (classModel !== null) {
+						classModels += classModel
+					}
+					classModels
 				]
-				if (cm !== null)
-					list += cm
-				list
-			]
 			if (!selectedClassModels.empty) {
 				graphicalViewer.selection = new StructuredSelection(selectedClassModels)
 			}
 		}
 	}
 
-	// SELECTION PROVIDER
-	val listeners = new ArrayList<ISelectionChangedListener>
-	var ISelection selection = null
-
-	override addSelectionChangedListener(ISelectionChangedListener listener) { listeners += listener }
-
-	override getSelection() { selection }
-
-	override setSelection(ISelection selection) {}
-
-	override removeSelectionChangedListener(ISelectionChangedListener listener) { listeners -= listener }
-
 	// ISelectionChangedListeners:
 	// listen for changes in the gef editor, publish selection using the model
 	override selectionChanged(SelectionChangedEvent event) {
 		val selection = event.selection
 		if (!selection.empty && selection instanceof StructuredSelection) {
-			val s = selection as StructuredSelection
-			if (s.size == 1) {
-				val model = (s.firstElement as EditPart).model
+			val currentSelection = selection as StructuredSelection
+			if (currentSelection.size == 1) {
+				val model = (currentSelection.firstElement as EditPart).model
 				if (model instanceof ClassModel) {
-					val wclazz = model.getComponent
-					this.selection = new StructuredSelection(wclazz)
-					val e = new SelectionChangedEvent(this, this.selection)
-					listeners.forEach [ l |
-						l.selectionChanged(e)
+					val clazz = model.getComponent
+					this.selection = new StructuredSelection(clazz)
+					val selectionChangedEvent = new SelectionChangedEvent(this, this.selection)
+					currentListeners.forEach [ listener |
+						listener.selectionChanged(selectionChangedEvent)
 					]
 				}
 			}
@@ -607,6 +411,10 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 		if (event !== null && event.equals(StaticDiagramConfiguration.CONFIGURATION_CHANGED)) {
 			this.refresh
 		}
+	}
+
+	override createEditPartFactory() {
+		new StaticDiagramEditPartFactory
 	}
 
 }
