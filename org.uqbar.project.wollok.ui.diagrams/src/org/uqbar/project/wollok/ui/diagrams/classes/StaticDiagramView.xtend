@@ -202,11 +202,11 @@ class StaticDiagramView extends AbstractDiagramView implements IDocumentListener
 			Messages.StaticDiagram_RememberShapePositions_Description, configuration)
 
 		site.actionBars.toolBarManager => [
-			add(new ZoomComboContributionItem(site.workbenchWindow.activePage, #{
-				ZoomManager.FIT_ALL,
-				ZoomManager.FIT_HEIGHT,
-				ZoomManager.FIT_WIDTH
-			} as String[]))
+//			add(new ZoomComboContributionItem(site.workbenchWindow.activePage, #{
+//				ZoomManager.FIT_ALL,
+//				ZoomManager.FIT_HEIGHT,
+//				ZoomManager.FIT_WIDTH
+//			} as String[]))
 			add(zoomIn)
 			add(zoomOut)
 			add(new ShowFileAction("labelFile", configuration))

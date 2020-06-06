@@ -20,7 +20,6 @@ import org.eclipse.gef.commands.CommandStack
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart
 import org.eclipse.gef.editparts.ZoomManager
 import org.eclipse.gef.ui.actions.ActionRegistry
-import org.eclipse.gef.ui.actions.ZoomComboContributionItem
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite.FlyoutPreferences
 import org.eclipse.gef.ui.properties.UndoablePropertySheetPage
@@ -40,6 +39,7 @@ import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.ColorBlindAction
 import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.DeleteObjectAction
 import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.DynamicDiagramEditorContextMenuProvider
 import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.EffectTransitionAction
+import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.FilteredObjectsAction
 import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.RememberObjectPositionAction
 import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.ShowHiddenObjectsAction
 import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
@@ -58,6 +58,7 @@ class DynamicDiagramView extends AbstractDiagramView implements IStackFrameConsu
 	
 	// Toolbar - actions
 	RememberObjectPositionAction rememberAction
+	FilteredObjectsAction filteredObjectsAction
 	ShowHiddenObjectsAction showHiddenObjectsAction
 	EffectTransitionAction effectTransitionAction
 	ColorBlindAction colorBlindAction
@@ -109,6 +110,7 @@ class DynamicDiagramView extends AbstractDiagramView implements IStackFrameConsu
 
 		colorBlindAction = new ColorBlindAction(this)
 		rememberAction = new RememberObjectPositionAction(this)
+		filteredObjectsAction = new FilteredObjectsAction(configuration)
 		showHiddenObjectsAction = new ShowHiddenObjectsAction(this)
 		effectTransitionAction = new EffectTransitionAction(this)
 		exportAction = new ExportAction => [
@@ -116,18 +118,20 @@ class DynamicDiagramView extends AbstractDiagramView implements IStackFrameConsu
 		]
 
 		site.actionBars.toolBarManager => [
-			add(new ZoomComboContributionItem(site.workbenchWindow.activePage, #{
-				ZoomManager.FIT_ALL,
-				ZoomManager.FIT_HEIGHT,
-				ZoomManager.FIT_WIDTH
-			} as String[]))
+//			add(new ZoomComboContributionItem(site.workbenchWindow.activePage, #{
+//				ZoomManager.FIT_ALL,
+//				ZoomManager.FIT_HEIGHT,
+//				ZoomManager.FIT_WIDTH
+//			} as String[]))
 			add(zoomIn)
 			add(zoomOut)
 			add(colorBlindAction)
 			add(new Separator)
 			add(rememberAction)
 			add(new Separator)
+			add(filteredObjectsAction)			
 			add(showHiddenObjectsAction)
+			add(new Separator)
 			add(effectTransitionAction)
 			add(exportAction)
 			add(new Separator)

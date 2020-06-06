@@ -11,6 +11,8 @@ import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrameVariable
 @Accessors
 class DynamicDiagramConfiguration extends AbstractDiagramConfiguration {
 
+	public static String HIDDEN_OBJECTS_CHANGED = "hiddenObjects"
+	
 	static DynamicDiagramConfiguration instance
 	
 	static def getInstance() {
@@ -40,10 +42,14 @@ class DynamicDiagramConfiguration extends AbstractDiagramConfiguration {
 	
 	def hideObject(VariableModel model) {
 		this.hiddenObjects.add(model.variable.toString)
+		this.setChanged
+		this.notifyObservers(HIDDEN_OBJECTS_CHANGED)
 	}
 
 	def resetHiddenObjects() {
 		this.hiddenObjects = newArrayList
+		this.setChanged
+		this.notifyObservers(HIDDEN_OBJECTS_CHANGED)
 	}
 	
 	def dispatch shouldHide(XDebugStackFrameVariable variable) {
@@ -55,5 +61,9 @@ class DynamicDiagramConfiguration extends AbstractDiagramConfiguration {
 	}
 
 	def dispatch shouldHide(IVariable variable) { false }
+	
+	def hasHiddenObjects() {
+		!this.hiddenObjects.isEmpty
+	}
 
 }
