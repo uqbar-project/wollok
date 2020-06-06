@@ -5,7 +5,6 @@ import org.eclipse.core.runtime.Platform
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider
-import org.uqbar.project.wollok.services.WollokDslGrammarAccess
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
@@ -28,6 +27,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
 /**
@@ -37,8 +37,6 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
  */
 class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	WollokTypeSystemLabelExtension labelExtension = null
-	@Inject
-	WollokDslGrammarAccess grammar
 	var labelExtensionResolved = false
 
 	@Inject
@@ -94,27 +92,20 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	}
 
 	def text(WVariableDeclaration it) {
-		// TODO: Considerar si es property
-		(if (writeable)
-			// var 
-			grammar.WVariableDeclarationAccess.writeableVarKeyword_1_0_0.value
-		else
-			// const 
-			grammar.WVariableDeclarationAccess.constKeyword_1_1.value) + " " + variable.name +
-			concatResolvedType(": ", variable)
+		variable.name +	concatResolvedType(": ", variable)
 	}
 
 	def image(WVariableDeclaration it) { 
 		if (property) {
 			if (writeable) 
-				'wollok-icon-property_var_16.png'
+				'property-small.png'
 			else
-				'wollok-icon-property_const_16.png'
+				'property-const-small.png'
 		} else {
 			if (writeable)
-				'wollok-icon-variable_16.png'
+				'variable-small.png'
 			else 
-				'wollok-icon-constant_16.png'
+				'constant-small.png'
 		} 
 	}
 

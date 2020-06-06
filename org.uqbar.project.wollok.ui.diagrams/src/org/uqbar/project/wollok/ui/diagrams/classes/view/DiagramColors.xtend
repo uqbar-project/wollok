@@ -18,8 +18,8 @@ class DiagramColors {
 	public static val IMPORTED_CLASS_BACKGROUND = new Color(null, 255, 153, 153)
 	public static val CLASS_INNER_BORDER = new Color(null, 255, 245, 240)
 	
-	public static val NAMED_OBJECTS_FOREGROUND = new Color(null, 255, 255, 255)
-	public static val NAMED_OBJECTS__BACKGROUND = new Color(null, 155, 129, 136)
+	public static val NAMED_OBJECTS_FOREGROUND = new Color(null, 0, 0, 0)
+	public static val NAMED_OBJECTS__BACKGROUND = new Color(null, 173, 224, 201)
 	
 	public static val MIXIN_FOREGROUND = new Color(null, 0, 0, 0)
 	public static val MIXIN_BACKGROUND = new Color(null, 144, 195, 212)

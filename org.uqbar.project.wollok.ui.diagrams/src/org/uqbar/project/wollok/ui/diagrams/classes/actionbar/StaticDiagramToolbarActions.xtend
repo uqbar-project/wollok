@@ -135,7 +135,7 @@ class ShowVariablesToggleButton extends Action implements Observer {
 		this.configuration = configuration
 		this.configuration.addObserver(this)
 		this.checked = configuration.showVariables
-		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/show-variables-3.png")
+		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/show-variables-small.png")
 	}
 
 	override run() {
@@ -189,7 +189,7 @@ class CleanShapePositionsAction extends Action {
 	new(String title, StaticDiagramConfiguration configuration) {
 		super(title)
 		this.configuration = configuration
-		imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.ui/icons/full/etool16/clear_co.png"))
+		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/eraser.png")	
 	}
 
 	override run() {
