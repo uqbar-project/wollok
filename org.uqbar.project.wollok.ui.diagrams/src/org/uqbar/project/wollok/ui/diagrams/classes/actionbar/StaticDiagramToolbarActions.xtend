@@ -161,7 +161,7 @@ class RememberShapePositionsToggleButton extends Action implements Observer {
 		this.configuration = configuration
 		this.configuration.addObserver(this)
 		this.checked = configuration.isRememberLocationsAndSizes
-		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/remember-position.png")
+		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/push-pin.png")
 	}
 	
 	
