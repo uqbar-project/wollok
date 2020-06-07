@@ -6,11 +6,15 @@ import org.uqbar.project.wollok.typesystem.StructuralType
 import org.uqbar.project.wollok.typesystem.UnionType
 import org.uqbar.project.wollok.typesystem.WollokType
 
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
+
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+
 class CompatibilityTypes {
-	static val basicTypes = newArrayList("Number", "Boolean", "String")
+	static val basicTypes = newArrayList(NUMBER, BOOLEAN, STRING)
 	
 	static def boolean isBasic(ClassInstanceType type) {
-		basicTypes.contains(type.clazz.name)
+		basicTypes.contains(type.clazz.fqn)
 	}
 
 	/** Default behavior: any type is compatible with other */
