@@ -35,23 +35,23 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void toString1() {
+	def void toStringMixedMethodContainer1Mixin() {
 		'''
 		«toStringFixture»
 		test "toString de un mixed method container con 1 mixin" {
 			const pm = new Persona() with EnvejeceDoble
-			assert.equals(pm.toString(), "Persona with EnvejeceDoble[edad=10]")
+			assert.equals(pm.toString(), "Persona with EnvejeceDoble")
 		}
 		'''.interpretPropagatingErrors
 	}
 	
 	@Test
-	def void toString2() {
+	def void toStringMixedContainerWith2Mixins() {
 		'''
 		«toStringFixture»
 		test "toString de un mixed method container con 2 mixins" {
 			const pm = new Persona() with EnvejeceDoble with EnvejeceTriple
-			assert.equals(pm.toString(), "Persona with EnvejeceDoble with EnvejeceTriple[edad=10]")
+			assert.equals(pm.toString(), "Persona with EnvejeceDoble with EnvejeceTriple")
 		}
 		'''.interpretPropagatingErrors
 	}

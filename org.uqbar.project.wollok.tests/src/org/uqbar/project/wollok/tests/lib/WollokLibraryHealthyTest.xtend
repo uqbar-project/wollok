@@ -40,4 +40,5 @@ class WollokLibraryHealthyTest extends AbstractWollokInterpreterTestCase {
 			.filter[severity == Severity.ERROR && code != 'OBJECT_NAME_MUST_START_LOWERCASE']
 			.forEach[ sb.append(severity).append(":").append(message).append(" ").append(uri).append(":").append(lineNumber).append(System.lineSeparator) ]
 	}
+	
 }

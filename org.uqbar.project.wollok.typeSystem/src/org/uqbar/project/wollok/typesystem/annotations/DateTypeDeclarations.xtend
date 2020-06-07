@@ -19,6 +19,5 @@ class DateTypeDeclarations extends TypeDeclarations {
 		Date >> "between" === #[Date, Date] => Boolean
 		// Private
 		Date >> "initialize" === #[] => Void;		
-		Date >> "toSmartString" === #[Boolean] => String;
 	}
 }

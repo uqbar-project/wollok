@@ -34,15 +34,8 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 			O >> "className" === #[] => String;
 			O >> "error" === #[String] => Void;
 			/* privates */
-			O >> "toSmartString" === #[List.of(Object)] => String
-			O >> "internalToSmartString" === #[List.of(Object)] => String
-			O >> "simplifiedToSmartString" === #[] => String
 			O >> "messageNotUnderstood" === #[String, List.of(Object)] => Void
 			O >> "generateDoesNotUnderstandMessage" === #[String, String, Number] => String
-			/* introspection */
-			O >> "instanceVariables" === #[] => List.of(InstanceVariableMirror)
-			O >> "instanceVariableFor" === #[String] => InstanceVariableMirror
-			O >> "resolve" === #[String] => T //TODO: should return variable type
 		]
 	}
 }

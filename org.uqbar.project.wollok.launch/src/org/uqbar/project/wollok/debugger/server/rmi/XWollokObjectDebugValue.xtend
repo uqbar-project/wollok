@@ -8,6 +8,7 @@ import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilde
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.WollokObjectUtils.*
 import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
+import static org.uqbar.project.wollok.WollokConstants.*
 
 /**
  * A stack frame variable's value that holds a wollok object.
@@ -29,11 +30,11 @@ class XWollokObjectDebugValue extends XDebugValue {
 	
 	def static description(WollokObject obj) {
 		if (obj.isBasicType) {
-			obj.asString("toSmartString",obj)
+			obj.asString(TO_STRING_PRINTABLE)
 		}
 		else {
 			if (obj.hasShortDescription)
-				obj.asString("shortDescription")
+				obj.asString(TO_STRING_SHORT)
 			else obj.shortLabel
 		}
 	}

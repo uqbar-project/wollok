@@ -49,6 +49,7 @@ class WollokSDK {
 	
 	public static val POSITION = "wollok.game.Position"
 	public static val SOUND = "wollok.game.Sound"
+	public static val OBJECT_MIRROR = "wollok.mirror.ObjectMirror"
 	public static val ASSERTION_EXCEPTION_FQN = "wollok.lib.AssertionException"
 	public static val STRING_PRINTER = "wollok.lib.StringPrinter"
 	

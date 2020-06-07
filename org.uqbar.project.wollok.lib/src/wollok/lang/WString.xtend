@@ -28,14 +28,14 @@ class WString extends AbstractJavaWrapper<String> {
 	def dispatch WollokObject doConcatWith(WString o) { newInstanceWithWrapped(this.wrapped + o.wrapped) }
 	def dispatch WollokObject doConcatWith(WollokObject it) { convertToWString.asWString.doConcatWith }
 		
-	def startsWith(String other) { 
-		other.checkNotNull("startsWith")
-		wrapped.startsWith(other)
+	def startsWith(String prefix) { 
+		prefix.checkNotNull("startsWith")
+		wrapped.startsWith(prefix)
 	}
 	
-	def endsWith(String other) { 
-		other.checkNotNull("endsWith")
-		wrapped.endsWith(other)
+	def endsWith(String suffix) { 
+		suffix.checkNotNull("endsWith")
+		wrapped.endsWith(suffix)
 	}
 
 	def indexOf(String other) { 
@@ -54,9 +54,9 @@ class WString extends AbstractJavaWrapper<String> {
 		result
 	}
 	
-	def contains(String other) {
-		other.checkNotNull("contains")
-		wrapped.contains(other)
+	def contains(String element) {
+		element.checkNotNull("contains")
+		wrapped.contains(element)
 	}
 	
 	def toLowerCase() { wrapped.toLowerCase }
@@ -69,15 +69,14 @@ class WString extends AbstractJavaWrapper<String> {
 		wrapped.substring(index.coerceToPositiveInteger)
 	}
 	
-	def substring(BigDecimal startIndex, BigDecimal length) { 
+	def substring(BigDecimal startIndex, BigDecimal endIndex) { 
 		startIndex.checkNotNull("substring")
-		length.checkNotNull("substring")
-		wrapped.substring(startIndex.coerceToPositiveInteger, length.coerceToPositiveInteger)
+		endIndex.checkNotNull("substring")
+		wrapped.substring(startIndex.coerceToPositiveInteger, endIndex.coerceToPositiveInteger)
 	}
 	
 	@NativeMessage("toString")
 	def wollokToString() { wrapped.toString }
-	def toSmartString(Object alreadyShown) { '"' + wollokToString + '"' }
 
 	@NativeMessage("<")
 	def lessThan(WollokObject other) {
