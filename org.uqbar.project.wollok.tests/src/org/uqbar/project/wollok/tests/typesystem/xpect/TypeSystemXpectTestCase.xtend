@@ -11,6 +11,7 @@ import org.eclipse.xpect.runner.Xpect
 import org.eclipse.xpect.runner.XpectRunner
 import org.eclipse.xpect.runner.XpectSuiteClasses
 import org.eclipse.xpect.xtext.lib.setup.ThisModel
+import org.eclipse.xpect.xtext.lib.setup.ThisResource
 import org.eclipse.xpect.xtext.lib.tests.ValidationTest
 import org.eclipse.xpect.xtext.lib.tests.ValidationTestModuleSetup.ConsumedIssues
 import org.eclipse.xpect.xtext.lib.util.XtextOffsetAdapter.IEStructuralFeatureAndEObject
@@ -26,10 +27,8 @@ import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
-import org.eclipse.xpect.xtext.lib.setup.ThisResource
-
 import static extension org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
+import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
 
 /**
  * Test class for extending xpect to have tests on static proposals (content assist)

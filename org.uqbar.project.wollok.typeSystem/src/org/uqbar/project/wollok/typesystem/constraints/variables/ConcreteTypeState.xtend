@@ -6,7 +6,6 @@ enum ConcreteTypeState {
 	Pending,
 	Ready,
 	Error,
-	Postponed,
 	Cancel
 }
 

@@ -27,10 +27,10 @@ program p {
 	// XPECT type at c6 --> {() => Number}
 	const c6 = { if (bool) return 1 else return 2 }
 	
-	// XPECT type at c7 --> {() => (Number|String)}
+	// XPECT type at c7 --> {() => Number}
 	const c7 = { 
 		if (bool) { return 1 } 
-		return "2"
+		return 2
 	}
 	
 	// XPECT type at c8 --> {() => Number}

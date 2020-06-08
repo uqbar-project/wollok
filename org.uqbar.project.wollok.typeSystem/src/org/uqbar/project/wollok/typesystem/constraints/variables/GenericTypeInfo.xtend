@@ -13,6 +13,7 @@ import org.uqbar.project.wollok.typesystem.exceptions.RejectedMinTypeException
 
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
+import static extension org.uqbar.project.wollok.typesystem.constraints.types.CompatibilityTypes.isCompatible
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.MessageLookupExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.SubtypingRules.isSuperTypeOf
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.AnalysisResultReporter.*
@@ -34,7 +35,7 @@ class GenericTypeInfo extends TypeInfo {
 	}
 
 	def basicGetType(TypeVariable tvar) {
-		var types = if(maximalConcreteTypes !== null)
+		var types = if (maximalConcreteTypes !== null)
 				maximalConcreteTypes.maximalConcreteTypes
 			else
 				minTypes.keySet
@@ -45,12 +46,14 @@ class GenericTypeInfo extends TypeInfo {
 		)
 	}
 
+	def validMinTypes() { minTypes.filter[k, value|value != Error].keySet }
+
 	// ************************************************************************
 	// ** Type parameters
 	// ************************************************************************
 	def param(GenericType type, String paramName) {
 		val typeInstance = findCompatibleTypeFor(type)
-		if(typeInstance === null)
+		if (typeInstance === null)
 			throw new IllegalStateException(
 				NLS.bind(Messages.RuntimeTypeSystemException_CANT_FIND_MIN_TYPE, #[type, paramName, minTypes.keySet]))
 
@@ -74,19 +77,20 @@ class GenericTypeInfo extends TypeInfo {
 	// ** Adding type information
 	// ************************************************************************
 	override beSealed() {
-		//TODO: Check this
-		if (maximalConcreteTypes === null) 
+		// TODO: Check this
+		if (maximalConcreteTypes === null)
 			maximalConcreteTypes = new MaximalConcreteTypes(minTypes.keySet)
-		else if (!minTypes.empty)
+		else if (!minTypes.empty) {
 			maximalConcreteTypes.restrictTo(new MaximalConcreteTypes(minTypes.keySet))
+		}
 		super.beSealed
 	}
 
 	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable offender) {
 		minTypes.allStatesDo(offender) [
-			if(!offender.hasErrors(type) && !maxTypes.empty) {
+			if (!offender.hasErrors(type) && !maxTypes.empty) {
 				val matchingMaxType = maxTypes.findMatching(type)
-				if(matchingMaxType !== null) {
+				if (matchingMaxType !== null) {
 					type.beSubtypeOf(matchingMaxType)
 				} else {
 					error(new RejectedMinTypeException(offender, type, maxTypes.maximalConcreteTypes))
@@ -95,9 +99,9 @@ class GenericTypeInfo extends TypeInfo {
 			}
 		]
 
-		if(maxTypes.state == Error) {
+		if (maxTypes.state == Error) {
 			false
-		} else if(maximalConcreteTypes === null) {
+		} else if (maximalConcreteTypes === null) {
 			maximalConcreteTypes = maxTypes.copy
 			true
 		} else {
@@ -111,9 +115,9 @@ class GenericTypeInfo extends TypeInfo {
 	 * both original sets were equal, state has to be Pending).  
 	 */
 	def joinMaxTypes(MaximalConcreteTypes other) {
-		if(maximalConcreteTypes !== null) {
-			if(other !== null) {
-				if(maximalConcreteTypes != other.maximalConcreteTypes) {
+		if (maximalConcreteTypes !== null) {
+			if (other !== null) {
+				if (maximalConcreteTypes != other.maximalConcreteTypes) {
 					maximalConcreteTypes.restrictTo(other)
 					maximalConcreteTypes.state = Pending
 				} else {
@@ -122,7 +126,7 @@ class GenericTypeInfo extends TypeInfo {
 			} else {
 				maximalConcreteTypes.state = Pending
 			}
-		} else if(other !== null) {
+		} else if (other !== null) {
 			maximalConcreteTypes = other.copy
 		}
 	}
@@ -130,26 +134,39 @@ class GenericTypeInfo extends TypeInfo {
 	override ConcreteTypeState addMinType(WollokType type, TypeVariable offender) {
 		if(minTypes.containsKey(type)) return Ready
 
+		if (sealed) {
+			validateCompatibleMinType(type, offender)
+		}
+		validateMessages(type)
+
+		minTypes.put(type, Pending)
+		Pending
+	}
+
+	def validateCompatibleMinType(WollokType type, TypeVariable offender) {
+		validateMinType(type) [
+			if (!validMinTypes.empty && validMinTypes.exists[!isCompatible(type)]) {
+				throw new RejectedMinTypeException(offender, type, validMinTypes)
+			}
+		]
+	}
+
+	def validateMessages(WollokType type) {
+		validateMinType(type) [
+			validMessages.forEach [
+				if (!type.respondsTo(it, false))
+					throw new MessageNotUnderstoodException(type, it)
+			]
+		]
+	}
+
+	def validateMinType(WollokType type, ()=>void validation) {
 		try {
-			validateType(type, offender)
-			minTypes.put(type, Pending)
-			Pending
-		} catch(TypeSystemException exception) {
+			validation.apply
+		} catch (TypeSystemException exception) {
 			minTypes.put(type, Error)
 			throw exception
 		}
-	}
-
-	def validateType(WollokType type, TypeVariable offender) {
-		val readyMinTypes = minTypes.filter[k, value| value != Error ].keySet
-		if(sealed && !readyMinTypes.empty && !readyMinTypes.exists[isSuperTypeOf(type)]) {
-			throw new RejectedMinTypeException(offender, type, readyMinTypes)
-		}
-
-		validMessages.forEach [
-			if(!type.respondsTo(it, false)) 
-				throw new MessageNotUnderstoodException(type, it)
-		]
 	}
 
 	def unifyWith(WollokType existing, WollokType added) {
