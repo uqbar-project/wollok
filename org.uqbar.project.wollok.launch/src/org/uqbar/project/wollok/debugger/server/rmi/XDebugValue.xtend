@@ -28,4 +28,6 @@ abstract class XDebugValue implements Serializable {
 	}
 	
 	def String getTypeName()
+	
+	def boolean isWKO() { false }
 }

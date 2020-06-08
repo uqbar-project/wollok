@@ -448,7 +448,7 @@ class StaticDiagramConfiguration extends AbstractDiagramConfiguration implements
 	def resourceIsForStaticDiagram() {
 		originalFileName.endsWith(WollokConstants.WOLLOK_DEFINITION_EXTENSION)
 	}
-	
+		
 }
 
 @Data

@@ -1,15 +1,17 @@
 package org.uqbar.project.wollok.interpreter.context
 
+import java.util.List
 import java.util.Map
 
 /**
  * Simple EvaluationContext impl backed up by a map.
- * Usually used for local scopes like methods local variables.
+ * Usually used for local scopes like method local variables.
  * 
  * @author jfernandes
  */
 class MapBasedEvaluationContext<O> implements EvaluationContext<O> {
 	Map<String, O> values
+	List<String> constantValues = newArrayList
 	
 	new(Map<String, O> map) {
 		values = map
@@ -19,7 +21,7 @@ class MapBasedEvaluationContext<O> implements EvaluationContext<O> {
 	override getThisObject() { null }
 	
 	override allReferenceNames() {
-		values.keySet.map[new WVariable(it, null, true)]
+		values.keySet.map[new WVariable(it, null, true, constantValues.contains(it))]
 	}
 
 	override allReferenceNamesForDynamicDiagram() {
@@ -40,13 +42,16 @@ class MapBasedEvaluationContext<O> implements EvaluationContext<O> {
 		values.put(name, value)
 	}
 
-	override addReference(String variable, O value) {
+	override addReference(String variable, O value, boolean constant) {
 		values.put(variable, value)
+		if (constant) {
+			constantValues.add(variable)
+		}
 		value
 	}
 	
-	override addGlobalReference(String name, O value) {
-		addReference(name, value)
+	override addGlobalReference(String name, O value, boolean constant) {
+		addReference(name, value, constant)
 	}
 	
 	override removeGlobalReference(String name) {

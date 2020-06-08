@@ -13,7 +13,6 @@ import org.eclipse.jface.action.ControlContribution
 import org.eclipse.jface.resource.ImageDescriptor
 import org.eclipse.swt.SWT
 import org.eclipse.swt.graphics.Color
-import org.eclipse.swt.layout.FormData
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Display
 import org.eclipse.swt.widgets.FileDialog
@@ -136,7 +135,7 @@ class ShowVariablesToggleButton extends Action implements Observer {
 		this.configuration = configuration
 		this.configuration.addObserver(this)
 		this.checked = configuration.showVariables
-		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/wollok-icon-variable_16.png")
+		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/show-variables-small.png")
 	}
 
 	override run() {
@@ -162,8 +161,10 @@ class RememberShapePositionsToggleButton extends Action implements Observer {
 		this.configuration = configuration
 		this.configuration.addObserver(this)
 		this.checked = configuration.isRememberLocationsAndSizes
-		imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.debug.ui/icons/full/elcl16/pin.png"))
+		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/push-pin.png")
 	}
+	
+	
 
 	override run() {
 		configuration.rememberLocationAndSizeShapes = !configuration.isRememberLocationsAndSizes
@@ -188,7 +189,7 @@ class CleanShapePositionsAction extends Action {
 	new(String title, StaticDiagramConfiguration configuration) {
 		super(title)
 		this.configuration = configuration
-		imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.ui/icons/full/etool16/clear_co.png"))
+		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/eraser.png")	
 	}
 
 	override run() {
@@ -218,12 +219,10 @@ class ShowFileAction extends ControlContribution implements Observer {
 	}
 	
 	override protected createControl(Composite parent) {
+		parent.setSize(600, 20)
 		label = new Label(parent, SWT.LEFT) => [
 			text = "  " + configuration.originalFileName + "  "
-			background = new Color(Display.current, 240, 241, 240)
-			layoutData = new FormData => [
-				width = 450
-			]
+			background = new Color(Display.current, 252, 255, 255)
 		]
 		label
 	}

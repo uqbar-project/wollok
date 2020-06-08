@@ -13,6 +13,7 @@ import static org.uqbar.project.wollok.sdk.WollokSDK.*
  * A variable within a stack execution.
  * 
  * @author jfernandes
+ * @author dodain        Refactored in order to avoid cyclic references
  */
 @Accessors
 class XDebugStackFrameVariable implements Serializable {
@@ -76,6 +77,15 @@ class XDebugStackFrameVariable implements Serializable {
 	}
 	
 	def isCustom() {
-		!this.variable.name.startsWith("wollok.")	
+		!this.variable.name.startsWith("wollok.")
 	}
+
+	def getIdentifier() {
+		this.variable.id.toString
+	}
+
+	def getName() {
+		this.variable.name
+	}
+
 }

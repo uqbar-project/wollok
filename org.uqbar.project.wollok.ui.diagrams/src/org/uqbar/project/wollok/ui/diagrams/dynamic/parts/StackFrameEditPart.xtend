@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.ui.diagrams.dynamic.parts
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 import java.util.List
+import java.util.Map
 import org.eclipse.debug.core.model.IStackFrame
 import org.eclipse.debug.core.model.IVariable
 import org.eclipse.draw2d.ConnectionLayer
@@ -27,6 +28,9 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.commands.MoveOrResizeCommand
 
+import static extension org.uqbar.project.wollok.ui.utils.WollokDynamicDiagramUtils.*
+import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
+
 /**
  * 
  * @author jfernandes
@@ -45,12 +49,12 @@ abstract class AbstractStackFrameEditPart<T> extends AbstractGraphicalEditPart i
 	}
 	
 	override createFigure() {
-		new FreeformLayer => [ f |
-			f.border = new MarginBorder(3)
-			f.layoutManager = new FreeformLayout
+		new FreeformLayer => [
+			border = new MarginBorder(3)
+			layoutManager = new FreeformLayout
 
 			val connLayer = getLayer(LayerConstants.CONNECTION_LAYER) as ConnectionLayer
-			connLayer.connectionRouter = new ShortestPathConnectionRouter(f)
+			connLayer.connectionRouter = new ShortestPathConnectionRouter(it)
 		]
 	}
 
@@ -65,15 +69,26 @@ abstract class AbstractStackFrameEditPart<T> extends AbstractGraphicalEditPart i
 	abstract def List<IVariable> getVariables()
 
 	override List<VariableModel> getModelChildren() {
-		val map = (this.variables.fold(newHashMap()) [ m, v |
-			val vm = VariableModel.getVariableModelFor(v, 0)
-			m.put(v, vm)
-			// root arrow
-			new Connection(v.name, null, vm, RelationType.ASSOCIATION)
-			m
+		// Obtaining all non-null values
+		//   That's because repeated objects are received as null and recreated
+		//     in order to avoid an infinite loop cycle
+		//   And to distinguish root wko references we need to get the real value 
+		val allVariables = <IVariable>newArrayList 
+		this.variables.traverseNonNullVariables(allVariables)
+		
+		// Creating root connections
+		val Map<IVariable, VariableModel> mapVariables = (this.variables.fold(newHashMap()) [ resultingMap, variable |
+			val variableModel = VariableModel.getVariableModelFor(variable, 0)
+			if (variable.shouldShowRootArrow(allVariables)) {
+				new Connection(variable.name, null, variableModel, RelationType.ASSOCIATION)
+			}
+			resultingMap.put(variable, variableModel)
+			resultingMap
 		])
-		map.values.<VariableModel>clone.forEach[model|model.createConnections(map)]
-		map.values.toList
+		
+		// Creating rest of connections
+		mapVariables.values.<VariableModel>clone.forEach[model|model.createConnections(mapVariables)]
+		mapVariables.values.toList
 	}
 
 	override propertyChange(PropertyChangeEvent evt) {
@@ -100,7 +115,11 @@ class StackFrameEditPart extends AbstractStackFrameEditPart<IStackFrame> impleme
  */
 class VariablesEditPart extends AbstractStackFrameEditPart<List<XDebugStackFrameVariable>> implements PropertyChangeListener {
 
-	override getModelElement() { model as List<XDebugStackFrameVariable> }
+	DynamicDiagramConfiguration configuration = DynamicDiagramConfiguration.instance
+	
+	override getModelElement() { 
+		(model as List<XDebugStackFrameVariable>).filter [ !configuration.shouldHide(it) ].toList
+	}
 	
 	override getVariables() {
 		modelElement.map [ new WollokVariable(null, it) ]
