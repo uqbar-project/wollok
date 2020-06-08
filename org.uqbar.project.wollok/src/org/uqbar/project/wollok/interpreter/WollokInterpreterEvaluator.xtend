@@ -157,9 +157,9 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	def dispatch WollokObject evaluate(WVariableDeclaration it) {
 		if (isGlobal) {
-			interpreter.currentContext.addGlobalReference(variable.variableName, right?.eval)
+			interpreter.currentContext.addGlobalReference(variable.variableName, right?.eval, !writeable)
 		} else {
-			interpreter.currentContext.addReference(variable.variableName, right?.eval)
+			interpreter.currentContext.addReference(variable.variableName, right?.eval, !writeable)
 		}
 		getVoid(interpreter as WollokInterpreter, it)
 	}
@@ -531,7 +531,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def createNamedObject(WNamedObject namedObject, String qualifiedName) {
 		new WollokObject(interpreter, namedObject) => [ wollokObject |
 			// first add it to solve cross-refs !
-			interpreter.currentContext.addGlobalReference(qualifiedName, wollokObject)
+			interpreter.currentContext.addGlobalReference(qualifiedName, wollokObject, true)
 			try {
 				namedObject.addObjectMembers(wollokObject)
 				namedObject.parent.addInheritsMembers(wollokObject)

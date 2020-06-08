@@ -5,7 +5,7 @@ import org.uqbar.project.wollok.ui.diagrams.classes.view.WClassFigure
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.ui.diagrams.classes.view.StaticDiagramColors
+import org.uqbar.project.wollok.ui.diagrams.classes.view.DiagramColors
 
 /**
  * 
@@ -22,20 +22,20 @@ class ClassEditPart extends AbstractMethodContainerEditPart {
 	}
 	
 	def foregroundColor(ClassModel c) {
-		if (c.component.isWellKnownObject) return StaticDiagramColors.NAMED_OBJECTS_FOREGROUND 
+		if (c.component.isWellKnownObject) return DiagramColors.NAMED_OBJECTS_FOREGROUND 
 		if (c.imported) {
-			StaticDiagramColors.IMPORTED_CLASS_FOREGROUND			
+			DiagramColors.IMPORTED_CLASS_FOREGROUND			
 		} else {
-			StaticDiagramColors.CLASS_FOREGROUND	
+			DiagramColors.CLASS_FOREGROUND	
 		}
 	}
 	
 	def backgroundColor(ClassModel c) {
-		if (c.component.isWellKnownObject) return StaticDiagramColors.NAMED_OBJECTS__BACKGROUND
+		if (c.component.isWellKnownObject) return DiagramColors.NAMED_OBJECTS__BACKGROUND
 		if (c.imported) {
-			StaticDiagramColors.IMPORTED_CLASS_BACKGROUND			
+			DiagramColors.IMPORTED_CLASS_BACKGROUND			
 		} else {
-			StaticDiagramColors.CLASS_BACKGROUND	
+			DiagramColors.CLASS_BACKGROUND	
 		}
 	}
 

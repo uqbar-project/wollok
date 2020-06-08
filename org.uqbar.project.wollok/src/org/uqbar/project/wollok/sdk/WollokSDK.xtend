@@ -99,9 +99,9 @@ class WollokSDK {
 		fqn == NUMBER || fqn == STRING || fqn == BOOLEAN
 	}
 
-	def static hasShortDescription(WollokObject it) {
+	def static shouldUseShortDescriptionForDynamicDiagram(WollokObject it) {
 		val fqn = behavior.fqn
-		fqn == DATE || fqn == CLOSURE
+		#[DATE, CLOSURE, POSITION, PAIR, RANGE].contains(fqn)
 	}
 	
 }

@@ -98,9 +98,9 @@ class WClassFigure extends Figure {
 	
 	def setAbstract(boolean isAbstract) {
 		nameLabel.font = if (isAbstract)
-			 StaticDiagramColors.ABSTRACT_CLASS_NAME_FONT
+			 DiagramColors.ABSTRACT_CLASS_NAME_FONT
 			else
-			 StaticDiagramColors.CLASS_NAME_FONT
+			 DiagramColors.CLASS_NAME_FONT
 	}
 	
 	def setFigureProblem(boolean problem) {

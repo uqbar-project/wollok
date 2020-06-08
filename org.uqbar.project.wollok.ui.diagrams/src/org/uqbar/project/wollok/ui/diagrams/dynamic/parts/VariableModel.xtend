@@ -8,6 +8,7 @@ import org.eclipse.debug.core.model.IVariable
 import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d.geometry.PrecisionPoint
+import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.debugger.model.WollokVariable
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
@@ -16,8 +17,8 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.dynamic.DynamicDiagramView
 import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
 
-import static extension org.uqbar.project.wollok.ui.diagrams.dynamic.parts.DynamicDiagramUtils.*
-import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
+import static extension org.uqbar.project.wollok.ui.utils.WollokDynamicDiagramUtils.*
 
 /**
  * 
@@ -37,7 +38,7 @@ class VariableModel extends Shape {
 	/** 
 	 * All shapes by variable name 
 	 */
-	static Map<String, VariableModel> allVariables = new HashMap()
+	public static Map<String, VariableModel> allVariables = new HashMap()
 	
 	IVariable variable
 	int level
@@ -92,7 +93,8 @@ class VariableModel extends Shape {
 	def void calculateInitialLocation(int level) {
 		val manualValue = configuration.getLocation(this)
 		if (manualValue === null) {
-			val originalLocation = new Point(WIDTH_MARGIN + level * WIDTH_SIZE, shapeHeightHandler.getHeight(this))
+			val lastWidthSize = Math.max(WIDTH_SIZE, shapeHeightHandler.maxWidth + WIDTH_MARGIN)
+			val originalLocation = new Point(WIDTH_MARGIN + level * lastWidthSize, shapeHeightHandler.getHeight(this))
 			this.location = originalLocation
 		} else {
 			this.location = manualValue
@@ -104,9 +106,9 @@ class VariableModel extends Shape {
 		if (manualValue !== null) return manualValue
 
 		if (isNumeric)
-			new Dimension(50, DEFAULT_HEIGHT)
+			new Dimension(MIN_WIDTH, DEFAULT_HEIGHT)
 		else if (isCollection)
-			new Dimension(50, 30)
+			new Dimension(MIN_WIDTH, 30)
 		else {
 			val size = Math.max(Math.min(valueString.length * LETTER_WIDTH, MAX_ELEMENT_WIDTH), MIN_WIDTH)
 			new Dimension(size, Math.min(size, DEFAULT_HEIGHT))
@@ -115,21 +117,28 @@ class VariableModel extends Shape {
 	
 	def void createConnections(Map<IVariable, VariableModel> context) {
 		if (variable === null || variable.value === null || variable.value.variables === null) return;
-		val allVariables = variable.value.variables.toList
+		val allVariables = variable
+			.value
+			.variables
+			.filter [ !DynamicDiagramConfiguration.instance.shouldHide(it) ]
+			.toList
+
 		val sameReferences = newHashMap
-		allVariables.forEach [ v |
-			val destination = get(context, v)
+		allVariables.forEach [ variable |
+			val destination = get(context, variable)
 			val variables = sameReferences.get(destination)
 			if (variables === null) {
-				sameReferences.put(destination, newArrayList(v.name))
+				sameReferences.put(destination, newArrayList(variable.name))
 			} else {
-				variables.add(v.name)
+				variables.add(variable.name)
 				sameReferences.put(destination, variables)
 			}
 		]
-		allVariables.toList.forEach [v| 
-			val destination = get(context, v)
-			new Connection(sameReferences.get(destination).join(", "), this, destination, RelationType.ASSOCIATION) 
+		allVariables.toList.forEach [ variable | 
+			if (variable.shouldShowRootArrow(allVariables)) {
+				val destination = get(context, variable)
+				new Connection(sameReferences.get(destination).join(", "), this, destination, RelationType.ASSOCIATION) 
+			}
 		]
 	}
 	
@@ -178,7 +187,6 @@ class VariableModel extends Shape {
 		variable.value.referenceTypeName	
 	}
 	
-	@Deprecated
 	def moveCloseTo(Shape shape) {
 		// a random value in [0, 2PI] for the angle in radians
 		val angle = new Random().nextFloat() * 2 * Math.PI 
@@ -209,13 +217,29 @@ class VariableModel extends Shape {
 	}
 	
 	def int y() {
-		this.bounds.top.y
+		location.y
 	}
 
 	def int getYValueForAnchor() {
 		YItShouldHave + (this.size.height / 2) - PADDING
 	}
 
+	override getBounds() {
+		if (shouldAnimate) {
+			new Rectangle(new Point(location.x, location.y + 15), size)
+		} else {
+			super.getBounds()
+		}
+	}
+	
+	def shouldAnimate() {
+		DynamicDiagramConfiguration.instance.shouldAnimate && !DynamicDiagramView.hadVariable(this)
+	}
+
+	def canBeHidden() {
+		this.variable.value !== null
+	}
+		
 }
 
 class ShapeHeightHandler {
@@ -290,6 +314,10 @@ class ShapeHeightHandler {
 		if (level === 0) {
 			rootVariables.add(variableModel)
 		}
+	}
+	
+	def maxWidth() {
+		allVariables.values.map [ size.width ].max
 	}
 
 }
