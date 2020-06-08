@@ -66,4 +66,7 @@ class DynamicDiagramConfiguration extends AbstractDiagramConfiguration {
 		!this.hiddenObjects.isEmpty
 	}
 
+	def shouldAnimate() {
+		this.hasEffectTransition && this.firstTimeRefreshView		
+	}
 }

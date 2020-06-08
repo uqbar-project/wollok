@@ -225,13 +225,17 @@ class VariableModel extends Shape {
 	}
 
 	override getBounds() {
-		if (DynamicDiagramConfiguration.instance.firstTimeRefreshView && !DynamicDiagramView.hadVariable(this)) {
+		if (shouldAnimate) {
 			new Rectangle(new Point(location.x, location.y + 15), size)
 		} else {
 			super.getBounds()
 		}
 	}
-		
+	
+	def shouldAnimate() {
+		DynamicDiagramConfiguration.instance.shouldAnimate && !DynamicDiagramView.hadVariable(this)
+	}
+
 	def canBeHidden() {
 		this.variable.value !== null
 	}
