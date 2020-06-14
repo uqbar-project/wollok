@@ -79,7 +79,6 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 
 	def configureLaunchSettings(ILaunchConfiguration configuration, String mode) {
 		val result = configuration.getWorkingCopy
-		result.setAttribute(ATTR_WOLLOK_DYNAMIC_DIAGRAM, preferenceStoreAccess.dynamicDiagramActivated)
 		if (mode.isDebug) {
 			val requestPort = findFreePort
 			val eventPort = findFreePort
@@ -98,24 +97,21 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 	}
 
 	def configureLaunchParameters(ILaunchConfiguration config, int requestPort, int eventPort) {
-		val parameters = new WollokLauncherParameters
-		parameters.eventsPort = eventPort
-		parameters.requestsPort = requestPort
-		parameters.wollokFiles += config.wollokFile
-		parameters.severalFiles = config.severalFiles
-		parameters.folder = config.folder
-		parameters.hasRepl = config.hasRepl
-		parameters.validate = config.hasRepl // Validate when the user enters code in the REPL.
-		parameters.dynamicDiagramActivated = preferenceStoreAccess.dynamicDiagramActivated
-		parameters.libraries = config.libraries
-
-		if (config.hasRepl && preferenceStoreAccess.dynamicDiagramActivated) {
-			parameters.dynamicDiagramPort = Activator.getDefault.wollokDynamicDiagramListeningPort
-		}
-
-		configureNumberPreferences(parameters)
-
-		parameters
+		new WollokLauncherParameters => [
+			eventsPort = eventPort
+			requestsPort = requestPort
+			wollokFiles += config.wollokFile
+			severalFiles = config.severalFiles
+			folder = config.folder
+			hasRepl = config.hasRepl
+			validate = config.hasRepl // Validate when the user enters code in the REPL.
+			dynamicDiagramActivated = config.dynamicDiagramActivated
+			libraries = config.libraries
+			if (config.hasRepl && preferenceStoreAccess.dynamicDiagramActivated) {
+				dynamicDiagramPort = Activator.getDefault.wollokDynamicDiagramListeningPort
+			}
+			configureNumberPreferences
+		]
 	}
 
 	def configureNumberPreferences(WollokLauncherParameters parameters) {

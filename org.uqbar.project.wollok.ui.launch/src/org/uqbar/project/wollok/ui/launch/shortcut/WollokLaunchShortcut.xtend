@@ -58,7 +58,7 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 		try {
 			locateRunner(currFile)
 			val config = getOrCreateConfig(currFile)
-			config.activateDynamicDiagramIfNeeded(WollokActivator.instance.preferenceStoreAccess)
+			config.activateDynamicDiagramIfNeeded(this.shouldActivateDynamicDiagram)
 			config.launch(mode)
 			currFile.refreshProject
 		} catch (CoreException e)
@@ -74,7 +74,13 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 		])
 		val wc = config.getWorkingCopy
 		wc.setAttribute(WollokLaunchConstants.ATTR_WOLLOK_IS_REPL, this.hasRepl)
+		wc.setAttribute(WollokLaunchConstants.ATTR_WOLLOK_DYNAMIC_DIAGRAM, this.shouldActivateDynamicDiagram)
 		wc.doSave
+		wc
+	}
+
+	def boolean shouldActivateDynamicDiagram() {
+		WollokActivator.instance.preferenceStoreAccess.dynamicDiagramActivated
 	}
 
 	def locateRunner(IResource resource) throws CoreException {
@@ -117,6 +123,7 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 		setAttribute(RefreshTab.ATTR_REFRESH_SCOPE, "${workspace}")
 		setAttribute(RefreshTab.ATTR_REFRESH_RECURSIVE, true)
 		setAttribute(ATTR_WOLLOK_LIBS, newArrayList(info.findLibs))
+		setAttribute(ATTR_WOLLOK_DYNAMIC_DIAGRAM, false)
 	}
 
 	def static getWollokFile(ILaunch launch) {

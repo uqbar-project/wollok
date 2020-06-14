@@ -4,20 +4,23 @@ import org.eclipse.debug.core.ILaunchConfiguration
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess
 import org.uqbar.project.wollok.ui.WollokActivator
 import org.uqbar.project.wollok.ui.console.RunInUI
+import org.uqbar.project.wollok.ui.preferences.WPreferencesUtils
 import org.uqbar.project.wollok.ui.preferences.WollokDynamicDiagramConfigurationBlock
 
-import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
-import org.uqbar.project.wollok.ui.preferences.WPreferencesUtils
 
 class LauncherExtensions {
-
-	static def activateDynamicDiagramIfNeeded(ILaunchConfiguration config, IPreferenceStoreAccess preferenceStoreAccess) {
-		if (config.hasRepl && preferenceStoreAccess.dynamicDiagramActivated) {
+	static def activateDynamicDiagramIfNeeded(ILaunchConfiguration config, boolean shouldActivate) {
+		if (shouldActivate) {
 			RunInUI.runInUI [
 				WollokActivator.DYNAMIC_DIAGRAM_VIEW_ID.openView
 			]
 		}
+	}
+
+	static def activateDynamicDiagramIfNeeded(ILaunchConfiguration config,
+		IPreferenceStoreAccess preferenceStoreAccess) {
+		config.activateDynamicDiagramIfNeeded(preferenceStoreAccess.dynamicDiagramActivated)
 	}
 
 	static def boolean dynamicDiagramActivated(IPreferenceStoreAccess preferenceStoreAccess) {

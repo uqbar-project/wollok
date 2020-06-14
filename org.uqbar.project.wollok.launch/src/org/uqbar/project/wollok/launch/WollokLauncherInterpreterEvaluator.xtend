@@ -2,6 +2,8 @@ package org.uqbar.project.wollok.launch
 
 import com.google.inject.Inject
 import java.util.List
+import org.eclipse.emf.common.util.BasicEList
+import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
@@ -21,7 +23,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
  * Subclasses the wollok evaluator to support tests
  * 
  * @author tesonep
- * @author dodain -- describe development
+ * @author dodain -- describe development + single test with only
  * 
  */
 class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
@@ -45,16 +47,17 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	}
 
 	def void runTestFile(WFile it){
-		if(!tests.empty){
-			wollokTestsReporter.testsToRun(null, it, tests)
-			tests.forEach [ test |
+		if(!tests.empty) {
+			val testsToRun = tests.detectTestsToRun
+			wollokTestsReporter.testsToRun(null, it, testsToRun)
+			testsToRun.forEach [ test |
 				resetGlobalState
 				test.eval
 			]
 		}
 						
 		suites.forEach [suite |
-			val testsToRun = suite.tests
+			val testsToRun = suite.tests.detectTestsToRun
 			val String suiteName = suite.name				
 			wollokTestsReporter.testsToRun(suiteName, it, testsToRun)
 			testsToRun.forEach [ test |
@@ -62,6 +65,11 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 				test.evalInSuite(suite)
 			]
 		]
+	}
+		
+	def EList<WTest> detectTestsToRun(EList<WTest> tests) {
+		val onlyTest = tests.findFirst [ only !== null ]
+		if (onlyTest === null) tests else new BasicEList(#[onlyTest])
 	}
 	
 	override evaluateAll(List<EObject> eObjects, String folder) {

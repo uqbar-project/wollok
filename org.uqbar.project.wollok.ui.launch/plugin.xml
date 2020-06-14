@@ -34,11 +34,21 @@
             sourceLocatorId="org.uqbar.project.wollok.ui.launch.sourceLocator"
             sourcePathComputerId="org.uqbar.project.wollok.ui.launch.sourcePathComputer"/>
    </extension>
+	<extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            id="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationType"
+            modes="run"
+            name="%wollok.launch.testsWithDynamicDiagram"
+            delegate="org.uqbar.project.wollok.ui.launch.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchDelegate"
+            sourceLocatorId="org.uqbar.project.wollok.ui.launch.sourceLocator"
+            sourcePathComputerId="org.uqbar.project.wollok.ui.launch.sourcePathComputer"/>
+   </extension>
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
       <launchConfigurationTypeImage
-            icon="icons/wollok-icon-test_16.png"
             configTypeID="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationType"
+            icon="icons/wollok-icon-test_16.png"
             id="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationTypeImage">
       </launchConfigurationTypeImage>
    </extension>
@@ -143,6 +153,27 @@
             icon="icons/wollok-icon-test_16.png"
             id="org.uqbar.project.wollok.ui.tests.shortcut"
             label="%wollok.launch.tests"
+            modes="run">
+          <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <count value="1"/>
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  	<adapt type="org.eclipse.core.resources.IFile"/>
+                  	<test property="org.eclipse.debug.ui.matchesPattern" value="*.wtest"/>
+               </iterate>
+             </with>
+           </enablement>
+         </contextualLaunch>
+      </shortcut>
+      <shortcut
+            class="org.uqbar.project.wollok.ui.tests.shortcut.WollokTestDynamicDiagramLaunchShortcut"
+            description="Launch Wollok Tests with Dynamic Diagram"
+            icon="icons/wollok-icon-test_16.png"
+            id="org.uqbar.project.wollok.ui.testsWithDynamicDiagram.shortcut"
+            label="%wollok.launch.testsWithDynamicDiagram"
             modes="run">
           <contextualLaunch>
            <enablement>

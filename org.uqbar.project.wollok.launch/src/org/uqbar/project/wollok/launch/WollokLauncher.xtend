@@ -59,15 +59,16 @@ class WollokLauncher extends WollokChecker {
 			val interpreter = injector.getInstance(WollokInterpreter)
 			createDebugger(interpreter, parameters)
 
+			if (parameters.shouldActivateDynamicDiagram) {
+				val interpreterListener = new WollokRemoteContextStateListener(interpreter, parameters.dynamicDiagramPort, parameters.hasRepl)
+				interpreter.addInterpreterListener(interpreterListener)
+			}
+
 			log.debug("Interpreting: " + mainFile.absolutePath)
 			interpreter.interpret(parsed)
 
 			if (parameters.hasRepl) {
 				val formatter = if (parameters.noAnsiFormat || isOsMac) new RegularReplOutputFormatter else new AnsiColoredReplOutputFormatter
-				if (parameters.dynamicDiagramActivated) {
-					val interpreterListener = new WollokRemoteContextStateListener(interpreter, parameters.dynamicDiagramPort)
-					interpreter.addInterpreterListener(interpreterListener)
-				}
 				new WollokRepl(this, injector, interpreter, mainFile, parsed, formatter).startRepl
 			}
 			System.exit(0)
