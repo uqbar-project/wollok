@@ -9,11 +9,20 @@ import org.uqbar.project.wollok.ui.preferences.WollokDynamicDiagramConfiguration
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
+import static extension org.uqbar.project.wollok.utils.ReflectionExtensions.*
+
 class LauncherExtensions {
 	static def activateDynamicDiagramIfNeeded(ILaunchConfiguration config, boolean shouldActivate) {
 		if (shouldActivate) {
 			RunInUI.runInUI [
-				WollokActivator.DYNAMIC_DIAGRAM_VIEW_ID.openView
+				val dynamicDiagramView = WollokActivator.DYNAMIC_DIAGRAM_VIEW_ID.openView
+				// Dodain note
+				// Since we are not referencing wollok.diagrams because of cyclic references
+				// we have to call it using reflection. If any error occurs, just ignore it
+				// in order to avoid annoying dialogs.
+				try {
+					dynamicDiagramView.executeMethod("cleanDiagram") 
+				} catch (Exception e) {}
 			]
 		}
 	}
