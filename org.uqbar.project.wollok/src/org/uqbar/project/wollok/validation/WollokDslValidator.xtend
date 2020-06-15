@@ -1407,11 +1407,30 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		]
 	}
 	
+	@Check
+	@DefaultSeverity(WARN)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_DESIGN_PROBLEM)
+	def severalTestsMarkedAsOnly(WFile it) {
+		tests.validateTestsMarkedAsOnly
+	}
+
+	@Check
+	@DefaultSeverity(WARN)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_DESIGN_PROBLEM)
+	def suiteWithSeveralTestsMarkedAsOnly(WSuite it) {
+		tests.validateTestsMarkedAsOnly
+	}
+
+	private def void validateTestsMarkedAsOnly(List<WTest> possibleTests) {
+		val testsWithOnlyFlag = possibleTests.filter [ only !== null ].toList
+		if (testsWithOnlyFlag.size > 1) {
+			testsWithOnlyFlag.forEach [ test | report(WollokDslValidator_TEST_WITH_ONLY_FLAG_SHOULD_BE_SINGLE, test, WTEST__NAME) ]
+		}
+	}	
+
 	def syntaxErrorsOf(Resource resource) {
 		val errors = (resource as XtextResource).parseResult.syntaxErrors.toList
 		return errors.filter[ error | error.syntaxErrorMessage !== null ].toList
 	}
 	
-		
-
 }
