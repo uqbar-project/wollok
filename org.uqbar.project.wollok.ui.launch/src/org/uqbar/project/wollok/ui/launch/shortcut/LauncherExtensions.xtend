@@ -21,7 +21,9 @@ class LauncherExtensions {
 				// we have to call it using reflection. If any error occurs, just ignore it
 				// in order to avoid annoying dialogs.
 				try {
-					dynamicDiagramView.executeMethod("cleanDiagram") 
+					if (dynamicDiagramView !== null) {
+						dynamicDiagramView.executeMethod("cleanDiagram") 
+					}
 				} catch (Exception e) {}
 			]
 		}

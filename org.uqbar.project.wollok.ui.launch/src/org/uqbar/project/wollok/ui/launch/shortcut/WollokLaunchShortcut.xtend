@@ -67,16 +67,11 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 
 	def getOrCreateConfig(IFile currFile) {
 		val info = new LaunchConfigurationInfo(currFile)
-		val config = launchManager.launchConfigurations.findFirstIfNone([
-			info.configEquals(it)
-		], [|
-			createConfiguration(info)
-		])
+		val config = createConfiguration(info)
 		val wc = config.getWorkingCopy
 		configureConfiguration(wc, info)
-		wc.setAttribute(WollokLaunchConstants.ATTR_WOLLOK_IS_REPL, this.hasRepl)
-		wc.setAttribute(WollokLaunchConstants.ATTR_WOLLOK_DYNAMIC_DIAGRAM, this.shouldActivateDynamicDiagram)
 		wc.doSave
+		config.delete
 		wc
 	}
 
@@ -119,11 +114,11 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 		setAttribute(ATTR_PROGRAM_ARGUMENTS, info.file)
 		setAttribute(ATTR_VM_ARGUMENTS, "-Duser.language=" + Platform.NL)
 		setAttribute(ATTR_WOLLOK_FILE, info.file)
-		setAttribute(ATTR_WOLLOK_IS_REPL, this.hasRepl)
 		setAttribute(RefreshTab.ATTR_REFRESH_SCOPE, "${workspace}")
 		setAttribute(RefreshTab.ATTR_REFRESH_RECURSIVE, true)
 		setAttribute(ATTR_WOLLOK_LIBS, newArrayList(info.findLibs))
-		setAttribute(ATTR_WOLLOK_DYNAMIC_DIAGRAM, false)
+		setAttribute(WollokLaunchConstants.ATTR_WOLLOK_IS_REPL, this.hasRepl)
+		setAttribute(WollokLaunchConstants.ATTR_WOLLOK_DYNAMIC_DIAGRAM, this.shouldActivateDynamicDiagram)
 	}
 
 	def static getWollokFile(ILaunch launch) {

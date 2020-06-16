@@ -54,7 +54,7 @@ class WollokTestLaunchShortcut extends WollokLaunchShortcut {
 	override launch(List<IFile> files, String mode) {
 		this.files = files
 		this.files.internalLaunch(mode)
-	}	
+	}
 
 	def internalLaunch(List<IFile> testFiles, String mode) {
 		if (testFiles.empty) {

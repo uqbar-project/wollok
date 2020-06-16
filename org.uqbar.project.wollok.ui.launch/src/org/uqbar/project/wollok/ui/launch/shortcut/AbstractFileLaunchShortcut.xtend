@@ -44,6 +44,7 @@ abstract class AbstractFileLaunchShortcut implements ILaunchShortcut {
 	}
 
 	override launch(IEditorPart editor, String mode) {
+		this.init
 		launch(editor.editorInput.adapt(IFile), mode)
 	}
 
