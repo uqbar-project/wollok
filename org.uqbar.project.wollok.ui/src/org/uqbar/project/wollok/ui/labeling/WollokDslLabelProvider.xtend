@@ -54,7 +54,7 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 
 	def image(WTest it) { 'wollok-icon-test_16.png' }
 
-	def image(WSuite it) { 'suite.png' }
+	def image(WSuite it) { 'describe.png' }
 
 	def image(WFixture it) { 'fixture.png' }
 

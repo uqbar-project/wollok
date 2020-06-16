@@ -143,7 +143,7 @@ class SuiteBuilder {
 	}
 
 	def build() {
-		// Suite -> suite wko  
+		// Suite -> suite wko
 		val suiteObject = new WollokObject(interpreter, suite)
 		// Declaring suite variables as suite wko instance variables
 		suite.members.forEach [ member |

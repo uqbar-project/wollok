@@ -73,6 +73,7 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 			createConfiguration(info)
 		])
 		val wc = config.getWorkingCopy
+		configureConfiguration(wc, info)
 		wc.setAttribute(WollokLaunchConstants.ATTR_WOLLOK_IS_REPL, this.hasRepl)
 		wc.setAttribute(WollokLaunchConstants.ATTR_WOLLOK_DYNAMIC_DIAGRAM, this.shouldActivateDynamicDiagram)
 		wc.doSave
@@ -107,7 +108,6 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 	def createConfiguration(LaunchConfigurationInfo info) throws CoreException {
 		val cfgType = LAUNCH_CONFIGURATION_TYPE.configType
 		val configuration = cfgType.newInstance(null, info.generateUniqueName)
-		configureConfiguration(configuration, info)
 		configuration.doSave
 	}
 
@@ -157,12 +157,7 @@ class LaunchConfigurationInfo {
 	}
 
 	def configEquals(ILaunchConfiguration a) throws CoreException {
-		file == a.getAttribute(ATTR_WOLLOK_FILE, "X") &&
-			WollokLauncher.name == a.getAttribute(ATTR_MAIN_TYPE_NAME, "X") &&
-			project == a.getAttribute(ATTR_PROJECT_NAME, "X") &&
-			(LAUNCH_CONFIGURATION_TYPE == a.type.identifier || LAUNCH_TEST_CONFIGURATION_TYPE == a.type.identifier) &&
-			a.getAttribute(ATTR_WOLLOK_SEVERAL_FILES, false) === severalFiles &&
-			a.getAttribute(ATTR_WOLLOK_FOLDER, "").sameFolder() && a.getAttribute(ATTR_WOLLOK_LIBS, #[]).equals(libs)
+		file.equalsIgnoreCase(a.getAttribute(ATTR_WOLLOK_FILE, "X"))
 	}
 
 	def sameFolder(String anotherFolder) {

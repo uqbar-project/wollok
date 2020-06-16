@@ -41,6 +41,7 @@ import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
  */
 class WollokObject extends AbstractWollokCallable implements EvaluationContext<WollokObject> {
 	public static val SELF_VAR = new WVariable(SELF, null, false, false)
+
 	@Accessors(PUBLIC_GETTER) val Map<String, WollokObject> instanceVariables = newHashMap
 	@Accessors(PUBLIC_GETTER) val List<String> constantReferences = newArrayList
 	@Accessors(PUBLIC_GETTER) val Map<WMethodContainer, Object> nativeObjects = newHashMap

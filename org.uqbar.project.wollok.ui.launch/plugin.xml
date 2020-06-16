@@ -157,7 +157,7 @@
           <contextualLaunch>
            <enablement>
              <with variable="selection">
-               <count value="1"/>
+               <count value="*"/>
                <iterate
                      ifEmpty="false"
                      operator="and">

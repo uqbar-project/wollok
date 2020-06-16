@@ -605,7 +605,7 @@
             class="org.uqbar.project.wollok.ui.wizard.tests.NewWollokDescribeWizard"
             descriptionImage="icons/suite32x32.png"
             finalPerspective="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspective"
-            icon="icons/suite.png"
+            icon="icons/describe.png"
             id="org.uqbar.project.wollok.ui.wizard.tests.NewWollokDescribeWizard"
             name="%wollokDescribe">
             <description>%wollokDescribeDescription</description>
