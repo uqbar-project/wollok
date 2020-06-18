@@ -8,6 +8,7 @@ import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
+import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -29,6 +30,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import static extension org.uqbar.project.wollok.WollokConstants.*
 
 /**
  * Provides labels for EObjects.
@@ -44,15 +46,27 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 		super(delegate)
 	}
 
+	def text(WFile it) {
+		eResource.URI.segmentsList.last	
+	}
+
+	def image(WFile it) {
+		switch (eResource.URI.fileExtension) {
+			case TEST_EXTENSION: "file_wtest.png"
+			case PROGRAM_EXTENSION: "file_wpgm.png"
+			default: "w.png"
+		}
+	}
+
 	def image(WPackage it) { 'package.png' }
 
-	def image(WProgram it) { 'wollok-icon-program_16.png' }
+	def image(WProgram it) { 'program.png' }
 
 	def image(WClass it) { 'wollok-icon-class_16.png' }
 	
 	def image(WMixin it) { 'wollok-icon-mixin_16.png' }
 
-	def image(WTest it) { 'wollok-icon-test_16.png' }
+	def image(WTest it) { 'test.png' }
 
 	def image(WSuite it) { 'describe.png' }
 

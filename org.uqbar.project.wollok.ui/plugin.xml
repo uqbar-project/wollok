@@ -12,7 +12,7 @@
             class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.editor.WollokTextEditor"
             contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
             default="true"
-            extensions="wpgm,wlk"
+            extensions="wlk"
             icon="icons/w.png"
             id="org.uqbar.project.wollok.WollokDsl"
             name="%wollokEditor">
@@ -25,7 +25,19 @@
             contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
             default="true"
             extensions="wtest"
-            icon="icons/wollok-icon-test_16.png"
+            icon="icons/file_wtest.png"
+            id="org.uqbar.project.wollok.WollokDsl"
+            name="%wollokEditor">
+        </editor>
+    </extension>
+    <extension
+            point="org.eclipse.ui.editors">
+        <editor
+            class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.editor.WollokTextEditor"
+            contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
+            default="true"
+            extensions="wpgm"
+            icon="icons/file_wpgm.png"
             id="org.uqbar.project.wollok.WollokDsl"
             name="%wollokEditor">
         </editor>
@@ -585,7 +597,7 @@
             class="org.uqbar.project.wollok.ui.wizard.objects.NewWollokObjectsWizard"
             descriptionImage="icons/wollok-logo.iconset/icon_32x32.png"
             finalPerspective="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspective"
-            icon="icons/wollok-icon-object_16.png"
+            icon="icons/file_wlk.png"
             id="org.uqbar.project.wollok.ui.wizard.objects.NewWollokObjectsWizard"
             name="%wollokObjectsAndClasses">
             <description>%wollokObjectsAndClassesDescription</description>
@@ -595,7 +607,7 @@
             class="org.uqbar.project.wollok.ui.wizard.tests.NewWollokTestWizard"
             descriptionImage="icons/wollok-logo.iconset/test_32x32.png"
             finalPerspective="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspective"
-            icon="icons/wollok-icon-message_16.png"
+            icon="icons/test.png"
             id="org.uqbar.project.wollok.ui.wizard.tests.NewWollokTestWizard"
             name="%wollokTest">
             <description>%wollokTestDescription</description>
@@ -615,7 +627,7 @@
             class="org.uqbar.project.wollok.ui.wizard.program.NewWollokProgramWizard"
             descriptionImage="icons/wollok-logo.iconset/icon_32x32.png"
             finalPerspective="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspective"
-            icon="icons/wollok-icon-program_16.png"
+            icon="icons/program.png"
             id="org.uqbar.project.wollok.ui.wizard.program.NewWollokProgramWizard"
             name="%wollokProgram">
             <description>%wollokProgramDescription</description>
@@ -624,7 +636,7 @@
    <extension
          point="org.eclipse.ui.ide.projectNatureImages">
       <image
-            icon="icons/w-small.png"
+            icon="icons/w.png"
             id="org.uqbar.project.wollok.wollokNature.image"
             natureId="org.uqbar.project.wollok.wollokNature">
       </image>

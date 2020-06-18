@@ -29,6 +29,7 @@
       <launchConfigurationType
             id="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationType"
             modes="run"
+            icon="icons/w.png"
             name="%wollok.launch.tests"
             delegate="org.uqbar.project.wollok.ui.launch.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchDelegate"
             sourceLocatorId="org.uqbar.project.wollok.ui.launch.sourceLocator"
@@ -39,6 +40,7 @@
       <launchConfigurationType
             id="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationType"
             modes="run"
+            icon="icons/w.png"
             name="%wollok.launch.testsWithDynamicDiagram"
             delegate="org.uqbar.project.wollok.ui.launch.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchDelegate"
             sourceLocatorId="org.uqbar.project.wollok.ui.launch.sourceLocator"
@@ -48,7 +50,7 @@
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
       <launchConfigurationTypeImage
             configTypeID="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationType"
-            icon="icons/wollok-icon-test_16.png"
+            icon="icons/file_wtest.png"
             id="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationTypeImage">
       </launchConfigurationTypeImage>
    </extension>
@@ -150,7 +152,7 @@
       <shortcut
             class="org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut"
             description="Launch Wollok Tests"
-            icon="icons/wollok-icon-test_16.png"
+            icon="icons/file_wtest.png"
             id="org.uqbar.project.wollok.ui.tests.shortcut"
             label="%wollok.launch.tests"
             modes="run">
@@ -171,7 +173,7 @@
       <shortcut
             class="org.uqbar.project.wollok.ui.tests.shortcut.WollokTestDynamicDiagramLaunchShortcut"
             description="Launch Wollok Tests with Dynamic Diagram"
-            icon="icons/wollok-icon-test_16.png"
+            icon="icons/run_test_with_dynamic_diagram.png"
             id="org.uqbar.project.wollok.ui.testsWithDynamicDiagram.shortcut"
             label="%wollok.launch.testsWithDynamicDiagram"
             modes="run">
@@ -192,7 +194,7 @@
       <shortcut
             class="org.uqbar.project.wollok.ui.tests.shortcut.WollokAllTestsLaunchShortcut"
             description="Launch All Wollok Tests"
-            icon="icons/wollok-icon-test_16.png"
+            icon="icons/file_wtest.png"
             id="org.uqbar.project.wollok.ui.allTests.shortcut"
             label="%wollok.launch.allTests"
             modes="run">

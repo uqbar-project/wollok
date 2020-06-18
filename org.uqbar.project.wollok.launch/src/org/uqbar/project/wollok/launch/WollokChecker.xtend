@@ -61,7 +61,6 @@ class WollokChecker {
 
 			parameters.parse(args)
 			this.configureNumberPreferences(parameters)
-			println("Parameters " + parameters.build)
 			injector = new WollokLauncherSetup(parameters).createInjectorAndDoEMFRegistration
 			this.doConfigureParser(parameters)
 			if (parameters.severalFiles) {

@@ -19,10 +19,11 @@ class WollokDslDescriptionLabelProvider extends DefaultDescriptionLabelProvider 
 			case WPACKAGE: 'package.png'
 			case WNAMED_OBJECT: 'wollok-icon-object_16.png'
 			case WSUITE: 'describe.png'
-			case WTEST: 'wollok-icon-test_16.png'
+			case WTEST: 'test.png'
 			
 			default: null
 		}
 	}
 
 }
+
