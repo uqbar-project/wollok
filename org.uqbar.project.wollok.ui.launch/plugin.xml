@@ -104,7 +104,7 @@
             id="org.uqbar.project.wollok.ui.launch.shortcut"
             label="Run Wollok Program"
             modes="run"
-            icon="icons/w.png">
+            icon="icons/file_wpgm.png">
           <contextualLaunch>
            <enablement>
              <with variable="selection">

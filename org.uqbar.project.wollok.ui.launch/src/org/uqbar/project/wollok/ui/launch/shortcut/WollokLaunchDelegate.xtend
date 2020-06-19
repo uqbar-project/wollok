@@ -48,8 +48,6 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 	override launch(ILaunchConfiguration configuration, String mode, ILaunch launch,
 		IProgressMonitor monitor) throws CoreException {
 
-		configuration.activateDynamicDiagramIfNeeded(preferenceStoreAccess)
-
 		if (mode.isDebug && configuration.getAttribute(ATTR_REFRESH_SCOPE, null as String) !== null) {
 			DebugPlugin.getDefault.addDebugEventListener(createListener(configuration))
 		}

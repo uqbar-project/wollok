@@ -13,20 +13,23 @@ import static extension org.uqbar.project.wollok.utils.ReflectionExtensions.*
 
 class LauncherExtensions {
 	static def activateDynamicDiagramIfNeeded(ILaunchConfiguration config, boolean shouldActivate) {
-		if (shouldActivate) {
-			RunInUI.runInUI [
-				val dynamicDiagramView = WollokActivator.DYNAMIC_DIAGRAM_VIEW_ID.openView
-				// Dodain note
-				// Since we are not referencing wollok.diagrams because of cyclic references
-				// we have to call it using reflection. If any error occurs, just ignore it
-				// in order to avoid annoying dialogs.
-				try {
-					if (dynamicDiagramView !== null) {
-						dynamicDiagramView.executeMethod("cleanDiagram") 
-					}
-				} catch (Exception e) {}
-			]
-		}
+		// Dodain note
+		// Since we are not referencing wollok.diagrams because of cyclic references
+		// we have to call it using reflection. If any error occurs, just ignore it
+		// in order to avoid annoying dialogs.
+		try {
+			val dynamicDiagramView = WollokActivator.DYNAMIC_DIAGRAM_VIEW_ID.findView
+			if (dynamicDiagramView !== null) {
+				dynamicDiagramView.executeMethod("cleanDiagram") 
+			}
+
+			if (shouldActivate) {
+				RunInUI.runInUI [
+					WollokActivator.DYNAMIC_DIAGRAM_VIEW_ID.openView
+				]
+			}
+		} catch (Exception e) {}
+
 	}
 
 	static def activateDynamicDiagramIfNeeded(ILaunchConfiguration config,

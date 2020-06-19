@@ -5,11 +5,9 @@ import org.eclipse.core.resources.IResource
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.Platform
 import org.eclipse.debug.core.DebugException
-import org.eclipse.debug.core.DebugPlugin
 import org.eclipse.debug.core.ILaunch
 import org.eclipse.debug.core.ILaunchConfiguration
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy
-import org.eclipse.debug.core.ILaunchManager
 import org.eclipse.debug.ui.RefreshTab
 import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jdt.core.JavaCore
@@ -30,7 +28,6 @@ import static org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.LauncherExtensions.*
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
 import static extension org.uqbar.project.wollok.ui.libraries.WollokLibrariesStore.*
-import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**
@@ -43,7 +40,7 @@ import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
  */
 class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 
-	ILaunchManager launchManager = DebugPlugin.getDefault.launchManager
+//	ILaunchManager launchManager = DebugPlugin.getDefault.launchManager
 
 	override launch(IFile currFile, String mode) {
 		if (currFile.project.hasErrors) {
@@ -76,7 +73,8 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 	}
 
 	def boolean shouldActivateDynamicDiagram() {
-		WollokActivator.instance.preferenceStoreAccess.dynamicDiagramActivated
+		// TODO: In a future step, we should also include programs
+		this.hasRepl && WollokActivator.instance.preferenceStoreAccess.dynamicDiagramActivated
 	}
 
 	def locateRunner(IResource resource) throws CoreException {

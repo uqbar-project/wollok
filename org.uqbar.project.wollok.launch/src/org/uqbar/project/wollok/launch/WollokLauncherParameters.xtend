@@ -71,7 +71,7 @@ class WollokLauncherParameters {
 	}
 
 	def shouldActivateDynamicDiagram() {
-		this.dynamicDiagramActivated && this.dynamicDiagramPort !== 0		
+		this.dynamicDiagramActivated && (this.dynamicDiagramPort ?: 0) !== 0		
 	}
 
 	def appendIfNotNull(StringBuilder builder, Object parameterValue, String parameterKey) {
