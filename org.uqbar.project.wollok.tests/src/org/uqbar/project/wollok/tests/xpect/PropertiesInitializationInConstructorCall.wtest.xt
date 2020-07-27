@@ -1,0 +1,40 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+class Viaje {
+	const property origen
+	const property destino
+	const property medioDeTransporte
+}
+
+class Excursion {
+	const property lugar
+	
+	constructor() {
+		lugar = "Mar del Plata"
+	}
+}
+
+describe "properties initialization in constructor call" {
+	
+	test "calling a constructor with no arguments should throw an error if there are constant references" {
+		// XPECT errors ---> "You must provide initial value to the following references: origen, destino, medioDeTransporte" at "new Viaje()"
+		new Viaje()
+		assert.that(true)
+	}
+	
+	test "calling a constructor with named parameters should throw an error if there are constant references uninitialized" {
+		// XPECT errors ---> "You must provide initial value to the following references: destino, medioDeTransporte" at "new Viaje(origen = "Mar del Plata")"
+		new Viaje(origen = "Mar del Plata")
+		assert.that(true)
+	}
+
+	test "calling new Date() passes validation because it has a initialize method" {
+		new Date()
+		assert.that(true)
+	}
+	
+	test "if class has an empty constructor which initializes const properties validation should pass" {
+		new Excursion()
+		assert.that(true)
+	}
+
+}

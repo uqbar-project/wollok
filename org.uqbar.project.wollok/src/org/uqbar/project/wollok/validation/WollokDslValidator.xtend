@@ -281,7 +281,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	@CheckGroup(WollokCheckGroup.INITIALIZATION)
 	def checkUninitializedAttributesInConstructorNamedParameters(WConstructorCall it) {
-		if (!hasNamedParameters) return;
+		if (!hasNamedParameters && (!classRef.inheritsDefaultConstructor() || classRef.hasInitializeMethod())) return;
 		val unusedVarDeclarations = uninitializedNamedParameters
 		if (!unusedVarDeclarations.isEmpty) {
 			val variableNames = unusedVarDeclarations.map [ variable.name ].join(", ")
