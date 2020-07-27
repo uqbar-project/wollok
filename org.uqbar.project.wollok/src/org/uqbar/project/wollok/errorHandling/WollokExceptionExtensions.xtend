@@ -123,7 +123,7 @@ class WollokExceptionExtensions {
 	def static dispatch String convertToString(WollokObject exception) {
 		exception.call("getStackTrace").wollokToJava(String) as String
 	}
-	
+
 	/**
 	 * Prepares an exception for a RMI call
 	 */

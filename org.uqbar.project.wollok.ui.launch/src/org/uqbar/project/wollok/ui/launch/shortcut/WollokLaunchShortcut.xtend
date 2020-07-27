@@ -5,11 +5,9 @@ import org.eclipse.core.resources.IResource
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.Platform
 import org.eclipse.debug.core.DebugException
-import org.eclipse.debug.core.DebugPlugin
 import org.eclipse.debug.core.ILaunch
 import org.eclipse.debug.core.ILaunchConfiguration
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy
-import org.eclipse.debug.core.ILaunchManager
 import org.eclipse.debug.ui.RefreshTab
 import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jdt.core.JavaCore
@@ -30,7 +28,6 @@ import static org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.LauncherExtensions.*
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
 import static extension org.uqbar.project.wollok.ui.libraries.WollokLibrariesStore.*
-import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**
@@ -43,7 +40,7 @@ import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
  */
 class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 
-	ILaunchManager launchManager = DebugPlugin.getDefault.launchManager
+//	ILaunchManager launchManager = DebugPlugin.getDefault.launchManager
 
 	override launch(IFile currFile, String mode) {
 		if (currFile.project.hasErrors) {
@@ -58,7 +55,7 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 		try {
 			locateRunner(currFile)
 			val config = getOrCreateConfig(currFile)
-			config.activateDynamicDiagramIfNeeded(WollokActivator.instance.preferenceStoreAccess)
+			config.activateDynamicDiagramIfNeeded(this.shouldActivateDynamicDiagram)
 			config.launch(mode)
 			currFile.refreshProject
 		} catch (CoreException e)
@@ -67,14 +64,17 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 
 	def getOrCreateConfig(IFile currFile) {
 		val info = new LaunchConfigurationInfo(currFile)
-		val config = launchManager.launchConfigurations.findFirstIfNone([
-			info.configEquals(it)
-		], [|
-			createConfiguration(info)
-		])
+		val config = createConfiguration(info)
 		val wc = config.getWorkingCopy
-		wc.setAttribute(WollokLaunchConstants.ATTR_WOLLOK_IS_REPL, this.hasRepl)
+		configureConfiguration(wc, info)
 		wc.doSave
+		config.delete
+		wc
+	}
+
+	def boolean shouldActivateDynamicDiagram() {
+		// TODO: In a future step, we should also include programs
+		this.hasRepl && WollokActivator.instance.preferenceStoreAccess.dynamicDiagramActivated
 	}
 
 	def locateRunner(IResource resource) throws CoreException {
@@ -101,7 +101,6 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 	def createConfiguration(LaunchConfigurationInfo info) throws CoreException {
 		val cfgType = LAUNCH_CONFIGURATION_TYPE.configType
 		val configuration = cfgType.newInstance(null, info.generateUniqueName)
-		configureConfiguration(configuration, info)
 		configuration.doSave
 	}
 
@@ -113,10 +112,11 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 		setAttribute(ATTR_PROGRAM_ARGUMENTS, info.file)
 		setAttribute(ATTR_VM_ARGUMENTS, "-Duser.language=" + Platform.NL)
 		setAttribute(ATTR_WOLLOK_FILE, info.file)
-		setAttribute(ATTR_WOLLOK_IS_REPL, this.hasRepl)
 		setAttribute(RefreshTab.ATTR_REFRESH_SCOPE, "${workspace}")
 		setAttribute(RefreshTab.ATTR_REFRESH_RECURSIVE, true)
 		setAttribute(ATTR_WOLLOK_LIBS, newArrayList(info.findLibs))
+		setAttribute(WollokLaunchConstants.ATTR_WOLLOK_IS_REPL, this.hasRepl)
+		setAttribute(WollokLaunchConstants.ATTR_WOLLOK_DYNAMIC_DIAGRAM, this.shouldActivateDynamicDiagram)
 	}
 
 	def static getWollokFile(ILaunch launch) {
@@ -150,12 +150,7 @@ class LaunchConfigurationInfo {
 	}
 
 	def configEquals(ILaunchConfiguration a) throws CoreException {
-		file == a.getAttribute(ATTR_WOLLOK_FILE, "X") &&
-			WollokLauncher.name == a.getAttribute(ATTR_MAIN_TYPE_NAME, "X") &&
-			project == a.getAttribute(ATTR_PROJECT_NAME, "X") &&
-			(LAUNCH_CONFIGURATION_TYPE == a.type.identifier || LAUNCH_TEST_CONFIGURATION_TYPE == a.type.identifier) &&
-			a.getAttribute(ATTR_WOLLOK_SEVERAL_FILES, false) === severalFiles &&
-			a.getAttribute(ATTR_WOLLOK_FOLDER, "").sameFolder() && a.getAttribute(ATTR_WOLLOK_LIBS, #[]).equals(libs)
+		file.equalsIgnoreCase(a.getAttribute(ATTR_WOLLOK_FILE, "X"))
 	}
 
 	def sameFolder(String anotherFolder) {
