@@ -281,11 +281,12 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	@CheckGroup(WollokCheckGroup.INITIALIZATION)
 	def checkUninitializedAttributesInConstructorNamedParameters(WConstructorCall it) {
-		if (!hasNamedParameters && (!classRef.inheritsDefaultConstructor() || classRef.hasInitializeMethod())) return;
-		val unusedVarDeclarations = uninitializedNamedParameters
-		if (!unusedVarDeclarations.isEmpty) {
-			val variableNames = unusedVarDeclarations.map [ variable.name ].join(", ")
-			reportEObject(NLS.bind(WollokDslValidator_MISSING_ASSIGNMENTS_IN_CONSTRUCTOR_CALL, variableNames), it, MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR)
+		if (hasNamedParameters || (!classRef.hasConstructors() && !classRef.hasInitializeMethod())) {
+			val unusedVarDeclarations = uninitializedNamedParameters
+			if (!unusedVarDeclarations.isEmpty) {
+				val variableNames = unusedVarDeclarations.map [ variable.name ].join(", ")
+				reportEObject(NLS.bind(WollokDslValidator_MISSING_ASSIGNMENTS_IN_CONSTRUCTOR_CALL, variableNames), it, MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR)
+			}
 		}
 	}
 	
