@@ -27,8 +27,7 @@ object propertiesInferenceTest {
 	}
 	
 	method prueba2() {
-		const cl = new PropertiesInferenceClass()
-		cl.notInitialized(true)
+		const cl = new PropertiesInferenceClass(notInitialized = true)
 		
 		// XPECT type at p2 --> Boolean
 		const p2 = cl.notInitialized()

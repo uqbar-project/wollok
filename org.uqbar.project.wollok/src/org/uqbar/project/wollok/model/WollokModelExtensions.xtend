@@ -429,6 +429,10 @@ class WollokModelExtensions {
 
 		return c.parent.inheritsDefaultConstructor
 	}
+	
+	def static boolean hasInitializeMethod(WClass clazz) {
+		clazz.methods.map [ name ].contains(INITIALIZE_METHOD)
+	}
 
 	def static boolean hasCustomParent(WClass c) {
 		c.parent !== null && !c.parent.fqn.equalsIgnoreCase(WollokConstants.FQN_ROOT_CLASS)
