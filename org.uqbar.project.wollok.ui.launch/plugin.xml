@@ -29,7 +29,19 @@
       <launchConfigurationType
             id="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationType"
             modes="run"
+            icon="icons/w.png"
             name="%wollok.launch.tests"
+            delegate="org.uqbar.project.wollok.ui.launch.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchDelegate"
+            sourceLocatorId="org.uqbar.project.wollok.ui.launch.sourceLocator"
+            sourcePathComputerId="org.uqbar.project.wollok.ui.launch.sourcePathComputer"/>
+   </extension>
+	<extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            id="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationType"
+            modes="run"
+            icon="icons/w.png"
+            name="%wollok.launch.testsWithDynamicDiagram"
             delegate="org.uqbar.project.wollok.ui.launch.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchDelegate"
             sourceLocatorId="org.uqbar.project.wollok.ui.launch.sourceLocator"
             sourcePathComputerId="org.uqbar.project.wollok.ui.launch.sourcePathComputer"/>
@@ -37,8 +49,8 @@
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
       <launchConfigurationTypeImage
-            icon="icons/wollok-icon-test_16.png"
             configTypeID="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationType"
+            icon="icons/file_wtest.png"
             id="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationTypeImage">
       </launchConfigurationTypeImage>
    </extension>
@@ -92,7 +104,7 @@
             id="org.uqbar.project.wollok.ui.launch.shortcut"
             label="Run Wollok Program"
             modes="run"
-            icon="icons/w.png">
+            icon="icons/file_wpgm.png">
           <contextualLaunch>
            <enablement>
              <with variable="selection">
@@ -140,9 +152,30 @@
       <shortcut
             class="org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut"
             description="Launch Wollok Tests"
-            icon="icons/wollok-icon-test_16.png"
+            icon="icons/file_wtest.png"
             id="org.uqbar.project.wollok.ui.tests.shortcut"
             label="%wollok.launch.tests"
+            modes="run">
+          <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <count value="*"/>
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  	<adapt type="org.eclipse.core.resources.IFile"/>
+                  	<test property="org.eclipse.debug.ui.matchesPattern" value="*.wtest"/>
+               </iterate>
+             </with>
+           </enablement>
+         </contextualLaunch>
+      </shortcut>
+      <shortcut
+            class="org.uqbar.project.wollok.ui.tests.shortcut.WollokTestDynamicDiagramLaunchShortcut"
+            description="Launch Wollok Tests with Dynamic Diagram"
+            icon="icons/run_test_with_dynamic_diagram.png"
+            id="org.uqbar.project.wollok.ui.testsWithDynamicDiagram.shortcut"
+            label="%wollok.launch.testsWithDynamicDiagram"
             modes="run">
           <contextualLaunch>
            <enablement>
@@ -161,7 +194,7 @@
       <shortcut
             class="org.uqbar.project.wollok.ui.tests.shortcut.WollokAllTestsLaunchShortcut"
             description="Launch All Wollok Tests"
-            icon="icons/wollok-icon-test_16.png"
+            icon="icons/file_wtest.png"
             id="org.uqbar.project.wollok.ui.allTests.shortcut"
             label="%wollok.launch.allTests"
             modes="run">

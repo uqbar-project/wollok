@@ -80,18 +80,18 @@ class WollokTestFileContainer {
 	
 	def String getInternalImage() {
 		if (running) {
-			return "icons/wollok-icon-testrun_16.png"
+			return "icons/wtest_run.png"
 		}
 		if (errored) {
-			return "icons/wollok-icon-testerr_16.png"
+			return "icons/wtest_error.png"
 		}
 		if (failed) {
-			return "icons/wollok-icon-testfail_16.png"
+			return "icons/wtest_fail.png"
 		}
 		if (passed) {
-			return "icons/wollok-icon-testok_16.png"
+			return "icons/wtest_ok.png"
 		}
-		"icons/wollok-icon-test_16.png"		
+		"icons/wtest.png"
 	}
 
 	def getImage() {

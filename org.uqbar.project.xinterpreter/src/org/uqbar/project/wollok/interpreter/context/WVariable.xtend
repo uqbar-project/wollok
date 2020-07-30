@@ -16,8 +16,8 @@ class WVariable implements Serializable {
 	
 	new(String name, Integer id, boolean local, boolean constant) {
 		this.name = name
-		this.local = local
 		this.id = id
+		this.local = local
 		this.constant = constant
 	}
 	

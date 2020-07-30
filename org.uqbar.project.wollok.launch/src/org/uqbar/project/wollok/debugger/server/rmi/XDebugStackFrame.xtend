@@ -32,7 +32,8 @@ class XDebugStackFrame implements Serializable {
 	}
 
 	def static List<XDebugStackFrameVariable> debugVariables(EvaluationContext<WollokObject> context) {
-		val vars = Lists.newArrayList(context.allReferenceNamesForDynamicDiagram.filter [
+		val vars = Lists.newArrayList(context.allReferenceNamesForDynamicDiagram
+			.filter [
 			!local && context.variableShowableInDynamicDiagram(name) && !UNWANTED_OBJECTS.exists [ unwanted |
 				name.contains(unwanted)
 			]

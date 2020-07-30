@@ -34,6 +34,6 @@ object entrenador {
 
 object wollok {
 	method testEntrenador() {
-		entrenador.alimentar(new Ave())
+		entrenador.alimentar(new Ave(energia = 0))
 	}
 }

@@ -27,7 +27,7 @@ WProgram:
 ;
 
 WTest:
-	'test' name=STRING '{'
+	(only='only')? 'test' name=STRING '{'
 		(elements+=WExpressionOrVarDeclaration ';'?)*		
 	'}'
 ;

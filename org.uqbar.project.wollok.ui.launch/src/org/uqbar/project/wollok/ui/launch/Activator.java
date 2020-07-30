@@ -63,12 +63,6 @@ public class Activator extends AbstractUIPlugin {
 		return null;
 	}
 
-	// public ImageDescriptor getImageDescriptor(String name) {
-	// URL u = find(this.getDefault().getStateLocation().append(name));
-	// System.out.println(u);
-	// return ImageDescriptor.createFromURL(u);
-	// }
-
 	public static Activator getDefault() {
 		return plugin;
 	}

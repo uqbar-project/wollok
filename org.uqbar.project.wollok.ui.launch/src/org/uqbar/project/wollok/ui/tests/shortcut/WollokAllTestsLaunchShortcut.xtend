@@ -7,9 +7,6 @@ import org.eclipse.core.resources.IFolder
 import org.eclipse.core.resources.IProject
 import org.eclipse.core.resources.IResource
 import org.eclipse.jdt.core.IJavaProject
-import org.eclipse.jface.dialogs.MessageDialog
-import org.eclipse.swt.widgets.Display
-import org.uqbar.project.wollok.Messages
 
 import static org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 
@@ -54,16 +51,6 @@ class WollokAllTestsLaunchShortcut extends WollokTestLaunchShortcut {
 		folder.getTestFiles.internalLaunch(mode)
 	}
 
-	def internalLaunch(List<IFile> testFiles, String mode) {
-		if (testFiles.empty) {
-			MessageDialog.openError(Display.current.activeShell, Messages.TestLauncher_NoTestToRun_Title,
-				Messages.TestLauncher_NoTestToRun_Message)
-			return;
-		}
-		val currFile = testFiles.head
-		this.doLaunch(currFile, mode)
-	}
-	
 	override launch(IJavaProject currProject, String mode) {
 		this.folder = null
 		launch(currProject.elementName.project, mode)
@@ -77,16 +64,6 @@ class WollokAllTestsLaunchShortcut extends WollokTestLaunchShortcut {
 		folder.allMembers.testFiles
 	}
 	
-	def List<IFile> getTestFiles(Set<IResource> files) {
-		files
-			.filter [
-				fileExtension !== null && fileExtension.equals(WTEST_EXTENSIONS)
-			]
-			.toList
-			.map [ adapt(IFile) ]
-			.toList
-	}
-	
 	def String testFilesAsString(IFile file) {
 		var testFiles = file.project.testFiles
 		if (this.folder !== null) {
@@ -96,6 +73,16 @@ class WollokAllTestsLaunchShortcut extends WollokTestLaunchShortcut {
 			val filePath = testFile.projectRelativePath.toString
 			sb.append(filePath).append(" ")
 		]).toString
+	}
+
+	def List<IFile> getTestFiles(Set<IResource> files) {
+		files
+			.filter [
+				fileExtension !== null && fileExtension.equals(WTEST_EXTENSIONS)
+			]
+			.toList
+			.map [ adapt(IFile) ]
+			.toList
 	}
 
 }
