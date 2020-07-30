@@ -56,5 +56,10 @@ describe "group of tests" {
 	test "se puede instanciar una clase que define una const property como implementación de un método abstracto" {
 		assert.notEquals(null, new EspadaConcreta().artefacto())
 	}
-	
+
+	test "se puede instanciar una clase que define una var property como implementación de un método abstracto" {
+		const b = new B(m1 = 2)
+		b.m1(5)
+		assert.notEquals(5, b.m1())
+	}	
 }
