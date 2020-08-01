@@ -94,7 +94,7 @@ class GenericTypeInfo extends TypeInfo {
 				if (matchingMaxType !== null) {
 					type.beSubtypeOf(matchingMaxType)
 				} else {
-					error(new RejectedMinTypeException(offender, type, maxTypes.maximalConcreteTypes))
+					error(new RejectedMinTypeException(offender, type, maxTypes.maximalConcreteTypes, !users.contains(offender)))
 					maxTypes.state = Error
 				}
 			}

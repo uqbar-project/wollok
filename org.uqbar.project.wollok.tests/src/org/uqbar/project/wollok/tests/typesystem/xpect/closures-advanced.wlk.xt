@@ -24,6 +24,16 @@ object incompatibility {
 		// XPECT warnings --> "Type system: expected <<{(Number) => Boolean}>> but found <<{() => Boolean}>>" at "{true}"
 		return [1,2,3].filter({true})
 	}
+	 
+	method incompatible_param_closure_type() {
+		// XPECT warnings --> "Number does not understand startsWith("ERROR")" at "n.startsWith("ERROR")"
+		return [1,2,3].filter({n => n.startsWith("ERROR")})
+	}
+
+	method incompatible_return_closure_type() {
+		// XPECT warnings --> "Type system: expected <<Boolean>> but found <<String>>" at "{n => "ERROR"}"
+		return [1,2,3].any({n => "ERROR"})
+	}
 	
 	method infinite_closure_type(c) {
 		// XPECT warnings --> "Type system: Infinite recursive type" at "c"
