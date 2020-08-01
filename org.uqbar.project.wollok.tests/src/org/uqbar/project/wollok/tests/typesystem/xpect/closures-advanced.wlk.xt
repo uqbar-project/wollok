@@ -1,8 +1,22 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
 
 object advancedClosures {
-	//  XPECT methodType at next --> (Number) => Number
+	// XPECT methodType at next --> (Number) => Number
 	method next(n) {
 		return { a => a + 1 }.apply(n)
 	}
+}
+
+object incompatibility {
+	//const numbers = [1,2,3]
+	
+	method test1() {
+		// XPECT warnings --> "Type system: expected <<{(Number) => Boolean}>> but found <<String>>" at ""ERROR""
+		return [1,2,3].filter("ERROR")
+	} 
+	
+	method test2() {
+		// XPECT warnings --> "Type system: expected <<Number>> but found <<{() => String}>>" at "{"ERROR"}"
+		return [1,2,3].contains({"ERROR"})
+	}	
 }
