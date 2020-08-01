@@ -18,6 +18,7 @@ import static extension org.uqbar.project.wollok.typesystem.constraints.types.Me
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.SubtypingRules.isSuperTypeOf
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.AnalysisResultReporter.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
+import org.uqbar.project.wollok.typesystem.exceptions.InfiniteRecursiveTypeException
 
 class GenericTypeInfo extends TypeInfo {
 	@Accessors
@@ -99,6 +100,8 @@ class GenericTypeInfo extends TypeInfo {
 			}
 		]
 
+		maxTypes.forEach[validateInfiniteRecursiveType(offender, maxTypes)]
+		
 		if (maxTypes.state == Error) {
 			false
 		} else if (maximalConcreteTypes === null) {
@@ -107,6 +110,20 @@ class GenericTypeInfo extends TypeInfo {
 		} else {
 			maximalConcreteTypes.restrictTo(maxTypes)
 		}
+	}
+	
+	def dispatch validateInfiniteRecursiveType(WollokType type, TypeVariable offender, MaximalConcreteTypes maxTypes) {
+		// No possible 
+	}
+	
+	def dispatch validateInfiniteRecursiveType(GenericTypeInstance it, TypeVariable offender, MaximalConcreteTypes maxTypes) {
+		typeParameters.values.forEach[paramVar | 
+			if (users.contains(paramVar)) {
+				offender.addError(new InfiniteRecursiveTypeException(offender))
+				maxTypes.state = Error	
+			}
+		]
+			
 	}
 
 	/** 
