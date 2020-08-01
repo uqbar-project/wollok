@@ -18,6 +18,11 @@ object incompatibility {
 	method basic_vs_closure_type() {
 		// XPECT warnings --> "Type system: expected <<Number>> but found <<{() => String}>>" at "{"ERROR"}"
 		return [1,2,3].contains({"ERROR"})
+	} 
+	
+	method closure_type_with_different_params() {
+		// XPECT warnings --> "Type system: expected <<{(Number) => Boolean}>> but found <<{() => Boolean}>>" at "{true}"
+		return [1,2,3].filter({true})
 	}
 	
 	method infinite_closure_type(c) {

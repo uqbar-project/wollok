@@ -9,9 +9,10 @@ import org.uqbar.project.wollok.typesystem.WollokType
 import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInstance
 
 class CompatibilityTypes {
-	static val basicTypes = newArrayList(NUMBER, BOOLEAN, STRING)
+	static val basicTypes = newArrayList(NUMBER, BOOLEAN, STRING, DATE, CLOSURE)
 	
 	static def boolean isBasic(ClassInstanceType type) {
 		basicTypes.contains(type.clazz.fqn)
@@ -20,6 +21,12 @@ class CompatibilityTypes {
 	/** Default behavior: any type is compatible with other */
 	static def dispatch boolean isCompatible(WollokType supertype, WollokType subtype) {
 		return true
+	}
+
+	static def dispatch boolean isCompatible(GenericTypeInstance supertype, GenericTypeInstance subtype) {
+		val supertypeParams = supertype.typeParameters.keySet 
+		val subtypeParams = subtype.typeParameters.keySet 
+		return supertypeParams.length == subtypeParams.length && supertypeParams.containsAll(subtypeParams)
 	}
 	
 	/** Basic type is only compatible with itself */
