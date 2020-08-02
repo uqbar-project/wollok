@@ -1,0 +1,53 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+/* colores */
+object rojo { method esFuerte() { return true } }
+object verde { method esFuerte() { return true } }
+object celeste { method esFuerte() { return false } } 
+object pardo { method esFuerte() { return false } }
+object naranja { method esFuerte() { return true } }
+
+/* materiales */
+object cobre { method brilla() { return true } }
+object vidrio { method brilla() { return true } }
+object lino { method brilla() { return false } }
+object madera { method brilla() { return false } }
+object cuero { method brilla() { return false } }
+
+/* objetos */
+object remera {
+	// XPECT methodType at color --> () => rojo
+	method color() { return rojo }
+	// XPECT methodType at material --> () => lino
+	method material() { return lino }
+	// XPECT methodType at peso --> () => Number
+	method peso() { return 800 }
+}
+
+object banquito {
+	// XPECT type at color --> (naranja|rojo)
+	var color = naranja
+	// XPECT methodType at color --> () => (naranja|rojo)
+	method color() { return color }
+	// XPECT methodType at color --> ((naranja|rojo)) => Void
+	method color(_color) { color = _color }
+	// XPECT methodType at material --> () => madera
+	method material() { return madera }
+	// XPECT methodType at peso --> () => Number
+	method peso() { return 1700 }
+}
+
+object juan {
+	// XPECT type at objeto --> (banquito|remera)
+	var objeto = remera	
+	// XPECT methodType at agarrar --> ((banquito|remera)) => Void
+	method agarrar(obj) { objeto = obj }
+	// XPECT methodType at pintar --> () => Void
+	method pintar() { 
+		banquito.color(rojo) 
+	}
+}
+
+object testing {
+	method test1() { juan.agarrar(banquito) }
+} 

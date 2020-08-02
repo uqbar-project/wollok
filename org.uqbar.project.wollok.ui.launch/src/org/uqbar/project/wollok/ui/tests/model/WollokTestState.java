@@ -11,7 +11,7 @@ public enum WollokTestState {
 	PENDING {
 		@Override
 		public String getImageName() {
-			return "icons/test.gif";
+			return "icons/test.png";
 		}
 
 		@Override
@@ -32,7 +32,7 @@ public enum WollokTestState {
 	OK {
 		@Override
 		public String getImageName() {
-			return "icons/testok.gif";
+			return "icons/test_ok.png";
 		}
 
 		@Override
@@ -53,7 +53,7 @@ public enum WollokTestState {
 	ERROR {
 		@Override
 		public String getImageName() {
-			return "icons/testerr.gif";
+			return "icons/test_error.png";
 		}
 
 		@Override
@@ -63,10 +63,7 @@ public enum WollokTestState {
 
 		@Override
 		public URI getURI(WollokTestResult result) {
-			// Temporarily not linking to error resource because its URI is not available.
-			// return result.getErrorResource();
-
-			 return result.getTestResource();
+			return result.getTestResource();
 		}
 
 		@Override
@@ -78,7 +75,7 @@ public enum WollokTestState {
 	RUNNING {
 		@Override
 		public String getImageName() {
-			return "icons/testrun.gif";
+			return "icons/test_run.png";
 		}
 
 		@Override
@@ -100,7 +97,7 @@ public enum WollokTestState {
 	ASSERT {
 		@Override
 		public String getImageName() {
-			return "icons/testfail.gif";
+			return "icons/test_fail.png";
 		}
 
 		@Override

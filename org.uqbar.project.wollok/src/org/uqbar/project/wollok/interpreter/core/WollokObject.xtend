@@ -40,9 +40,11 @@ import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
  * @author npasserini
  */
 class WollokObject extends AbstractWollokCallable implements EvaluationContext<WollokObject> {
-	public static val SELF_VAR = new WVariable(SELF, null, false)
-	@Accessors val Map<String, WollokObject> instanceVariables = newHashMap
-	@Accessors var Map<WMethodContainer, Object> nativeObjects = newHashMap
+	public static val SELF_VAR = new WVariable(SELF, null, false, false)
+
+	@Accessors(PUBLIC_GETTER) val Map<String, WollokObject> instanceVariables = newHashMap
+	@Accessors(PUBLIC_GETTER) val List<String> constantReferences = newArrayList
+	@Accessors(PUBLIC_GETTER) val Map<WMethodContainer, Object> nativeObjects = newHashMap
 	val EvaluationContext<WollokObject> parentContext
 	List<String> properties = newArrayList
 	List<String> constantsProperties = newArrayList
@@ -61,13 +63,17 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	}
 
 	def void addMember(WVariableDeclaration declaration, boolean initializeIt) {
-		instanceVariables.put(declaration.variable.name, interpreter.performOnStack(declaration, this) [|
+		val variableName = declaration.variable.name
+		instanceVariables.put(variableName, interpreter.performOnStack(declaration, this) [|
 			if (initializeIt) declaration.right?.eval else null
 		])
+		if (!declaration.writeable) {
+			constantReferences.add(variableName)
+		}
 		if (declaration.property) {
-			properties.add(declaration.variable.name)
+			properties.add(variableName)
 			if (!declaration.writeable) {
-				constantsProperties.add(declaration.variable.name)
+				constantsProperties.add(variableName)
 			}
 		}
 	}
@@ -186,7 +192,11 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 
 	// query (kind of reflection api)
 	override allReferenceNames() {
-		instanceVariables.keySet.map[ new WVariable(it, System.identityHashCode(instanceVariables.get(it)), false)] + #[SELF_VAR]
+		instanceVariables.keySet.map [ variableName | 
+			val isConstantReference = constantReferences.contains(variableName)
+			val wollokObject = instanceVariables.get(variableName)
+			new WVariable(variableName, System.identityHashCode(wollokObject), false, isConstantReference)
+		] + #[SELF_VAR]
 	}
 
 	def simplifiedReferences() { behavior.fqn.equals(DATE) }
@@ -245,12 +255,15 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 
 	def removeFieldChangedListener(WollokObjectListener listener) { this.listeners.remove(listener) }
 
-	override addReference(String variable, WollokObject value) {
+	override addReference(String variable, WollokObject value, boolean constant) {
+		if (constant) {
+			constantReferences.add(variable)
+		}
 		setReference(variable, value)
 		value
 	}
 
-	override addGlobalReference(String name, WollokObject value) {
+	override addGlobalReference(String name, WollokObject value, boolean constant) {
 		interpreter.addGlobalReference(name, value)
 	}
 

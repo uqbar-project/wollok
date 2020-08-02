@@ -15,7 +15,7 @@ class ExtractMethodWizard extends RefactoringWizard {
 
 	static class Factory {
 		@Inject
-		private Provider<ExtractMethodUserInputPage> inputPageProvider
+		Provider<ExtractMethodUserInputPage> inputPageProvider
 		
 		def create(Refactoring refactoring) {
 			new ExtractMethodWizard(refactoring, inputPageProvider.get)
@@ -27,9 +27,9 @@ class ExtractMethodWizard extends RefactoringWizard {
 		this.userInputPage = userInputPage;
 	}
 	
-	override def getWindowTitle() { Messages.ExtractMethodUserInputPage_extractMethodTitle }
+	override getWindowTitle() { Messages.ExtractMethodUserInputPage_extractMethodTitle }
 
-	override def addUserInputPages() {
+	override addUserInputPages() {
 		userInputPage.setRefactoring(refactoring as ExtractMethodRefactoring)
 		addPage(userInputPage)
 	}

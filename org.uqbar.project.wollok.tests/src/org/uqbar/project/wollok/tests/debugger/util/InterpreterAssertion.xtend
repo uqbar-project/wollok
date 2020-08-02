@@ -4,6 +4,7 @@ import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.interpreter.stack.XStackFrame
 import org.uqbar.project.wollok.tests.debugger.util.asserters.InterpreterAsserter
 import org.uqbar.project.wollok.tests.debugger.util.matchers.InterpreterElementMatcher
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**
  * An strategy object used by the test debugger
@@ -41,12 +42,12 @@ interface InterpreterAssertion {
 	 * Called by the test debugger. If the assertion is interested in this event then
 	 * it will perform an assertion.
 	 */
-	def void before(Pair<EObject, XStackFrame> state);
+	def void before(Pair<EObject, XStackFrame<WollokObject>> state);
 	
 	/** 
 	 * Called by the test debugger. If the assertion is interested in this event then
 	 * it will perform an assertion.
 	 */
-	def void after(Pair<EObject, XStackFrame> state);
+	def void after(Pair<EObject, XStackFrame<WollokObject>> state);
 	
 }

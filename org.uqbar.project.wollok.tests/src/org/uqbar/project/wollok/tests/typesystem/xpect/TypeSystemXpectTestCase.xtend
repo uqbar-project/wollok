@@ -2,6 +2,19 @@ package org.uqbar.project.wollok.tests.typesystem.xpect
 
 import com.google.inject.Inject
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xpect.XpectImport
+import org.eclipse.xpect.expectation.IStringExpectation
+import org.eclipse.xpect.expectation.StringExpectation
+import org.eclipse.xpect.parameter.ParameterParser
+import org.eclipse.xpect.runner.LiveExecutionType
+import org.eclipse.xpect.runner.Xpect
+import org.eclipse.xpect.runner.XpectRunner
+import org.eclipse.xpect.runner.XpectSuiteClasses
+import org.eclipse.xpect.xtext.lib.setup.ThisModel
+import org.eclipse.xpect.xtext.lib.setup.ThisResource
+import org.eclipse.xpect.xtext.lib.tests.ValidationTest
+import org.eclipse.xpect.xtext.lib.tests.ValidationTestModuleSetup.ConsumedIssues
+import org.eclipse.xpect.xtext.lib.util.XtextOffsetAdapter.IEStructuralFeatureAndEObject
 import org.eclipse.xtext.diagnostics.Severity
 import org.eclipse.xtext.resource.XtextResource
 import org.junit.runner.RunWith
@@ -12,19 +25,6 @@ import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
-import org.xpect.XpectImport
-import org.xpect.expectation.IStringExpectation
-import org.xpect.expectation.StringExpectation
-import org.xpect.parameter.ParameterParser
-import org.xpect.runner.LiveExecutionType
-import org.xpect.runner.Xpect
-import org.xpect.runner.XpectRunner
-import org.xpect.runner.XpectSuiteClasses
-import org.xpect.xtext.lib.setup.ThisModel
-import org.xpect.xtext.lib.setup.ThisResource
-import org.xpect.xtext.lib.tests.ValidationTest
-import org.xpect.xtext.lib.tests.ValidationTestModuleSetup.ConsumedIssues
-import org.xpect.xtext.lib.util.XtextOffsetAdapter.IEStructuralFeatureAndEObject
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.TypeSystemUtils.*

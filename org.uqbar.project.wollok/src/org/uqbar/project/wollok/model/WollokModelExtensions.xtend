@@ -79,6 +79,7 @@ import static extension org.uqbar.project.wollok.model.ResourceUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
 import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
+import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 
 /**
  * Extension methods to Wollok semantic model.
@@ -109,6 +110,7 @@ class WollokModelExtensions {
 	def static dispatch String fqn(WNamedObject it) { nameWithPackage }
 	def static dispatch String fqn(WMixin it) { nameWithPackage }
 	def static dispatch String fqn(WSuite it) { nameWithPackage }
+	def static dispatch String fqn(MixedMethodContainer it) { nameWithPackage }
 
 
 	def static WMethodDeclaration getInitMethod(WMethodContainer it) {
@@ -210,7 +212,7 @@ class WollokModelExtensions {
 		VariableAssignmentsVisitor.assignmentOf(variable, variable.declarationContext)
 	}
 
-	def static assignments(WVariable variable, EObject context) {
+	def static List<EObject> assignments(WVariable variable, EObject context) {
 		VariableAssignmentsVisitor.assignmentOf(variable, context)
 	}
 
@@ -426,6 +428,10 @@ class WollokModelExtensions {
 		}
 
 		return c.parent.inheritsDefaultConstructor
+	}
+	
+	def static boolean hasInitializeMethod(WClass clazz) {
+		clazz.methods.map [ name ].contains(INITIALIZE_METHOD)
 	}
 
 	def static boolean hasCustomParent(WClass c) {
@@ -866,11 +872,11 @@ class WollokModelExtensions {
 	// ************************************************************************
 	// ** Compound assignments (+=, -=, *=, /=)
 	// ************************************************************************
-	public static def isMultiOpAssignment(WBinaryOperation it) { feature.isMultiOpAssignment }
+	static def isMultiOpAssignment(WBinaryOperation it) { feature.isMultiOpAssignment }
 
-	public static def isMultiOpAssignment(String operator) { operator.matches(WollokConstants.MULTIOPS_REGEXP) }
+	static def isMultiOpAssignment(String operator) { operator.matches(WollokConstants.MULTIOPS_REGEXP) }
 
-	public static def operator(WBinaryOperation it) {
+	static def operator(WBinaryOperation it) {
 		if(isMultiOpAssignment)
 			feature.substring(0, 1)
 		else

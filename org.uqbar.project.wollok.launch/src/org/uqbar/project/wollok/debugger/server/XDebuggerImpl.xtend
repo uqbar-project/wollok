@@ -9,6 +9,7 @@ import org.uqbar.project.wollok.interpreter.api.XInterpreter
 import org.uqbar.project.wollok.interpreter.api.XThread
 
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**
  * xdebugger implementation that actually
@@ -17,9 +18,9 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
  * @author jfernandes
  */
 // Migrate to java8 "ReentrantLock" to be able to check if it is paused (locked) or not
-class XDebuggerImpl implements XDebugger {
+class XDebuggerImpl implements XDebugger<WollokObject> {
 	static Logger log = Logger.getLogger(XDebuggerImpl)
-	XInterpreter<?,?> interpreter
+	XInterpreter<?,WollokObject> interpreter
 	@Accessors var XTextInterpreterEventPublisher eventSender
 	val breakpoints = <XBreakpoint>newArrayList 
 	val Object suspendedLock = new Object
@@ -27,7 +28,7 @@ class XDebuggerImpl implements XDebugger {
 	XBreakpoint lastBreakpointHit
 	XDebuggerState state = new RunThroughDebuggerState
 	
-	XThread debuggingThread
+	XThread<WollokObject> debuggingThread
 	
 	def void setInterpreter(XInterpreter<?,?> interpreter) { this.interpreter = interpreter }
 	def void setEventSender(XTextInterpreterEventPublisher eventSender) { this.eventSender = eventSender }

@@ -12,15 +12,18 @@ import org.uqbar.project.wollok.debugger.server.rmi.XDebugValue
 class WollokObjectValue extends WollokValue {
 	IVariable[] variables = #[]
 	String typeName
+	boolean isWKO
 	
 	new(WollokDebugTarget target, XDebugValue adaptee) {
 		super(target, adaptee.stringValue)
 		this.typeName = adaptee.typeName
+		this.isWKO = adaptee.isWKO
 		variables = adaptee.variables.map[WollokStackFrame.toEclipseVariable(it, target)]
 	}
 	
 	override hasVariables() throws DebugException { !variables.empty }
 	override getVariables() throws DebugException { variables }
 	override getReferenceTypeName() { typeName }
+	override isWKO() { this.isWKO }
 	
 }

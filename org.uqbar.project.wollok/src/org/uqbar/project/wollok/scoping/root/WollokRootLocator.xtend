@@ -8,7 +8,7 @@ import static extension org.uqbar.project.wollok.WollokConstants.*
 
 class WollokRootLocator {
 
-	private static var INSTANCE = new WollokRootLocator
+	static var INSTANCE = new WollokRootLocator
 
 	var cache = new LRUMap(20)
 

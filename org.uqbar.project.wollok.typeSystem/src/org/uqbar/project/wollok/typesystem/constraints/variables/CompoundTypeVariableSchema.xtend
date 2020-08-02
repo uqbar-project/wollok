@@ -24,7 +24,7 @@ class CompoundTypeVariableSchema extends TypeVariableSchema {
 	 * The received type variable should be a a message send 
 	 * (i.e. {@link WMemberFeatureCall}, {@link WBinaryOperation} or {@link WSuperInvocation}
 	 */
-	def dispatch beSubtypeOf(TypeVariable variable) {
+	def beSubtypeOf(TypeVariable variable) {
 		instanceFor(variable).beSubtypeOf(variable)
 	}
 	
@@ -34,7 +34,7 @@ class CompoundTypeVariableSchema extends TypeVariableSchema {
 	 * its container should be a message send, 
 	 * such as {@link WMemberFeatureCall}, {@link WBinaryOperation} or {@link WSuperInvocation}.
 	 */
-	def dispatch beSupertypeOf(TypeVariable variable) {
+	def beSupertypeOf(TypeVariable variable) {
 		instanceFor(variable).beSupertypeOf(variable)
 	}
 

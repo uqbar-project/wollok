@@ -5,7 +5,7 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 
-import static extension org.uqbar.project.xtext.utils.XTextExtensions.*
+import static extension org.uqbar.project.xtext.utils.SourceCodeExtensions.*
 
 /**
  * Represents a stack execution element.

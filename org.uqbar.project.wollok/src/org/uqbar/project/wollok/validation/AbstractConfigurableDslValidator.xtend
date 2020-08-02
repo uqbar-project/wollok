@@ -24,7 +24,7 @@ import static extension org.uqbar.project.wollok.model.ResourceUtils.*
  * 
  * @author jfernandes
  */
-class AbstractConfigurableDslValidator extends AbstractWollokDslValidator implements ConfigurableDslValidator {
+abstract class AbstractConfigurableDslValidator extends AbstractWollokDslValidator implements ConfigurableDslValidator {
 	@Inject IPreferenceStoreAccess preferenceStoreAccess
 
 	// ******************************

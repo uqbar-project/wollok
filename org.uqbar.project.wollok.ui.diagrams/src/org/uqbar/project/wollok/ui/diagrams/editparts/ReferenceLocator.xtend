@@ -11,14 +11,32 @@ class ReferenceLocator extends MidpointLocator {
 	}
 	
 	override getReferencePoint() {
-		val Connection conn = getConnection()
-		val Point p = Point.SINGLETON
-		val Point p1 = conn.points.getPoint(index)
-		val Point p2 = conn.points.getPoint(index + 1)
-		conn.translateToAbsolute(p1)
-		conn.translateToAbsolute(p2)
-		p.x = ((p2.x - p1.x) * 2) / 3 + p1.x
-		p.y = ((p2.y - p1.y) * 2) / 3 + p1.y
-		return p
+		val connection = getConnection()
+		val p1 = connection.points.getPoint(index)
+		val p2 = connection.points.getPoint(index + 1)
+		connection.translateToAbsolute(p1)
+		connection.translateToAbsolute(p2)
+		Point.SINGLETON => [
+			x = ((p2.x - p1.x) * 2) / 3 + p1.x
+			y = ((p2.y - p1.y) * 2) / 3 + p1.y	
+		]
 	}
+}
+
+class SelfReferenceLocator extends MidpointLocator {
+
+	new(Connection c) {
+		super(c, 0)
+	}
+	
+	override getReferencePoint() {
+		val connection = getConnection()
+		val originalReferencePoint = connection.points.getPoint(index)
+		connection.translateToAbsolute(originalReferencePoint)
+		Point.SINGLETON => [
+			x = originalReferencePoint.x + 20
+			y = originalReferencePoint.y + 12
+		]
+	}
+	
 }

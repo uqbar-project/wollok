@@ -17,7 +17,7 @@ class NewWollokTestWizardPage extends AbstractNewWollokFileWizardPage {
 		this.description = Messages.NewWollokTestWizardPage_description
 	}
 	
-	public def String testExtension() {
+	def String testExtension() {
 		WollokConstants.TEST_EXTENSION
 	}
 }

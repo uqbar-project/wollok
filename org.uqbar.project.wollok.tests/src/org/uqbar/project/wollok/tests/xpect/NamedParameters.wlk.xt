@@ -127,9 +127,6 @@ class Something {
 }
 
 object somethingBuilder {
-	method buildEmptySomething() {
-		return new Something()
-	}
 	// XPECT errors --> "You must provide initial value to the following references: aValue" at "new Something(anotherValue = 2)"
 	method buildPartialSomething1() = new Something(anotherValue = 2)
 

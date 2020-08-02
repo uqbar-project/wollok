@@ -50,16 +50,16 @@ describe "group of tests" {
 		assert.notEquals(null, new EspadaAbstracta())
 		
 		// XPECT errors --> "Class C cannot be instantiated because it has abstract methods: m1(x) (required by A)" at "C"
-		assert.notEquals(null, new C())
+		assert.notEquals(null, new C(m1 = 2))
 	}
 	
 	test "se puede instanciar una clase que define una const property como implementación de un método abstracto" {
 		assert.notEquals(null, new EspadaConcreta().artefacto())
 	}
-	
+
 	test "se puede instanciar una clase que define una var property como implementación de un método abstracto" {
-		const b = new B()
+		const b = new B(m1 = 2)
 		b.m1(5)
 		assert.notEquals(5, b.m1())
-	}
+	}	
 }

@@ -13,7 +13,7 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.Concrete
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.AnalysisResultReporter.*
 
-abstract class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
+class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
 	val Logger log = Logger.getLogger(this.class)
 
 	def dispatch analiseVariable(TypeVariable tvar, GenericTypeInfo typeInfo) {
@@ -44,7 +44,7 @@ abstract class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
 		supertypes.evaluate [ supertype |
 			val newState = propagateMinType(origin, supertype, type)
 			reporter.newState(newState)
-			(newState != Ready && newState != Postponed) => [
+			(newState != Ready) => [
 				if (it) {
 					log.debug('''  Propagated min(«type») from: «origin» to «supertype» => «newState»''')
 					changed = true
@@ -54,7 +54,6 @@ abstract class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
 	}
 
 	def propagateMinType(TypeVariable origin, TypeVariable destination, WollokType type) {
-		if(!origin.shouldPropagateMinTypes(destination)) return Postponed
 		handlingOffensesDo(origin, destination) [
 			destination.addMinType(type)
 		]
@@ -64,26 +63,5 @@ abstract class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
 		variables.fold(false)[hasChanges, variable|action.apply(variable) || hasChanges]
 	}
 
-	def abstract boolean shouldPropagateMinTypes(TypeVariable origin, TypeVariable destination)
-
-	def abstract ConcreteTypeState targetMinTypeState()
-}
-
-class PropagatePendingMinimalTypes extends PropagateMinimalTypes {
-
-	override shouldPropagateMinTypes(TypeVariable origin, TypeVariable destination) {
-		!destination.owner.isParameter
-	}
-
-	override targetMinTypeState() { Pending }
-
-}
-
-class PropagatePostponedMinimalTypes extends PropagateMinimalTypes {
-
-	override shouldPropagateMinTypes(TypeVariable origin, TypeVariable destination) {
-		destination.owner.isParameter
-	}
-
-	override targetMinTypeState() { Postponed }
+	def ConcreteTypeState targetMinTypeState() { Pending }
 }

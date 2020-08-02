@@ -29,6 +29,7 @@ scripts/libs
 scripts/jars
 scripts/wollok-site
 scripts/wollok-cli
+/.metadata/
 
 # Ignoring wollok-language files
 org.uqbar.project.wollok.lib/src/wollok/*.wlk

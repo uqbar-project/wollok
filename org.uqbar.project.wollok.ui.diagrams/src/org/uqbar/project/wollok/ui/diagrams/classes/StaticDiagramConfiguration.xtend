@@ -302,10 +302,12 @@ class StaticDiagramConfiguration extends AbstractDiagramConfiguration implements
 		this.notifyObservers(CONFIGURATION_CHANGED)
 	}
 	
-	override protected setChanged() {
+	override protected synchronized setChanged() {
 		super.setChanged()
 		this.saveConfiguration()
 	}
+
+
 
 	/** 
 	 ******************************************************
@@ -446,7 +448,7 @@ class StaticDiagramConfiguration extends AbstractDiagramConfiguration implements
 	def resourceIsForStaticDiagram() {
 		originalFileName.endsWith(WollokConstants.WOLLOK_DEFINITION_EXTENSION)
 	}
-	
+		
 }
 
 @Data

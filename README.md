@@ -18,9 +18,9 @@ This is the main repository for the Wollok Xtext-based implementation, which is 
 You have two options to download an use Wollok.
 **Download a complete Wollok Product Distribution**:
 
-* Linux: [32](http://download.uqbar.org/wollok/products/stable/wollok-linux.gtk.x86.zip) / [64](http://download.uqbar.org/wollok/products/stable/wollok-linux.gtk.x86_64.zip) bits
-* Mac [32](http://download.uqbar.org/wollok/products/stable/wollok-macosx.cocoa.x86.zip) / [64](http://download.uqbar.org/wollok/products/stable/wollok-macosx.cocoa.x86_64.zip) bits
-* Windows [32](http://download.uqbar.org/wollok/products/stable/wollok-win32.win32.x86.zip) / [64](http://download.uqbar.org/wollok/products/stable/wollok-win32.win32.x86_64.zip) bits
+* Linux [64](http://download.uqbar.org/wollok/products/stable/wollok-linux.gtk.x86_64.zip) bits
+* Mac [64](http://download.uqbar.org/wollok/products/stable/wollok-macosx.cocoa.x86_64.zip) bits
+* Windows [64](http://download.uqbar.org/wollok/products/stable/wollok-win32.win32.x86_64.zip) bits
 
 **Update Site (if you already have a compatible eclipse)**:
 * http://update.uqbar.org/wollok/stable : for the latest stable release

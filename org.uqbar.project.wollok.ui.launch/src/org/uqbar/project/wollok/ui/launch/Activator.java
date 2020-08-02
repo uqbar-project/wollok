@@ -52,7 +52,7 @@ public class Activator extends AbstractUIPlugin {
 			}
 			
 			if (name.contains("platform:")) {
-				URL u = new URL(getDefault().getStateLocation().toFile().toURL(), name);
+				URL u = new URL(getDefault().getStateLocation().toFile().toURI().toURL(), name);
 				return ImageDescriptor.createFromURL(u);
 			} else {
 				Bundle bundle = Platform.getBundle(PLUGIN_ID);
@@ -62,12 +62,6 @@ public class Activator extends AbstractUIPlugin {
 		}
 		return null;
 	}
-
-	// public ImageDescriptor getImageDescriptor(String name) {
-	// URL u = find(this.getDefault().getStateLocation().append(name));
-	// System.out.println(u);
-	// return ImageDescriptor.createFromURL(u);
-	// }
 
 	public static Activator getDefault() {
 		return plugin;

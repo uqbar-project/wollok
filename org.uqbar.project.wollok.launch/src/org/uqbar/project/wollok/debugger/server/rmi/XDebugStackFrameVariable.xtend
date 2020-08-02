@@ -6,12 +6,14 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
+import static org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrame.*
 import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * A variable within a stack execution.
  * 
  * @author jfernandes
+ * @author dodain        Refactored in order to avoid cyclic references
  */
 @Accessors
 class XDebugStackFrameVariable implements Serializable {
@@ -20,7 +22,22 @@ class XDebugStackFrameVariable implements Serializable {
 
 	new(WVariable variable, WollokObject value) {
 		this.variable = variable
-		this.value = if (value === null) null else value.asRemoteValue
+		if (value === null) {
+			this.value = null
+			return
+		}
+		this.value = variable.getRemoteValue(value)
+	}
+
+	def getRemoteValue(WVariable variable, WollokObject value) {
+		val valueIdentifier = value.call("identity").toString
+		val allVariableIds = XDebugStackFrame.allVariables.map [ id.toString ]
+		if (allVariableIds.contains(valueIdentifier)) {
+			return null
+		}
+		allVariables.add(variable)
+		allValues.put(variable, value)
+		value.asRemoteValue
 	}
 
 	def asRemoteValue(WollokObject object) {
@@ -60,6 +77,15 @@ class XDebugStackFrameVariable implements Serializable {
 	}
 	
 	def isCustom() {
-		!this.variable.name.startsWith("wollok.")	
+		!this.variable.name.startsWith("wollok.")
 	}
+
+	def getIdentifier() {
+		this.variable.id.toString
+	}
+
+	def getName() {
+		this.variable.name
+	}
+
 }

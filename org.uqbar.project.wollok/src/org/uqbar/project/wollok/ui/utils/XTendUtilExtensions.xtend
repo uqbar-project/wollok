@@ -81,13 +81,13 @@ class XTendUtilExtensions {
 		col.removeAll(col.filter(predicate))
 	}
 
-	def static <E> maxBy(Collection<E> col, (E)=>Comparable func) {
-		col.collectComparing(func, [a, b|a > b])
-	}
-
-	def static <E> minBy(Collection<E> col, (E)=>Comparable func) {
-		col.collectComparing(func, [a, b|a < b])
-	}
+//	def static <E> maxBy(Collection<E> col, (E)=>Comparable func) {
+//		col.collectComparing(func, [a, b|a > b])
+//	}
+//
+//	def static <E> minBy(Collection<E> col, (E)=>Comparable func) {
+//		col.collectComparing(func, [a, b|a < b])
+//	}
 
 	def static <E, K, V> Map<K, V> mapBy(Collection<E> col, (E)=>Pair<K, V> func) {
 		newHashMap(col.map(func))
@@ -98,19 +98,19 @@ class XTendUtilExtensions {
 	}
 
 	/** reused method between maxBy and minBy */
-	def static <E> collectComparing(Collection<E> col, (E)=>Comparable func,
-		(Comparable, Comparable)=>Boolean comparator) {
-		var Comparable accVal = null
-		var E accE = null
-		for (e : col) {
-			val thisVal = func.apply(e)
-			if (accE === null || comparator.apply(thisVal, accVal)) {
-				accVal = thisVal
-				accE = e
-			}
-		}
-		accE
-	}
+//	def static <E> collectComparing(Collection<E> col, (E)=>Comparable func,
+//		(Comparable, Comparable)=>Boolean comparator) {
+//		var Comparable accVal = null
+//		var E accE = null
+//		for (e : col) {
+//			val thisVal = func.apply(e)
+//			if (accE === null || comparator.apply(thisVal, accVal)) {
+//				accVal = thisVal
+//				accE = e
+//			}
+//		}
+//		accE
+//	}
 
 	// ***************************************
 	// ** Wollok -> Native Java interaction

@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.interpreter.core
 
+import java.util.List
 import java.util.Map
 import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
@@ -22,6 +23,7 @@ import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeN
  */
 class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements EvaluationContext<WollokObject> {
 	val Map<String, WollokObject> localProgramVariables = newHashMap
+	List<String> constantVariables = newArrayList
 	WollokInterpreterConsole console
 	
 	new(WollokInterpreterConsole console, WollokInterpreter interpreter) {
@@ -38,8 +40,8 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 	}
 	
 	override allReferenceNames() {
-		allVariables.keySet.map[ variableName |
-			new WVariable(variableName, System.identityHashCode(allVariables.get(variableName)), false)
+		allVariables.keySet.map [ variableName |
+			new WVariable(variableName, System.identityHashCode(allVariables.get(variableName)), false, constantVariables.contains(variableName))
 		]
 	}
 	
@@ -61,8 +63,9 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 			localProgramVariables.put(variableName,value)
 	}
 	
-	override addReference(String variable, WollokObject value) {
-		localProgramVariables.put(variable, value)
+	override addReference(String referenceName, WollokObject value, boolean constant) {
+		localProgramVariables.put(referenceName, value)
+		referenceName.addIfConstant(constant)
 		value
 	}
 	
@@ -78,8 +81,9 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 		Thread.sleep(milis)
 	}
 	
-	override addGlobalReference(String name, WollokObject value) {
-		interpreter.globalVariables.put(name,value)
+	override addGlobalReference(String referenceName, WollokObject value, boolean constant) {
+		interpreter.globalVariables.put(referenceName, value)
+		referenceName.addIfConstant(constant)
 		value
 	}
 	
@@ -87,6 +91,11 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 		interpreter.globalVariables.remove(name)
 	}
 	
+	def void addIfConstant(String referenceName, boolean constant) {
+		if (constant) {
+			constantVariables.add(referenceName)
+		}
+	}
 	
 	// ******************************
 	// ** Object methods (for debugging interpreter)

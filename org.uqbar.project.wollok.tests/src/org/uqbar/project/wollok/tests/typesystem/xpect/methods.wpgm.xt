@@ -7,8 +7,16 @@ class Golondrina {
 	// XPECT methodType at vola --> (Number) => Void
 	method vola(kilometros) { energia = energia - kilometros * 10 }
 	
-	// XPECT methodType at come --> (Number) => Void
-	method come(grms) { energia += grms * 0.10 }
+	// XPECT methodType at come --> ((alpiste|manzana)) => Void
+	method come(comida) { energia += comida.energia() * 0.10 }
+}
+
+object alpiste {
+	method energia() = 1
+}
+
+object manzana {
+	method energia() = 1
 }
 
 object pepita {
@@ -19,6 +27,9 @@ object pepita {
 class Entrenador {
 	// XPECT type at estrategia --> {(Golondrina) => Void}
 	const estrategia = { ave => ave.vola(5) }
+	
+	// XPECT methodType at darAlpiste --> (Golondrina) => Void
+	method darAlpiste(ave) { ave.come(alpiste) }
 	
 	// XPECT methodType at entrena --> (Golondrina) => Void
 	method entrena(ave) { ave.vola(5) }
@@ -37,7 +48,7 @@ class Entrenador {
 		
 		ave.vola(1)
 		
-		// XPECT warnings --> "Golondrina does not understand come(). However other methods exist with different argument count: come(grms)" at "ave.come()" 
+		// XPECT warnings --> "Golondrina does not understand come(). However other methods exist with different argument count: come(comida)" at "ave.come()" 
 		return ave.come()	
 	}
 	
@@ -63,7 +74,7 @@ class Entrenador {
 	// XPECT methodType at entrenarConEstrategia --> (Golondrina) => Void	
 	method entrenarConEstrategia(ave) { self.estrategia().apply(ave) }
 	
-	// XPECT methodType at alimentar --> (Golondrina, Number) => Void	
+	// XPECT methodType at alimentar --> (Golondrina, (alpiste|manzana)) => Void	
 	method alimentar(golondrina, comida) {
 		const c = { g => g.come(comida) } 
 		c.apply(golondrina)

@@ -21,6 +21,7 @@ import org.uqbar.project.wollok.launch.repl.WollokRepl
 import org.uqbar.project.wollok.wollokDsl.WFile
 
 import static org.uqbar.project.wollok.utils.OperatingSystemUtils.*
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**
  * Main program launcher for the interpreter.
@@ -58,15 +59,16 @@ class WollokLauncher extends WollokChecker {
 			val interpreter = injector.getInstance(WollokInterpreter)
 			createDebugger(interpreter, parameters)
 
+			if (parameters.shouldActivateDynamicDiagram) {
+				val interpreterListener = new WollokRemoteContextStateListener(interpreter, parameters.dynamicDiagramPort, parameters.hasRepl)
+				interpreter.addInterpreterListener(interpreterListener)
+			}
+
 			log.debug("Interpreting: " + mainFile.absolutePath)
 			interpreter.interpret(parsed)
 
 			if (parameters.hasRepl) {
 				val formatter = if (parameters.noAnsiFormat || isOsMac) new RegularReplOutputFormatter else new AnsiColoredReplOutputFormatter
-				if (parameters.dynamicDiagramActivated) {
-					val interpreterListener = new WollokRemoteContextStateListener(interpreter, parameters.dynamicDiagramPort)
-					interpreter.addInterpreterListener(interpreterListener)
-				}
 				new WollokRepl(this, injector, interpreter, mainFile, parsed, formatter).startRepl
 			}
 			System.exit(0)
@@ -126,7 +128,7 @@ class WollokLauncher extends WollokChecker {
 	
 	Object debuggerStartLock = new Object()
 
-	def void registerCommandHandler(XDebugger debugger, int listenPort) {
+	def void registerCommandHandler(XDebugger<WollokObject> debugger, int listenPort) {
 		log.debug("[VM] Listening for clients on port " + listenPort)
 		DebuggerCommandHandlerFactory.createCommandHandler(debugger, listenPort, [
 			synchronized(debuggerStartLock) {

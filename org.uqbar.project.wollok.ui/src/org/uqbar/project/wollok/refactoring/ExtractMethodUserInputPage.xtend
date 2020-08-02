@@ -32,16 +32,16 @@ import org.uqbar.project.wollok.ui.Messages
  */
 class ExtractMethodUserInputPage extends UserInputWizardPage {
 	@Inject
-	private EmbeddedEditorFactory editorFactory
+	EmbeddedEditorFactory editorFactory
 	@Inject
-	private IResourceSetProvider resourceSetProvider
+	IResourceSetProvider resourceSetProvider
 	@Inject
-	private ProjectUtil projectUtil
+	ProjectUtil projectUtil
 	@Accessors ExtractMethodRefactoring refactoring
-	private Text textField
-	private EmbeddedEditor signaturePreview
-	private EmbeddedEditorModelAccess partialEditor
-	private boolean isInitialName = true
+	Text textField
+	EmbeddedEditor signaturePreview
+	EmbeddedEditorModelAccess partialEditor
+	boolean isInitialName = true
 	
 	new() {
 		super("ExtractMethodInputPage")
@@ -76,9 +76,9 @@ class ExtractMethodUserInputPage extends UserInputWizardPage {
 		if (!refactoring.parameterInfos.empty) {
 			val cp = new ChangeParametersControl(result, SWT.NONE,
 					"Parameters", new IParameterListChangeListener() {
-						override def parameterChanged(ParameterInfo parameter) { parameterModified }
-						override def parameterListChanged() { parameterModified }
-						override def parameterAdded(ParameterInfo parameter) { updatePreview }
+						override parameterChanged(ParameterInfo parameter) { parameterModified }
+						override parameterListChanged() { parameterModified }
+						override parameterAdded(ParameterInfo parameter) { updatePreview }
 					}, ChangeParametersControl.Mode.EXTRACT_METHOD)
 			cp.layoutData = new GridData(GridData.FILL_BOTH) => [ horizontalSpan = 2 ]
 			cp.input = refactoring.parameterInfos

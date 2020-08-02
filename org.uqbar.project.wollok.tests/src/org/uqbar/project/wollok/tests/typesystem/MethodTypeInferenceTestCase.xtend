@@ -189,7 +189,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertMethodSignature("(Number) => Void", 'GolondrinaIneficiente.comer')
 		]
 	}
-	
+
 	@Test
 	def void testMethodInferredFromSuperMethodWithSuperInvocation() {
 		'''
@@ -250,11 +250,29 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			assertTypeOf(classTypeFor(NUMBER), "number")
-			findByText("number.div(1).isBig(true, 1)", WMemberFeatureCall).assertIssuesInElement("Number does not understand isBig(true, 1)")
+			findByText("number.div(1).isBig(true, 1)", WMemberFeatureCall).assertIssuesInElement(
+				"Number does not understand isBig(true, 1)")
 		]
 	}
 	
-	
+	@Test
+	def void unionType() {
+		'''
+			object testing {
+				method test1() {
+					obj.x("")
+					obj.x(0)
+				} 				
+			}
+			object obj {
+				method x(_x) { }
+			}
+		'''.parseAndInfer.asserting [
+			noIssues
+			assertMethodSignature("((Number|String)) => Void", "obj.x")
+		]
+	}
+
 	@Test
 	def void badAnyInference() {
 		'''

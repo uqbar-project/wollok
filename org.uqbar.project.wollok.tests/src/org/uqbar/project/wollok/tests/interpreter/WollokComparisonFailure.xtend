@@ -22,7 +22,7 @@ class WollokComparisonFailure extends ComparisonFailure {
 		return originalMessage
 	}
 
-	override fillInStackTrace() {
+	override synchronized fillInStackTrace() {
 		if(wollokException === null)
 			return this
 		
@@ -30,5 +30,6 @@ class WollokComparisonFailure extends ComparisonFailure {
 		stackTrace = elements.toArray(<StackTraceElement>newArrayOfSize(0))
 		this
 	}
+
 
 }

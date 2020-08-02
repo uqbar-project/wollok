@@ -43,12 +43,10 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 	IPreferenceStoreAccess preferenceStoreAccess
 
 	// Use RefreshUtil after switching to debug >= 3.6
-	private static final String ATTR_REFRESH_SCOPE = DebugPlugin.getUniqueIdentifier() + ".ATTR_REFRESH_SCOPE";
+	static final String ATTR_REFRESH_SCOPE = DebugPlugin.getUniqueIdentifier() + ".ATTR_REFRESH_SCOPE";
 
 	override launch(ILaunchConfiguration configuration, String mode, ILaunch launch,
 		IProgressMonitor monitor) throws CoreException {
-
-		configuration.activateDynamicDiagramIfNeeded(preferenceStoreAccess)
 
 		if (mode.isDebug && configuration.getAttribute(ATTR_REFRESH_SCOPE, null as String) !== null) {
 			DebugPlugin.getDefault.addDebugEventListener(createListener(configuration))
@@ -79,7 +77,6 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 
 	def configureLaunchSettings(ILaunchConfiguration configuration, String mode) {
 		val result = configuration.getWorkingCopy
-		result.setAttribute(ATTR_WOLLOK_DYNAMIC_DIAGRAM, preferenceStoreAccess.dynamicDiagramActivated)
 		if (mode.isDebug) {
 			val requestPort = findFreePort
 			val eventPort = findFreePort
@@ -98,24 +95,21 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 	}
 
 	def configureLaunchParameters(ILaunchConfiguration config, int requestPort, int eventPort) {
-		val parameters = new WollokLauncherParameters
-		parameters.eventsPort = eventPort
-		parameters.requestsPort = requestPort
-		parameters.wollokFiles += config.wollokFile
-		parameters.severalFiles = config.severalFiles
-		parameters.folder = config.folder
-		parameters.hasRepl = config.hasRepl
-		parameters.validate = config.hasRepl // Validate when the user enters code in the REPL.
-		parameters.dynamicDiagramActivated = preferenceStoreAccess.dynamicDiagramActivated
-		parameters.libraries = config.libraries
-
-		if (config.hasRepl && preferenceStoreAccess.dynamicDiagramActivated) {
-			parameters.dynamicDiagramPort = Activator.getDefault.wollokDynamicDiagramListeningPort
-		}
-
-		configureNumberPreferences(parameters)
-
-		parameters
+		new WollokLauncherParameters => [
+			eventsPort = eventPort
+			requestsPort = requestPort
+			wollokFiles += config.wollokFile
+			severalFiles = config.severalFiles
+			folder = config.folder
+			hasRepl = config.hasRepl
+			validate = config.hasRepl // Validate when the user enters code in the REPL.
+			dynamicDiagramActivated = config.dynamicDiagramActivated
+			libraries = config.libraries
+			if (config.hasRepl && preferenceStoreAccess.dynamicDiagramActivated) {
+				dynamicDiagramPort = Activator.getDefault.wollokDynamicDiagramListeningPort
+			}
+			configureNumberPreferences
+		]
 	}
 
 	def configureNumberPreferences(WollokLauncherParameters parameters) {

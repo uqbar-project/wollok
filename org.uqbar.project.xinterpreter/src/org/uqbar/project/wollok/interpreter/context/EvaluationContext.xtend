@@ -16,9 +16,9 @@ interface EvaluationContext<O> extends Serializable {
 	def O resolve(String name) throws UnresolvableReference
 	
 	def void setReference(String name, O value)
-	def O addReference(String variable, O value) // new local variable
+	def O addReference(String variable, O value, boolean constant) // new local variable
 	
-	def O addGlobalReference(String name, O value)
+	def O addGlobalReference(String name, O value, boolean constant)
 	def void removeGlobalReference(String name)
 	
 	/** Returns an iterable with all available references names from this context */

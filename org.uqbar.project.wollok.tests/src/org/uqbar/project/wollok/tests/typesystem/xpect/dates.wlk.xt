@@ -50,9 +50,6 @@ object dateTests {
 	// XPECT methodType at m18 --> (Date, Date) => Boolean
 	method m18(_date, _date1) = _date.between(_date1, new Date())
 
-	// XPECT methodType at m19 --> (List<Object>) => String
-	method m19(b) = new Date().toSmartString(b)
-
 	// XPECT methodType at m20 --> (Date) => Number
 	method m20(_date) = _date.day() + _date.internalDayOfWeek() + _date.month() + _date.year()
 

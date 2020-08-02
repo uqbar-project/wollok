@@ -16,8 +16,8 @@ import org.eclipse.ui.views.properties.IPropertySource;
  * @author jfernandes
  */
 abstract class ModelElement implements IPropertySource, Serializable {
-	private static final IPropertyDescriptor[] EMPTY_ARRAY = newArrayOfSize(0)
-	private transient PropertyChangeSupport pcsDelegate = new PropertyChangeSupport(this)
+	static final IPropertyDescriptor[] EMPTY_ARRAY = newArrayOfSize(0)
+	transient PropertyChangeSupport pcsDelegate = new PropertyChangeSupport(this)
 
 	def synchronized void addPropertyChangeListener(PropertyChangeListener l) {
 		if (l === null)

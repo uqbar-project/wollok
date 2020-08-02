@@ -3,7 +3,7 @@ package org.uqbar.project.wollok.ui.diagrams.classes.model
 import org.eclipse.draw2d.geometry.Point
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 
-class AbstractNonClassModel extends AbstractModel {
+abstract class AbstractNonClassModel extends AbstractModel {
 	
 	new(WMethodContainer mc) {
 		super(mc)

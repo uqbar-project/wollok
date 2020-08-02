@@ -18,8 +18,11 @@ class WollokRemoteContextStateListener implements XInterpreterListener {
 	XContextStateListener contextStateListener
 	List<XDebugStackFrameVariable> currentVariables = newArrayList
 	boolean firstTime = true
+	boolean forRepl
+	List<XDebugStackFrameVariable> variables
 
-	new(WollokInterpreter interpreter, int requestPort) {
+	new(WollokInterpreter interpreter, int requestPort, boolean forRepl) {
+		this.forRepl = forRepl
 		this.interpreter = interpreter
 		this.client = new Client("localhost", requestPort, callHandler)
 		this.contextStateListener = client.getGlobal(XContextStateListener) as XContextStateListener
@@ -29,14 +32,32 @@ class WollokRemoteContextStateListener implements XInterpreterListener {
 	override started() {}
 
 	override terminated() {
+		if (forRepl) {
+			detectChanges
+		}
+		variables.notifyPossibleStateChanged	
+	}
+
+	static def Throwable getRealCause(Throwable e) {
+		if(e.cause === null) e else e.cause.realCause
+	}
+
+	override aboutToEvaluate(EObject element) {}
+
+	override evaluated(EObject element) {
+		if (!forRepl) {
+			this.detectChanges
+		}
+	}
+
+	def void detectChanges() {
 		try {
 			XDebugStackFrame.initAllVariables()
-			var variables = #[]
+			this.variables = #[]
 			val currentStack = interpreter.currentThread.stack
 			if (!currentStack.isEmpty) {
-				variables = new XDebugStackFrame(currentStack.peek).variables	
+				this.variables = new XDebugStackFrame(currentStack.peek).variables
 			}
-			variables.notifyPossibleStateChanged
 		} catch (Exception e) {
 			val realCause = e.realCause
 			println("ERROR: " + realCause.class.name + ", " + realCause.message)
@@ -45,25 +66,17 @@ class WollokRemoteContextStateListener implements XInterpreterListener {
 			]
 		}
 	}
-	
-	static def Throwable getRealCause(Throwable e) {
-		if (e.cause === null) e else e.cause.realCause
-	}
-
-	override aboutToEvaluate(EObject element) {}
-
-	override evaluated(EObject element) {}
 
 	def void notifyPossibleStateChanged(List<XDebugStackFrameVariable> newVariables) {
-		if (newVariables.stateChanged) {
+		if (newVariables !== null && newVariables.stateChanged) {
 			currentVariables = newVariables
 			contextStateListener.stateChanged(currentVariables)
 			firstTime = false
 		}
 	}
-	
+
 	def stateChanged(List<XDebugStackFrameVariable> newVariables) {
-		firstTime || !currentVariables.map [ toString ].equals(newVariables.map [ toString ])
+		firstTime || !currentVariables.map[toString].equals(newVariables.map[toString])
 	}
 
 }

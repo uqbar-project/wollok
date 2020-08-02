@@ -1,11 +1,12 @@
 package wollok.vm
 
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 class RuntimeObject {
-	val WollokObject obj
-	val WollokInterpreter interpreter;
+	@Accessors(PUBLIC_GETTER) val WollokObject obj
+	val WollokInterpreter interpreter
 	
 	new(WollokObject obj, WollokInterpreter interpreter) {
 		this.obj = obj

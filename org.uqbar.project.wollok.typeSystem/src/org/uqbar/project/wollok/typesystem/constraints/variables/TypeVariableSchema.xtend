@@ -28,11 +28,11 @@ abstract class TypeVariableSchema extends ITypeVariable {
 		registry.tvar(obj)
 	}
 
-	def dispatch beSubtypeOf(ITypeVariable variable) {
+	override beSubtypeOf(ITypeVariable variable) {
 		throw new UnsupportedOperationException("Yet not implemented")		
 	}
 
-	def dispatch beSupertypeOf(ITypeVariable variable) {
+	override beSupertypeOf(ITypeVariable variable) {
 		throw new UnsupportedOperationException("Yet not implemented")		
 	}
 	

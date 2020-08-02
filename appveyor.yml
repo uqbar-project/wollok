@@ -18,7 +18,7 @@ install:
   - cmd: SET M2_HOME=C:\maven\apache-maven-3.2.5
 build_script:
   - cd org.uqbar.project.wollok.releng/
-  - mvn clean install -U -Darguments='-Dtycho.disableP2Mirrors=true' -Dtycho.disableP2Mirrors=true
+  - mvn clean install -U -Darguments='-Dtycho.disableP2Mirrors=false' -Dtycho.disableP2Mirrors=false
 test_script:
   - echo Already run :)
 cache:

@@ -26,15 +26,15 @@ class ObjectTest extends AbstractWollokInterpreterTestCase {
 			program p {
 				const perro = new Perro()
 				
-				assert.equals('a Perro[nombre="Colita", edad=7]', perro.toString())
-				assert.equals('casa[direccion="San Juan 1234", ambientes=3]', casa.toString())
+				assert.equals('a Perro', perro.toString())
+				assert.equals('casa', casa.toString())
 				
 				const anonymousObject = object {
 					var edad = 23
 					var altura = 2
 				}
 				
-				assert.equals("an Object[edad=23, altura=2]", anonymousObject.toString())
+				assert.equals("an Object", anonymousObject.toString())
 			}
 		'''.interpretPropagatingErrors
 	}
@@ -48,55 +48,9 @@ class ObjectTest extends AbstractWollokInterpreterTestCase {
 			}
 			
 			program p {
-				assert.equals("persona[edad=23, altura=1.7]", persona.toString())
+				assert.equals("persona", persona.toString())
 			}
 		'''.interpretPropagatingErrors
 	}
 
-	@Test
-	def void instanceVariableFor() {
-		'''
-			class Perro {
-				var nombre = "Colita"
-				var edad = 7
-			}
-			
-			program p {
-				const perro = new Perro()
-				
-				const instVar = perro.instanceVariableFor("nombre")
-				
-				assert.that(instVar != null)
-				
-				assert.equals("nombre", instVar.name())
-				assert.equals("Colita", instVar.value())
-			}
-		'''.interpretPropagatingErrors
-	}
-	
-	@Test
-	def void instanceVariables() {
-		'''
-			class Perro {
-				var nombre = "Colita"
-				var edad = 7
-			}
-			
-			program p {
-				const perro = new Perro()
-				
-				const instVars = perro.instanceVariables()
-				assert.equals(2, instVars.size())
-				
-				const nombreInstVar = instVars.find{e=> e.name() == "nombre"}
-				assert.equals("Colita", nombreInstVar.value())
-				
-				const edadInstVar = instVars.find{e=> e.name() == "edad"}
-				assert.equals(7, edadInstVar.value())
-				
-«««				assert.equals("#[edad=7, nombre=Colita]",instVars.toString())
-			}
-		'''.interpretPropagatingErrors
-	}
-	
 }

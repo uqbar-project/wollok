@@ -22,7 +22,7 @@ class WollokParseHelper extends ParseHelper<WFile>{
 		parse(file, resourceSetToUse, false)
 	}
 
-	override def parse(CharSequence text, ResourceSet resourceSetToUse) throws Exception {
+	override parse(CharSequence text, ResourceSet resourceSetToUse) throws Exception {
 		text.toString.computeFileExtension
 		val uri = computeUnusedUri(resourceSetToUse).trimFileExtension.appendFileExtension(fileExtension)
 		return super.parse(getAsStream(text), uri, null, resourceSetToUse)

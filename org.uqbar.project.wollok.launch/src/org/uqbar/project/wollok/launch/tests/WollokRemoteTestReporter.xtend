@@ -38,13 +38,10 @@ class WollokRemoteTestReporter extends DefaultWollokTestsReporter {
 	// TODO: Is a temporary variable, we should refactor and add a grouping WollokTestInfo
 	String suiteName
 	
-	List<WollokTestInfo> testFiles
-	
 	@Inject
 	def init() {
 		client = new Client("localhost", parameters.testPort, callHandler)
 		remoteTestNotifier = client.getGlobal(WollokRemoteUITestNotifier) as WollokRemoteUITestNotifier
-		testFiles = newArrayList
 	}
 
 	override reportTestAssertError(WTest test, AssertionException assertionException, int lineNumber, URI resource) {

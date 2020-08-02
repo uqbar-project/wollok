@@ -99,7 +99,7 @@ class IJarEntryResourceAdapter extends ManifestEntryAdapter {
 		]);
 	}
 	
-	override  def load(URI uri, Resource resource, Manager manager) {	
+	override  load(URI uri, Resource resource, Manager manager) {	
 		val entry = uri.toEntry()
 		var newResource = resource.resourceSet.getResource(uri, false)
 		if (newResource === null) {

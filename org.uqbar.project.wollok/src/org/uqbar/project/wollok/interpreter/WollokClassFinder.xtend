@@ -20,8 +20,8 @@ import static org.uqbar.project.wollok.sdk.WollokSDK.*
  * @author npasserini
  */
 class WollokClassFinder {
-	private Map<String, WClass> sdkClassesCache = newHashMap
-	private Map<String, WNamedObject> sdkObjectsCache = newHashMap
+	Map<String, WClass> sdkClassesCache = newHashMap
+	Map<String, WNamedObject> sdkObjectsCache = newHashMap
 	@Inject IGlobalScopeProvider scopeProvider
 
 	static var WollokClassFinder INSTANCE

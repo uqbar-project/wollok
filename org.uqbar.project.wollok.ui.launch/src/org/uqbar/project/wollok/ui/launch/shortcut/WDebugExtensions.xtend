@@ -22,7 +22,7 @@ import static org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants.*
  * @author jfernandes
  */
 class WDebugExtensions {
-	private static final Logger logger = Logger.getLogger(WDebugExtensions)
+	static final Logger logger = Logger.getLogger(WDebugExtensions)
 	
 	def static isWollokBreakpoint(IBreakpoint b) { b.modelIdentifier == WollokLaunchConstants.ID_DEBUG_MODEL }
 	
@@ -41,6 +41,11 @@ class WDebugExtensions {
 	def static void fireEvent(Object source, int eventType, int detail) { fireEvent(new DebugEvent(source, eventType, detail)) }
 	
 	def static isDebug(String mode) { mode.equals(ILaunchManager.DEBUG_MODE) }
+	
+	def static dynamicDiagramActivated(ILaunchConfiguration configuration){
+		configuration.getAttribute(WollokLaunchConstants.ATTR_WOLLOK_DYNAMIC_DIAGRAM, false)	
+	}
+	
 	def static hasRepl(ILaunchConfiguration configuration){
 		configuration.getAttribute(WollokLaunchConstants.ATTR_WOLLOK_IS_REPL, false)	
 	}
@@ -105,7 +110,7 @@ class WDebugExtensions {
 		launchManager.generateUniqueLaunchConfigurationNameFrom(info.name)
 	}
 	
-	def static launch(ILaunchConfiguration conf, String mode) { 
+	def static launch(ILaunchConfiguration conf, String mode) {
 		DebugUITools.launch(conf, mode)
 	}
 	

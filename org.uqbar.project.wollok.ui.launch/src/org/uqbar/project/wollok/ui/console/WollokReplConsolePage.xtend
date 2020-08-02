@@ -53,7 +53,7 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 				event.doit = console.isRunning && console.canWriteAt(event.start)
 			]
 			addMouseListener(new MouseAdapter() {
-				override def mouseDown(MouseEvent e) {
+				override mouseDown(MouseEvent e) {
 					if(isCursorInTheLastLine && isCursorInReadOnlyZone) setCursorToEnd
 				}
 			})

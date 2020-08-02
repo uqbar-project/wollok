@@ -39,10 +39,10 @@ class WollokServer extends AbstractHandler {
 	]
 
 	@Inject
-	private Provider<XtextResourceSet> resourceSetProvider
+	Provider<XtextResourceSet> resourceSetProvider
 
 	@Inject
-	private IResourceFactory resourceFactory
+	IResourceFactory resourceFactory
 
 	override handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) {
 		val interpreter = injector.getInstance(WollokInterpreter)

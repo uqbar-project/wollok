@@ -90,4 +90,9 @@ class WollokConstants {
 	public static val FQN_ROOT_CLASS = "wollok.lang.Object"
 	
 	public static val MULTIOPS_REGEXP = "[+\\-*/%]="
+	
+	public static val TO_STRING = "toString"
+	public static val TO_STRING_PRINTABLE = "printString"
+	public static val TO_STRING_SHORT = "shortDescription"
+
 }

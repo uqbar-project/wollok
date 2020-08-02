@@ -27,7 +27,7 @@ class WSet extends WCollection<Set<WollokObject>> implements JavaWrapper<Set<Wol
 			wrapped.head
 	}
 	
-	override protected def verifyWollokElementsContained(Collection<WollokObject> set, Collection<WollokObject> set2) {
+	override protected verifyWollokElementsContained(Collection<WollokObject> set, Collection<WollokObject> set2) {
 		set2.forall [ elem |
 			set.exists[ it.wollokEqualsMethod(elem) ]
 		]
@@ -54,7 +54,7 @@ class WSet extends WCollection<Set<WollokObject>> implements JavaWrapper<Set<Wol
 	 * For performance reasons I had to use C-ish syntax, which resulted
 	 * in a much better performance ratio
 	 */
-	override def Object fold(WollokObject acc, WollokObject proc) {
+	override Object fold(WollokObject acc, WollokObject proc) {
 		val closure = proc.asClosure
 		var seed = acc
 		val Collection<WollokObject> array = new ArrayList(wrapped.toArray())

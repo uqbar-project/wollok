@@ -39,3 +39,23 @@ class SelfReferenceAnchor extends DefaultWollokAnchor {
 	}
 	
 }
+
+class SelfReferenceConnectionAnchor extends DefaultWollokAnchor {
+	
+	public static int DELTA = 5
+	
+	new(IFigure owner) {
+		super(owner)
+	}
+	
+	override getReferencePoint() {
+		val point = owner.bounds.bottomLeft.translateToAbsolute
+		new Point(point.x, point.y + (DELTA * 3))
+	}
+	
+	override getLocation(Point reference) {
+		val point = owner.bounds.bottomRight.translateToAbsolute
+		new Point(point.x, point.y - (DELTA * 3))
+	}
+	
+}

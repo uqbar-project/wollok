@@ -22,8 +22,8 @@ describe "with fixture" {
 	
 	test "test with self" {
 		n = self.number()
-		// XPECT type at s --> String
-		var s = ""
-		assert.equals(n, s)
+		// XPECT type at expected --> Number
+		var expected
+		assert.equals(n, expected)
 	}
 }

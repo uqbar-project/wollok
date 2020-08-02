@@ -38,29 +38,10 @@ object objectTests {
 	// XPECT methodType at errorObject --> (Object, String) => Void
 	method errorObject(o, message) = o.error(message)
 	
-	
-	// XPECT methodType at toSmartString --> (Object, List<Object>) => String
-	method toSmartString(o, alreadyShown) = o.toSmartString(alreadyShown)
-	
-	// XPECT methodType at internalToSmartStringObject --> (Object, List<Object>) => String
-	method internalToSmartStringObject(o, alreadyShown) = o.internalToSmartString(alreadyShown)
-	
-	// XPECT methodType at simplifiedToSmartString --> (Object) => String
-	method simplifiedToSmartString(o) = o.simplifiedToSmartString()
-	
 	// XPECT methodType at messageNotUnderstood --> (Object, String, List<Object>) => Void
 	method messageNotUnderstood(o, name, parameters) = o.messageNotUnderstood(name, parameters)
 	
 	// XPECT methodType at generateDoesNotUnderstandMessage --> (Object, String, String, Number) => String
 	method generateDoesNotUnderstandMessage(o, target, name, parametersCount) = o.generateDoesNotUnderstandMessage(target, name, parametersCount)
 	
-	
-	// XPECT methodType at instanceVariables --> (Object) => List<InstanceVariableMirror>
-	method instanceVariables(o) = o.instanceVariables()
-	
-	// XPECT methodType at instanceVariableFor --> (Object, String) => InstanceVariableMirror
-	method instanceVariableFor(o, name) = o.instanceVariableFor(name)
-	
-	// XPECT methodType at resolve --> (Object, String) => Any
-	method resolve(o, name) = o.resolve(name)
 }

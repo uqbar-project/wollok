@@ -47,11 +47,11 @@ class WollokLauncherParameters {
 	def build() {
 		val sb = new StringBuilder
 		if (hasRepl) sb.append("-r").append(" ")
-		if (hasRepl && dynamicDiagramActivated) sb.append("-dd").append(" ")
+		if (shouldActivateDynamicDiagram) sb.append("-dd").append(" ")
 		sb.appendIfNotNull(requestsPort, "requestsPort")
 		sb.appendIfNotNull(eventsPort, "eventsPort")
 		sb.appendIfNotNull(testPort, "testPort")
-		if (hasRepl && dynamicDiagramActivated) {
+		if (shouldActivateDynamicDiagram) {
 			sb.appendIfNotNull(dynamicDiagramPort, "dynamicDiagramPort")
 		}
 		if (tests) sb.append("-t ")
@@ -68,6 +68,10 @@ class WollokLauncherParameters {
 		if (saveFile) sb.append("-save ")
 		//
 		sb.toString
+	}
+
+	def shouldActivateDynamicDiagram() {
+		this.dynamicDiagramActivated && (this.dynamicDiagramPort ?: 0) !== 0		
 	}
 
 	def appendIfNotNull(StringBuilder builder, Object parameterValue, String parameterKey) {

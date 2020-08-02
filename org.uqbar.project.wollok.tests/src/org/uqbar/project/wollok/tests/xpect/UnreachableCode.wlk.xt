@@ -8,7 +8,7 @@ class A {
 		catch e : Exception {
 			return 2
 		}
-		// XPECT warnings --> "Unreachable code" at "return 3"
+		// XPECT errors --> "Unreachable code" at "return 3"
 		return 3
 	}
 	
@@ -48,7 +48,7 @@ class A {
 		catch e : Exception {
 			throw e
 		}
-		// XPECT warnings --> "Unreachable code" at "return 3"
+		// XPECT errors --> "Unreachable code" at "return 3"
 		return 3
 	}
 	

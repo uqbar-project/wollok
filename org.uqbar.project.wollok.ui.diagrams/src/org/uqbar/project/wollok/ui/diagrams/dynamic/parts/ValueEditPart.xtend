@@ -2,12 +2,12 @@ package org.uqbar.project.wollok.ui.diagrams.dynamic.parts
 
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
+import java.util.List
 import org.eclipse.draw2d.ConnectionAnchor
 import org.eclipse.draw2d.Ellipse
 import org.eclipse.draw2d.EllipseAnchor
 import org.eclipse.draw2d.Figure
 import org.eclipse.draw2d.Label
-import org.eclipse.draw2d.RectangleFigure
 import org.eclipse.draw2d.StackLayout
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.gef.ConnectionEditPart
@@ -17,9 +17,9 @@ import org.eclipse.gef.NodeEditPart
 import org.eclipse.gef.Request
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart
 import org.eclipse.gef.editpolicies.ComponentEditPolicy
+import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
-import org.eclipse.draw2d.ChopboxAnchor
-import org.uqbar.project.wollok.ui.diagrams.classes.view.StaticDiagramColors
+import org.uqbar.project.wollok.ui.diagrams.classes.view.DiagramColors
 import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
 
 /**
@@ -54,11 +54,12 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 		new Figure => [
 			layoutManager = new StackLayout
 		
-			val c = colorFor(castedModel)
-			add(this.ellipse = createShape() => [
-				backgroundColor = c
+			this.ellipse = createShape() => [
+				backgroundColor = colorFor(castedModel)
+				lineWidth = lineWidthFor(castedModel)				
 				opaque = true
-			])
+			]
+			add(this.ellipse)
 			add(new Label => [
 				text = castedModel.valueString
 				setSize(75, 25)
@@ -67,30 +68,23 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 	}
 	
 	def createShape() {
-		if (castedModel.isCollection)
-			new RectangleFigure
-		else
-			new Ellipse
+		new Ellipse
 	}
 	
 	def colorFor(VariableModel model) {
-		val v = model.valueString
-		if (v == "null")
-			StaticDiagramColors.OBJECTS_VALUE_NULL
-		else if (model.isNumeric)
-			StaticDiagramColors.OBJECTS_VALUE_NUMERIC_BACKGROUND
-		else if (model.isCollection)
-			StaticDiagramColors.OBJECTS_VALUE_COLLECTION_BACKGROUND
-		else if (model.isString)
-			StaticDiagramColors.OBJECTS_VALUE_STRING_BACKGROUND
-		else if (model.isNative)
-			StaticDiagramColors.OBJECTS_VALUE_NATIVE_BACKGROUND
+		val configuration = DynamicDiagramConfiguration.instance
+		if (model.valueString == "null")
+			DiagramColors.OBJECTS_VALUE_NULL
 		else if (model.isUserDefined)
-			StaticDiagramColors.OBJECT_USER_DEFINED_BACKGROUND
+			if (configuration.colorBlindEnabled) DiagramColors.OBJECTS_CUSTOM_BACKGROUND_COLORBLIND else DiagramColors.OBJECTS_CUSTOM_BACKGROUND
 		else
-			StaticDiagramColors.CLASS_BACKGROUND
+			if (configuration.colorBlindEnabled) DiagramColors.OBJECTS_WRE_BACKGROUND_COLORBLIND else DiagramColors.OBJECTS_WRE_BACKGROUND
 	}
-	
+
+	def lineWidthFor(VariableModel model) {
+		if (model.isUserDefined && DynamicDiagramConfiguration.instance.colorBlindEnabled) 2 else 1
+	}
+
 	def getCastedModel() { model as VariableModel }
 
 	def getConnectionAnchor() {
@@ -99,14 +93,11 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 	}
 	
 	def createConnectionAnchor() {
-		if (castedModel.isCollection)
-			new ChopboxAnchor(figure)
-		else
-			new EllipseAnchor(figure)
+		new EllipseAnchor(figure)
 	}
 	
-	override getModelSourceConnections() { castedModel.sourceConnections }
-	override getModelTargetConnections() { castedModel.targetConnections }
+	override List<Connection> getModelSourceConnections() { castedModel.sourceConnections }
+	override List<Connection> getModelTargetConnections() { castedModel.targetConnections }
 
 	// anchors
 		
@@ -134,6 +125,9 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 	}
 	
 	def getBounds(Shape it) { new Rectangle(location, size) }
-//	def getBounds() { new Rectangle((Math.random * 200).intValue, (Math.random * 200).intValue, 75, 75) }
 
+	def canBeHidden() {
+		castedModel.canBeHidden
+	}
+		
 }

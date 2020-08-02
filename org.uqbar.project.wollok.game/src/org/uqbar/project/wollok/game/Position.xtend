@@ -53,7 +53,7 @@ abstract class Position {
 
 	def int getYinPixels() { y * Gameboard.instance.cellsize }
 
-	override public int hashCode() {
+	override int hashCode() {
 		val prime = 31
 		val result = prime + x
 		prime * result + y
@@ -91,8 +91,8 @@ abstract class Position {
 
 @Accessors
 class WGPosition extends Position {
-	private int x = 0
-	private int y = 0
+	int x = 0
+	int y = 0
 
 	new() { }
 

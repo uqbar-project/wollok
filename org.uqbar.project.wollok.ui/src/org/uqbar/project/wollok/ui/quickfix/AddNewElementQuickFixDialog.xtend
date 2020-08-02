@@ -422,7 +422,7 @@ class WollokFileContentProvider implements ITreeContentProvider {
 
 class WollokMethodContainerLabelProvider extends LabelProvider {
 
-	private ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources())
+	ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources())
 
 	def dispatch getImage(WClass element) { showImage("wollok-icon-class_16.png") }
 
@@ -433,12 +433,12 @@ class WollokMethodContainerLabelProvider extends LabelProvider {
 	def dispatch getImage(URI uri) {
 		val fileExtension = uri.fileExtension
 		if (fileExtension.equals(TEST_EXTENSION)) {
-			return showImage("wollok-icon-test_16.png")
+			return showImage("file_wtest.png")
 		}
 		if (fileExtension.equals(PROGRAM_EXTENSION)) {
-			return showImage("wollok-icon-program_16.png")
+			return showImage("file_wpgm.png")
 		}
-		return showImage("w.png")
+		return showImage("file_wlk.png")
 	}
 
 	def dispatch getImage(Object element) {
@@ -458,7 +458,7 @@ class WollokMethodContainerLabelProvider extends LabelProvider {
 		o.toString
 	}
 
-	override def dispose() {
+	override dispose() {
 		super.dispose
 		resourceManager.dispose
 	}

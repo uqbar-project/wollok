@@ -36,7 +36,7 @@ class DebugContextListener implements IDebugContextListener {
 	
 }
 
-public interface IStackFrameConsumer {
+interface IStackFrameConsumer {
 
 	def void setStackFrame(IStackFrame stackframe)
 

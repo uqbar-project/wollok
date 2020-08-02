@@ -1,0 +1,25 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+import wollok.lib.assert
+
+describe "a group of tests for the only flag" {
+	
+	// XPECT warnings --> "You should mark a single test with the flag 'only' (the others will not be executed)" at ""truthy test""
+	only test "truthy test" {
+		assert.that(true)
+	}
+	
+	// XPECT warnings --> "You should mark a single test with the flag 'only' (the others will not be executed)" at ""equality for numbers""
+	only test "equality for numbers" {
+		assert.equals(1, 1.0)
+	}
+	
+	// XPECT warnings --> "You should mark a single test with the flag 'only' (the others will not be executed)" at ""falsy test""
+	only test "falsy test" {
+		assert.notThat(false)
+	}
+	
+	test "this will not have a warning" {
+		assert.equals(2, 2.0)
+	}
+
+}

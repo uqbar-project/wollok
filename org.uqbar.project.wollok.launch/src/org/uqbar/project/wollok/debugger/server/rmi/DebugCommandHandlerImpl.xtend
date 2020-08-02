@@ -4,6 +4,7 @@ import com.google.common.collect.Lists
 import java.net.URI
 import net.sf.lipermi.net.Server
 import org.uqbar.project.wollok.interpreter.api.XDebugger
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**
  * DebugCommandHandler implementation.
@@ -17,10 +18,10 @@ import org.uqbar.project.wollok.interpreter.api.XDebugger
 // this should probably have a better name
 class DebugCommandHandlerImpl implements DebugCommandHandler {
 	Server server
-	XDebugger debugger
+	XDebugger<WollokObject> debugger
 	()=>void onReady
 	
-	new(XDebugger debugger, Server server, ()=>void onReady) {
+	new(XDebugger<WollokObject> debugger, Server server, ()=>void onReady) {
 		this.debugger = debugger
 		this.server = server
 		this.onReady = onReady

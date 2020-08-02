@@ -12,10 +12,10 @@ import org.eclipse.emf.common.util.URI
 @Accessors
 class AssertionException extends Exception {
 
-	private String message
-	private WollokObject wollokException
-	private URI URI
-	private int lineNumber
+	String message
+	WollokObject wollokException
+	URI URI
+	int lineNumber
 	
 	new(String message, WollokProgramExceptionWrapper exceptionWrapper) {
 		this.message = message

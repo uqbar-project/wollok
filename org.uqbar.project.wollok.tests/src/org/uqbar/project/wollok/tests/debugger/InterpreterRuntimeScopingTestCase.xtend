@@ -12,7 +12,7 @@ import static org.uqbar.project.wollok.tests.debugger.util.DebuggingSessionAsser
  * 
  * @author jfernandes
  */
-public class InterpreterRuntimeScopingTestCase extends AbstractXDebuggerTestCase {
+class InterpreterRuntimeScopingTestCase extends AbstractXDebuggerTestCase {
 	
 	// TODO: add more tests
 	

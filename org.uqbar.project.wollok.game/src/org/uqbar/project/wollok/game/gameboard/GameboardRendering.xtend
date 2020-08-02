@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 
 class GameboardRendering implements ApplicationListener {
 
-	private Gameboard gameboard
-	private Window window
+	Gameboard gameboard
+	Window window
 	
 	new (Gameboard gameboard) {
 		this.gameboard = gameboard

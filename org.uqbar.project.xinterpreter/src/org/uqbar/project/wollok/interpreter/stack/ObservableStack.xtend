@@ -8,7 +8,7 @@ import java.util.Stack
  * @author jfernandes
  */
 class ObservableStack<E> extends Stack<E> implements Serializable {
-	private Set<StackObserver<E>> observers = newHashSet
+	Set<StackObserver<E>> observers = newHashSet
 	
 	override push(E item) {
 		val previous = if (isEmpty) null else peek
@@ -17,11 +17,13 @@ class ObservableStack<E> extends Stack<E> implements Serializable {
 		o
 	}
 	
-	override pop() {
+	override synchronized pop() {
 		val o = super.pop()
 		observers.forEach[poped(o)]
 		o
 	}
+
+
 	
 	def addObserver(StackObserver<E> o) {
 		this.observers.add(o)

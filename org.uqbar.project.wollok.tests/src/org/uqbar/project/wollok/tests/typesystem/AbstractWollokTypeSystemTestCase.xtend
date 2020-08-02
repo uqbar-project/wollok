@@ -183,14 +183,21 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	}
 
 	def assertIssuesInElement(EObject element, String... expectedIssues) {
-		val expectedDiagnostics = expectedIssues.map [ message |
+		diagnose.assertAll(element.expectedDiagnosticsexpectedDiagnostics(expectedIssues))
+	}
+
+	def assertAnyIssueInElement(EObject element, String... expectedIssues) {
+		diagnose.assertAny(element.expectedDiagnosticsexpectedDiagnostics(expectedIssues))
+	}
+	
+	def expectedDiagnosticsexpectedDiagnostics(EObject element, String... expectedIssues) {
+		expectedIssues.map [ message |
 			new AssertableDiagnostics.Pred(null, null, null, message) {
 				override apply(Diagnostic d) {
 					super.apply(d) && (d as AbstractValidationDiagnostic).sourceEObject == element
 				}
 			}
 		]
-		diagnose.assertAll(expectedDiagnostics)
 	}
 
 	// FINDS

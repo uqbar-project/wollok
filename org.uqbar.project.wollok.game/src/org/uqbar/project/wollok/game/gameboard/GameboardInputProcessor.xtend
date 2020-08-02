@@ -7,8 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import org.uqbar.project.wollok.game.VisualComponent
-import org.uqbar.project.wollok.game.WGPosition
 
 class GameboardInputProcessor implements InputProcessor {
 
@@ -25,10 +23,10 @@ class GameboardInputProcessor implements InputProcessor {
 	}
 
 	override boolean touchDown(int x, int y, int pointer, int button) {
-		val inverseY = Gameboard.getInstance().pixelHeight() - y
-		val position = new WGPosition(x / Gameboard.instance.cellsize, inverseY / Gameboard.instance.cellsize )
+		// val inverseY = Gameboard.getInstance().pixelHeight() - y
+		// val position = new WGPosition(x / Gameboard.CELLZISE, inverseY / Gameboard.CELLZISE )
 		
-		val Iterable<VisualComponent> lista = Gameboard.getInstance.getComponentsInPosition(position)
+		// val Iterable<VisualComponent> lista = Gameboard.getInstance.getComponentsInPosition(position)
 		
 		//System.out.println("Click en " + x + "," + y + " con boton" + button)
 		//System.out.println("Hay " + lista.size + " elementos")
@@ -56,7 +54,7 @@ class GameboardInputProcessor implements InputProcessor {
 
 }
 
-public class MenuBuilder {
+class MenuBuilder {
 
 	def static ScrollPane buildMenu(int x, int y) {
 		val font = new BitmapFont() => [

@@ -36,7 +36,7 @@ class WList extends WCollection<List<WollokObject>> implements JavaWrapper<List<
 		val closure = predicate.asClosure
 		/*Convert the closure into a comparator to use the standard sort*/
 		val comparator = new Comparator {
-			override def compare(Object a, Object b) {
+			override compare(Object a, Object b) {
 				if(closure.doApply(a as WollokObject,b as WollokObject).isTrue)
 					-1
 				else
@@ -63,7 +63,7 @@ class WList extends WCollection<List<WollokObject>> implements JavaWrapper<List<
 		return result.last
 	}
 	
-	override protected def verifyWollokElementsContained(Collection<WollokObject> list, Collection<WollokObject> list2) {
+	override protected verifyWollokElementsContained(Collection<WollokObject> list, Collection<WollokObject> list2) {
 		val size = list2.size - 1
 		list.empty ||
 		(0..size).forall [ i |

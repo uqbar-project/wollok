@@ -55,7 +55,7 @@ class NewWollokObjectsWizardPage extends AbstractNewWollokFileWizardPage {
 		
 	}
 	
-	override def doDialogChanged() {
+	override doDialogChanged() {
 		elementName = elementNameText.text
 		elementIndex = cbElement.selectionIndex	
 		

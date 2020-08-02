@@ -5,10 +5,10 @@ import org.eclipse.core.runtime.Platform
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider
-import org.uqbar.project.wollok.services.WollokDslGrammarAccess
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
+import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -28,7 +28,9 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import static extension org.uqbar.project.wollok.WollokConstants.*
 
 /**
  * Provides labels for EObjects.
@@ -37,8 +39,6 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
  */
 class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	WollokTypeSystemLabelExtension labelExtension = null
-	@Inject
-	WollokDslGrammarAccess grammar
 	var labelExtensionResolved = false
 
 	@Inject
@@ -46,17 +46,29 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 		super(delegate)
 	}
 
+	def text(WFile it) {
+		eResource.URI.segmentsList.last	
+	}
+
+	def image(WFile it) {
+		switch (eResource.URI.fileExtension) {
+			case TEST_EXTENSION: "file_wtest.png"
+			case PROGRAM_EXTENSION: "file_wpgm.png"
+			default: "w.png"
+		}
+	}
+
 	def image(WPackage it) { 'package.png' }
 
-	def image(WProgram it) { 'wollok-icon-program_16.png' }
+	def image(WProgram it) { 'program.png' }
 
 	def image(WClass it) { 'wollok-icon-class_16.png' }
 	
 	def image(WMixin it) { 'wollok-icon-mixin_16.png' }
 
-	def image(WTest it) { 'wollok-icon-test_16.png' }
+	def image(WTest it) { 'test.png' }
 
-	def image(WSuite it) { 'suite.png' }
+	def image(WSuite it) { 'describe.png' }
 
 	def image(WFixture it) { 'fixture.png' }
 
@@ -94,27 +106,20 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	}
 
 	def text(WVariableDeclaration it) {
-		// TODO: Considerar si es property
-		(if (writeable)
-			// var 
-			grammar.WVariableDeclarationAccess.writeableVarKeyword_1_0_0.value
-		else
-			// const 
-			grammar.WVariableDeclarationAccess.constKeyword_1_1.value) + " " + variable.name +
-			concatResolvedType(": ", variable)
+		variable.name +	concatResolvedType(": ", variable)
 	}
 
 	def image(WVariableDeclaration it) { 
 		if (property) {
 			if (writeable) 
-				'wollok-icon-property_var_16.png'
+				'property-small.png'
 			else
-				'wollok-icon-property_const_16.png'
+				'property-const-small.png'
 		} else {
 			if (writeable)
-				'wollok-icon-variable_16.png'
+				'variable-small.png'
 			else 
-				'wollok-icon-constant_16.png'
+				'constant-small.png'
 		} 
 	}
 

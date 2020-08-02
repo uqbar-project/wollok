@@ -27,5 +27,7 @@ abstract class XDebugValue implements Serializable {
 		(this.stringValue ?: "") + (if (id === null) "" else " (" + id + ")") + variablesToString
 	}
 	
-	public def String getTypeName()
+	def String getTypeName()
+	
+	def boolean isWKO() { false }
 }

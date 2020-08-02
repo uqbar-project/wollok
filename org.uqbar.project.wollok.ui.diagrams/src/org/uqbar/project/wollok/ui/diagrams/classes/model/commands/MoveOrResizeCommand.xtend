@@ -14,10 +14,10 @@ import static org.eclipse.gef.RequestConstants.*
  * @author jfernandes
  */
 class MoveOrResizeCommand extends Command {
-	private final Rectangle newBounds
-	private Rectangle oldBounds
-	private final ChangeBoundsRequest request
-	private final Shape shape
+	final Rectangle newBounds
+	Rectangle oldBounds
+	final ChangeBoundsRequest request
+	final Shape shape
 
 	new(Shape shape, ChangeBoundsRequest req, Rectangle newBounds) {
 		if (shape === null || req === null || newBounds === null)

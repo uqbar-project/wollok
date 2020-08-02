@@ -49,6 +49,7 @@ class WollokSDK {
 	
 	public static val POSITION = "wollok.game.Position"
 	public static val SOUND = "wollok.game.Sound"
+	public static val OBJECT_MIRROR = "wollok.mirror.ObjectMirror"
 	public static val ASSERTION_EXCEPTION_FQN = "wollok.lib.AssertionException"
 	public static val STRING_PRINTER = "wollok.lib.StringPrinter"
 	
@@ -98,9 +99,9 @@ class WollokSDK {
 		fqn == NUMBER || fqn == STRING || fqn == BOOLEAN
 	}
 
-	def static hasShortDescription(WollokObject it) {
+	def static shouldUseShortDescriptionForDynamicDiagram(WollokObject it) {
 		val fqn = behavior.fqn
-		fqn == DATE || fqn == CLOSURE
+		#[DATE, CLOSURE, POSITION, PAIR, RANGE].contains(fqn)
 	}
 	
 }

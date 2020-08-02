@@ -6,9 +6,10 @@ import org.uqbar.project.wollok.libraries.WollokLibExtensions
 import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertTrue
 
-class WollokLibExtensionsTest  {
+class WollokLibExtensionsTest {
 
-	public static class IsCoreLibTest{
+	static class IsCoreLibTest {
+
 		@Test()
 		def void libFQNisACoreLibrary() {
 			val String exceptionFqn = "wollok.lang.Exception"
