@@ -13,7 +13,8 @@ import static extension org.uqbar.project.wollok.typesystem.constraints.variable
 class RejectedMinTypeException extends TypeSystemException {
 	WollokType type
 	Set<WollokType> expectedTypes = newHashSet
-	
+	Boolean reverse = false // Expected vs actual
+
 	new(TypeVariable variable, WollokType type) {
 		super(variable)
 		this.type = type
@@ -23,6 +24,11 @@ class RejectedMinTypeException extends TypeSystemException {
 		this(variable, type)
 		if (expectedTypes !== null)
 			this.expectedTypes = expectedTypes
+	}
+
+	new(TypeVariable variable, WollokType type, Set<WollokType> expectedTypes, Boolean reverse) {
+		this(variable, type, expectedTypes)
+		this.reverse = reverse
 	}
 
 	/**
@@ -37,16 +43,19 @@ class RejectedMinTypeException extends TypeSystemException {
 		// Support null `variable`. While it should not happen and means
 		// a program error, it is not nice to throw a NPE inside the toString
 		// of a previous exception.
-		NLS.bind(Messages.TypeSystemException_REJECTED_MIN_TYPE_MESSAGE, expectedType, type)
+		if (reverse)
+			NLS.bind(Messages.TypeSystemException_REJECTED_MIN_TYPE_MESSAGE, type, expectedType)
+		else
+			NLS.bind(Messages.TypeSystemException_REJECTED_MIN_TYPE_MESSAGE, expectedType, type)
 	}
-	
+
 	def expectedType() {
-		if (!expectedTypes.isEmpty) return expectedTypes.join("|")
-		if (variable !== null) variable.expectedType else Constants.UNKNOWN
+		if(!expectedTypes.isEmpty) return expectedTypes.join("|")
+		if(variable !== null) variable.expectedType else Constants.UNKNOWN
 	}
-	
+
 	override relatedToType(WollokType typeRelated) {
 		type == typeRelated
 	}
-	
+
 }
