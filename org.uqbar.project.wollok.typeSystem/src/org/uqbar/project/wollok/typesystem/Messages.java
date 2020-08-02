@@ -36,6 +36,7 @@ public class Messages extends NLS {
 	public static String TypeSystemException_NOT_VALID_SUBSTITUTE;
 	public static String TypeSystemException_MISSING_TYPE_INFORMATION;
 	public static String TypeSystemException_REJECTED_MIN_TYPE_MESSAGE;
+	public static String TypeSystemException_INFINITE_RECURSIVE_TYPE;
 	
 	public static String RuntimeTypeSystemException_CANT_FIND_MIN_TYPE;
 	public static String RuntimeTypeSystemException_CANT_EXTRACT_METHOD_TYPE;
