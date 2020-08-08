@@ -45,9 +45,7 @@ class WollokRemoteContextStateListener implements XInterpreterListener {
 	override aboutToEvaluate(EObject element) {}
 
 	override evaluated(EObject element) {
-		if (!forRepl) {
-			this.detectChanges
-		}
+		this.detectChanges
 	}
 
 	def void detectChanges() {
