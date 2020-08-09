@@ -31,7 +31,10 @@ object incompatibility {
 	}
 
 	method incompatible_return_closure_type() {
-		// XPECT warnings --> "Type system: expected <<Boolean>> but found <<String>>" at "{n => "ERROR"}"
+		/* XPECT warnings ---
+			"Type system: expected <<Boolean>> but found <<String>>" at ""ERROR""
+			"Type system: expected <<Boolean>> but found <<String>>" at "{n => "ERROR"}"
+		--- */		
 		return [1,2,3].any({n => "ERROR"})
 	}
 	
