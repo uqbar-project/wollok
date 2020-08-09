@@ -8,7 +8,6 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Boolean >> "or" === #[Boolean] => Boolean
 		Boolean >> "negate" === #[] => Boolean
 
-		PairType.constructor(PKEY, PVALUE)
 		PairType.variable("x", PKEY)
 		PairType.variable("y", PVALUE)
 		PairType >> "key" === #[] => PKEY;
