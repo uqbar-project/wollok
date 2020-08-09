@@ -1,54 +1,56 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
 
 object pairTest {
+	// XPECT type at pair --> Pair<Number, String>
+	const pair = new Pair(x=2, y="")
 	
 	// XPECT! methodType at arrow --> () => Pair<Number, String>
-//	method arrow() {
-//		return 2 -> ""
-//	}
+	method arrow() {
+		return 2 -> ""
+	}
 	
-	// XPECT methodType at m0 --> () => Pair<Number, Number>
+	// XPECT methodType at m0 --> () => Pair<Number, String>
 	method m0() {
-		return new Pair(2, 3)
+		return pair
 	}
 	
 	// XPECT methodType at m1 --> () => Number
 	method m1() {
-		return new Pair(2, "hola").key()
+		return pair.key()
 	}
 	
 	// XPECT methodType at m2 --> () => String
 	method m2() {
-		return new Pair(2, "hola").value()
+		return pair.value()
 	}
 
    	// XPECT methodType at m3 --> (Pair<Any, Any>) => Any
-	method m3(pair) {
-		return pair.key()
+	method m3(_pair) {
+		return _pair.key()
 	}
 
 	// XPECT methodType at m4 --> ((InstanceVariableMirror|Pair<Any, Any>)) => Any
-	method m4(pair) {
-		return pair.value()
+	method m4(_pair) {
+		return _pair.value()
 	}
 	
 	// XPECT methodType at m5 --> (Number) => Pair<Number, Number>
 	method m5(n) {
-		return new Pair(n + 1, n - 1)
+		return new Pair(x = n + 1, y = n - 1)
 	}
 
 	method m6() {
 		// XPECT type at n --> Number
-		var n = new Pair(2, 3).value()
+		var n = new Pair(x = 2, y = 3).value()
 
 		// XPECT type at s --> String
-		var s = new Pair(2, "").value()
+		var s = new Pair(x = 2, y = "").value()
 	}
 
 	// XPECT methodType at m7 --> (Number) => Number
 	method m7(n) {
 		// XPECT type at p --> Pair<Number, Number>
-		var p = new Pair(n + 1, n - 1)
+		var p = new Pair(x = n + 1, y = n - 1)
 		return p.value()
 	}
 }
