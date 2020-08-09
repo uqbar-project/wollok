@@ -23,7 +23,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 			(O != T) => Boolean;
 			(O === T) => Boolean;
 			(O !== T) => Boolean;
-			(O -> T) => PairType.instance(#{PKEY.paramName -> O, PVALUE.paramName -> T});
+			(O -> T) => PairType.instance(#{PKEY.paramName -> U, PVALUE.paramName -> T});
 			O >> "identity" === #[] => Number; 
 			O >> "equals" === #[T] => Boolean;
 			O >> "toString" === #[] => String;
