@@ -8,6 +8,7 @@ import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrameVariable
 import org.uqbar.project.wollok.debugger.server.rmi.XDebugValue
 import org.uqbar.project.wollok.debugger.server.rmi.XWollokCollectionDebugValue
 import org.uqbar.project.wollok.debugger.server.rmi.XWollokObjectDebugValue
+import org.uqbar.project.wollok.model.ResourceUtils
 
 /**
  * 
@@ -89,7 +90,7 @@ class WollokVariable extends WollokDebugElement implements IVariable {
 	}
 
 	def dispatch isGlobalReferenceToWKO(WollokValue value) {
-		value.isWKO && adaptee.name.equals(value.referenceTypeName)
+		value.isWKO && (adaptee.name.equals(value.referenceTypeName) || adaptee.name.equals(ResourceUtils.IMPORT_TEST_PREFFIX + value.referenceTypeName))
 	}
 	
 	def dispatch isGlobalReferenceToWKO(IValue value) {
