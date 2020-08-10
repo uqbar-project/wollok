@@ -404,7 +404,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	@NotConfigurable	
 	def propertyOnlyAllowedInMethodContainer(WVariableDeclaration it) {
-		if (property && (!isPropertyAllowed || isLocal)) {
+		if (property && !isPropertyAllowed) {
 			report(WollokDslValidator_PROPERTY_ONLY_ALLOWED_IN_CERTAIN_METHOD_CONTAINERS, it,
 			WVARIABLE_DECLARATION__PROPERTY, PROPERTY_ONLY_ALLOWED_IN_CERTAIN_METHOD_CONTAINERS)
 		} 
