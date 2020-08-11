@@ -90,7 +90,11 @@ class WollokVariable extends WollokDebugElement implements IVariable {
 	}
 
 	def dispatch isGlobalReferenceToWKO(WollokValue value) {
-		value.isWKO && (adaptee.name.equals(value.referenceTypeName) || adaptee.name.equals(ResourceUtils.IMPORT_TEST_PREFFIX + value.referenceTypeName))
+		value.isWKO && ResourceUtils.implicitPackagePreffixes.values.map[
+			it + value.referenceTypeName
+		].exists[
+			adaptee.name.equals(it)
+		]
 	}
 	
 	def dispatch isGlobalReferenceToWKO(IValue value) {

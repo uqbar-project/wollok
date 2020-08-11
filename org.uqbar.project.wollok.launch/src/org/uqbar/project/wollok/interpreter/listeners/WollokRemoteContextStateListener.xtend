@@ -1,14 +1,15 @@
 package org.uqbar.project.wollok.interpreter.listeners
 
+import java.util.Collection
 import java.util.List
 import net.sf.lipermi.handler.CallHandler
 import net.sf.lipermi.net.Client
+import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.contextState.server.XContextStateListener
 import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrame
 import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrameVariable
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.api.XInterpreterListener
-import org.eclipse.emf.ecore.EObject
 
 class WollokRemoteContextStateListener implements XInterpreterListener {
 
@@ -33,7 +34,9 @@ class WollokRemoteContextStateListener implements XInterpreterListener {
 
 	override terminated() {
 		if (forRepl) {
-			detectChanges
+			this.detectChanges
+		} else {
+			this.addChanges
 		}
 		variables.notifyPossibleStateChanged	
 	}
@@ -45,7 +48,9 @@ class WollokRemoteContextStateListener implements XInterpreterListener {
 	override aboutToEvaluate(EObject element) {}
 
 	override evaluated(EObject element) {
-		this.detectChanges
+		if (!forRepl) {
+			this.detectChanges
+		}
 	}
 
 	def void detectChanges() {
@@ -55,6 +60,25 @@ class WollokRemoteContextStateListener implements XInterpreterListener {
 			val currentStack = interpreter.currentThread.stack
 			if (!currentStack.isEmpty) {
 				this.variables = new XDebugStackFrame(currentStack.peek).variables
+			}
+		} catch (Exception e) {
+			val realCause = e.realCause
+			println("ERROR: " + realCause.class.name + ", " + realCause.message)
+			realCause.stackTrace.forEach [ ste |
+				println('''«ste.methodName» («ste.fileName»:«ste.lineNumber»)''')
+			]
+		}
+	}
+
+	def void addChanges() {
+		try {
+			XDebugStackFrame.initAllVariables()
+			val Collection<XDebugStackFrameVariable> variables = newArrayList(this.variables)
+			this.variables = #[]
+			val currentStack = interpreter.currentThread.stack
+			if (!currentStack.isEmpty) {
+				this.variables = new XDebugStackFrame(currentStack.peek).variables
+				this.variables.addAll(variables)
 			}
 		} catch (Exception e) {
 			val realCause = e.realCause
