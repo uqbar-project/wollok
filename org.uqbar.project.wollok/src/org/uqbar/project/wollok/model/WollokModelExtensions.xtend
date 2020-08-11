@@ -869,6 +869,10 @@ class WollokModelExtensions {
 		a.fqn == b.fqn || (b.parent !== null && a.isSuperTypeOf(b.parent))
 	}
 
+	static def dispatch isAssignment(WBinaryOperation operation) { operation.isMultiOpAssignment }
+	static def dispatch isAssignment(WAssignment a) { true }
+	static def dispatch isAssignment(EObject o) { false }
+	 
 	// ************************************************************************
 	// ** Compound assignments (+=, -=, *=, /=)
 	// ************************************************************************

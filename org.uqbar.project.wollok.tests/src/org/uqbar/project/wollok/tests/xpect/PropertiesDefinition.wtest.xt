@@ -61,5 +61,13 @@ describe "group of tests" {
 		const b = new B(m1 = 2)
 		b.m1(5)
 		assert.notEquals(5, b.m1())
-	}	
+	}
+
+	test "se puede definir una property dentro de un objeto anónimo en un test" {
+		const objetoConProperty = object {
+			var property tres = 3
+		}
+		assert.equals(3, objetoConProperty.tres())
+	}		
+
 }
