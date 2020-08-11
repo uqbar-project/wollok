@@ -33,11 +33,7 @@ class WollokRemoteContextStateListener implements XInterpreterListener {
 	override started() {}
 
 	override terminated() {
-		if (forRepl) {
-			this.detectChanges
-		} else {
-			this.addChanges
-		}
+		this.detectChanges(!forRepl)
 		variables.notifyPossibleStateChanged	
 	}
 
@@ -49,36 +45,21 @@ class WollokRemoteContextStateListener implements XInterpreterListener {
 
 	override evaluated(EObject element) {
 		if (!forRepl) {
-			this.detectChanges
+			this.detectChanges(false)
 		}
 	}
 
-	def void detectChanges() {
+	def void detectChanges(boolean preserveVariables) {
 		try {
 			XDebugStackFrame.initAllVariables()
+			val Collection<XDebugStackFrameVariable> variables = if (preserveVariables) newArrayList(this.variables) else newArrayList
 			this.variables = #[]
 			val currentStack = interpreter.currentThread.stack
 			if (!currentStack.isEmpty) {
 				this.variables = new XDebugStackFrame(currentStack.peek).variables
-			}
-		} catch (Exception e) {
-			val realCause = e.realCause
-			println("ERROR: " + realCause.class.name + ", " + realCause.message)
-			realCause.stackTrace.forEach [ ste |
-				println('''«ste.methodName» («ste.fileName»:«ste.lineNumber»)''')
-			]
-		}
-	}
-
-	def void addChanges() {
-		try {
-			XDebugStackFrame.initAllVariables()
-			val Collection<XDebugStackFrameVariable> variables = newArrayList(this.variables)
-			this.variables = #[]
-			val currentStack = interpreter.currentThread.stack
-			if (!currentStack.isEmpty) {
-				this.variables = new XDebugStackFrame(currentStack.peek).variables
-				this.variables.addAll(variables)
+				if (preserveVariables) {
+					this.variables.addAll(variables)
+				}
 			}
 		} catch (Exception e) {
 			val realCause = e.realCause
