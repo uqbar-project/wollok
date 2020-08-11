@@ -7,8 +7,18 @@ object a {
 		// XPECT errors --> "Cannot return an assignment" at "ahorro = ahorro * 0.20"
 		return ahorro = ahorro * 0.20
 	}
+	
+	method m1() {
+		// XPECT errors --> "Cannot return an assignment" at "ahorro += 0.20"
+		return ahorro += 0.20
+	}
 
-	method m2(param) {
+	method m2() {
+		// XPECT errors --> "Cannot return an assignment" at "ahorro *= 0.20"
+		return ahorro *= 0.20
+	}
+
+	method m3(param) {
 		ahorro += param
 	}
 }
@@ -23,6 +33,6 @@ object foo {
 	 }
 	 method bar2() {
 	 	// XPECT errors --> "Can't use 'return' expression as argument. Tip: remove 'return' keyword." at "9"
-	 	a.m2(return 9)
+	 	a.m3(return 9)
 	 }
 }
