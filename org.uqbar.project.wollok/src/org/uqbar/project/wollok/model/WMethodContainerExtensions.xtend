@@ -782,10 +782,14 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static dispatch boolean isPropertyAllowed(WSuite s) { false	}
 	def static dispatch boolean isPropertyAllowed(WProgram p) { false }
+	def static dispatch boolean isPropertyAllowed(WConstructor c) { false }
+	def static dispatch boolean isPropertyAllowed(WMethodDeclaration m) { false }
+	def static dispatch boolean isPropertyAllowed(WClosure c) { false }
+	def static dispatch boolean isPropertyAllowed(WFixture f) { false }
 	def static dispatch boolean isPropertyAllowed(WMethodContainer mc) { true }
-	def static dispatch boolean isPropertyAllowed(EObject o) { 
-		val declaringContext = o.declaringContext
-		declaringContext !== null && declaringContext.isPropertyAllowed
+	def static dispatch boolean isPropertyAllowed(EObject o) {
+		val parent = o.eContainer
+		parent !== null && parent.isPropertyAllowed
 	}
 	
 	def static hasCyclicDefinition(WConstructor it) {
