@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.typesystem.constraints.typeRegistry
 
 import java.util.Map
 import org.eclipse.emf.ecore.EObject
-import org.uqbar.project.wollok.typesystem.ClassInstanceType
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.GenericTypeSchema
@@ -49,11 +48,6 @@ in type «receiver.name», which does not exist''') ]
 
 		method.parameters.biForEach(paramTypes)[parameter, type|parameter.asOwner.beSealed(type)]
 		method.asOwner.beSealed(returnType)
-	}
-
-	override addConstructorTypeDeclaration(ClassInstanceType receiver, TypeAnnotation[] paramTypes) {
-		var constructor = receiver.getConstructor(paramTypes)
-		constructor.parameters.biForEach(paramTypes)[parameter, type|parameter.asOwner.beSealed(type)]
 	}
 
 	override addVariableTypeDeclaration(ConcreteType receiver, String selector, TypeAnnotation annotation) {

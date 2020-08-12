@@ -8,7 +8,6 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Boolean >> "or" === #[Boolean] => Boolean
 		Boolean >> "negate" === #[] => Boolean
 
-		PairType.constructor(PKEY, PVALUE)
 		PairType.variable("x", PKEY)
 		PairType.variable("y", PVALUE)
 		PairType >> "key" === #[] => PKEY;
@@ -24,7 +23,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 			(O != T) => Boolean;
 			(O === T) => Boolean;
 			(O !== T) => Boolean;
-			(O -> T) => PairType.instance(#{PKEY.paramName -> O, PVALUE.paramName -> T});
+			(O -> T) => PairType.instance(#{PKEY.paramName -> SELF, PVALUE.paramName -> T});
 			O >> "identity" === #[] => Number; 
 			O >> "equals" === #[T] => Boolean;
 			O >> "toString" === #[] => String;

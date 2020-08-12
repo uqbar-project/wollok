@@ -1,9 +1,7 @@
 package org.uqbar.project.wollok.typesystem
 
-import java.util.List
 import org.eclipse.osgi.util.NLS
 import org.uqbar.project.wollok.wollokDsl.WClass
-import org.uqbar.project.wollok.wollokDsl.WConstructor
 
 import static org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 
@@ -21,10 +19,6 @@ class ClassInstanceType extends AbstractContainerWollokType {
 	}
 	
 	def clazz() { container as WClass }
-	
-	def WConstructor getConstructor(List<?> parameterTypes) {
-		clazz.getOwnConstructor(parameterTypes.size)
-	}	
 	
 	override acceptsAssignment(WollokType other) {
 		this == other ||

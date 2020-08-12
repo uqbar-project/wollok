@@ -223,12 +223,13 @@ class GenericTypeInfo extends TypeInfo {
 	// ** Utilities for generic types
 	// ************************************************************************
 	/**
-	 * Default type parameter for collection types
+	 * Default type parameter for generic types
 	 */
 	public static val KEY = "key"
 	public static val VALUE = "value"
 	public static val ELEMENT = "element"
 	public static val RETURN = "return"
+	public static val SELF = "self"
 
 	static def PARAM(int position) { "arg" + position }
 
