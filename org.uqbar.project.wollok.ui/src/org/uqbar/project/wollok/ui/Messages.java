@@ -226,6 +226,7 @@ public class Messages extends NLS {
 	// ****************************
 
 	public static String WollokTestResultView_runAgain;
+	public static String WollokTestResultView_runAgainWithDynamicDiagram;
 	public static String WollokTestResultView_showOnlyFailuresAndErrors;
 	public static String WollokTestResultView_debugAgain;
 	public static String WollokTestResultView_copySelectedResultToClipboard;

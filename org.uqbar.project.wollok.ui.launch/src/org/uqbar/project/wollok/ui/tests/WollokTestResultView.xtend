@@ -51,6 +51,7 @@ import org.uqbar.project.wollok.ui.tests.model.WollokTestResult
 import org.uqbar.project.wollok.ui.tests.model.WollokTestResults
 import org.uqbar.project.wollok.ui.tests.model.WollokTestState
 import org.uqbar.project.wollok.ui.tests.shortcut.WollokAllTestsLaunchShortcut
+import org.uqbar.project.wollok.ui.tests.shortcut.WollokTestDynamicDiagramLaunchShortcut
 import org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
@@ -96,12 +97,16 @@ class WollokTestResultView extends ViewPart implements Observer {
 	WollokTestLaunchShortcut testLaunchShortcut
 
 	@Inject
+	WollokTestDynamicDiagramLaunchShortcut testDynamicDiagramLaunchShortcut
+
+	@Inject
 	WollokAllTestsLaunchShortcut allTestsLaunchShortcut
 
 	// First toolbar
 	ToolBar toolbar
 	ToolItem showFailuresAndErrors
 	ToolItem runAgain
+	ToolItem runAgainWithDynamicDiagramActivated
 //	ToolItem debugAgain
 
 	// Second toolbar
@@ -131,15 +136,24 @@ class WollokTestResultView extends ViewPart implements Observer {
 		this.relaunch("run")
 	}
 
+	def relaunchDynamicDiagram() {
+		this.relaunch("run", true)
+	}
+
 	def relaunchDebug() {
 		this.relaunch("debug")
 	}
 
 	def relaunch(String mode) {
+		this.relaunch(mode, false)
+	}
+
+	def relaunch(String mode, boolean dynamicDiagramActivated) {
 		if (results.globalContainer.processingManyFiles) {
 			allTestsLaunchShortcut.launch(results.globalContainer.project, mode)
 		} else {
-			testLaunchShortcut.launch(
+			val shortcut = if (dynamicDiagramActivated) testDynamicDiagramLaunchShortcut else testLaunchShortcut 
+			shortcut.launch(
 				results.globalContainer.testFiles.get(0).mainResource.toIFile, mode
 			)
 		}
@@ -160,6 +174,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 		errorTextBox.text = ""
 		lblMilliseconds.text = ""
 		runAgain.enabled = false
+		runAgainWithDynamicDiagramActivated.enabled = false
 		//debugAgain.enabled = false
 		(testTree.contentProvider as WTestTreeContentProvider).results.globalContainer = new WollokTestGlobalContainer()
 		testTree.refresh(true)
@@ -243,10 +258,17 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 		runAgain = new ToolItem(toolbar, SWT.PUSH) => [
 			toolTipText = Messages.WollokTestResultView_runAgain
-			val pathImage = Activator.getDefault.getImageDescriptor(
-				"platform:/plugin/org.eclipse.jdt.junit/icons/full/elcl16/relaunch.png")
+			val pathImage = Activator.getDefault.getImageDescriptor("icons/file_wtest.png")
 			image = resManager.createImage(pathImage)
 			addListener(SWT.Selection)[this.relaunch]
+			enabled = false
+		]
+
+		runAgainWithDynamicDiagramActivated = new ToolItem(toolbar, SWT.PUSH) => [
+			toolTipText = Messages.WollokTestResultView_runAgainWithDynamicDiagram
+			val pathImage = Activator.getDefault.getImageDescriptor("icons/run_test_with_dynamic_diagram.png")
+			image = resManager.createImage(pathImage)
+			addListener(SWT.Selection)[this.relaunchDynamicDiagram]
 			enabled = false
 		]
 
@@ -459,12 +481,14 @@ class WollokTestResultView extends ViewPart implements Observer {
 			}
 
 			runAgain.enabled = true
+			runAgainWithDynamicDiagramActivated.enabled = !results.globalContainer.processingManyFiles
 //			debugAgain.enabled = true
 		} else {
 			totalTextBox.text = ""
 			failedTextBox.text = ""
 			errorTextBox.text = ""
 			runAgain.enabled = false
+			runAgainWithDynamicDiagramActivated.enabled = false
 //			debugAgain.enabled = false
 		}
 
@@ -494,7 +518,6 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 	
 	def dispatch openElement(WollokTestContainer container) {
-		// @dodain - in case we are running all tests
 		if (container.mainResource !== null) {
 			opener.open(container.mainResource, true)
 		}
