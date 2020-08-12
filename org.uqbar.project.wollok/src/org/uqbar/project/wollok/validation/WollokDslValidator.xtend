@@ -154,6 +154,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val WARNING_UNUSED_VARIABLE = "WARNING_UNUSED_VARIABLE"
 	public static val WARNING_UNUSED_PARAMETER = "WARNING_UNUSED_PARAMETER"
 	public static val WARNING_VARIABLE_SHOULD_BE_CONST = "WARNING_VARIABLE_SHOULD_BE_CONST"
+	public static val GLOBAL_VARIABLE_NOT_ALLOWED = "GLOBAL_VARIABLE_NOT_ALLOWED"
 
 	def validatorExtensions() {
 		if (wollokValidatorExtensions !== null)
@@ -404,7 +405,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	@NotConfigurable	
 	def propertyOnlyAllowedInMethodContainer(WVariableDeclaration it) {
-		if (property && (!isPropertyAllowed || isLocal)) {
+		if (property && !isPropertyAllowed) {
 			report(WollokDslValidator_PROPERTY_ONLY_ALLOWED_IN_CERTAIN_METHOD_CONTAINERS, it,
 			WVARIABLE_DECLARATION__PROPERTY, PROPERTY_ONLY_ALLOWED_IN_CERTAIN_METHOD_CONTAINERS)
 		} 
@@ -876,7 +877,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@NotConfigurable
 	def globalVariablesNotAllowed(WVariableDeclaration it) {
 		if (writeable && isGlobal) {
-			report(WollokDslValidator_GLOBAL_VARIABLE_NOT_ALLOWED, it, WVARIABLE_DECLARATION__VARIABLE)
+			report(WollokDslValidator_GLOBAL_VARIABLE_NOT_ALLOWED, it, WVARIABLE_DECLARATION__VARIABLE, GLOBAL_VARIABLE_NOT_ALLOWED)
 		}
 	}
 
@@ -1225,7 +1226,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	@NotConfigurable
 	def cannotReturnAssignment(WReturnExpression it) {
-		if (expression !== null && expression instanceof WAssignment)
+		if (expression !== null && expression.isAssignment)
 			report(WollokDslValidator_CANNOT_RETURN_ASSIGNMENT, it, WRETURN_EXPRESSION__EXPRESSION)
 	}
 
