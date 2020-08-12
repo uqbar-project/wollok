@@ -4,7 +4,7 @@ object pairTest {
 	// XPECT type at pair --> Pair<Number, String>
 	const pair = new Pair(x=2, y="")
 	
-	// XPECT! methodType at arrow --> () => Pair<Number, String>
+	// XPECT methodType at arrow --> () => Pair<Number, String>
 	method arrow() {
 		return 2 -> ""
 	}

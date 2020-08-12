@@ -226,6 +226,8 @@ abstract class TypeDeclarations {
 
 	def ELEMENT() { Collection.param(GenericTypeInfo.ELEMENT) }
 
+	def SELF() { Collection.methodParam("->", GenericTypeInfo.SELF) }
+
 	def T() { Collection.methodParam("map", "T") }
 
 	def U() { Collection.methodParam("game", "U") }
