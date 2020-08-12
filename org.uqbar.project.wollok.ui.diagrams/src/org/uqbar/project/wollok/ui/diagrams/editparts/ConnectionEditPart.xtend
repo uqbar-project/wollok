@@ -59,6 +59,9 @@ abstract class ConnectionEditPart extends AbstractConnectionEditPart implements 
 			castedModel.source.isConstant(castedModel.name)
 		else {
 			val variableModel = DynamicDiagramView.currentVariables.findFirst [ name === castedModel.name && variable.id.toString.equals((castedModel.target as VariableModel).variable.toString) ]
+			if (variableModel === null || variableModel.variable === null) {
+				return false
+			}
 			variableModel.variable.constant
 		}
 	}

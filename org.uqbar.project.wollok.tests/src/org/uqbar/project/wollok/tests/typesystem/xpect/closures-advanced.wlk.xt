@@ -8,8 +8,6 @@ object advancedClosures {
 }
 
 object incompatibility {
-	//const numbers = [1,2,3]
-	
 	method closure_vs_basic_type() {
 		// XPECT warnings --> "Type system: expected <<{(Number) => Boolean}>> but found <<String>>" at ""ERROR""
 		return [1,2,3].filter("ERROR")
@@ -30,10 +28,10 @@ object incompatibility {
 		return [1,2,3].filter({n => n.startsWith("ERROR")})
 	}
 
-	method incompatible_return_closure_type() {
-		// XPECT warnings --> "Type system: expected <<Boolean>> but found <<String>>" at "{n => "ERROR"}"
-		return [1,2,3].any({n => "ERROR"})
-	}
+	// method incompatible_return_closure_type() {
+		// XPEC T warnings --> "Type system: expected <<Boolean>> but found <<String>>" at "{n => "ERROR"}"
+		// return [1,2,3].any({n => "ERROR"})
+	// }
 	
 	method infinite_closure_type(c) {
 		// XPECT warnings --> "Type system: Infinite recursive type" at "c"

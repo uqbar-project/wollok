@@ -426,6 +426,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 	
+	@Fix(WollokDslValidator.GLOBAL_VARIABLE_NOT_ALLOWED)
 	@Fix(WollokDslValidator.WARNING_VARIABLE_SHOULD_BE_CONST)
 	def changeDeclarationToConst(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_changeToConst_name,

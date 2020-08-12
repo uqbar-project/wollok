@@ -154,6 +154,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val WARNING_UNUSED_VARIABLE = "WARNING_UNUSED_VARIABLE"
 	public static val WARNING_UNUSED_PARAMETER = "WARNING_UNUSED_PARAMETER"
 	public static val WARNING_VARIABLE_SHOULD_BE_CONST = "WARNING_VARIABLE_SHOULD_BE_CONST"
+	public static val GLOBAL_VARIABLE_NOT_ALLOWED = "GLOBAL_VARIABLE_NOT_ALLOWED"
 
 	def validatorExtensions() {
 		if (wollokValidatorExtensions !== null)
@@ -876,7 +877,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@NotConfigurable
 	def globalVariablesNotAllowed(WVariableDeclaration it) {
 		if (writeable && isGlobal) {
-			report(WollokDslValidator_GLOBAL_VARIABLE_NOT_ALLOWED, it, WVARIABLE_DECLARATION__VARIABLE)
+			report(WollokDslValidator_GLOBAL_VARIABLE_NOT_ALLOWED, it, WVARIABLE_DECLARATION__VARIABLE, GLOBAL_VARIABLE_NOT_ALLOWED)
 		}
 	}
 
