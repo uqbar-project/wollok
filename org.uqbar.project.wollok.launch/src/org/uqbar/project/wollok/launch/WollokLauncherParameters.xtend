@@ -12,6 +12,7 @@ import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.parser.OptionalGnuParser
+import static extension org.uqbar.project.wollok.launch.WollokLauncherExtensions.*
 
 /**
  * @author jfernandes
@@ -86,10 +87,9 @@ class WollokLauncherParameters {
 
 	def buildListOption(StringBuilder sb, List<String> options, String option, char separator) {
 		if (!options.empty) {
-			sb.append("-").append(option).append(" ")
-			for (var i = 0; i < options.length; i++) {
-				sb.append(options.get(i)).append(if(i < options.size() - 1) separator else " ")
-			}
+			sb
+				.append("-").append(option).append(" ")
+				.append(options.join("" + separator)).append(" ")
 		}
 	}
 
@@ -159,7 +159,8 @@ class WollokLauncherParameters {
 	// For backwards compatibility, the old style is supported if you don't need use libraries or if you use another option between libs and files:
 	// -lib a.jar,b.jar -r example.wlk example2.wlk   
 	def parseWollokFiles(CommandLine cmdLine) {
-		wollokFiles = if(!cmdLine.hasOption("wf")) cmdLine.argList else new ArrayList(cmdLine.getOptionValues("wf"))
+		val List<String> newWollokFiles = if(!cmdLine.hasOption("wf")) cmdLine.argList else new ArrayList(cmdLine.getOptionValues("wf"))
+		wollokFiles = newWollokFiles.map [ decode ]
 	}
 
 	def parseLibraries(CommandLine cmdLine) {

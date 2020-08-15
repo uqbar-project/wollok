@@ -15,6 +15,7 @@ import org.uqbar.project.wollok.ui.tests.WollokTestResultView
 import static org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
+import static extension org.uqbar.project.wollok.launch.WollokLauncherExtensions.*
 
 /**
  * @author tesonep
@@ -38,6 +39,7 @@ class WollokTestLaunchShortcut extends WollokLaunchShortcut {
 		super.configureConfiguration(it, info)
 		if (!this.files.isEmpty) {
 			setAttribute(ATTR_WOLLOK_FILE, this.files.testFiles)
+			// be careful with this configuration, several files should be set to true
 			setAttribute(ATTR_WOLLOK_SEVERAL_FILES, true)
 		}
 	}
@@ -81,7 +83,7 @@ class WollokTestLaunchShortcut extends WollokLaunchShortcut {
 
 	def String testFiles(List<IFile> files) {
 		files.fold(new StringBuilder, [ sb, testFile |
-			val filePath = testFile.projectRelativePath.toString
+			val filePath = testFile.projectRelativePath.toString.encode
 			sb.append(filePath).append(" ")
 		]).toString
 	}

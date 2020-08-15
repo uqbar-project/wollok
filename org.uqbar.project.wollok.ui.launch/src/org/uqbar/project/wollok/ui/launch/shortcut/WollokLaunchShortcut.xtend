@@ -29,6 +29,7 @@ import static extension org.uqbar.project.wollok.ui.launch.shortcut.LauncherExte
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
 import static extension org.uqbar.project.wollok.ui.libraries.WollokLibrariesStore.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import static extension org.uqbar.project.wollok.launch.WollokLauncherExtensions.*
 
 /**
  * Launches a "run" or "debug" configuration (already existing or creates one)
@@ -39,8 +40,6 @@ import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
  * @author jfernandes
  */
 class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
-
-//	ILaunchManager launchManager = DebugPlugin.getDefault.launchManager
 
 	override launch(IFile currFile, String mode) {
 		if (currFile.project.hasErrors) {
@@ -111,7 +110,7 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 		setAttribute(ATTR_USE_START_ON_FIRST_THREAD, false) // fixes wollok-game in osx
 		setAttribute(ATTR_PROGRAM_ARGUMENTS, info.file)
 		setAttribute(ATTR_VM_ARGUMENTS, "-Duser.language=" + Platform.NL)
-		setAttribute(ATTR_WOLLOK_FILE, info.file)
+		setAttribute(ATTR_WOLLOK_FILE, info.file.encode)
 		setAttribute(RefreshTab.ATTR_REFRESH_SCOPE, "${workspace}")
 		setAttribute(RefreshTab.ATTR_REFRESH_RECURSIVE, true)
 		setAttribute(ATTR_WOLLOK_LIBS, newArrayList(info.findLibs))

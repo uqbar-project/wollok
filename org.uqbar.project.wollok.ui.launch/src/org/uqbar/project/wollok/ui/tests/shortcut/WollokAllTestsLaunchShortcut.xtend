@@ -11,6 +11,9 @@ import org.eclipse.jdt.core.IJavaProject
 import static org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import static extension org.uqbar.project.wollok.launch.WollokLauncherExtensions.*
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy
+import org.uqbar.project.wollok.ui.launch.shortcut.LaunchConfigurationInfo
 
 /**
  * 
@@ -20,20 +23,24 @@ import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
  * 
  */
 class WollokAllTestsLaunchShortcut extends WollokTestLaunchShortcut {
-	
+
 	IFolder folder
-	
+	IFile currentFile
+
 	override getOrCreateConfig(IFile currFile) {
-		val config = super.getOrCreateConfig(currFile)
-		config.getWorkingCopy => [
-			setAttribute(ATTR_WOLLOK_FILE, currFile.testFilesAsString)
-			setAttribute(ATTR_WOLLOK_SEVERAL_FILES, true)
-			if (this.folder !== null) {
-				setAttribute(ATTR_WOLLOK_FOLDER, this.folder?.projectRelativePath.toPortableString)
-			}
-		]
+		this.currentFile = currFile
+		super.getOrCreateConfig(currFile)
 	}
-	
+
+	override configureConfiguration(ILaunchConfigurationWorkingCopy it, LaunchConfigurationInfo info) {
+		super.configureConfiguration(it, info)
+		setAttribute(ATTR_WOLLOK_FILE, this.currentFile.testFilesAsString)
+		setAttribute(ATTR_WOLLOK_SEVERAL_FILES, true)
+		if (this.folder !== null) {
+			setAttribute(ATTR_WOLLOK_FOLDER, this.folder?.projectRelativePath.toPortableString.encode)
+		}
+	}
+
 	/**
 	 * If we are launching all tests in a project
 	 * - first: check project has valid tests
@@ -55,7 +62,7 @@ class WollokAllTestsLaunchShortcut extends WollokTestLaunchShortcut {
 		this.folder = null
 		launch(currProject.elementName.project, mode)
 	}
-	
+
 	def List<IFile> getTestFiles(IProject project) {
 		project.allMembers.testFiles
 	}
@@ -63,26 +70,16 @@ class WollokAllTestsLaunchShortcut extends WollokTestLaunchShortcut {
 	def List<IFile> getTestFiles(IFolder folder) {
 		folder.allMembers.testFiles
 	}
-	
+
 	def String testFilesAsString(IFile file) {
-		var testFiles = file.project.testFiles
-		if (this.folder !== null) {
-			testFiles = folder.testFiles
-		}
-		testFiles.fold(new StringBuilder, [ sb, testFile |
-			val filePath = testFile.projectRelativePath.toString
-			sb.append(filePath).append(" ")
-		]).toString
+		val testFiles = if(this.folder !== null) folder.testFiles else file.project.testFiles
+		testFiles.map[projectRelativePath.toString.encode].join(" ")
 	}
 
 	def List<IFile> getTestFiles(Set<IResource> files) {
-		files
-			.filter [
-				fileExtension !== null && fileExtension.equals(WTEST_EXTENSIONS)
-			]
-			.toList
-			.map [ adapt(IFile) ]
-			.toList
+		files.filter [
+			fileExtension !== null && fileExtension.equals(WTEST_EXTENSIONS)
+		].toList.map[adapt(IFile)].toList
 	}
 
 }
