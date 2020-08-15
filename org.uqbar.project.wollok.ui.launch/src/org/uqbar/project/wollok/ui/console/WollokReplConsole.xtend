@@ -27,6 +27,7 @@ import static org.uqbar.project.wollok.ui.console.RunInBackground.*
 import static org.uqbar.project.wollok.ui.console.RunInUI.*
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import static extension org.uqbar.project.wollok.launch.WollokLauncherExtensions.*
 
 /**
  * @author tesonep
@@ -134,7 +135,7 @@ class WollokReplConsole extends TextConsole {
 	}
 
 	def fileName() {
-		WollokLaunchShortcut.getWollokFile(process.launch)
+		WollokLaunchShortcut.getWollokFile(process.launch).decode
 	}
 	
 	def project() {

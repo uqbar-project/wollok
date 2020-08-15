@@ -87,7 +87,13 @@ abstract class AbstractFileLaunchShortcut implements ILaunchShortcut {
 	}
 	
 	def dispatch void doLaunch(IAdaptable adaptable, String mode) {
-		launch(adaptable.adapt(IFile), mode)
+		val iFile = adaptable.adapt(IFile)
+		if (iFile === null) {
+			val folder = adaptable.adapt(IFolder)
+			launch(folder, mode)
+		} else {
+			launch(iFile, mode)
+		}
 	}
 	
 	def dispatch void doLaunch(TreeSelection selection, String mode) {
