@@ -35,6 +35,8 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 	Action export
 	Action clearHistory
 	Action stop
+	Action restart
+	Action restartState
 	IActionBars bars
 	WollokReplConsole console
 	IResourceChangeListener resourceListener
@@ -68,6 +70,7 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 				if (resourceDelta === null) {
 					return;
 				}
+				println("WARNING! The original file changed, this could lead to misleading behavior.")
 				_self.outdated.markOutdated
 			}
 
@@ -75,6 +78,8 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceListener, IResourceChangeEvent.POST_CHANGE)
 
 		createTerminateAllButton
+		createRestartButton
+		createRestartStateButton
 		createRemoveButton
 		createClearHistory
 		this.outdated = new ShowOutdatedAction(this)
@@ -87,6 +92,8 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 				appendToGroup(IConsoleConstants.LAUNCH_GROUP, outdated)
 				appendToGroup(IConsoleConstants.LAUNCH_GROUP, new Separator)
 				appendToGroup(IConsoleConstants.LAUNCH_GROUP, stop)
+				appendToGroup(IConsoleConstants.LAUNCH_GROUP, restart)
+				appendToGroup(IConsoleConstants.LAUNCH_GROUP, restartState)
 				appendToGroup(IConsoleConstants.LAUNCH_GROUP, new Separator)
 				appendToGroup(IConsoleConstants.LAUNCH_GROUP, export)
 				appendToGroup(IConsoleConstants.LAUNCH_GROUP, clearHistory)
@@ -103,6 +110,26 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 			override run() {
 				this.enabled = false
 				console.shutdown
+			}
+		}
+	}
+
+	def createRestartButton() {
+		val imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.ui.cheatsheets/icons/elcl16/start_ccs_task.png"))
+		this.restart = new Action(WollokRepl_RESTART_TITLE, imageDescriptor) {
+			override run() {
+				this.enabled = false
+				console.restart
+			}
+		}
+	}
+
+	def createRestartStateButton() {
+		val imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.ui.cheatsheets/icons/elcl16/start_cheatsheet.png"))
+		this.restartState = new Action(WollokRepl_RESTART_STATE_TITLE, imageDescriptor) {
+			override run() {
+				this.enabled = false
+				console.restartLastSession
 			}
 		}
 	}

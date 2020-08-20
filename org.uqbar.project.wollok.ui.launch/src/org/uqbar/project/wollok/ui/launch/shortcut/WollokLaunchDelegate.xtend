@@ -23,9 +23,9 @@ import org.uqbar.project.wollok.ui.preferences.WollokNumbersConfigurationBlock
 import static org.uqbar.project.wollok.launch.io.IOUtils.*
 
 import static extension org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
+import static extension org.uqbar.project.wollok.ui.launch.extensions.WollokConsoleExtensions.*
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.LauncherExtensions.*
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
-import static extension org.uqbar.project.wollok.ui.launch.extensions.WollokConsoleExtensions.*
 
 /**
  * Launches the process to execute the interpreter.
@@ -41,13 +41,14 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 	
 	@Inject
 	IPreferenceStoreAccess preferenceStoreAccess
+	
+	WollokReplConsole console
 
 	// Use RefreshUtil after switching to debug >= 3.6
 	static final String ATTR_REFRESH_SCOPE = DebugPlugin.getUniqueIdentifier() + ".ATTR_REFRESH_SCOPE";
 
 	override launch(ILaunchConfiguration configuration, String mode, ILaunch launch,
 		IProgressMonitor monitor) throws CoreException {
-
 		if (mode.isDebug && configuration.getAttribute(ATTR_REFRESH_SCOPE, null as String) !== null) {
 			DebugPlugin.getDefault.addDebugEventListener(createListener(configuration))
 		}
@@ -59,9 +60,9 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 			val consoleManager = ConsolePlugin.getDefault().consoleManager
 			consoleManager.consoles.forEach [ shutdown ]
 			consoleManager.removeConsoles(consoleManager.consoles)
-			val console = new WollokReplConsole
+			this.console = new WollokReplConsole(configuration, mode)
 			consoleManager.addConsoles(#[console])
-			console.startForProcess(launch.processes.get(0))
+			this.console.startForProcess(launch.processes.get(0))
 		}
 
 		if (mode.isDebug) {

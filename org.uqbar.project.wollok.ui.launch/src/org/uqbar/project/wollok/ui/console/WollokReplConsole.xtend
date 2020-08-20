@@ -2,20 +2,22 @@ package org.uqbar.project.wollok.ui.console
 
 import java.io.ByteArrayInputStream
 import java.text.SimpleDateFormat
+import java.util.ArrayList
 import java.util.Date
 import java.util.List
 import org.eclipse.core.resources.IContainer
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
+import org.eclipse.debug.core.ILaunchConfiguration
 import org.eclipse.debug.core.model.IProcess
 import org.eclipse.debug.core.model.IStreamsProxy
 import org.eclipse.debug.internal.ui.DebugUIPlugin
 import org.eclipse.debug.internal.ui.preferences.IDebugPreferenceConstants
+import org.eclipse.debug.ui.DebugUITools
 import org.eclipse.swt.graphics.Color
 import org.eclipse.swt.widgets.Display
 import org.eclipse.ui.console.IConsoleView
 import org.eclipse.ui.console.TextConsole
-import org.eclipse.ui.console.TextConsolePage
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.tools.OrderedBoundedSet
 import org.uqbar.project.wollok.WollokConstants
@@ -26,6 +28,8 @@ import org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchShortcut
 import static org.uqbar.project.wollok.ui.console.RunInBackground.*
 import static org.uqbar.project.wollok.ui.console.RunInUI.*
 
+import static extension org.uqbar.project.wollok.WollokConstants.*
+import static extension org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**
@@ -35,7 +39,7 @@ class WollokReplConsole extends TextConsole {
 	IProcess process
 	IStreamsProxy streamsProxy
 	@Accessors
-	TextConsolePage page
+	WollokReplConsolePage page
 	@Accessors
 	int outputTextEnd = 0
 	@Accessors
@@ -47,24 +51,40 @@ class WollokReplConsole extends TextConsole {
 	@Accessors
 	List<String> sessionCommands = newArrayList
 	@Accessors
-	val lastCommands = new OrderedBoundedSet<String>(10)
+	val lastCommands = new OrderedBoundedSet<String>(30)
+	@Accessors(PUBLIC_GETTER)
+	List<String> lastSessionCommands
+	@Accessors(PUBLIC_GETTER)
+	List<String> lastSessionCommandsToRun
 	@Accessors(PUBLIC_GETTER)
 	Long timeStart
-	
-	public static Color ENABLED = new Color(Display.current, 255, 255, 255) 
+
+	public static Color ENABLED = new Color(Display.current, 255, 255, 255)
 	public static Color DISABLED = new Color(Display.current, 220, 220, 220)
-	
+
+	ILaunchConfiguration configuration
+	String mode
+
+	boolean restartingLastSession = false
+
 	def static getConsoleName() { "Wollok REPL Console" }
 
-	new() {
+	new(ILaunchConfiguration configuration, String mode) {
 		super(consoleName, null, Activator.getDefault.getImageDescriptor("icons/w.png"), true)
-		background = ENABLED
+		this.background = ENABLED
 		this.partitioner = new WollokReplConsolePartitioner(this)
 		this.document.documentPartitioner = this.partitioner
+
+		// Parameters needed to restart the console
+		this.configuration = configuration
+		this.mode = mode
+		this.restartingLastSession = configuration.restartingState
+		this.lastSessionCommandsToRun = configuration.lastCommands
 	}
 
 	def startForProcess(IProcess process) {
 		timeStart = System.currentTimeMillis
+		lastSessionCommands = newArrayList
 		loadHistory
 		this.process = process
 		streamsProxy = process.streamsProxy
@@ -75,7 +95,6 @@ class WollokReplConsole extends TextConsole {
 			clearConsole
 			DebugUIPlugin.getDefault.preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT, false)
 			DebugUIPlugin.getDefault.preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR, false)
-			
 		]
 
 		streamsProxy.outputStreamMonitor.addListener [ text, monitor |
@@ -88,7 +107,33 @@ class WollokReplConsole extends TextConsole {
 					updateInputBuffer
 					activate
 				}
+				val promptReady = text.contains(REPL_PROMPT)
+				if (this.restartingLastSession && promptReady && !this.lastSessionCommandsToRun.isEmpty) {
+					val nextCommand = this.lastSessionCommandsToRun.remove(0)
+					nextCommand.execute
+				}
 			]
+		]
+	}
+
+	def restart() {
+		DebugUITools.launch(this.configuration, this.mode)
+	}
+
+	def restartLastSession() {
+		val newConfiguration = this.configuration.getWorkingCopy => [
+			setRestartingState(true)
+			setLastCommands(new ArrayList(lastSessionCommands))
+		]
+		DebugUITools.launch(newConfiguration, this.mode)
+	}
+
+	def synchronized void execute(String command) {
+		runInUI [
+			inputBuffer = command
+			page.viewer.textWidget.content.replaceTextRange(outputTextEnd, document.length - outputTextEnd, inputBuffer)
+			page.setCursorToEnd
+			sendInputBuffer
 		]
 	}
 
@@ -103,8 +148,8 @@ class WollokReplConsole extends TextConsole {
 		process.terminate
 	}
 
-	def isRunning() { 
-		val terminated = process.terminated 
+	def isRunning() {
+		val terminated = process.terminated
 		if (terminated) {
 			background = DISABLED
 		}
@@ -124,11 +169,11 @@ class WollokReplConsole extends TextConsole {
 			name = consoleDescription
 		]
 	}
-	
+
 	def consoleDescription() {
-		consoleName + if (hasMainFile)  ": " + project() + "/" + fileName() else  ""
+		consoleName + if(hasMainFile) ": " + project() + "/" + fileName() else ""
 	}
-	
+
 	def hasMainFile() {
 		return fileName() !== null && fileName.endsWith("." + WollokConstants.WOLLOK_DEFINITION_EXTENSION)
 	}
@@ -136,7 +181,7 @@ class WollokReplConsole extends TextConsole {
 	def fileName() {
 		WollokLaunchShortcut.getWollokFile(process.launch)
 	}
-	
+
 	def project() {
 		WollokLaunchShortcut.getWollokProject(process.launch)
 	}
@@ -176,6 +221,7 @@ class WollokReplConsole extends TextConsole {
 				remove(inputBuffer)
 				add(inputBuffer)
 			]
+			lastSessionCommands.add(inputBuffer)
 			saveHistory
 		}
 	}
@@ -206,7 +252,7 @@ class WollokReplConsole extends TextConsole {
 	def sendInputBuffer() {
 		addCommandToHistory
 		sessionCommands += inputBuffer
-		
+
 		streamsProxy.write(inputBuffer)
 		outputTextEnd = page.viewer.textWidget.charCount
 		updateInputBuffer
@@ -223,10 +269,11 @@ class WollokReplConsole extends TextConsole {
 				val ps = if(pos >= lastCommands.size) 0 else pos
 				lastCommands.last(ps)
 			}
-			page.viewer.textWidget.content.replaceTextRange(outputTextEnd, document.length - outputTextEnd, inputBuffer.replace(System.lineSeparator, ""))
+			page.viewer.textWidget.content.replaceTextRange(outputTextEnd, document.length - outputTextEnd,
+				inputBuffer.replace(System.lineSeparator, ""))
 		]
 	}
-	
+
 	def clearHistory() { lastCommands.clear }
 
 	def canWriteAt(int offset) { !partitioner.isReadOnly(offset) }
@@ -238,5 +285,5 @@ class WollokReplConsole extends TextConsole {
 			inputBuffer = inputBuffer.replaceAll(System.lineSeparator, '')
 		}
 	}
-	
+
 }

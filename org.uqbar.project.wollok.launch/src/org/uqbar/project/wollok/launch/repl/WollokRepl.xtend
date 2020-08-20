@@ -114,14 +114,13 @@ class WollokRepl {
 		'''
 	}
 	
-
 	def synchronized executeInput(String input) {
 		var isImport = input.startsWith("import") 
 		
 		try {
 			val returnValue = interpreter.interpret(input.createReplExpression(isImport).parseRepl(mainFile), true)
 			
-			if (isImport ) 
+			if (isImport) 
 				// Parsing didn't fail, commit adding manual import to global list.
 				// No need to print nothing
 				manualImports += input 	
