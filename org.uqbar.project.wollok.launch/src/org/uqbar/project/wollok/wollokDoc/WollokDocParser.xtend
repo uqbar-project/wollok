@@ -19,6 +19,7 @@ import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
@@ -198,11 +199,20 @@ class WollokDocParser extends WollokChecker {
 			writeFile(TABLE_ROW_ON)
 			val abstractDescription = if (m.abstract) badge("abstract", "light-blue") + SPACE else ""
 			val nativeDescription = if (m.native) badge("native", "indigo") else ""
-			writeFile("<td title=\"" + m.declaringContext.name + "\" width=\"30%\"id=\"" + m.anchor + "\">" + CODE_ON + BOLD_ON + m.name + BOLD_OFF + m.parametersAsString + CODE_OFF + SPACE +
+			writeFile("<td title=\"" + m.declaringContext.name + "\" width=\"30%\" id=\"" + m.anchor + "\">" + CODE_ON + BOLD_ON + m.name + BOLD_OFF + m.parametersAsString + CODE_OFF + SPACE +
 				abstractDescription + SPACE + SPACE + nativeDescription + SPACE + TABLE_DATA_OFF +
 				TABLE_DATA_ON +	comment + TABLE_DATA_OFF)
 			writeFile(TABLE_ROW_OFF)
 		}
+	}
+
+	def dispatch void generateWollokDoc(WVariableDeclaration v) {
+		val comment = v.comment
+		writeFile(TABLE_ROW_ON)
+		writeFile("<td title=\"" + v.variable.name + "\" width=\"30%\">" + CODE_ON + BOLD_ON + v.variable.name + BOLD_OFF + CODE_OFF + SPACE +
+			SPACE + TABLE_DATA_OFF +
+			TABLE_DATA_ON +	comment + TABLE_DATA_OFF)
+		writeFile(TABLE_ROW_OFF)
 	}
 	
 	def dispatch getDefinedConstructors(WMethodContainer mc) { newArrayList }
@@ -217,6 +227,14 @@ class WollokDocParser extends WollokChecker {
 			header2("Constructors")
 			writeFile(TABLE_ON)
 			constructors.forEach [ generateWollokDoc ]
+			writeFile(TABLE_OFF)
+			writeFile(HORIZONTAL_LINE)
+		}
+		val attributes = mc.variableDeclarations
+		if (!attributes.isEmpty) {
+			header2("Attributes")
+			writeFile(TABLE_ON)
+			attributes.forEach [ generateWollokDoc ]
 			writeFile(TABLE_OFF)
 			writeFile(HORIZONTAL_LINE)
 		}
