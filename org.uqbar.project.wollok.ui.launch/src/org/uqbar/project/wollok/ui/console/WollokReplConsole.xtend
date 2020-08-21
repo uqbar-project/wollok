@@ -25,10 +25,10 @@ import org.uqbar.project.wollok.ui.console.editor.WollokReplConsolePartitioner
 import org.uqbar.project.wollok.ui.launch.Activator
 import org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchShortcut
 
+import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.ui.console.RunInBackground.*
 import static org.uqbar.project.wollok.ui.console.RunInUI.*
 
-import static extension org.uqbar.project.wollok.WollokConstants.*
 import static extension org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
@@ -100,20 +100,24 @@ class WollokReplConsole extends TextConsole {
 		streamsProxy.outputStreamMonitor.addListener [ text, monitor |
 			runInUI("WollokReplConsole-UpdateText") [
 				if (page !== null && page.viewer !== null && page.viewer.textWidget !== null) {
-					page.viewer.textWidget.append(text)
-					outputTextEnd = page.viewer.textWidget.charCount
-					inputBufferStartOffset = page.viewer.textWidget.text.length
-					page.viewer.textWidget.selection = outputTextEnd
-					updateInputBuffer
-					activate
-				}
-				val promptReady = text.contains(REPL_PROMPT)
-				if (this.restartingLastSession && promptReady && !this.lastSessionCommandsToRun.isEmpty) {
-					val nextCommand = this.lastSessionCommandsToRun.remove(0)
-					nextCommand.execute
+					text.processInput
+					val promptReady = text.contains(REPL_PROMPT)
+					if (this.restartingLastSession && promptReady && !this.lastSessionCommandsToRun.isEmpty) {
+						val nextCommand = this.lastSessionCommandsToRun.remove(0)
+						nextCommand.execute
+					}
 				}
 			]
 		]
+	}
+	
+	def processInput(String text) {
+		page.viewer.textWidget.append(text)
+		outputTextEnd = page.viewer.textWidget.charCount
+		inputBufferStartOffset = page.viewer.textWidget.text.length
+		page.viewer.textWidget.selection = outputTextEnd
+		updateInputBuffer
+		activate
 	}
 
 	def restart() {
@@ -216,7 +220,7 @@ class WollokReplConsole extends TextConsole {
 	}
 
 	def addCommandToHistory() {
-		if (!inputBuffer.empty) {
+		if (!inputBuffer.trim.empty) {
 			lastCommands => [
 				remove(inputBuffer)
 				add(inputBuffer)

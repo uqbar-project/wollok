@@ -20,9 +20,13 @@ import org.eclipse.ui.console.IConsole
 import org.eclipse.ui.console.IConsoleConstants
 import org.eclipse.ui.console.IConsolePageParticipant
 import org.eclipse.ui.part.IPageBookViewPage
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.ui.console.WollokReplConsole
 
+import static org.uqbar.project.wollok.ui.console.RunInUI.*
 import static org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages.*
+
+import static extension org.uqbar.project.wollok.utils.OperatingSystemUtils.*
 
 /**
  * Contributes with buttons to wollok repl console
@@ -47,7 +51,7 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 	}
 
 	def projectName() {
-		if(hasAssociatedFile) this.console.project else ""
+		if (hasAssociatedFile) this.console.project else ""
 	}
 
 	override init(IPageBookViewPage page, IConsole console) {
@@ -59,19 +63,21 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 		this.resourceListener = new IResourceChangeListener() {
 
 			override resourceChanged(IResourceChangeEvent evt) {
-				if (!hasAssociatedFile) {
-					return;
-				}
-				if (evt.delta.affectedChildren.size < 1) {
-					return;
+				if (!_self.outdated.synced || !hasAssociatedFile || evt.delta.affectedChildren.size < 1) {
+					return
 				}
 				val project = new Path(_self.console.project)
 				val resourceDelta = evt.delta.findMember(project)
 				if (resourceDelta === null) {
-					return;
+					return
 				}
-				println("WARNING! The original file changed, this could lead to misleading behavior.")
 				_self.outdated.markOutdated
+				runInUI [
+					val PREFIX_RED = if (isOsMac) "" else "\u001b[31m"
+					val SUFFIX_ESC = if (isOsMac) "" else "\u001b[0m"
+					val text = System.lineSeparator + PREFIX_RED + WollokRepl_OUTDATED_WARNING_MESSAGE_IN_REPL + SUFFIX_ESC + System.lineSeparator
+					_self.console.processInput(text)
+				]
 			}
 
 		}
@@ -192,7 +198,7 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
  */
 class ShowOutdatedAction extends ControlContribution {
 	CLabel label
-	boolean synced = true
+	@Accessors(PUBLIC_GETTER) boolean synced = true
 	WollokReplConsoleActionsParticipant parent
 	String projectName
 	

@@ -29,7 +29,7 @@ class WollokConstants {
 	public static val HIDDEN_FOLDERS = #[DIAGRAMS_FOLDER, SETTINGS_FOLDER, BIN_FOLDER, METAINF_FOLDER]
 	
 	public static val REPL_FILE = "wollokREPL.wlk"
-	public static val REPL_PROMPT = ">>> " 
+	public static val REPL_PROMPT = ">>> "
 	public static val SYNTHETIC_FILE = "__synthetic"
 	
 	public static val PATH_SEPARATOR = "/"

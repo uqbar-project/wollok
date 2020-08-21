@@ -34,7 +34,6 @@ class WollokRepl {
 	val WollokInterpreter interpreter
 	val File mainFile
 	val reader = new BufferedReader(new InputStreamReader(System.in))
-	val static prompt = ">>> "
 	var static whiteSpaces = ""
 	val WFile parsedMainFile
 	val extension ReplOutputFormatter formatter
@@ -73,7 +72,7 @@ class WollokRepl {
 	}
 
 	def synchronized printPrompt() {
-		print(prompt.messageStyle)
+		print(REPL_PROMPT.messageStyle)
 	}
 
 	def synchronized void printEndStructure() {
@@ -228,10 +227,6 @@ class WollokRepl {
 
 	def dispatch void handleException(WollokInterpreterException e) {
 		printlnIdent(e.convertToString.errorStyle)
-	}
-
-	def getPrompt() {
-		prompt.messageStyle.toString
 	}
 
 }

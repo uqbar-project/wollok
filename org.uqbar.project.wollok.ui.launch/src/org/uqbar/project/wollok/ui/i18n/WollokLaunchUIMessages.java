@@ -50,6 +50,7 @@ public class WollokLaunchUIMessages extends NLS {
 	public static String WollokRepl_OUTDATED_MESSAGE;
 	public static String WollokRepl_SYNCED_TOOLTIP;
 	public static String WollokRepl_OUTDATED_TOOLTIP;
+	public static String WollokRepl_OUTDATED_WARNING_MESSAGE_IN_REPL;
 	
 	static {
 		// initialize resource bundle
