@@ -1164,12 +1164,28 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(WARN)
 	@CheckGroup(WollokCheckGroup.UNNECESARY_CODE)
-	def badUsageOfIfAsBooleanExpression(WIfExpression t) {
-		if (t.then.evaluatesToBoolean && t.^else.evaluatesToBoolean) {
-			val inlineResult = if(t.then.isReturnTrue) t.condition.sourceCode else ("!(" + t.condition.sourceCode + ")")
+	def badUsageOfIfAsBooleanExpression(WIfExpression it) {
+		if (then.evaluatesToBoolean && ^else.evaluatesToBoolean) {
+			then.checkBadBooleanUsage(^else, it)
+		} else {
+			val counterpart = nextExpression
+			if (counterpart !== null && then.evaluatesToBoolean && counterpart.returnsABoolean) {
+				then.checkBadBooleanUsage(counterpart, it)
+			}
+		}
+	}
+
+	def checkBadBooleanUsage(WExpression first, WExpression second, WIfExpression it) {
+		if (first.isReturnTrue !== second.isReturnTrue) {
+			// uno retorna un booleano y el otro retorna el contrario
+			val inlineResult = if (first.isReturnTrue) condition.sourceCode else ("!(" + condition.sourceCode + ")")
 			val replacement = " return " + inlineResult
-			report(WollokDslValidator_BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION + replacement, t, WIF_EXPRESSION__CONDITION,
+			report(WollokDslValidator_BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION + replacement, it, WIF_EXPRESSION__CONDITION,
 				BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION)
+		} else {
+			// ambos retornan lo mismo
+			report(WollokDslValidator_UNNECESSARY_CONDITION, it, WIF_EXPRESSION__CONDITION,
+				WollokDslValidator_UNNECESSARY_CONDITION)
 		}
 	}
 

@@ -76,7 +76,32 @@ object sarasita {
 		else
 			false
 	}
-	
+
+	method esPar6(n) {
+		// XPECT warnings --> "Bad usage of if ! You must return the condition itself without using if. Use:  return n % 2 == 0" at "n % 2 == 0"
+		if (n % 2 == 0) {
+			return true
+		}
+		return false
+	}
+
+	method esPar7(n) {
+		// XPECT warnings --> "Bad usage of if ! You must return the condition itself without using if. Use:  return !(n % 2 == 0)" at "n % 2 == 0"
+		if (n % 2 == 0) {
+			return false
+		}
+		return true
+	}
+
+	method esPar8(n) {
+		if (n % 2 == 0) {
+			return false
+		}
+		// XPECT warnings --> "This expression does not make sense in a sequence, as it does not produce any effects." at "true"
+		true
+		return false
+	}
+
 	method invertedCondition(n) {
 		// XPECT warnings --> "Bad usage of if ! You must return the condition itself without using if. Use:  return !(n % 2 == 0)" at "n % 2 == 0"
 		return if (n % 2 == 0) {
@@ -98,6 +123,38 @@ object sarasita {
 	method invertedWithSimpleExpressionNoBlock(n) {
 		// XPECT warnings --> "Bad usage of if ! You must return the condition itself without using if. Use:  return !(n % 2 == 0)" at "n % 2 == 0"
 		return if (n % 2 == 0) false else true
+	}
+
+	method unnecesaryIfBothReturnFalse(n) {
+		// XPECT warnings --> "Unnecessary condition" at "n % 2 == 0"
+		if (n % 2 == 0)
+			return false
+		else
+			return false
+	}
+
+	method unnecesaryIfBothReturnTrue(n) {
+		// XPECT warnings --> "Unnecessary condition" at "n % 2 == 0"
+		if (n % 2 == 0)
+			return true
+		else
+			return true
+	}
+
+	method unnecesaryIfBothReturnTrueFirstExpression(n) {
+		// XPECT warnings --> "Unnecessary condition" at "n % 2 == 0"
+		return if (n % 2 == 0)
+			{ true }
+		else
+			{ return true }
+	}
+
+	method unnecesaryIfBothReturnFalseFirstExpression(n) {
+		// XPECT warnings --> "Unnecessary condition" at "n % 2 == 0"
+		return if (n % 2 == 0)
+			{ false }
+		else
+			return false
 	}
 	
 	method ifInsideExpressionWithoutElseShouldFailForBinaryRightOperation() {

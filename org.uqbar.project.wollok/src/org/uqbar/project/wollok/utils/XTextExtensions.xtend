@@ -80,6 +80,12 @@ class XTextExtensions {
 		}
 	}
 	
+	def static WExpression nextExpression(EObject o) {
+		val position = o.eContainer.eContents.indexOf(o)
+		if (position === -1 || position === o.eContainer.eContents.length - 1) return null
+		return o.eContainer.eContents.get(position + 1) as WExpression  
+	}	
+
 	def static computeUnusedUri(XtextResourceSet resourceSet, String name) {
 		var i = 0
 		while(i < Integer.MAX_VALUE) {
