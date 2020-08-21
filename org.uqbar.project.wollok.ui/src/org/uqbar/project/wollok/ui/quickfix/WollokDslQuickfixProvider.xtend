@@ -412,7 +412,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			if (ifE.then.hasReturnWithValue) {
 				inlineResult = RETURN + " " + inlineResult
 			}
-			val counterpart = ifE.nextExpression as WExpression
+			val counterpart = ifE.nextExpression
 			if (counterpart !== null && counterpart.returnsABoolean) {
 				xtextDocument.delete(counterpart)
 			}

@@ -1168,7 +1168,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (then.evaluatesToBoolean && ^else.evaluatesToBoolean) {
 			then.checkBadBooleanUsage(^else, it)
 		} else {
-			val counterpart = nextExpression as WExpression
+			val counterpart = nextExpression
 			if (counterpart !== null && then.evaluatesToBoolean && counterpart.returnsABoolean) {
 				then.checkBadBooleanUsage(counterpart, it)
 			}
