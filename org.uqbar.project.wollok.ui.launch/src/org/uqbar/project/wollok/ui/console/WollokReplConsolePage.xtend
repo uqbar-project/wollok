@@ -15,6 +15,7 @@ import org.eclipse.ui.console.IScrollLockStateProvider
 import org.eclipse.ui.console.TextConsole
 import org.eclipse.ui.console.TextConsolePage
 import org.eclipse.ui.console.TextConsoleViewer
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.ui.console.editor.WollokReplStyledText
 
 /**
@@ -30,7 +31,7 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 	static val KEY_RETURN = 0x0d
 	val WollokReplConsole console
 	val IConsoleView view
-	var int historyPosition = -1
+	@Accessors var int historyPosition = -1
 
 	new(WollokReplConsole console, IConsoleView view) {
 		super(console, view)

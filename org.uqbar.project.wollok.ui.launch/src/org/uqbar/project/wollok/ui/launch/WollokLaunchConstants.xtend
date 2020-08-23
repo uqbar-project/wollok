@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.ui.launch
 
+import java.util.List
 import org.eclipse.debug.core.ILaunchConfiguration
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy
 
@@ -30,6 +31,8 @@ class WollokLaunchConstants {
 	public static val ATTR_WOLLOK_DEBUG_EVENT_PORT = "WOLLOK_DEBUG_EVENT_PORT"
 	public static val ATTR_WOLLOK_FOLDER = "ATTR_WOLLOK_FOLDER"
 	public static val ATTR_WOLLOK_LIBS = "ATTR_WOLLOK_LIBS"
+	public static val ATTR_RESTARTING_STATE = "ATTR_RESTARTING_STATE"
+	public static val ATTR_LAST_COMMANDS = "ATTR_LAST_COMMANDS"
 	
 	static def getCommandPort(ILaunchConfiguration config) {
 		config.getAttribute(ATTR_WOLLOK_DEBUG_COMMAND_PORT, -1) // -1 ?
@@ -47,6 +50,14 @@ class WollokLaunchConstants {
 		config.setAttribute(ATTR_WOLLOK_DEBUG_EVENT_PORT, port)
 	}
 	
+	static def setRestartingState(ILaunchConfigurationWorkingCopy config, boolean restartingState) {
+		config.setAttribute(ATTR_RESTARTING_STATE, restartingState)
+	}
+
+	static def setLastCommands(ILaunchConfigurationWorkingCopy config, List<String> lastCommands) {
+		config.setAttribute(ATTR_LAST_COMMANDS, lastCommands)
+	}
+
 	static def getWollokFile(ILaunchConfiguration config){
 		config.getAttribute(ATTR_WOLLOK_FILE,"")
 	}
@@ -62,7 +73,15 @@ class WollokLaunchConstants {
 	static def getWollokProject(ILaunchConfiguration config){
 		config.getAttribute(ATTR_WOLLOK_PROJECT, "")
 	}
-	
+
+	static def isRestartingState(ILaunchConfiguration config) {
+		config.getAttribute(ATTR_RESTARTING_STATE, false)		
+	}
+
+	static def getLastCommands(ILaunchConfiguration config) {
+		config.getAttribute(ATTR_LAST_COMMANDS, <String>newArrayList)		
+	}
+
 	def static isWollokFileExtension(String xt) {
 		xt !== null && EXTENSIONS.contains(xt)
 	}

@@ -20,9 +20,13 @@ import org.eclipse.ui.console.IConsole
 import org.eclipse.ui.console.IConsoleConstants
 import org.eclipse.ui.console.IConsolePageParticipant
 import org.eclipse.ui.part.IPageBookViewPage
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.ui.console.WollokReplConsole
 
+import static org.uqbar.project.wollok.ui.console.RunInUI.*
 import static org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages.*
+
+import static extension org.uqbar.project.wollok.utils.OperatingSystemUtils.*
 
 /**
  * Contributes with buttons to wollok repl console
@@ -35,6 +39,8 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 	Action export
 	Action clearHistory
 	Action stop
+	Action restart
+	Action restartState
 	IActionBars bars
 	WollokReplConsole console
 	IResourceChangeListener resourceListener
@@ -45,7 +51,7 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 	}
 
 	def projectName() {
-		if(hasAssociatedFile) this.console.project else ""
+		if (hasAssociatedFile) this.console.project else ""
 	}
 
 	override init(IPageBookViewPage page, IConsole console) {
@@ -57,24 +63,29 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 		this.resourceListener = new IResourceChangeListener() {
 
 			override resourceChanged(IResourceChangeEvent evt) {
-				if (!hasAssociatedFile) {
-					return;
-				}
-				if (evt.delta.affectedChildren.size < 1) {
-					return;
+				if (!_self.outdated.synced || !hasAssociatedFile || evt.delta.affectedChildren.size < 1) {
+					return
 				}
 				val project = new Path(_self.console.project)
 				val resourceDelta = evt.delta.findMember(project)
 				if (resourceDelta === null) {
-					return;
+					return
 				}
 				_self.outdated.markOutdated
+				runInUI [
+					val PREFIX_RED = if (isOsMac) "" else "\u001b[31m"
+					val SUFFIX_ESC = if (isOsMac) "" else "\u001b[0m"
+					val text = System.lineSeparator + PREFIX_RED + WollokRepl_OUTDATED_WARNING_MESSAGE_IN_REPL + SUFFIX_ESC + System.lineSeparator
+					_self.console.processInput(text)
+				]
 			}
 
 		}
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceListener, IResourceChangeEvent.POST_CHANGE)
 
 		createTerminateAllButton
+		createRestartButton
+		createRestartStateButton
 		createRemoveButton
 		createClearHistory
 		this.outdated = new ShowOutdatedAction(this)
@@ -87,6 +98,8 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 				appendToGroup(IConsoleConstants.LAUNCH_GROUP, outdated)
 				appendToGroup(IConsoleConstants.LAUNCH_GROUP, new Separator)
 				appendToGroup(IConsoleConstants.LAUNCH_GROUP, stop)
+				appendToGroup(IConsoleConstants.LAUNCH_GROUP, restart)
+				appendToGroup(IConsoleConstants.LAUNCH_GROUP, restartState)
 				appendToGroup(IConsoleConstants.LAUNCH_GROUP, new Separator)
 				appendToGroup(IConsoleConstants.LAUNCH_GROUP, export)
 				appendToGroup(IConsoleConstants.LAUNCH_GROUP, clearHistory)
@@ -103,6 +116,26 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 			override run() {
 				this.enabled = false
 				console.shutdown
+			}
+		}
+	}
+
+	def createRestartButton() {
+		val imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.ui.cheatsheets/icons/elcl16/start_ccs_task.png"))
+		this.restart = new Action(WollokRepl_RESTART_TITLE, imageDescriptor) {
+			override run() {
+				this.enabled = false
+				console.restart
+			}
+		}
+	}
+
+	def createRestartStateButton() {
+		val imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.ui.cheatsheets/icons/elcl16/start_cheatsheet.png"))
+		this.restartState = new Action(WollokRepl_RESTART_STATE_TITLE, imageDescriptor) {
+			override run() {
+				this.enabled = false
+				console.restartLastSession
 			}
 		}
 	}
@@ -165,7 +198,7 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
  */
 class ShowOutdatedAction extends ControlContribution {
 	CLabel label
-	boolean synced = true
+	@Accessors(PUBLIC_GETTER) boolean synced = true
 	WollokReplConsoleActionsParticipant parent
 	String projectName
 	

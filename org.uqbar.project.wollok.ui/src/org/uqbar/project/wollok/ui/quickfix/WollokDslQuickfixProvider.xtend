@@ -857,5 +857,4 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		val previousVarOrConst = if (variable.writeable) VAR else CONST
 		xtextDocument.replace(variable.before, previousVarOrConst.length + propertyDef.length, varOrConst + " " + PROPERTY) 
 	}
-
 }
