@@ -52,9 +52,7 @@ class WollokReplConsole extends TextConsole {
 	List<String> sessionCommands = newArrayList
 	@Accessors
 	val lastCommands = new OrderedBoundedSet<String>(30)
-	@Accessors(PUBLIC_GETTER)
 	List<String> lastSessionCommands
-	@Accessors(PUBLIC_GETTER)
 	List<String> lastSessionCommandsToRun
 	@Accessors(PUBLIC_GETTER)
 	Long timeStart

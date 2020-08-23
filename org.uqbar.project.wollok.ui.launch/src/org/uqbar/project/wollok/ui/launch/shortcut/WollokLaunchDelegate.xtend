@@ -42,8 +42,6 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 	@Inject
 	IPreferenceStoreAccess preferenceStoreAccess
 	
-	WollokReplConsole console
-
 	// Use RefreshUtil after switching to debug >= 3.6
 	static final String ATTR_REFRESH_SCOPE = DebugPlugin.getUniqueIdentifier() + ".ATTR_REFRESH_SCOPE";
 
@@ -60,9 +58,9 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 			val consoleManager = ConsolePlugin.getDefault().consoleManager
 			consoleManager.consoles.forEach [ shutdown ]
 			consoleManager.removeConsoles(consoleManager.consoles)
-			this.console = new WollokReplConsole(configuration, mode)
+			val console = new WollokReplConsole(configuration, mode)
 			consoleManager.addConsoles(#[console])
-			this.console.startForProcess(launch.processes.get(0))
+			console.startForProcess(launch.processes.get(0))
 		}
 
 		if (mode.isDebug) {
