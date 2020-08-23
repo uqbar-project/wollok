@@ -22,7 +22,7 @@ http://wollok.org
    <launcherArgs>
       <programArgsWin>-Dfile.encoding=UTF-8
       </programArgsWin>
-      <vmArgs>-XX:PermSize=512M -XX:MaxPermSize=768M
+      <vmArgs>-XX:PermSize=512M -XX:MaxPermSize=1024M -Xms512m -Xmx1024m
       </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
