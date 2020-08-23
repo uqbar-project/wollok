@@ -37,6 +37,7 @@ class MessageSend {
 		this.selector = selector
 		this.arguments = arguments
 		this.returnType = returnType
+		typeParameters.put(GenericTypeInfo.SELF, receiver)
 	}
 
 	// ************************************************************************

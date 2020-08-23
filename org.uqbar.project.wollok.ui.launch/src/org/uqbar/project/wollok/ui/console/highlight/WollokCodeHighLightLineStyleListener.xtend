@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.ui.console.highlight
 import com.google.inject.Inject
 import java.io.ByteArrayInputStream
 import java.util.List
+import org.eclipse.jface.text.TextAttribute
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.LineStyleEvent
 import org.eclipse.swt.custom.LineStyleListener
@@ -12,16 +13,15 @@ import org.eclipse.xtext.ide.editor.syntaxcoloring.ISemanticHighlightingCalculat
 import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.ui.editor.syntaxcoloring.TextAttributeProvider
-import org.uqbar.project.wollok.launch.WollokChecker
 import org.uqbar.project.wollok.ui.launch.Activator
-import org.eclipse.jface.text.TextAttribute
 
-import static extension org.uqbar.project.wollok.WollokConstants.*
+import static org.uqbar.project.wollok.WollokConstants.*
+import static org.uqbar.project.wollok.ui.console.highlight.WollokConsoleHighlighter.*
+
 import static extension org.uqbar.project.wollok.ui.console.highlight.AnsiUtils.*
 import static extension org.uqbar.project.wollok.ui.console.highlight.WTextExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import static extension org.uqbar.project.wollok.ui.console.highlight.WollokConsoleHighlighter.*
 
 /**
  * A line style listener for the console to highlight code
@@ -36,7 +36,6 @@ import static extension org.uqbar.project.wollok.ui.console.highlight.WollokCons
  * @author jfernandes
  */
 class WollokCodeHighLightLineStyleListener implements LineStyleListener {
-	val static PROMPT = ">>> " // duplicated from WollokRepl
 	val static PROMPT_REPLACEMENT = "    "
 	
 	val static PROMPT_ANSI = "\u001b[36m>>> [m"
@@ -53,12 +52,10 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 	@Inject TextAttributeProvider stylesProvider
 	@Inject XtextResourceSet resourceSet
 	WollokConsoleHighlighter highlighter
-	WollokChecker checker
 	
 	new() {
 		Activator.getDefault.injector.injectMembers(this)
 		highlighter = new WollokConsoleHighlighter // TODO: inject
-		checker = new WollokChecker
 	}
 	
 	override lineGetStyle(LineStyleEvent event) {
@@ -150,8 +147,8 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 		]
 	}
 
-	def static escape(String text) { text.escapeAnsi.replaceAll(PROMPT, PROMPT_REPLACEMENT) }
+	def static escape(String text) { text.escapeAnsi.replaceAll(REPL_PROMPT, PROMPT_REPLACEMENT) }
 
-	def isCodeInputLine(LineStyleEvent it) { lineText.startsWith(PROMPT) || lineText.startsWith(PROMPT_ANSI) }
+	def isCodeInputLine(LineStyleEvent it) { lineText.startsWith(REPL_PROMPT) || lineText.startsWith(PROMPT_ANSI) }
 
 }

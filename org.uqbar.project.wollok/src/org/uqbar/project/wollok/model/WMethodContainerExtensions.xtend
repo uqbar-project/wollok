@@ -612,6 +612,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean getIsReturnTrue(WBlockExpression it) { expressions.size == 1 && expressions.get(0).isReturnTrue }
 	def static dispatch boolean getIsReturnTrue(WReturnExpression it) { expression instanceof WBooleanLiteral && expression.isReturnTrue }
 	def static dispatch boolean getIsReturnTrue(WBooleanLiteral it) { isTrueLiteral }
+
+	def static dispatch boolean returnsABoolean(WExpression it) { false }
+	def static dispatch boolean returnsABoolean(WBlockExpression it) { expressions.size == 1 && expressions.get(0).isReturnTrue }
+	def static dispatch boolean returnsABoolean(WReturnExpression it) { expression instanceof WBooleanLiteral }
 	
 	def static dispatch isTrueLiteral(WBooleanLiteral it) { isIsTrue }
 	def static dispatch isTrueLiteral(WExpression it) { false }
@@ -782,10 +786,14 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static dispatch boolean isPropertyAllowed(WSuite s) { false	}
 	def static dispatch boolean isPropertyAllowed(WProgram p) { false }
+	def static dispatch boolean isPropertyAllowed(WConstructor c) { false }
+	def static dispatch boolean isPropertyAllowed(WMethodDeclaration m) { false }
+	def static dispatch boolean isPropertyAllowed(WClosure c) { false }
+	def static dispatch boolean isPropertyAllowed(WFixture f) { false }
 	def static dispatch boolean isPropertyAllowed(WMethodContainer mc) { true }
-	def static dispatch boolean isPropertyAllowed(EObject o) { 
-		val declaringContext = o.declaringContext
-		declaringContext !== null && declaringContext.isPropertyAllowed
+	def static dispatch boolean isPropertyAllowed(EObject o) {
+		val parent = o.eContainer
+		parent !== null && parent.isPropertyAllowed
 	}
 	
 	def static hasCyclicDefinition(WConstructor it) {

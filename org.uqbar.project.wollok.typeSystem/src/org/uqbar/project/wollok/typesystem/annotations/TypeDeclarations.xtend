@@ -3,16 +3,15 @@ package org.uqbar.project.wollok.typesystem.annotations
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.uqbar.project.wollok.typesystem.ClassInstanceType
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.TypeProvider
 import org.uqbar.project.wollok.typesystem.UnionType
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 abstract class TypeDeclarations {
 	TypeDeclarationTarget target
@@ -46,10 +45,6 @@ abstract class TypeDeclarations {
 
 	def operator_doubleArrow(List<? extends TypeAnnotation> parameterTypes, TypeAnnotation returnType) {
 		new MethodTypeDeclaration(parameterTypes, returnType)
-	}
-
-	def constructor(AnnotationContext owner, TypeAnnotation... parameterTypes) {
-		target.addConstructorTypeDeclaration(owner.type as ClassInstanceType, parameterTypes)
 	}
 
 	def variable(AnnotationContext owner, String selector, TypeAnnotation type) {
@@ -230,6 +225,8 @@ abstract class TypeDeclarations {
 	def DVALUE() { Dictionary.param(GenericTypeInfo.VALUE) }
 
 	def ELEMENT() { Collection.param(GenericTypeInfo.ELEMENT) }
+
+	def SELF() { Collection.methodParam("->", GenericTypeInfo.SELF) }
 
 	def T() { Collection.methodParam("map", "T") }
 

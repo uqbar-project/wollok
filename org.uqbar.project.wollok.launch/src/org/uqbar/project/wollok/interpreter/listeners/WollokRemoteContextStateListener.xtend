@@ -1,14 +1,15 @@
 package org.uqbar.project.wollok.interpreter.listeners
 
+import java.util.Collection
 import java.util.List
 import net.sf.lipermi.handler.CallHandler
 import net.sf.lipermi.net.Client
+import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.contextState.server.XContextStateListener
 import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrame
 import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrameVariable
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.api.XInterpreterListener
-import org.eclipse.emf.ecore.EObject
 
 class WollokRemoteContextStateListener implements XInterpreterListener {
 
@@ -32,9 +33,7 @@ class WollokRemoteContextStateListener implements XInterpreterListener {
 	override started() {}
 
 	override terminated() {
-		if (forRepl) {
-			detectChanges
-		}
+		this.detectChanges(!forRepl)
 		variables.notifyPossibleStateChanged	
 	}
 
@@ -46,17 +45,21 @@ class WollokRemoteContextStateListener implements XInterpreterListener {
 
 	override evaluated(EObject element) {
 		if (!forRepl) {
-			this.detectChanges
+			this.detectChanges(false)
 		}
 	}
 
-	def void detectChanges() {
+	def void detectChanges(boolean preserveVariables) {
 		try {
 			XDebugStackFrame.initAllVariables()
+			val Collection<XDebugStackFrameVariable> variables = if (preserveVariables) newArrayList(this.variables) else newArrayList
 			this.variables = #[]
 			val currentStack = interpreter.currentThread.stack
 			if (!currentStack.isEmpty) {
 				this.variables = new XDebugStackFrame(currentStack.peek).variables
+				if (preserveVariables) {
+					this.variables.addAll(variables)
+				}
 			}
 		} catch (Exception e) {
 			val realCause = e.realCause

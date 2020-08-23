@@ -18,9 +18,11 @@ import static org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
  */
 class ResourceUtils {
 
+	public static String IMPORT_TEST_PREFFIX = "t_"
+	
 	public static Map<String, String> implicitPackagePreffixes = #{
 		WOLLOK_DEFINITION_EXTENSION -> "",
-		TEST_EXTENSION -> "t_",
+		TEST_EXTENSION -> IMPORT_TEST_PREFFIX,
 		PROGRAM_EXTENSION -> "p_"
 	}
 
