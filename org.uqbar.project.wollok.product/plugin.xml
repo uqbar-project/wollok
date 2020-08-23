@@ -19,7 +19,7 @@
          </property>
          <property
                name="aboutText"
-               value="Wollok Programming Language and IDE&#x0A;Version 2.0.0&#x0A;&#x0A;http://uqbar-project.org&#x0A;http://wollok.org&#x0A;&#x0A;© Copyright 2014-2020, Uqbar Project Foundation, All rights reserved">
+               value="Wollok Programming Language and IDE&#x0A;Version 2.0.1&#x0A;&#x0A;http://uqbar-project.org&#x0A;http://wollok.org&#x0A;&#x0A;© Copyright 2014-2020, Uqbar Project Foundation, All rights reserved">
          </property>
          <property
                name="windowImages"
