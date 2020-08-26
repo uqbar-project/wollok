@@ -12,5 +12,10 @@ object pepita {
 	
 	// XPECT warnings --> "String does not understand *( 2)" at "dos * 2"
 	method multiplicacion3() = dos * 2
-	
+
+	// XPECT warnings --> "Type system: Infinite recursive type" at "c"
+	method infinite_closure_type(c) = [c].filter(c)
+
+	// XPECT warnings --> "Type system: Infinite recursive type" at "c"
+	method infinite_list_type(c) = c.contains(2)
 }
