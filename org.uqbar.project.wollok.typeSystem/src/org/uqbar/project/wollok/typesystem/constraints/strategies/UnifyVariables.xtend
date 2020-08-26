@@ -6,16 +6,14 @@ import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
-import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInstance
 import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
-import org.uqbar.project.wollok.typesystem.constraints.variables.TypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo
 import org.uqbar.project.wollok.typesystem.exceptions.CannotBeVoidException
-import org.uqbar.project.wollok.typesystem.exceptions.InfiniteRecursiveTypeException
 
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
+import static extension org.uqbar.project.wollok.typesystem.constraints.types.RecursiveTypeValidator.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
 
 /**
@@ -113,7 +111,7 @@ class UnifyVariables extends AbstractInferenceStrategy {
 	// ************************************************************************
 	def copyTypeInfoFrom(TypeVariable v1, TypeVariable v2) {
 		try {
-			v2.typeInfo.validateRecursiveType(v1)
+			v2.typeInfo.validateRecursiveType(newArrayList(v1))
 			v1.typeInfo = v2.typeInfo
 			changed = true
 			Ready
@@ -121,18 +119,6 @@ class UnifyVariables extends AbstractInferenceStrategy {
 			v2.addError(typeError)
 			Error
 		}
-	}
-		
-	def dispatch void validateRecursiveType(TypeInfo typeInfo, TypeVariable tvar) {}
-	def dispatch void validateRecursiveType(GenericTypeInfo typeInfo, TypeVariable tvar) {
-		typeInfo.maximalConcreteTypes?.forEach[it.doValidateRecursiveType(typeInfo, tvar)]
-	}
-		
-	def dispatch void doValidateRecursiveType(WollokType it, GenericTypeInfo info, TypeVariable variable) {}
-	def dispatch void doValidateRecursiveType(GenericTypeInstance it, GenericTypeInfo info, TypeVariable variable) {
-		typeParameters.values.forEach[paramVar | 
-			if (paramVar == variable) throw new InfiniteRecursiveTypeException(variable)
-		]
 	}
 	
 	def dispatch doUnifyWith(GenericTypeInfo t1, GenericTypeInfo t2) {		
