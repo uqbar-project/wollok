@@ -17,5 +17,5 @@ object pepita {
 	method infinite_closure_type(c) = [c].filter(c)
 
 	// XPECT warnings --> "Type system: Infinite recursive type" at "c"
-	method infinite_list_type(c) = c.contains(2)
+	method infinite_list_type(c) = c.contains(c)
 }
