@@ -19,6 +19,7 @@ import static extension org.uqbar.project.wollok.game.helpers.WollokConventionEx
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
 import static extension org.uqbar.project.wollok.utils.WollokObjectUtils.checkNotNull
+import java.math.BigDecimal
 
 /**
  * 
@@ -83,18 +84,19 @@ class GameObject {
 		board.removeListener(name.asString)
 	}
 
-	def whenKeyPressedDo(WollokObject key, WollokObject action) {
-		key.checkNotNull("whenKeyPressedDo")
+	def whenKeyPressedDo(WollokObject event, WollokObject action) {
+		event.checkNotNull("whenKeyPressedDo")
 		action.checkNotNull("whenKeyPressedDo")
-		var num = key.coerceToInteger
+		var keyCode = event.asList.get(new BigDecimal(1)).asString
 		val function = action.asClosure
-		addListener(new KeyboardListener(num, [function.doApply]))
+		addListener(new KeyboardListener(keyCode, [function.doApply]))
 	}
 
+	//TODO: Sacar
 	def whenKeyPressedSay(WollokObject key, WollokObject functionObj) {
-		val num = key.coerceToInteger
-		val function = functionObj.asClosure
-		addListener(new KeyboardListener(num, [board.characterSay(function.doApply.asString)]))
+//		val num = key.coerceToInteger
+//		val function = functionObj.asClosure
+//		addListener(new KeyboardListener(num, [board.characterSay(function.doApply.asString)]))
 	}
 
 	def whenCollideDo(WollokObject visual, WollokObject action) {
