@@ -73,6 +73,11 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static EObject getContainer(EObject it) { 
 		EcoreUtil2.getContainerOfType(it, WMethodContainer) ?: EcoreUtil2.getContainerOfType(it, WTest) 
 	}
+	
+	def static boolean isSingleTest(EObject it) { 
+		val test = EcoreUtil2.getContainerOfType(it, WTest)
+		test !== null && test.only !== null
+	}
 
 	def static WMethodContainer declaringContext(EObject it)	{ EcoreUtil2.getContainerOfType(it, WMethodContainer) }
 	def static WMethodDeclaration declaringMethod(EObject it)	{ EcoreUtil2.getContainerOfType(it, WMethodDeclaration) }
