@@ -63,7 +63,7 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 		this.resourceListener = new IResourceChangeListener() {
 
 			override resourceChanged(IResourceChangeEvent evt) {
-				if (!_self.outdated.synced || !hasAssociatedFile || evt.delta.affectedChildren.size < 1) {
+				if (!_self.outdated.synced || !hasAssociatedFile || evt.delta.affectedChildren.size < 1 || !_self.console.running) {
 					return
 				}
 				val project = new Path(_self.console.project)
