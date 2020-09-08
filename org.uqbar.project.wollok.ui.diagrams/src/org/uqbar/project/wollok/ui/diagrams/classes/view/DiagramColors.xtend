@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Display
  */
 class DiagramColors {
 	
+	// Static Diagram
 	public static val CLASS_FOREGROUND = new Color(null, 0, 0, 0)
 	public static val CLASS_BACKGROUND = new Color(null, 255, 229, 236)
 	public static val IMPORTED_CLASS_FOREGROUND = new Color(null, 31, 46, 46)
@@ -30,13 +31,15 @@ class DiagramColors {
 	public static val DYNAMIC_DIAGRAM_BLUE = new Color(null, 199, 206, 224)
 
 	public static val OBJECTS_VALUE_NULL = DYNAMIC_DIAGRAM_WHITE
+	public static val OBJECTS_VALUE_NULL_DARK = new Color(null, 58, 70, 79)
 	public static val OBJECTS_WRE_BACKGROUND = DYNAMIC_DIAGRAM_GREEN
 	public static val OBJECTS_CUSTOM_BACKGROUND = DYNAMIC_DIAGRAM_BLUE
+	public static val OBJECTS_CUSTOM_BACKGROUND_DARK = new Color(null, 11, 74, 125)
 	public static val OBJECTS_WRE_BACKGROUND_COLORBLIND = CLASS_BACKGROUND
+	public static val OBJECTS_WRE_BACKGROUND_COLORBLIND_DARK = new Color(null, 148, 44, 44) // 171, 40, 0
 	public static val OBJECTS_CUSTOM_BACKGROUND_COLORBLIND = DYNAMIC_DIAGRAM_BLUE
 	
 	// FONTS
-	
 	public static val SYSTEM_FONT = Display.getDefault.systemFont.fontData.get(0)
 	
 	public static val CLASS_NAME_FONT = new Font(Display.getDefault, SYSTEM_FONT.name, SYSTEM_FONT.height.intValue + 2, SWT.BOLD)

@@ -22,6 +22,8 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.view.DiagramColors
 import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
 
+import static org.uqbar.project.wollok.utils.WEclipseUtils.*
+
 /**
  * 
  * @author jfernandes
@@ -55,8 +57,8 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 			layoutManager = new StackLayout
 		
 			this.ellipse = createShape() => [
-				backgroundColor = colorFor(castedModel)
-				lineWidth = lineWidthFor(castedModel)				
+				backgroundColor = backgroundColorFor(castedModel)
+				lineWidth = lineWidthFor(castedModel)
 				opaque = true
 			]
 			add(this.ellipse)
@@ -71,14 +73,26 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 		new Ellipse
 	}
 	
-	def colorFor(VariableModel model) {
+	def backgroundColorFor(VariableModel model) {
 		val configuration = DynamicDiagramConfiguration.instance
 		if (model.valueString == "null")
-			DiagramColors.OBJECTS_VALUE_NULL
+			if (environmentHasDarkTheme) {
+				DiagramColors.OBJECTS_VALUE_NULL_DARK
+			} else {
+				DiagramColors.OBJECTS_VALUE_NULL
+			}
 		else if (model.isUserDefined)
-			if (configuration.colorBlindEnabled) DiagramColors.OBJECTS_CUSTOM_BACKGROUND_COLORBLIND else DiagramColors.OBJECTS_CUSTOM_BACKGROUND
+			if (environmentHasDarkTheme) {
+				DiagramColors.OBJECTS_CUSTOM_BACKGROUND_DARK
+			} else {
+				if (configuration.colorBlindEnabled) DiagramColors.OBJECTS_CUSTOM_BACKGROUND_COLORBLIND else DiagramColors.OBJECTS_CUSTOM_BACKGROUND
+			}
 		else
-			if (configuration.colorBlindEnabled) DiagramColors.OBJECTS_WRE_BACKGROUND_COLORBLIND else DiagramColors.OBJECTS_WRE_BACKGROUND
+			if (environmentHasDarkTheme) {
+				DiagramColors.OBJECTS_WRE_BACKGROUND_COLORBLIND_DARK
+			} else {
+				if (configuration.colorBlindEnabled) DiagramColors.OBJECTS_WRE_BACKGROUND_COLORBLIND else DiagramColors.OBJECTS_WRE_BACKGROUND
+			}
 	}
 
 	def lineWidthFor(VariableModel model) {

@@ -22,6 +22,8 @@ import org.eclipse.core.runtime.IStatus
 import org.eclipse.core.runtime.NullProgressMonitor
 import org.eclipse.core.runtime.Path
 import org.eclipse.core.runtime.Status
+import org.eclipse.core.runtime.preferences.IEclipsePreferences
+import org.eclipse.core.runtime.preferences.InstanceScope
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
@@ -40,6 +42,7 @@ import org.eclipse.xtext.ui.editor.XtextEditor
 import org.eclipse.xtext.ui.editor.model.XtextDocumentUtil
 
 import static org.uqbar.project.wollok.WollokConstants.*
+
 import static extension org.uqbar.project.wollok.utils.StringUtils.*
 
 /**
@@ -307,5 +310,11 @@ class WEclipseUtils {
 
 	def static isTestFile(IPath path) {
 		path.toString.endsWith(TEST_EXTENSION)
+	}
+	
+	def static environmentHasDarkTheme() {
+		val IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode("org.eclipse.e4.ui.css.swt.theme")
+		val currentTheme = prefs.get("themeid", "")
+		currentTheme.contains("dark")
 	}
 }
