@@ -39,7 +39,6 @@ class WollokHighlightingCalculator extends DefaultSemanticHighlightingCalculator
 	}
 	
 	// ** customizations (as multiple dispatch methods)
-	
 	def dispatch highlight(WNamedObject obj, ICompositeNode node, IHighlightedPositionAcceptor acceptor) {
 		super.highlightElement(obj, acceptor, cancelIndicator)
 	}	
@@ -53,7 +52,7 @@ class WollokHighlightingCalculator extends DefaultSemanticHighlightingCalculator
 		acceptor.addPosition(node.offset, node.length, styleFor(obj))
 		true
 	}
-
+	
 	def styleFor(WReferenciable it) {
 		if (isInstanceVar) 		INSTANCE_VAR_STYLE_ID 
 		else if (isParameter) 	PARAMETER_STYLE_ID

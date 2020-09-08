@@ -33,19 +33,35 @@ class RegularReplOutputFormatter implements ReplOutputFormatter {
 
 
 class AnsiColoredReplOutputFormatter implements ReplOutputFormatter {
-	static val COLOR_RETURN_VALUE = BLUE
 	static val COLOR_ERROR = RED
 	static val COLOR_REPL_MESSAGE = CYAN
-	static val COLOR_LINK_FILE = BLUE
 	static val COLOR_DEFAULT = DEFAULT
 	
-	override errorStyle(CharSequence msg) { ansi.fg(COLOR_ERROR).a(msg).reset.toString() }
+	boolean darkMode
+
+	new(boolean darkMode) {
+		this.darkMode = darkMode
+	}	
+
+	override errorStyle(CharSequence msg) { errorColor.a(msg).reset.toString() }
 	override importantMessageStyle(CharSequence msg) { ansi.fg(COLOR_REPL_MESSAGE).bold.a(msg).reset.toString() }
 	override messageStyle(CharSequence msg) { ansi.fg(COLOR_REPL_MESSAGE).a(msg).reset.toString() }
-	override returnStyle(CharSequence msg) { ansi().fg(COLOR_RETURN_VALUE).a(msg).reset.toString() }
+	override returnStyle(CharSequence msg) { ansi().fg(returnColor).a(msg).reset.toString() }
 	override linkStyle(CharSequence msg) { 
 		// https://mihai-nita.net/2013/06/03/eclipse-plugin-ansi-in-console/
-		ansi.fg(COLOR_LINK_FILE).a(Ansi.Attribute.UNDERLINE).boldOff.a(msg).reset.a(Ansi.Attribute.UNDERLINE_OFF).bold.a(Ansi.Attribute.RESET).toString
+		ansi.fg(linkColor).a(Ansi.Attribute.UNDERLINE).boldOff.a(msg).reset.a(Ansi.Attribute.UNDERLINE_OFF).bold.a(Ansi.Attribute.RESET).toString
 	}
 	override normalStyle(CharSequence msg) { ansi.fg(COLOR_DEFAULT).a(msg).reset.toString() }
+	
+	def returnColor() {
+		if (darkMode) YELLOW else BLUE
+	}
+	
+	def linkColor() {
+		if (darkMode) CYAN else BLUE
+	}
+	
+	def errorColor() {
+		if (darkMode) ansi.fgBright(COLOR_ERROR) else ansi.fg(COLOR_ERROR)
+	}
 }
