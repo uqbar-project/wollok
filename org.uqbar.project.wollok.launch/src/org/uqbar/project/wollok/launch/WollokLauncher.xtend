@@ -68,7 +68,7 @@ class WollokLauncher extends WollokChecker {
 			interpreter.interpret(parsed)
 
 			if (parameters.hasRepl) {
-				val formatter = if (parameters.noAnsiFormat || isOsMac) new RegularReplOutputFormatter else new AnsiColoredReplOutputFormatter
+				val formatter = if (parameters.noAnsiFormat || isOsMac) new RegularReplOutputFormatter else new AnsiColoredReplOutputFormatter(parameters.darkMode)
 				new WollokRepl(this, injector, interpreter, mainFile, parsed, formatter).startRepl
 			}
 			System.exit(0)
@@ -155,4 +155,9 @@ class WollokLauncher extends WollokChecker {
 	override shouldValidate() {
 		parameters.validate
 	}
+		
+	def darkMode() {
+		parameters.darkMode
+	}
+		
 }

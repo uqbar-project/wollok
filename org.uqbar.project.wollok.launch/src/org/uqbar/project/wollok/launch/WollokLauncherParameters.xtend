@@ -36,6 +36,7 @@ class WollokLauncherParameters {
 	boolean exitOnBuildFailure = false
 	boolean saveFile = false
 	boolean colored = true
+	boolean darkMode = false
 
 	Integer numberOfDecimals = null
 	String printingStrategy = null
@@ -67,6 +68,7 @@ class WollokLauncherParameters {
 		// only for formatter
 		if (saveFile) sb.append("-save ")
 		//
+		if (darkMode) sb.append("-darkMode ")
 		sb.toString
 	}
 
@@ -120,6 +122,7 @@ class WollokLauncherParameters {
 		coercingStrategy = parseParameterString(cmdLine, "coercingStrategy")
 
 		saveFile = cmdLine.hasOption("save")
+		darkMode = cmdLine.hasOption("darkMode")
 		
 		if ((requestsPort == 0 && eventsPort != 0) || (requestsPort != 0 && eventsPort == 0)) {
 			throw new RuntimeException(Messages.WollokLauncher_REQUEST_PORT_EVENTS_PORT_ARE_BOTH_REQUIRED)
@@ -221,6 +224,8 @@ class WollokLauncherParameters {
 			add("coercingStrategy", Messages.WollokLauncherOptions_DECIMAL_CONVERSION_STRATEGY, "name", 1)
 
 			add("save", Messages.WollokLauncherOptions_SAVE_FILE, "save", 0)
+			
+			add("darkMode", Messages.WollokLauncherOptions_DARK_MODE, "darkMode", 0)
 
 			addList("lib", Messages.WollokLauncherOptions_JAR_LIBRARIES, "libs", ',')
 			addList("wf", Messages.WollokLauncherOptions_WOLLOK_FILES, "files", ' ')

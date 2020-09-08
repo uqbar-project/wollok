@@ -40,8 +40,6 @@ import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
  */
 class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 
-//	ILaunchManager launchManager = DebugPlugin.getDefault.launchManager
-
 	override launch(IFile currFile, String mode) {
 		if (currFile.project.hasErrors) {
 			val confirm = MessageDialog.openQuestion(Display.current.activeShell,
@@ -117,6 +115,7 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 		setAttribute(ATTR_WOLLOK_LIBS, newArrayList(info.findLibs))
 		setAttribute(WollokLaunchConstants.ATTR_WOLLOK_IS_REPL, this.hasRepl)
 		setAttribute(WollokLaunchConstants.ATTR_WOLLOK_DYNAMIC_DIAGRAM, this.shouldActivateDynamicDiagram)
+		setAttribute(WollokLaunchConstants.ATTR_WOLLOK_DARK_MODE, environmentHasDarkTheme)
 	}
 
 	def static getWollokFile(ILaunch launch) {

@@ -47,6 +47,7 @@ public class Messages extends NLS {
 	public static String WollokLauncherOptions_DONT_VALIDATE;
 	public static String WollokLauncherOptions_EXIT_ON_BUILD_FAILURE;
 	public static String WollokLauncherOptions_SAVE_FILE;
+	public static String WollokLauncherOptions_DARK_MODE;
 	
 	static {
 		// initialize resource bundle

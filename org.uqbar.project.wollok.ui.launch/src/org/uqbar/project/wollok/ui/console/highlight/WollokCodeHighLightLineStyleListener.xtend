@@ -46,8 +46,6 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 	val programFooter =  System.lineSeparator + "}"
 	val headerLength = programHeader.length
 
-	val static DEFAULT_BACKGROUND_COLOR = newColor(255, 255, 255)
-		
 	@Inject ISemanticHighlightingCalculator calculator
 	@Inject TextAttributeProvider stylesProvider
 	@Inject XtextResourceSet resourceSet
@@ -69,7 +67,7 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 		val List<StyleRange> styles = event.styles.filter[length > 0].sortBy[start].toList
 
 		if (escaped.trim().startsWith(IMPORT)) {
-			styles.merge(new StyleRange(event.lineOffset + PROMPT_ANSI.length, IMPORT.length, KEYWORD_COLOR, DEFAULT_BACKGROUND_COLOR) => [
+			styles.merge(new StyleRange(event.lineOffset + PROMPT_ANSI.length, IMPORT.length, keywordColor, null) => [
 				fontStyle = SWT.BOLD 
 			])
 		} else {

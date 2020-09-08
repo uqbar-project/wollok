@@ -7,8 +7,8 @@ import org.uqbar.project.wollok.ui.highlight.WollokHighlightingConfiguration
 class WollokAntlrTokenToAttributeIdMapper extends DefaultAntlrTokenToAttributeIdMapper {
 	
 	override protected getMappedValue(int tokenType) {
-		if(tokenType == WollokDocumentTokenSource.JAVA_DOC_TOKEN_TYPE)
-			WollokHighlightingConfiguration.WOLLOK_DOC_STYLE_ID	
+		if (tokenType == WollokDocumentTokenSource.JAVA_DOC_TOKEN_TYPE)
+			WollokHighlightingConfiguration.WOLLOK_DOC_STYLE_ID
 		else
 			super.getMappedValue(tokenType)
 	}

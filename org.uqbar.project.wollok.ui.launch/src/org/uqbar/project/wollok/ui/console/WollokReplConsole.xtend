@@ -31,6 +31,7 @@ import static org.uqbar.project.wollok.ui.console.RunInUI.*
 
 import static extension org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**
  * @author tesonep
@@ -57,8 +58,8 @@ class WollokReplConsole extends TextConsole {
 	@Accessors(PUBLIC_GETTER)
 	Long timeStart
 
-	public static Color ENABLED = new Color(Display.current, 255, 255, 255)
-	public static Color DISABLED = new Color(Display.current, 220, 220, 220)
+	public static Color ENABLED = new Color(Display.current, 255, 255, 255)  // TODO: Dark mode
+	public static Color DISABLED = new Color(Display.current, 220, 220, 220) // TODO: Dark mode
 
 	ILaunchConfiguration configuration
 	String mode

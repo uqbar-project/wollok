@@ -104,6 +104,7 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 			validate = config.hasRepl // Validate when the user enters code in the REPL.
 			dynamicDiagramActivated = config.dynamicDiagramActivated
 			libraries = config.libraries
+			darkMode = config.darkMode
 			if (config.hasRepl && preferenceStoreAccess.dynamicDiagramActivated) {
 				dynamicDiagramPort = Activator.getDefault.wollokDynamicDiagramListeningPort
 			}
