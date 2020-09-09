@@ -27,17 +27,14 @@ class DiagramColors {
 	
 	// Dynamic Diagram
 	public static val DYNAMIC_DIAGRAM_WHITE = new Color(null, 255, 255, 255)
-	public static val DYNAMIC_DIAGRAM_GREEN = new Color(null, 199, 224, 217)
 	public static val DYNAMIC_DIAGRAM_BLUE = new Color(null, 199, 206, 224)
 
 	public static val OBJECTS_VALUE_NULL = DYNAMIC_DIAGRAM_WHITE
 	public static val OBJECTS_VALUE_NULL_DARK = new Color(null, 58, 70, 79)
-	public static val OBJECTS_WRE_BACKGROUND = DYNAMIC_DIAGRAM_GREEN
+	public static val OBJECTS_WRE_BACKGROUND = CLASS_BACKGROUND
+	public static val OBJECTS_WRE_BACKGROUND_DARK = new Color(null, 173, 42, 26)
 	public static val OBJECTS_CUSTOM_BACKGROUND = DYNAMIC_DIAGRAM_BLUE
-	public static val OBJECTS_CUSTOM_BACKGROUND_DARK = new Color(null, 11, 74, 125)
-	public static val OBJECTS_WRE_BACKGROUND_COLORBLIND = CLASS_BACKGROUND
-	public static val OBJECTS_WRE_BACKGROUND_COLORBLIND_DARK = new Color(null, 148, 44, 44) // 171, 40, 0
-	public static val OBJECTS_CUSTOM_BACKGROUND_COLORBLIND = DYNAMIC_DIAGRAM_BLUE
+	public static val OBJECTS_CUSTOM_BACKGROUND_DARK = new Color(null, 60, 100, 120)
 	
 	// FONTS
 	public static val SYSTEM_FONT = Display.getDefault.systemFont.fontData.get(0)

@@ -17,6 +17,7 @@ import org.eclipse.gef.NodeEditPart
 import org.eclipse.gef.Request
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart
 import org.eclipse.gef.editpolicies.ComponentEditPolicy
+import org.eclipse.jface.resource.JFaceResources
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.view.DiagramColors
@@ -64,6 +65,9 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 			add(this.ellipse)
 			add(new Label => [
 				text = castedModel.valueString
+				if (environmentHasDarkTheme) {
+					setFont = JFaceResources.fontRegistry.getBold(JFaceResources.DEFAULT_FONT) 
+				}
 				setSize(75, 25)
 			])
 		]
@@ -74,25 +78,18 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 	}
 	
 	def backgroundColorFor(VariableModel model) {
-		val configuration = DynamicDiagramConfiguration.instance
 		if (model.valueString == "null")
 			if (environmentHasDarkTheme) {
 				DiagramColors.OBJECTS_VALUE_NULL_DARK
 			} else {
 				DiagramColors.OBJECTS_VALUE_NULL
 			}
-		else if (model.isUserDefined)
-			if (environmentHasDarkTheme) {
-				DiagramColors.OBJECTS_CUSTOM_BACKGROUND_DARK
-			} else {
-				if (configuration.colorBlindEnabled) DiagramColors.OBJECTS_CUSTOM_BACKGROUND_COLORBLIND else DiagramColors.OBJECTS_CUSTOM_BACKGROUND
-			}
-		else
-			if (environmentHasDarkTheme) {
-				DiagramColors.OBJECTS_WRE_BACKGROUND_COLORBLIND_DARK
-			} else {
-				if (configuration.colorBlindEnabled) DiagramColors.OBJECTS_WRE_BACKGROUND_COLORBLIND else DiagramColors.OBJECTS_WRE_BACKGROUND
-			}
+		else if (model.isUserDefined) {
+			if (environmentHasDarkTheme) DiagramColors.OBJECTS_CUSTOM_BACKGROUND_DARK else DiagramColors.OBJECTS_CUSTOM_BACKGROUND
+		}
+		else {
+			if (environmentHasDarkTheme) DiagramColors.OBJECTS_WRE_BACKGROUND_DARK else DiagramColors.OBJECTS_WRE_BACKGROUND
+		}
 	}
 
 	def lineWidthFor(VariableModel model) {
