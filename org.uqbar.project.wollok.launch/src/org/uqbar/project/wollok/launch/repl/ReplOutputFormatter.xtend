@@ -54,11 +54,11 @@ class AnsiColoredReplOutputFormatter implements ReplOutputFormatter {
 	override normalStyle(CharSequence msg) { ansi.fg(COLOR_DEFAULT).a(msg).reset.toString() }
 	
 	def returnColor() {
-		if (darkMode) YELLOW else BLUE
+		BLUE
 	}
 	
 	def linkColor() {
-		if (darkMode) CYAN else BLUE
+		BLUE
 	}
 	
 	def errorColor() {

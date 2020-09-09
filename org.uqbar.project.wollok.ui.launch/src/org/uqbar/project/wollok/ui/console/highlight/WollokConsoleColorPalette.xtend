@@ -35,12 +35,12 @@ class WollokConsoleColorPalette {
         new RGB(255, 255, 255)  // white
     ]
 
-    val static RGB[] paletteVGA_dark = #[
+    val static RGB[] palette_dark = #[
         new RGB(  0,   0,   0), // black
         new RGB(170,   0,   0), // red
         new RGB(  0, 170,   0), // green
         new RGB(170,  85,   0), // brown/yellow
-        new RGB(  0,   0, 170), // blue
+        new RGB( 37, 131, 218), // blue
         new RGB(170,   0, 170), // magenta
         new RGB( 10, 246, 250), // cyan
         new RGB(170, 170, 170), // gray
@@ -91,6 +91,7 @@ class WollokConsoleColorPalette {
         new RGB( 20, 240, 240), // bright cyan
         new RGB(233, 235, 235)  // white
     ]
+
     static val RGB[] palettePuTTY = #[
         new RGB(  0,   0,   0), // black
         new RGB(187,   0,   0), // red
@@ -128,26 +129,6 @@ class WollokConsoleColorPalette {
         new RGB(  0, 255, 255), // bright cyan
         new RGB(255, 255, 255)  // white
     ]
-    
-    static val RGB[] paletteXTerm_dark = #[
-        new RGB(  0,   0,   0), // black
-        new RGB(205,   0,   0), // red
-        new RGB(  0, 205,   0), // green
-        new RGB(205, 205,   0), // brown/yellow
-        new RGB(  0,   0, 238), // blue
-        new RGB(205,   0, 205), // magenta
-        new RGB(  0, 205, 205), // cyan
-        new RGB(229, 229, 229), // gray
-        new RGB(127, 127, 127), // dark gray
-        new RGB(255,   0,   0), // bright red
-        new RGB(  0, 255,   0), // bright green
-        new RGB(255, 255,   0), // yellow
-        new RGB( 92,  92, 255), // bright blue
-        new RGB(255,   0, 255), // bright magenta
-        new RGB(  0, 255, 255), // bright cyan
-        new RGB(255, 255, 255)  // white
-    ]
-    
     
     static var palette            = paletteXP
     static var currentPaletteName = PALETTE_WINXP
@@ -189,9 +170,10 @@ class WollokConsoleColorPalette {
 
     def static void setPalette(String paletteName) {
         currentPaletteName = paletteName
-        println("current palette name " + currentPaletteName)
-        if (PALETTE_VGA.equalsIgnoreCase(paletteName))
-            palette = if (environmentHasDarkTheme) paletteVGA_dark else paletteVGA_light
+        if (environmentHasDarkTheme) 
+        	palette = palette_dark
+        else if (PALETTE_VGA.equalsIgnoreCase(paletteName))
+            palette = paletteVGA_light
         else if (PALETTE_WINXP.equalsIgnoreCase(paletteName))
             palette = paletteXP
         else if (PALETTE_MAC.equalsIgnoreCase(paletteName))
@@ -199,7 +181,7 @@ class WollokConsoleColorPalette {
         else if (PALETTE_PUTTY.equalsIgnoreCase(paletteName))
             palette = palettePuTTY
         else if (PALETTE_XTERM.equalsIgnoreCase(paletteName))
-            palette = if (environmentHasDarkTheme) paletteXTerm_dark else paletteXTerm_light
+            palette = paletteXTerm_light
         else {
             if (isOsWindows)
                 setPalette(PALETTE_WINXP)

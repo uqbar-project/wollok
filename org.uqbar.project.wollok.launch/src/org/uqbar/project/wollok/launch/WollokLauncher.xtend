@@ -14,14 +14,12 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.WollokTestsFailedException
 import org.uqbar.project.wollok.interpreter.api.XDebugger
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.listeners.WollokRemoteContextStateListener
 import org.uqbar.project.wollok.launch.repl.AnsiColoredReplOutputFormatter
 import org.uqbar.project.wollok.launch.repl.RegularReplOutputFormatter
 import org.uqbar.project.wollok.launch.repl.WollokRepl
 import org.uqbar.project.wollok.wollokDsl.WFile
-
-import static org.uqbar.project.wollok.utils.OperatingSystemUtils.*
-import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**
  * Main program launcher for the interpreter.
@@ -68,7 +66,7 @@ class WollokLauncher extends WollokChecker {
 			interpreter.interpret(parsed)
 
 			if (parameters.hasRepl) {
-				val formatter = if (parameters.noAnsiFormat || isOsMac) new RegularReplOutputFormatter else new AnsiColoredReplOutputFormatter(parameters.darkMode)
+				val formatter = if (parameters.noAnsiFormat) new RegularReplOutputFormatter else new AnsiColoredReplOutputFormatter(parameters.darkMode)
 				new WollokRepl(this, injector, interpreter, mainFile, parsed, formatter).startRepl
 			}
 			System.exit(0)

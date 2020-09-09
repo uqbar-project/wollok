@@ -124,6 +124,14 @@
             <keywordReference id="org.uqbar.project.wollok.ui.keyword_WollokDsl"/>
        </page>
        <page
+	    	class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.preferences.WollokConsolePreferencePage"
+            id="org.uqbar.project.wollok.WollokDsl.interpreter"
+            category="org.uqbar.project.wollok.WollokDsl"
+            name="%console"
+            >
+            <keywordReference id="org.uqbar.project.wollok.ui.keyword_WollokDsl"/>
+       </page>
+       <page
 	    	class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.preferences.WollokDynamicDiagramPreferencePage"
             id="org.uqbar.project.wollok.WollokDsl.dynamicDiagram"
             category="org.uqbar.project.wollok.WollokDsl"

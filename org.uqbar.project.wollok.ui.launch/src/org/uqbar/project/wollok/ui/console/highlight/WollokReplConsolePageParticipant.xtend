@@ -6,6 +6,8 @@ import org.eclipse.swt.custom.StyledText
 import org.eclipse.ui.console.IConsole
 import org.eclipse.ui.console.IConsolePageParticipant
 import org.eclipse.ui.part.IPageBookViewPage
+import org.uqbar.project.wollok.ui.WollokActivator
+import static extension org.uqbar.project.wollok.ui.launch.shortcut.LauncherExtensions.*
 
 /**
  * This should be injected by a extension point.
@@ -22,13 +24,16 @@ class WollokReplConsolePageParticipant implements IConsolePageParticipant {
 		this.page = page
 		if (page.control instanceof StyledText) {
             viewer = page.control as StyledText
-            
-            #[new WollokAnsiColorLineStyleListener, // si es mac lo más violento es volarlo, o probarlo 
-            	new WollokCodeHighLightLineStyleListener, new WollokStyleRangeListener(viewer)
-            ].forEach[
-            	viewer.addLineStyleListener(it)
-            	listeners += it	
-            ]
+
+			val ansiFormat = !WollokActivator.instance.preferenceStoreAccess.noAnsiFormat
+			if (ansiFormat) {
+	            #[new WollokAnsiColorLineStyleListener, 
+	            	new WollokCodeHighLightLineStyleListener, new WollokStyleRangeListener(viewer)
+	            ].forEach[
+	            	viewer.addLineStyleListener(it)
+	            	listeners += it	
+	            ]
+			}
         }
 	}
 	

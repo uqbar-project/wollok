@@ -8,8 +8,9 @@ import org.uqbar.project.wollok.ui.preferences.WPreferencesUtils
 import org.uqbar.project.wollok.ui.preferences.WollokDynamicDiagramConfigurationBlock
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
-
 import static extension org.uqbar.project.wollok.utils.ReflectionExtensions.*
+import org.uqbar.project.wollok.ui.preferences.WollokConsoleConfigurationBlock
+import static extension org.uqbar.project.wollok.WollokConstants.*
 
 class LauncherExtensions {
 	static def activateDynamicDiagramIfNeeded(ILaunchConfiguration config, boolean shouldActivate) {
@@ -47,4 +48,12 @@ class LauncherExtensions {
 		result.equalsIgnoreCase(WPreferencesUtils.TRUE)
 	}
 
+	static def boolean noAnsiFormat(IPreferenceStoreAccess preferenceStoreAccess) {
+		val store = preferenceStoreAccess.writablePreferenceStore
+		var formatterPref = store.getString(WollokConsoleConfigurationBlock.OUTPUT_FORMATTER)
+		if (formatterPref.equals("")) {
+			formatterPref = ANSI_COLORED_FORMATTER 
+		}
+		formatterPref.equalsIgnoreCase(REGULAR_FORMATTER)
+	}
 }

@@ -97,6 +97,7 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 		new WollokLauncherParameters => [
 			eventsPort = eventPort
 			requestsPort = requestPort
+			noAnsiFormat = preferenceStoreAccess.noAnsiFormat
 			wollokFiles += config.wollokFile
 			severalFiles = config.severalFiles
 			folder = config.folder
