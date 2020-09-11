@@ -41,10 +41,12 @@ class LauncherExtensions {
 	static def boolean dynamicDiagramActivated(IPreferenceStoreAccess preferenceStoreAccess) {
 		val store = preferenceStoreAccess.writablePreferenceStore
 		var result = store.getString(WollokDynamicDiagramConfigurationBlock.ACTIVATE_DYNAMIC_DIAGRAM_REPL)
+		// this should be no longer necessary - Dodain =================
 		if (result === null || result.equals("")) {
 			store.putValue(WollokDynamicDiagramConfigurationBlock.ACTIVATE_DYNAMIC_DIAGRAM_REPL, WPreferencesUtils.TRUE)
 			result = WPreferencesUtils.TRUE
 		}
+		//===============================================================
 		result.equalsIgnoreCase(WPreferencesUtils.TRUE)
 	}
 

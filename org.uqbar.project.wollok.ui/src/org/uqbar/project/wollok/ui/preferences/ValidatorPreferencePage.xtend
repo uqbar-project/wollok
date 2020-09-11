@@ -69,8 +69,9 @@ class ValidatorPreferencePage extends PropertyAndPreferencePage {
 	override performOk() {
 		if (configurationBlock !== null) {
 			scheduleCleanerJobIfNecessary(container)
-			if (!configurationBlock.performOk)
+			if (!configurationBlock.performOk) {
 				return false
+			}
 		}
 		super.performOk
 	}

@@ -6,12 +6,11 @@ import org.eclipse.swt.SWT
 import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer
-import org.eclipse.xtext.ui.preferences.OptionsConfigurationBlock
 
+import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.ui.Messages.*
-import static extension org.uqbar.project.wollok.WollokConstants.*
 
-class WollokConsoleConfigurationBlock extends OptionsConfigurationBlock {
+class WollokConsoleConfigurationBlock extends WollokAbstractConfigurationBlock {
 	
 	public static val OUTPUT_FORMATTER = "WollokConsolePreferences_Formatter"
 	
@@ -40,25 +39,7 @@ class WollokConsoleConfigurationBlock extends OptionsConfigurationBlock {
 		]
 	}
 	
-	override protected getBuildJob(IProject project) {}
-	
-	override protected getFullBuildDialogStrings(boolean workspaceSettings) {}
-	
 	override getPropertyPrefix() { "ConsoleConfiguration" }
-	
-	override protected validateSettings(String changedKey, String oldValue, String newValue) {
-	}
 
-	override performApply() {
-		// Hay que hacer esto para que no se rompa Xtext
-		savePreferences
-		true
-	}
-	
-	override performOk() {
-		// Hay que hacer esto para que no se rompa Xtext
-		savePreferences
-		true
-	}
 }
 
