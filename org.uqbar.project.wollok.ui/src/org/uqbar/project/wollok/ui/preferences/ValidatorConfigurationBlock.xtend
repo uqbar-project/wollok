@@ -71,7 +71,9 @@ class ValidatorConfigurationBlock extends AbstractValidatorConfigurationBlock {
 		]
 	}
 	
-	def getI18n(String string) { val k = "CheckGroup_" + string getProperties.getProperty(k, k) }
+	def getI18n(String title) { 
+		title.toLowerCase.splitCamelCase.firstUpper
+	}
 	
 	protected def doCreateContentsBlah(Composite parent, Iterable<Method> methods) {
 		val severityKeys = CheckSeverity.values.map[name]
