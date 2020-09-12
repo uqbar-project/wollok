@@ -62,7 +62,7 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 				override focusGained(FocusEvent e) { console.isRunning }
 				override focusLost(FocusEvent e) { console.isRunning }
 			})
-			setFocus
+//			setFocus
 		]
 	}
 

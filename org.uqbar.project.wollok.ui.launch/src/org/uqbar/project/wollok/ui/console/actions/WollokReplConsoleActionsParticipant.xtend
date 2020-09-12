@@ -201,6 +201,7 @@ class ShowOutdatedAction extends ControlContribution {
 	@Accessors(PUBLIC_GETTER) boolean synced = true
 	WollokReplConsoleActionsParticipant parent
 	String projectName
+	boolean stopped = false
 	
 	new(WollokReplConsoleActionsParticipant parent) {
 		super("showOutdatedAction")
@@ -220,21 +221,52 @@ class ShowOutdatedAction extends ControlContribution {
 		this.projectName = parent.projectName
 		label => [
 			if (!isDisposed) {
-				text = if(synced) "  " + WollokRepl_SYNCED_MESSAGE + "  " else WollokRepl_OUTDATED_MESSAGE
-				toolTipText = if(synced) NLS.bind(WollokRepl_SYNCED_TOOLTIP, projectName) else NLS.bind(
-					WollokRepl_OUTDATED_TOOLTIP, projectName)
-				val imageURL = if(synced) "platform:/plugin/org.eclipse.ui.ide/icons/full/elcl16/synced.png" else "platform:/plugin/org.eclipse.ui.ide/icons/full/dlcl16/synced.png"
+				text = configureText
+				toolTipText = configureToolTipText
+				val imageURL = configureImageURL 
 				image = ImageDescriptor.createFromURL(new URL(imageURL)).createImage
 				visible = projectName !== null && !projectName.equals("")
 			}
 		]
 	}
+	
+	def String configureText() {
+		if (stopped) {
+			return "  " + WollokRepl_STOPPED_MESSAGE + "  "
+		}
+		if (synced) "  " + WollokRepl_SYNCED_MESSAGE + "  " else WollokRepl_OUTDATED_MESSAGE
+	}
 
+	def String configureToolTipText() {
+		if (stopped) {
+			return WollokRepl_STOPPED_TOOLTIP
+		}
+		if 
+			(synced) NLS.bind(WollokRepl_SYNCED_TOOLTIP, projectName) 
+		else NLS.bind(
+			WollokRepl_OUTDATED_TOOLTIP, projectName)		
+	}
+
+	def String configureImageURL() {
+		if (stopped) {
+			return "platform:/plugin/org.eclipse.debug.ui/icons/full/elcl16/disabled_co.png"
+		}
+		if (synced) 
+			"platform:/plugin/org.eclipse.ui.ide/icons/full/elcl16/synced.png" 
+		else 
+			"platform:/plugin/org.eclipse.ui.ide/icons/full/dlcl16/synced.png"
+	}
+	
 	override void update() {
 		update(!parent.projectName.equals(this.projectName))
 	}
 
 	def void init() {
+		update(true)
+	}
+	
+	def void stop() {
+		stopped = true
 		update(true)
 	}
 	

@@ -31,7 +31,6 @@ import static org.uqbar.project.wollok.ui.console.RunInUI.*
 
 import static extension org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
-import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**
  * @author tesonep
@@ -57,9 +56,12 @@ class WollokReplConsole extends TextConsole {
 	List<String> lastSessionCommandsToRun
 	@Accessors(PUBLIC_GETTER)
 	Long timeStart
+	boolean running = true
 
-	public static Color ENABLED = new Color(Display.current, 255, 255, 255)  // TODO: Dark mode
-	public static Color DISABLED = new Color(Display.current, 220, 220, 220) // TODO: Dark mode
+	static Color ENABLED_LIGHT = new Color(Display.current, 255, 255, 255)
+	static Color DISABLED_LIGHT = new Color(Display.current, 220, 220, 220)
+	static Color ENABLED_DARK = new Color(Display.current, 26, 26, 26)
+	static Color DISABLED_DARK = new Color(Display.current, 89, 89, 89)
 
 	ILaunchConfiguration configuration
 	String mode
@@ -70,7 +72,7 @@ class WollokReplConsole extends TextConsole {
 
 	new(ILaunchConfiguration configuration, String mode) {
 		super(consoleName, null, Activator.getDefault.getImageDescriptor("icons/w.png"), true)
-		this.background = ENABLED
+		this.background = backgroundEnabled
 		this.partitioner = new WollokReplConsolePartitioner(this)
 		this.document.documentPartitioner = this.partitioner
 
@@ -147,16 +149,16 @@ class WollokReplConsole extends TextConsole {
 	}
 
 	def shutdown() {
-		background = DISABLED
+		background = backgroundDisabled
+		running = false
 		process.terminate
 	}
 
 	def isRunning() {
-		val terminated = process.terminated
-		if (terminated) {
-			background = DISABLED
+		if (!running) {
+			background = backgroundDisabled
 		}
-		!terminated
+		running
 	}
 
 	def getOutputText() { document.get(0, outputTextEnd) }
@@ -289,4 +291,11 @@ class WollokReplConsole extends TextConsole {
 		}
 	}
 
+	def backgroundEnabled() {
+		if (environmentHasDarkTheme) ENABLED_DARK else ENABLED_LIGHT
+	}
+	
+	def backgroundDisabled() {
+		if (environmentHasDarkTheme) DISABLED_DARK else DISABLED_LIGHT
+	}
 }
