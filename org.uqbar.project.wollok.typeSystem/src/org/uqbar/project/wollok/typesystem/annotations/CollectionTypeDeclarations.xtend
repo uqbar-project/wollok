@@ -1,5 +1,7 @@
 package org.uqbar.project.wollok.typesystem.annotations
 
+import static org.uqbar.project.wollok.typesystem.constraints.variables.EffectStatus.*
+
 class CollectionTypeDeclarations extends TypeDeclarations {
 	override declarations() {
 		Collection.collectionDeclarations(ELEMENT)
@@ -15,7 +17,7 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		C >> "asList" === #[] => List.of(E)
 		C >> "anyOne" === #[] => E
 
-		C >> "forEach" === #[closure(#[E], Void)] => Void
+		C >> "forEach" === #[closure(#[E], Void)] => Void // TODO: Effect dependency
 		C >> "all" === #[predicate(E)] => Boolean
 		C >> "any" === #[predicate(E)] => Boolean
 		C >> "find" === #[predicate(E)] => E
@@ -31,10 +33,10 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 	def mutableCollection(AnnotationContext C, TypeAnnotation E) {
 		C.basicCollection(E)
 		C.remove(E)
-		C >> "add" === #[E] => Void
-		C >> "addAll" === #[Collection.of(E)] => Void
-		C >> "removeAll" === #[Collection.of(E)] => Void
-		C >> "removeAllSuchThat" === #[predicate(E)] => Void
+		C >> "add" === #[E] => Void(Change)
+		C >> "addAll" === #[Collection.of(E)] => Void(Change)
+		C >> "removeAll" === #[Collection.of(E)] => Void(Change)
+		C >> "removeAllSuchThat" === #[predicate(E)] => Void(Change)
 	}
 
 	def comparableCollection(AnnotationContext C, TypeAnnotation E) {
@@ -61,7 +63,7 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 	}
 	
 	def remove(AnnotationContext C, TypeAnnotation E) {
-		C >> "remove" === #[E] => Void
+		C >> "remove" === #[E] => Void(Change)
 	}
 
 	def collectionDeclarations(AnnotationContext C, TypeAnnotation E) { 
@@ -101,7 +103,7 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		L >> "subList" === #[Number, Number] => List.of(E)
 		L >> "reverse" === #[] => List.of(E)
 		L >> "withoutDuplicates" === #[] => List.of(E)
-		L >> "sortBy" === #[predicate(E, E)] => Void
+		L >> "sortBy" === #[predicate(E, E)] => Void(Change)
 		
 		L >> "take" === #[Number] => List.of(E)
 		L >> "drop" === #[Number] => List.of(E)
@@ -121,8 +123,8 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		R.variable("step", Number)
 		R >> "start" === #[] => Number
 		R >> "end" === #[] => Number
-		R >> "initialize" === #[] => Void
-		R >> "step" === #[Number] => Void
+		R >> "initialize" === #[] => Void // TODO: Effect?
+		R >> "step" === #[Number] => Void(Change)
 		R >> "filter" === #[predicate(Number)] => List.of(Number);
 	}
 	
@@ -130,7 +132,7 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		D.clear
 		D.sized
 		D.remove(K)
-		D >> "put" === #[K, V] => Void;
+		D >> "put" === #[K, V] => Void(Change);
 		D >> "get" === #[K] => V; //Throw exception
 		D >> "basicGet" === #[K] => V; //Nullable
 		D >> "getOrElse" === #[K, closure(#[], V)] => V;
@@ -138,6 +140,6 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		D >> "containsValue" === #[V] => Boolean;
 		D >> "keys" === #[] => List.of(K);
 		D >> "values" === #[] => List.of(V);
-		D >> "forEach" === #[closure(#[K, V], Void)] => Void;
+		D >> "forEach" === #[closure(#[K, V], Void)] => Void; // TODO: Effect dependency
 	}
 }

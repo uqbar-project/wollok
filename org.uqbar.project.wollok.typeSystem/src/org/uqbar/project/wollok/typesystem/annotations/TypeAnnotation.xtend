@@ -7,6 +7,9 @@ import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.Messages
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.typesystem.constraints.variables.EffectStatus
+
+import static org.uqbar.project.wollok.typesystem.constraints.variables.EffectStatus.*
 
 /**
  * A concrete class or WKO which's methods we want to annotate.
@@ -124,6 +127,16 @@ class MethodTypeParameterAnnotation implements TypeAnnotation {
 }
 
 class VoidTypeAnnotation implements TypeAnnotation {
+	@Accessors
+	val EffectStatus effectStatus
+	
+	new() {
+		this.effectStatus = Undefined
+	}
+	
+	new(EffectStatus effectStatus) {
+		this.effectStatus = effectStatus
+	}
 }
 
 class GenericTypeInstanceAnnotation implements TypeAnnotation {

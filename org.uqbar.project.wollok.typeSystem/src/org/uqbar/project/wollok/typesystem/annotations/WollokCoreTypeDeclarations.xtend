@@ -1,5 +1,7 @@
 package org.uqbar.project.wollok.typesystem.annotations
 
+import static org.uqbar.project.wollok.typesystem.constraints.variables.EffectStatus.*
+
 class WollokCoreTypeDeclarations extends TypeDeclarations {
 	override declarations() {
 		Boolean >> "||" === #[Boolean] => Boolean
@@ -31,9 +33,9 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 			O >> "shortDescription" === #[] => String;
 			O >> "kindName" === #[] => String;
 			O >> "className" === #[] => String;
-			O >> "error" === #[String] => Void;
+			O >> "error" === #[String] => Void(Exception);
 			/* privates */
-			O >> "messageNotUnderstood" === #[String, List.of(Object)] => Void
+			O >> "messageNotUnderstood" === #[String, List.of(Object)] => Void(Exception)
 			O >> "generateDoesNotUnderstandMessage" === #[String, String, Number] => String
 		]
 	}

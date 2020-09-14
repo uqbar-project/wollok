@@ -36,10 +36,10 @@ class NumberTypeDeclarations extends TypeDeclarations {
 		Number >> "between" === #[Number, Number] => Boolean
 		
 		Number >> "stringValue" === #[] => String
-		Number >> "times" === #[closure(#[Number], Void)] => Void;
+		Number >> "times" === #[closure(#[Number], Void)] => Void; // TODO: Effect dependency 
 		
 		/* privates */
-		Number >> "checkNotNull" === #[T, String] => Void
+		Number >> "checkNotNull" === #[T, String] => Void //TODO: Effect???
 		Number >> "coerceToInteger" === #[] => Number
 		Number >> "coerceToPositiveInteger" === #[] => Number
 	}

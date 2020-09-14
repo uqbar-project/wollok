@@ -12,6 +12,7 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import org.uqbar.project.wollok.typesystem.constraints.variables.EffectStatus
 
 abstract class TypeDeclarations {
 	TypeDeclarationTarget target
@@ -138,7 +139,7 @@ abstract class TypeDeclarations {
 	}
 
 	def clear(AnnotationContext C) {
-		C >> "clear" === #[] => Void
+		C >> "clear" === #[] => Void(EffectStatus.Change)
 	}
 
 	def fakeProperty(ConcreteTypeAnnotation it, String property, TypeAnnotation type) {
@@ -150,6 +151,8 @@ abstract class TypeDeclarations {
 	// ** Core class and object types
 	// ****************************************************************************
 	def Void() { new VoidTypeAnnotation() }
+
+	def Void(EffectStatus effectStatus) { new VoidTypeAnnotation(effectStatus) }
 
 	def Any() { new SimpleTypeAnnotation(WollokType.WAny) }
 

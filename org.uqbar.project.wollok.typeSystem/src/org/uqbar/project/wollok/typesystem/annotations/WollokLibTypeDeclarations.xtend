@@ -1,8 +1,10 @@
 package org.uqbar.project.wollok.typesystem.annotations
 
+import static org.uqbar.project.wollok.typesystem.constraints.variables.EffectStatus.*
+
 class WollokLibTypeDeclarations extends TypeDeclarations {
 	override declarations() {
-		console >> "println" === #[T] => Void
+		console >> "println" === #[T] => Void(Change)
 		console >> "readLine" === #[] => String
 		console >> "readInt" === #[] => Number
 		console >> "newline" === #[] => String

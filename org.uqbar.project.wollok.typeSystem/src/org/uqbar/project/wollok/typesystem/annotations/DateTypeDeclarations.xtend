@@ -18,6 +18,6 @@ class DateTypeDeclarations extends TypeDeclarations {
 		Date >> "minusYears" === #[Number] => Date
 		Date >> "between" === #[Date, Date] => Boolean
 		// Private
-		Date >> "initialize" === #[] => Void;		
+		Date >> "initialize" === #[] => Void; //TODO: Effect???	
 	}
 }

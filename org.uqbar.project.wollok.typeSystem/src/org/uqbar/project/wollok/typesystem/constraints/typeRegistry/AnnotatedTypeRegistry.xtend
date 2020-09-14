@@ -67,7 +67,10 @@ in type «receiver.name», which does not exist''') ]
 	}
 
 	def dispatch ITypeVariable beSealed(TypeVariableOwner owner, VoidTypeAnnotation annotation) {
-		newTypeVariable(owner) => [beVoid]
+		newTypeVariable(owner) => [
+			beVoid
+			effectStatus = annotation.effectStatus
+		]
 	}
 
 	def dispatch ITypeVariable beSealed(TypeVariableOwner owner, ClassTypeParameterAnnotation annotation) {
