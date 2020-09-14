@@ -78,6 +78,17 @@ class TypeSystemXpectTestCase extends AbstractWollokTypeSystemTestCase {
 	) {
 		expectation.assertEquals(target.EObject.constructor.constructorType(typeSystem))
 	}
+	
+	@Xpect(liveExecution=LiveExecutionType.FAST)
+	@ConsumedIssues(#[Severity.INFO, Severity.ERROR, Severity.WARNING])
+	def void effectStatus( //
+		@StringExpectation IStringExpectation expectation,
+		EObject target,
+		@ThisResource XtextResource resource,
+		@ThisModel EObject file
+	) {
+		expectation.assertEquals(typeSystem.effectStatus(target).name)
+	}
 
 	def dispatch method(EObject object) {
 		throw new IllegalArgumentException(object.debugInfo)
