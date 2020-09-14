@@ -12,6 +12,9 @@ import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 
+import static org.uqbar.project.wollok.typesystem.constraints.variables.EffectStatus.*
+
+import static extension org.uqbar.project.wollok.typesystem.constraints.variables.EffectStatusExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo.*
 
 class TypeVariable extends ITypeVariable {
@@ -35,6 +38,13 @@ class TypeVariable extends ITypeVariable {
 
 	@Accessors
 	List<TypeSystemException> errors = newArrayList
+	
+	@Accessors(PUBLIC_SETTER)
+	var EffectStatus effectStatus = Undefined
+	
+	@Accessors
+	val Set<TypeVariable> effectDependencies = newHashSet
+	
 
 	// ************************************************************************
 	// ** Construction
@@ -76,6 +86,11 @@ class TypeVariable extends ITypeVariable {
 	override getType() {
 		if(typeInfo !== null) typeInfo.getType(this) else WollokType.WAny
 	}
+	
+	def EffectStatus effectStatus() {
+		effectDependencies.fold(effectStatus, [ status, tvar | status.join(tvar.effectStatus()) ])
+	}
+	
 
 	// ************************************************************************
 	// ** Errors

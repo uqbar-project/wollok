@@ -55,6 +55,7 @@ import static org.uqbar.project.wollok.scoping.WollokResourceCache.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.fqn
 import static extension org.uqbar.project.wollok.typesystem.annotations.TypeDeclarations.*
+import org.uqbar.project.wollok.typesystem.constraints.variables.EffectStatus
 
 /**
  * @author npasserini
@@ -72,6 +73,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	List<EObject> programs = newArrayList
 
 	ConstraintGenerator constraintGenerator
+	EffectConstraintGenerator effectConstraintGenerator
 
 	/**
 	 * The collection of concrete types that are known to be generic, indexed by its FQN.
@@ -103,6 +105,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		registry = new TypeVariablesRegistry(this)
 		programs = newArrayList
 		constraintGenerator = new ConstraintGenerator(this)
+		effectConstraintGenerator = new EffectConstraintGenerator(this)
 		genericTypes = newHashMap
 		allTypes = null
 
@@ -137,6 +140,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	override inferTypes() {
 		programs.forEach[constraintGenerator.addGlobals(it)]
 		programs.forEach[constraintGenerator.generateVariables(it)]
+		programs.forEach[effectConstraintGenerator.generateVariables(it)]
 
 		// These constraints have to be created after all files have been `analise`d
 		constraintGenerator.addCrossReferenceConstraints
@@ -169,7 +173,8 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		#[UnifyVariables],
 		#[PropagateMaximalTypes, MaxTypesFromMessages],
 		#[SealVariables],
-		#[GuessMinTypeFromMaxType, PropagateMinimalTypesParameters]
+		#[GuessMinTypeFromMaxType, PropagateMinimalTypesParameters],
+		#[]
 	]
 
 	/**
@@ -200,6 +205,10 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	// ************************************************************************
 	override type(EObject obj) {
 		registry?.type(obj)
+	}
+	
+	override EffectStatus effectStatus(EObject obj) {
+		registry?.effectStatus(obj)
 	}
 
 	override issues(EObject obj) {

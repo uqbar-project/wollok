@@ -29,6 +29,7 @@ import static org.eclipse.xtext.validation.ValidationMessageAcceptor.INSIGNIFICA
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
+import org.uqbar.project.wollok.typesystem.constraints.variables.EffectStatus
 
 /**
  * Abstract base class for all type system test cases.
@@ -161,6 +162,14 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	def assertInstanceVarType(EObject program, WollokType expectedType, String instVarFQN) {
 		assertEquals(expectedType, findInstanceVar(instVarFQN).type)
 	}
+	
+	def assertEffectOf(EObject program, EffectStatus expectedEffect, String programToken) {
+		assertEquals("Unmatched effect status for '" + programToken + "'", expectedEffect, program.findByText(programToken).effectStatus)
+	}
+	
+	def assertEffectOfMethod(EObject program, EffectStatus expectedEffect, String methodFQN) {
+		assertEquals("Unmatched effect status for method '" + methodFQN + "'", expectedEffect, findMethod(methodFQN).effectStatus)
+	}
 
 	def noIssues(EObject program) {
 		// Do not call diagnose twice!
@@ -199,6 +208,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 			}
 		]
 	}
+	
 
 	// FINDS
 	def static findByText(EObject model, String token) {

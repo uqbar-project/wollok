@@ -4,6 +4,7 @@ import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.typesystem.constraints.variables.EffectStatus
 
 /**
  * An engine that performs type inference and type checks.
@@ -52,6 +53,8 @@ interface TypeSystem {
 	 * Or you can perform queries for types.
 	 */
 	def WollokType type(EObject obj)
+	
+	def EffectStatus effectStatus(EObject obj)
 
 	def Iterable<TypeExpectationFailedException> issues(EObject obj)
 

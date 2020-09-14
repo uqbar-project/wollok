@@ -136,6 +136,10 @@ class TypeVariablesRegistry {
 	def type(EObject obj) {
 		typeVariables.get(obj.URI)?.type
 	}
+	
+	def effectStatus(EObject obj) {
+		typeVariables.get(obj.URI)?.effectStatus()
+	}
 
 	// ************************************************************************
 	// ** Error handling & debugging
