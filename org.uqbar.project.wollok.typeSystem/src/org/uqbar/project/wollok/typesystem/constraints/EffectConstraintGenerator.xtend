@@ -43,6 +43,9 @@ import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClosure
+import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
+import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 
 /**
  * @author npasserini
@@ -142,7 +145,7 @@ class EffectConstraintGenerator {
 		expression.generateVariables
 		literal
 	}
-	
+
 	def dispatch void generate(WBlockExpression it) {
 		if (expressions.empty) {
 			effectStatus(Nothing)
@@ -197,12 +200,16 @@ class EffectConstraintGenerator {
 	// ** Constructor calling
 	// ************************************************************************
 	def dispatch void generate(WConstructorCall it) {
-		arguments.forEach[arg|effectDepends(arg)]
+		if (hasNamedParameters) {
+			initializers.forEach[generateVariables]
+		} else {
+			it.values.forEach[arg|effectDepends(arg)]
+		}
 		effectStatus(Nothing)
 	}
 
 	def dispatch void generate(WInitializer it) {
-		effectDepends(initialValue)
+		declaringConstructorCall.effectDepends(initialValue)
 	}
 
 	// ************************************************************************
@@ -275,24 +282,23 @@ class EffectConstraintGenerator {
 
 	def dispatch void generate(WNullLiteral it) { literal }
 
-//	def dispatch void generate(WSuperInvocation it) {
-//		newTypeVariable
-//		memberCallArguments.forEach[generateVariables]
-//		superInvocationConstraintsGenerator.add(it)
-//	}
-//	
-//
-//	def dispatch void generate(WSelfDelegatingConstructorCall it) {
-//		newTypeVariable
-//		arguments.forEach[generateVariables]
-//		delegatingConstructorCallConstraintsGenerator.add(it)
-//	}
-//
-//	def dispatch void generate(WSuperDelegatingConstructorCall it) {
-//		newTypeVariable
-//		arguments.forEach[generateVariables]
-//		delegatingConstructorCallConstraintsGenerator.add(it)
-//	}
+	def dispatch void generate(WSuperInvocation it) {
+		memberCallArguments.forEach[arg|effectDepends(arg)]
+		effectDepends(superMethod)
+	}
+
+	def dispatch void generate(WSelfDelegatingConstructorCall it) {
+		arguments.forEach[arg|effectDepends(arg)]
+		effectDepends(declaringContext.resolveConstructorReference(it))
+		declaringConstructor.effectDepends(it)
+	}
+
+	def dispatch void generate(WSuperDelegatingConstructorCall it) {
+		arguments.forEach[arg|effectDepends(arg)]
+		effectDepends(declaringContext.resolveConstructorReference(it))
+		declaringConstructor.effectDepends(it)
+	}
+
 	// ************************************************************************
 	// ** Extension methods
 	// ************************************************************************

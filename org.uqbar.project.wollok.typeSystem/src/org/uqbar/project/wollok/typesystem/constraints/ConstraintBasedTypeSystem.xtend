@@ -140,10 +140,9 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	override inferTypes() {
 		programs.forEach[constraintGenerator.addGlobals(it)]
 		programs.forEach[constraintGenerator.generateVariables(it)]
-		programs.forEach[effectConstraintGenerator.generateVariables(it)]
-
 		// These constraints have to be created after all files have been `analise`d
 		constraintGenerator.addCrossReferenceConstraints
+		programs.forEach[effectConstraintGenerator.generateVariables(it)]
 
 		var currentStage = 0
 
