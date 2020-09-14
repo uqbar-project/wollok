@@ -5,47 +5,46 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.EffectStatus
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WAssignment
+import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
+import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
+import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.wollokDsl.WClosure
+import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.wollokDsl.WFixture
+import org.uqbar.project.wollok.wollokDsl.WIfExpression
+import org.uqbar.project.wollok.wollokDsl.WInitializer
+import org.uqbar.project.wollok.wollokDsl.WListLiteral
+import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
+import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
-import org.uqbar.project.wollok.wollokDsl.WProgram
-import org.uqbar.project.wollok.wollokDsl.WSuite
-
-import static org.uqbar.project.wollok.typesystem.constraints.variables.EffectStatus.*
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WReturnExpression
-import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WParameter
-import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
-import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
-import org.uqbar.project.wollok.wollokDsl.WVariableReference
-import org.uqbar.project.wollok.wollokDsl.WTest
-import org.uqbar.project.wollok.wollokDsl.WFixture
-import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
-import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
-import org.uqbar.project.wollok.wollokDsl.WConstructorCall
-import org.uqbar.project.wollok.wollokDsl.WInitializer
-import org.uqbar.project.wollok.wollokDsl.WStringLiteral
-import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
-import org.uqbar.project.wollok.wollokDsl.WListLiteral
-import org.uqbar.project.wollok.wollokDsl.WSetLiteral
+import org.uqbar.project.wollok.wollokDsl.WProgram
+import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
-import org.uqbar.project.wollok.wollokDsl.WNullLiteral
-import org.uqbar.project.wollok.wollokDsl.WIfExpression
+import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WSetLiteral
+import org.uqbar.project.wollok.wollokDsl.WStringLiteral
+import org.uqbar.project.wollok.wollokDsl.WSuite
+import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
+import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
-import org.uqbar.project.wollok.wollokDsl.WCatch
-import org.uqbar.project.wollok.wollokDsl.WClosure
-import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
-import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
-import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
+import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
+import org.uqbar.project.wollok.wollokDsl.WVariableReference
+
+import static org.uqbar.project.wollok.typesystem.constraints.variables.EffectStatus.*
+
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * @author npasserini
@@ -222,7 +221,9 @@ class EffectConstraintGenerator {
 	}
 
 	def dispatch void generate(WAssignment it) {
-		effectStatus(Change)
+//		effectDepends(feature.ref)
+		effectDepends(value)
+		effectStatus(Change(feature.ref.declarationContext))
 	}
 
 	// ************************************************************************
@@ -238,7 +239,7 @@ class EffectConstraintGenerator {
 
 	def dispatch void generate(WThrow it) {
 		effectDepends(exception)
-		effectStatus(Exception)
+		effectStatus(ThrowException)
 	}
 
 	def dispatch void generate(WTry it) {

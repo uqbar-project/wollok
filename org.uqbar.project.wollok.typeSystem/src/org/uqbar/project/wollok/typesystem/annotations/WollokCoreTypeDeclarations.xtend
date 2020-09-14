@@ -33,9 +33,9 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 			O >> "shortDescription" === #[] => String;
 			O >> "kindName" === #[] => String;
 			O >> "className" === #[] => String;
-			O >> "error" === #[String] => Void(Exception);
+			O >> "error" === #[String] => Void(ThrowException);
 			/* privates */
-			O >> "messageNotUnderstood" === #[String, List.of(Object)] => Void(Exception)
+			O >> "messageNotUnderstood" === #[String, List.of(Object)] => Void(ThrowException)
 			O >> "generateDoesNotUnderstandMessage" === #[String, String, Number] => String
 		]
 	}

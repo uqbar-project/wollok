@@ -1,0 +1,30 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+object pepita {
+	var energia = 100
+
+	// XPECT effectStatus --> Change
+	method volar(kms) {
+		energia = energia - kms
+	}
+	
+	// XPECT effectStatus --> Nothing
+	method energiaNecesaria(kms) {
+		var result
+		// XPECT effectStatus --> Change
+		result = kms + energia
+		return result
+	}
+}
+
+object entrenador {
+	// XPECT effectStatus --> Change
+	method liberar(ave) {
+		ave.volar(10)
+	}
+	
+	// XPECT effectStatus --> Nothing
+	method puedeSerLibre(ave) {
+		return ave.energiaNecesaria(10) > 100
+	}
+}

@@ -88,7 +88,7 @@ class TypeVariable extends ITypeVariable {
 	}
 	
 	def EffectStatus effectStatus() {
-		effectDependencies.fold(effectStatus, [ status, tvar | status.join(tvar.effectStatus()) ])
+		effectDependencies.fold(effectStatus, [ status, tvar | status.join(tvar.effectStatus(), this) ])
 	}
 	
 
