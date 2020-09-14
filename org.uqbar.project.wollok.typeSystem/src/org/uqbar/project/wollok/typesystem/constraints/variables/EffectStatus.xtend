@@ -5,6 +5,7 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.EffectSt
 enum EffectStatus {
 	Change,
 	Nothing,
+	Exception,
 	Undefined
 }
 

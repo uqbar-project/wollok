@@ -35,6 +35,7 @@ class OpenMethod extends SimpleTypeInferenceStrategy {
 					arg.addMessageParameter(param)
 				]				
 				methodType.returnType.beSubtypeOf(returnType)
+				returnType.effectDependencies.add(methodType.returnType)
 			]
 		}
 	}

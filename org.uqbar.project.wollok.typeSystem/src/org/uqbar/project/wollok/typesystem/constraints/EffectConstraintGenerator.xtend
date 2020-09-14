@@ -22,6 +22,27 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WParameter
+import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
+import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
+import org.uqbar.project.wollok.wollokDsl.WVariableReference
+import org.uqbar.project.wollok.wollokDsl.WTest
+import org.uqbar.project.wollok.wollokDsl.WFixture
+import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
+import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
+import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
+import org.uqbar.project.wollok.wollokDsl.WConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WInitializer
+import org.uqbar.project.wollok.wollokDsl.WStringLiteral
+import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
+import org.uqbar.project.wollok.wollokDsl.WListLiteral
+import org.uqbar.project.wollok.wollokDsl.WSetLiteral
+import org.uqbar.project.wollok.wollokDsl.WSelf
+import org.uqbar.project.wollok.wollokDsl.WNullLiteral
+import org.uqbar.project.wollok.wollokDsl.WIfExpression
+import org.uqbar.project.wollok.wollokDsl.WThrow
+import org.uqbar.project.wollok.wollokDsl.WTry
+import org.uqbar.project.wollok.wollokDsl.WCatch
+import org.uqbar.project.wollok.wollokDsl.WClosure
 
 /**
  * @author npasserini
@@ -99,7 +120,7 @@ class EffectConstraintGenerator {
 		parentParameters?.arguments?.forEach[generateVariables]
 		members.forEach[generateVariables]
 	}
-	
+
 	def dispatch void generate(WSuite it) {
 		members.forEach[generateVariables]
 		fixture?.generateVariables
@@ -109,28 +130,25 @@ class EffectConstraintGenerator {
 	// ************************************************************************
 	// ** Methods and closures
 	// ************************************************************************
-
 	def dispatch void generate(WMethodDeclaration it) {
-		parameters.forEach[p | effectDepends(p)]
-		if (expression !== null) { effectDepends(expression) }
+		parameters.forEach[p|effectDepends(p)]
+		if (expression !== null) {
+			effectDepends(expression)
+		}
 	}
 
-//	def dispatch void generate(WClosure it) {
-//		parameters.forEach[generateVariables]
-//		expression.generateVariables
-//
-//		val closureType = closureType(parameters.length).instanceFor(newTypeVariable)
-//
-//		beSealed(closureType)
-//		parameters.forEach [ parameter, index |
-//			val paramName = GenericTypeInfo.PARAM(index)
-//			closureType.param(paramName).beSubtypeOf(parameter.tvar)
-//		]
-//		closureType.param(GenericTypeInfo.RETURN).beSupertypeOf(expression.tvar)
-//	}
-
+	def dispatch void generate(WClosure it) {
+		parameters.forEach[generateVariables]
+		expression.generateVariables
+		literal
+	}
+	
 	def dispatch void generate(WBlockExpression it) {
-		expressions.forEach[ e | effectDepends(e) ]
+		if (expressions.empty) {
+			effectStatus(Nothing)
+		} else {
+			expressions.forEach[e|effectDepends(e)]
+		}
 	}
 
 	def dispatch void generate(WReturnExpression it) {
@@ -140,186 +158,123 @@ class EffectConstraintGenerator {
 	def dispatch void generate(WParameter it) {
 		effectStatus(Nothing)
 	}
-//	
-//	def dispatch void generate(WFixture it) {
-//		elements.forEach[generateVariables]
-//	}
-//	
-//	def dispatch void generate(WTest it) {
-//		elements.forEach[generateVariables]
-//	}
-//
-//	// ************************************************************************
-//	// ** Message sending
-//	// ************************************************************************
-//	def dispatch void generate(WMemberFeatureCall it) {
-//		memberCallTarget.generateVariables
-//		memberCallArguments.forEach[generateVariables]
-//		memberCallTarget.tvar.messageSend(feature, memberCallArguments.map[tvar], it.newTypeVariable)
-//	}
-//
-//	def dispatch void generate(WBinaryOperation it) {
-//		leftOperand.generateVariables
-//		rightOperand.generateVariables
-//
-//		if (isMultiOpAssignment) {
-//			// Handling something of the form "a += b"
-//			newTypeVariable => [beVoid]
-//			val operator = feature.substring(0, 1)
-//			leftOperand.tvar.messageSend(operator, newArrayList(rightOperand.tvar),
-//				newParameter(tvar.owner, "ignoredResult"))
-//		} else {
-//			// Handling a proper BinaryExpression, such as "a + b"
-//			leftOperand.tvar.messageSend(feature, newArrayList(rightOperand.tvar), newTypeVariable)
-//		}
-//	}
-//
-//	def dispatch void generate(WUnaryOperation it) {
-//		operand.generateVariables
-//		unaryOperationsConstraintsGenerator.generate(it)
-//	}
-//
-//	def dispatch void generate(WPostfixOperation it) {
-//		(operand as WVariableReference).ref.asOwner.newSealed(classType(NUMBER))
-//		operand.generateVariables
-//		newTypeVariable.beVoid
-//	}
-//
-//	// ************************************************************************
-//	// ** Constructor calling
-//	// ************************************************************************
-//	def dispatch void generate(WConstructorCall it) {
-//		arguments.forEach[arg|arg.generateVariables]
-//		beSealed(typeOrFactory(classRef).instanceFor(newTypeVariable))
-//		constructorCallConstraintsGenerator.add(it)
-//	}
-//
-//	def dispatch void generate(WInitializer it) {
-//		initialValue.generateVariables
-//		initializerConstraintsGenerator.add(it)
-//	}
-//	
-//	// ************************************************************************
-//	// ** Variables
-//	// ************************************************************************
-//	def dispatch void generate(WVariableDeclaration it) {
-//		variable.newTypeVariable.beNonVoid
-//
-//		if (right !== null) {
-//			right.generateVariables
-//			variable.beSupertypeOf(right)
-//		}
-//
-//		newTypeVariable.beVoid
-//	}
-//
+
+	def dispatch void generate(WFixture it) {
+		elements.forEach[generateVariables]
+	}
+
+	def dispatch void generate(WTest it) {
+		elements.forEach[generateVariables]
+	}
+
+	// ************************************************************************
+	// ** Message sending
+	// ************************************************************************
+	def dispatch void generate(WMemberFeatureCall it) {
+		effectDepends(memberCallTarget)
+		memberCallArguments.forEach[args|effectDepends(args)]
+	}
+
+	def dispatch void generate(WBinaryOperation it) {
+		effectDepends(leftOperand)
+		effectDepends(rightOperand)
+		if (isMultiOpAssignment) {
+			// Handling something of the form "a += b"
+			effectStatus(Change)
+		}
+	}
+
+	def dispatch void generate(WUnaryOperation it) {
+		effectDepends(operand)
+	}
+
+	def dispatch void generate(WPostfixOperation it) {
+		effectDepends(operand)
+		effectStatus(Change)
+	}
+
+	// ************************************************************************
+	// ** Constructor calling
+	// ************************************************************************
+	def dispatch void generate(WConstructorCall it) {
+		arguments.forEach[arg|effectDepends(arg)]
+		effectStatus(Nothing)
+	}
+
+	def dispatch void generate(WInitializer it) {
+		effectDepends(initialValue)
+	}
+
+	// ************************************************************************
+	// ** Variables
+	// ************************************************************************
+	def dispatch void generate(WVariableDeclaration it) {
+		if (right !== null) {
+			effectDepends(right)
+		}
+	}
+
 	def dispatch void generate(WAssignment it) {
 		effectStatus(Change)
 	}
-//
-//	// ************************************************************************
-//	// ** Flow control
-//	// ************************************************************************
-//	def dispatch void generate(WIfExpression it) {
-//		condition.generateVariables
-//		condition.beSealed(classType(BOOLEAN))
-//
-//		then.generateVariables
-//
-//		if (getElse !== null) {
-//			getElse.generateVariables
-//
-//			// If there is a else branch, if can be an expression 
-//			// and has to be a supertype of both (else, then) branches
-//			newTypeVariable => [ v |
-//				v.beSupertypeOf(then.tvar)
-//				v.beSupertypeOf(getElse.tvar)
-//			]
-//		} else {
-//			// If there is no else branch, if is NOT an expression, 
-//			// it is a (void) statement.
-//			newTypeVariable.beVoid
-//		}
-//	}
-//
-//	def dispatch void generate(WThrow it) {
-//		exception.generateVariables
-//		newTypeVariable.beVoid
-//	}
-//
-//	def dispatch void generate(WTry it) {
-//		expression.generateVariables
-//		catchBlocks.forEach[generateVariables]
-//		alwaysExpression?.generateVariables
-//		newTypeVariable.beVoid
-//	}
-//
-//	def dispatch void generate(WCatch it) {
-//		exceptionVarName.newTypeVariable => [ tvar |
-//			if (exceptionType !== null)
-//				tvar.beSealed(classType(exceptionType))
-//			else
-//				tvar.beNonVoid
-//		]
-//		expression.generateVariables
-//	}
-//
+
+	// ************************************************************************
+	// ** Flow control
+	// ************************************************************************
+	def dispatch void generate(WIfExpression it) {
+		effectDepends(condition)
+		effectDepends(then)
+		if (getElse !== null) {
+			effectDepends(getElse)
+		}
+	}
+
+	def dispatch void generate(WThrow it) {
+		effectDepends(exception)
+		effectStatus(Exception)
+	}
+
+	def dispatch void generate(WTry it) {
+		effectDepends(expression)
+		catchBlocks.forEach[block|effectDepends(block)]
+		if (alwaysExpression !== null) {
+			effectDepends(alwaysExpression)
+		}
+	}
+
+	def dispatch void generate(WCatch it) {
+		effectDepends(expression)
+	}
+
 	// ************************************************************************
 	// ** Literals & terminals
 	// ************************************************************************
-	
-	def dispatch void generate(WNumberLiteral it) { effectStatus(Nothing) }
-//
-//	def dispatch void generate(WStringLiteral it) {
-//		newTypeVariable.beSealed(classType(STRING))
-//	}
-//
-//	def dispatch void generate(WBooleanLiteral it) {
-//		newTypeVariable.beSealed(classType(BOOLEAN))
-//	}
-//
-//	def dispatch void generate(WListLiteral it) {
-//		val listType = genericType(LIST, GenericTypeInfo.ELEMENT).instanceFor(newTypeVariable)
-//		val paramType = listType.param(GenericTypeInfo.ELEMENT)
-//
-//		beSealed(listType)
-//		elements.forEach [
-//			generateVariables
-//			paramType.beSupertypeOf(tvar)
-//		]
-//	}
-//
-//	def dispatch void generate(WSetLiteral it) {
-//		val setType = genericType(SET, GenericTypeInfo.ELEMENT).instanceFor(newTypeVariable)
-//		val paramType = setType.param(GenericTypeInfo.ELEMENT)
-//
-//		beSealed(setType)
-//		elements.forEach [
-//			generateVariables
-//			paramType.beSupertypeOf(tvar)
-//		]
-//	}
-//
-//	def dispatch void generate(WVariableReference it) {
-//		if (ref.eIsProxy) {
-//			// Reference could not be resolved, we can't add constraint with the referenced element.
-//			// So we know almost nothing, but a variable reference can not be void.
-//			newTypeVariable.beNonVoid
-//		} else {
-//			newTypeVariable.beSupertypeOf(ref.tvar)
-//		}
-//	}
-//
-//	def dispatch void generate(WSelf it) {
-//		asOwner.newSealed(declaringContext.asWollokType)
-//	}
-//
-//	def dispatch void generate(WNullLiteral it) {
-//		// Now only generate ANY variable. 
-//		// Maybe we'll want another kind of variable for nullable types implementation.  
-//		newTypeVariable
-//	}
-//
+	def void literal(EObject it) { effectStatus(Nothing) }
+
+	def dispatch void generate(WNumberLiteral it) { literal }
+
+	def dispatch void generate(WStringLiteral it) { literal }
+
+	def dispatch void generate(WBooleanLiteral it) { literal }
+
+	def dispatch void generate(WListLiteral it) {
+		literal
+		elements.forEach[e|effectDepends(e)]
+	}
+
+	def dispatch void generate(WSetLiteral it) {
+		literal
+		elements.forEach[e|effectDepends(e)]
+	}
+
+	def dispatch void generate(WVariableReference it) {
+		effectStatus(Nothing)
+	}
+
+	def dispatch void generate(WSelf it) { literal }
+
+	def dispatch void generate(WNullLiteral it) { literal }
+
 //	def dispatch void generate(WSuperInvocation it) {
 //		newTypeVariable
 //		memberCallArguments.forEach[generateVariables]
@@ -338,8 +293,6 @@ class EffectConstraintGenerator {
 //		arguments.forEach[generateVariables]
 //		delegatingConstructorCallConstraintsGenerator.add(it)
 //	}
-
-
 	// ************************************************************************
 	// ** Extension methods
 	// ************************************************************************
@@ -347,8 +300,8 @@ class EffectConstraintGenerator {
 		subtype.generateVariables
 		supertype.tvar.effectDependencies.add(subtype.tvar)
 	}
-	
+
 	def effectStatus(EObject node, EffectStatus status) {
-		node.tvar.effectStatus= status
+		node.tvar.effectStatus = status
 	}
 }
