@@ -35,7 +35,7 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 		if(minTypes.isEmpty && maximalConcreteTypes !== null) {
 			maximalConcreteTypes.forEach [ type |
 				val state = handlingOffensesDo(tvar, tvar)[tvar.addMinType(type)]
-				log.debug('''  Added min type «type» => «state»''')
+				log.debug('''  Added min type «type» to «tvar» => «state»''')
 				if(state != Ready) changed = true
 			]
 		}

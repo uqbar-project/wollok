@@ -61,8 +61,10 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		game >> "errorReporter" === #[T] => Void
 		game >> "sound" === #[String] => Sound
 
-		keyboard.allMethods.except("num") === #[] => Key
+		keyboard.allMethods.except("num", "letter", "arrow") === #[] => Key
 		keyboard >> "num" === #[Number] => Key
+		keyboard >> "letter" === #[String] => Key
+		keyboard >> "arrow" === #[String] => Key
 		
 		Sound.variable("file",String)
 		Sound.fakeProperty("volume",Number)

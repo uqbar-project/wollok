@@ -61,7 +61,7 @@ abstract class TypeDeclarations {
 	def operator_tripleEquals(AnnotationContext receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "===", #[parameterType])
 	}
-	
+
 	def operator_notEquals(AnnotationContext receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "!=", #[parameterType])
 	}
@@ -132,11 +132,11 @@ abstract class TypeDeclarations {
 		T >> "size" === #[] => Number
 		T >> "isEmpty" === #[] => Boolean
 	}
-	
+
 	def contains(AnnotationContext C, TypeAnnotation E) {
 		C >> "contains" === #[E] => Boolean
 	}
-	
+
 	def clear(AnnotationContext C) {
 		C >> "clear" === #[] => Void
 	}
@@ -149,7 +149,6 @@ abstract class TypeDeclarations {
 	// ****************************************************************************
 	// ** Core class and object types
 	// ****************************************************************************
-
 	def Void() { new VoidTypeAnnotation() }
 
 	def Any() { new SimpleTypeAnnotation(WollokType.WAny) }
@@ -165,16 +164,18 @@ abstract class TypeDeclarations {
 	def String() { classTypeAnnotation(STRING) }
 
 	def Date() { classTypeAnnotation(DATE) }
-	
-	def Days() { unionType(
-		objectTypeAnnotation(MONDAY), 
-		objectTypeAnnotation(TUESDAY), 
-		objectTypeAnnotation(WEDNESDAY), 
-		objectTypeAnnotation(THURSDAY), 
-		objectTypeAnnotation(FRIDAY), 
-		objectTypeAnnotation(SATURDAY), 
-		objectTypeAnnotation(SUNDAY)
-	) }
+
+	def Days() {
+		unionType(
+			objectTypeAnnotation(MONDAY),
+			objectTypeAnnotation(TUESDAY),
+			objectTypeAnnotation(WEDNESDAY),
+			objectTypeAnnotation(THURSDAY),
+			objectTypeAnnotation(FRIDAY),
+			objectTypeAnnotation(SATURDAY),
+			objectTypeAnnotation(SUNDAY)
+		)
+	}
 
 	def List() { genericTypeAnnotation(LIST, GenericTypeInfo.ELEMENT) }
 
@@ -192,8 +193,8 @@ abstract class TypeDeclarations {
 
 	def Key() { classTypeAnnotation(KEY) }
 
-	def Sound() {classTypeAnnotation(SOUND)}
-	
+	def Sound() { classTypeAnnotation(SOUND) }
+
 	def ExceptionType() { classTypeAnnotation(EXCEPTION) }
 
 	def StackTraceElement() { classTypeAnnotation(STACK_TRACE_ELEMENT) }
@@ -201,20 +202,20 @@ abstract class TypeDeclarations {
 	def InstanceVariableMirror() { classTypeAnnotation(INSTANCE_VARIABLE_MIRROR) }
 
 	def ObjectMirror() { classTypeAnnotation(OBJECT_MIRROR) }
-	
+
 	def StringPrinter() { classTypeAnnotation(STRING_PRINTER) }
 
 	def console() { objectTypeAnnotation(CONSOLE) }
 
 	def assertWKO() { objectTypeAnnotation(ASSERT) }
-	
+
 	def error() { objectTypeAnnotation(ERROR) }
 
 	def game() { objectTypeAnnotation(GAME) }
-	
+
 	def runtime() { objectTypeAnnotation(RUNTIME) }
 
-	def keyboard() { objectTypeAnnotation(KEYBOARD) }	
+	def keyboard() { objectTypeAnnotation(KEYBOARD) }
 
 	def PKEY() { PairType.param(GenericTypeInfo.KEY) }
 
@@ -233,14 +234,16 @@ abstract class TypeDeclarations {
 	def U() { Collection.methodParam("game", "U") }
 
 	def RETURN() { Closure.param(GenericTypeInfo.RETURN) }
-	
-	def Comparable() { unionType(Number, String, Date) } //TODO: Define as structural
+
+	def Comparable() { unionType(Number, String, Date) } // TODO: Define as structural
 
 	def classTypeAnnotation(String classFQN) { new ConcreteTypeAnnotation(types.classType(context, classFQN)) }
 
 	def objectTypeAnnotation(String objectFQN) { new ConcreteTypeAnnotation(types.objectType(context, objectFQN)) }
-	
-	def unionType(SimpleTypeAnnotation<ConcreteType>... annotations) { new SimpleTypeAnnotation(new UnionType(annotations.map[type])) }
+
+	def unionType(SimpleTypeAnnotation<ConcreteType>... annotations) {
+		new SimpleTypeAnnotation(new UnionType(annotations.map[type]))
+	}
 
 	def genericTypeAnnotation(String classFQN, String... typeParameterNames) {
 		new GenericTypeAnnotationFactory(types.genericType(context, classFQN, typeParameterNames))
@@ -260,9 +263,9 @@ abstract class TypeDeclarations {
 	def predicate(TypeAnnotation... input) {
 		closure(input, Boolean)
 	}
-	
-	def allTypes() { types.allTypes.map[ new ConcreteTypeAnnotation(baseType)] }
-	
+
+	def allTypes() { types.allTypes.map[new ConcreteTypeAnnotation(baseType)] }
+
 }
 
 // ****************************************************************************
@@ -305,7 +308,7 @@ class MethodIdentifier {
 	def operator_tripleEquals(MethodTypeDeclaration methodType) {
 		target.addMethodTypeDeclaration(receiver, selector, methodType.parameterTypes, methodType.returnType)
 	}
-	
+
 	def hasName(String methodName) { selector == methodName }
 }
 
@@ -315,9 +318,9 @@ class AllMethodsIdentifier {
 	new(TypeDeclarationTarget target, ConcreteType receiver) {
 		identifiers = receiver.container.methods.map[new MethodIdentifier(target, receiver, name)]
 	}
-	
-	def except(String name) {
-		identifiers = identifiers.reject[hasName(name)]
+
+	def except(String ... names) {
+		identifiers = identifiers.reject[names.exists[name|hasName(name)]]
 		this
 	}
 
