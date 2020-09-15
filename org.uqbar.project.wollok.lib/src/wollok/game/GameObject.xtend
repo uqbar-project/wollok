@@ -1,5 +1,6 @@
 package wollok.game
 
+import java.math.BigDecimal
 import org.eclipse.osgi.util.NLS
 import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.game.WPosition
@@ -83,18 +84,12 @@ class GameObject {
 		board.removeListener(name.asString)
 	}
 
-	def whenKeyPressedDo(WollokObject key, WollokObject action) {
-		key.checkNotNull("whenKeyPressedDo")
+	def whenKeyPressedDo(WollokObject event, WollokObject action) {
+		event.checkNotNull("whenKeyPressedDo")
 		action.checkNotNull("whenKeyPressedDo")
-		var num = key.coerceToInteger
+		var keyCode = event.asList.get(new BigDecimal(1)).asString
 		val function = action.asClosure
-		addListener(new KeyboardListener(num, [function.doApply]))
-	}
-
-	def whenKeyPressedSay(WollokObject key, WollokObject functionObj) {
-		val num = key.coerceToInteger
-		val function = functionObj.asClosure
-		addListener(new KeyboardListener(num, [board.characterSay(function.doApply.asString)]))
+		addListener(new KeyboardListener(keyCode, [function.doApply]))
 	}
 
 	def whenCollideDo(WollokObject visual, WollokObject action) {

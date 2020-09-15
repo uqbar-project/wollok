@@ -5,6 +5,7 @@ import org.junit.Test
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 import org.junit.After
+import org.uqbar.project.wollok.game.listeners.KeyboardListener
 
 class GameTest extends AbstractWollokInterpreterTestCase {
 	
@@ -29,6 +30,15 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 		'''
 		assert.equals(1, game.at(0,1).allElements().size())
 		'''.test
+	}
+
+	@Test
+	def void configOnPressKey() {
+		'''
+		keyboard.left().onPressDo({ })
+		'''.gameTest
+		val keyListener = gameboard.listeners.head as KeyboardListener 
+		assertEquals("ArrowLeft", keyListener.keyCode)
 	}
 	
 	// We should publish a cellSize property in game wko to migrate this test to wollok-language
