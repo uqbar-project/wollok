@@ -112,8 +112,9 @@ class WollokInterpreter implements XInterpreter<EObject, WollokObject>, IWollokI
 		} catch (Throwable e) {
 			console.logError(e)
 			null
-		} finally
+		} finally {
 			listeners.forEach [ terminated ]
+		}
 	}
 
 	override interpret(EObject rootObject, Boolean propagatingErrors) {
