@@ -21,6 +21,7 @@ import org.eclipse.ui.console.TextConsole
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.tools.OrderedBoundedSet
 import org.uqbar.project.wollok.WollokConstants
+import org.uqbar.project.wollok.ui.console.actions.WollokReplConsoleActionsParticipant
 import org.uqbar.project.wollok.ui.console.editor.WollokReplConsolePartitioner
 import org.uqbar.project.wollok.ui.launch.Activator
 import org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchShortcut
@@ -28,6 +29,7 @@ import org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchShortcut
 import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.ui.console.RunInBackground.*
 import static org.uqbar.project.wollok.ui.console.RunInUI.*
+import static org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages.*
 
 import static extension org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
@@ -57,6 +59,7 @@ class WollokReplConsole extends TextConsole {
 	@Accessors(PUBLIC_GETTER)
 	Long timeStart
 	boolean running = true
+	List<WollokReplConsoleActionsParticipant> wollokActionsParticipants = newArrayList
 
 	static Color ENABLED_LIGHT = new Color(Display.current, 255, 255, 255)
 	static Color DISABLED_LIGHT = new Color(Display.current, 220, 220, 220)
@@ -67,10 +70,13 @@ class WollokReplConsole extends TextConsole {
 	String mode
 
 	boolean restartingLastSession = false
+	
+	@Accessors(PUBLIC_GETTER)
+	boolean noAnsiFormat = false
 
 	def static getConsoleName() { "Wollok REPL Console" }
 
-	new(ILaunchConfiguration configuration, String mode) {
+	new(ILaunchConfiguration configuration, boolean noAnsiFormat, String mode) {
 		super(consoleName, null, Activator.getDefault.getImageDescriptor("icons/w.png"), true)
 		this.background = backgroundEnabled
 		this.partitioner = new WollokReplConsolePartitioner(this)
@@ -81,6 +87,7 @@ class WollokReplConsole extends TextConsole {
 		this.mode = mode
 		this.restartingLastSession = configuration.restartingState
 		this.lastSessionCommandsToRun = configuration.lastCommands
+		this.noAnsiFormat = noAnsiFormat
 	}
 
 	def startForProcess(IProcess process) {
@@ -112,12 +119,20 @@ class WollokReplConsole extends TextConsole {
 		]
 	}
 	
+	def addWollokActionsParticipant(WollokReplConsoleActionsParticipant participant) {
+		this.wollokActionsParticipants.add(participant)
+	}
+
 	def processInput(String text) {
 		page.viewer.textWidget.append(text)
 		outputTextEnd = page.viewer.textWidget.charCount
 		inputBufferStartOffset = page.viewer.textWidget.text.length
 		page.viewer.textWidget.selection = outputTextEnd
 		updateInputBuffer
+		if (text.contains(REPL_END)) {
+			this.shutdown
+			this.wollokActionsParticipants.forEach [ activated ]
+		}
 		activate
 	}
 

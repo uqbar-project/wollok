@@ -1,16 +1,18 @@
 package org.uqbar.project.wollok.ui.launch.shortcut
 
 import org.eclipse.debug.core.ILaunchConfiguration
+import org.eclipse.jface.preference.IPreferenceStore
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess
 import org.uqbar.project.wollok.ui.WollokActivator
 import org.uqbar.project.wollok.ui.console.RunInUI
 import org.uqbar.project.wollok.ui.preferences.WPreferencesUtils
+import org.uqbar.project.wollok.ui.preferences.WollokConsoleConfigurationBlock
 import org.uqbar.project.wollok.ui.preferences.WollokDynamicDiagramConfigurationBlock
 
-import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import static org.uqbar.project.wollok.WollokConstants.*
+
 import static extension org.uqbar.project.wollok.utils.ReflectionExtensions.*
-import org.uqbar.project.wollok.ui.preferences.WollokConsoleConfigurationBlock
-import static extension org.uqbar.project.wollok.WollokConstants.*
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 class LauncherExtensions {
 	static def activateDynamicDiagramIfNeeded(ILaunchConfiguration config, boolean shouldActivate) {
@@ -51,11 +53,15 @@ class LauncherExtensions {
 	}
 
 	static def boolean noAnsiFormat(IPreferenceStoreAccess preferenceStoreAccess) {
-		val store = preferenceStoreAccess.writablePreferenceStore
+		preferenceStoreAccess.writablePreferenceStore.noAnsiFormat
+	}
+
+	static def boolean noAnsiFormat(IPreferenceStore store) {
 		var formatterPref = store.getString(WollokConsoleConfigurationBlock.OUTPUT_FORMATTER)
 		if (formatterPref.equals("")) {
 			formatterPref = ANSI_COLORED_FORMATTER 
 		}
 		formatterPref.equalsIgnoreCase(REGULAR_FORMATTER)
 	}
+
 }

@@ -58,7 +58,7 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 			val consoleManager = ConsolePlugin.getDefault().consoleManager
 			consoleManager.consoles.forEach [ shutdown ]
 			consoleManager.removeConsoles(consoleManager.consoles)
-			val console = new WollokReplConsole(configuration, mode)
+			val console = new WollokReplConsole(configuration, preferenceStoreAccess.noAnsiFormat, mode)
 			consoleManager.addConsoles(#[console])
 			console.startForProcess(launch.processes.get(0))
 		}

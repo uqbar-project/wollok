@@ -53,7 +53,12 @@ public class WollokLaunchUIMessages extends NLS {
 	public static String WollokRepl_OUTDATED_TOOLTIP;
 	public static String WollokRepl_STOPPED_TOOLTIP;
 	public static String WollokRepl_OUTDATED_WARNING_MESSAGE_IN_REPL;
-	
+
+	// ****************************
+	// ** REPL Console
+	// ****************************
+	public static String REPL_END;  // I had to duplicate it with wollok.launch because it's not referenced
+
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BASE_NAME, WollokLaunchUIMessages.class);
