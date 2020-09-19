@@ -162,7 +162,9 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 	}
 
 	def createRemoveButton() {
-		val imageDescriptor = ImageDescriptor.createFromFile(getClass(), "/icons/export.png")
+		// val imageDescriptor = ImageDescriptor.createFromFile(getClass(), "/icons/export.png")
+		val suffix = if (environmentHasDarkTheme) "-dark" else ""
+		val imageDescriptor = ImageDescriptor.createFromFile(getClass(), "/icons/export-icon" + suffix + ".png")
 		this.export = new Action(WollokRepl_EXPORT_HISTORY_TITLE, imageDescriptor) {
 			override run() {
 				console.exportSession
