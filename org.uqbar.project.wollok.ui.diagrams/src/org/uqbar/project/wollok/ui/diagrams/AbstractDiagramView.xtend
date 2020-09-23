@@ -20,6 +20,7 @@ import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer
 import org.eclipse.gef.ui.parts.SelectionSynchronizer
 import org.eclipse.jface.action.IAction
 import org.eclipse.jface.commands.ActionHandler
+import org.eclipse.jface.resource.ImageDescriptor
 import org.eclipse.jface.text.source.ISourceViewer
 import org.eclipse.jface.viewers.ISelection
 import org.eclipse.jface.viewers.ISelectionChangedListener
@@ -40,6 +41,8 @@ import org.eclipse.xtext.ui.editor.ISourceViewerAware
 import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.palette.CustomPalettePage
 import org.uqbar.project.wollok.ui.diagrams.dynamic.WollokFlyoutPreferences
+
+import static org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 abstract class AbstractDiagramView extends ViewPart implements ISelectionListener, ISourceViewerAware, IPartListener, ISelectionProvider, ISelectionChangedListener {
 
@@ -161,7 +164,13 @@ abstract class AbstractDiagramView extends ViewPart implements ISelectionListene
 					ZoomManager.FIT_HEIGHT
 				])
 				zoomIn = new ZoomInAction(zoomManager)
+				if (environmentHasDarkTheme) {
+					zoomIn.imageDescriptor = ImageDescriptor.createFromFile(this.class, "/icons/zoomIn-dark.png") 
+				}
 				zoomOut = new ZoomOutAction(zoomManager)
+				if (environmentHasDarkTheme) {
+					zoomOut.imageDescriptor = ImageDescriptor.createFromFile(this.class, "/icons/zoomOut-dark.png") 
+				}
 				registerAction(zoomIn)
 				registerAction(zoomOut)
 

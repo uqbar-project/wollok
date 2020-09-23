@@ -83,7 +83,9 @@ class WollokTestResultView extends ViewPart implements Observer {
 	ResourceManager resManager
 
 	public val static BAR_COLOR_NO_RESULT = new RGB(200, 200, 200)
+	public val static BAR_COLOR_NO_RESULT_DARK = new RGB(44, 51, 54)
 	public val static BAR_COLOR_PENDING = new RGB(239, 222, 205)
+	public val static BAR_COLOR_PENDING_DARK = new RGB(44, 51, 54)
 	public val static BAR_COLOR_SUCCESS = new RGB(99, 184, 139)
 	public val static BAR_COLOR_FAILED = new RGB(255, 197, 3)
 	public val static BAR_COLOR_ERRORED = new RGB(237, 17, 18)
@@ -207,7 +209,9 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 	
 	override createPartControl(Composite parent) {
-		parent.background = new Color(Display.current, new RGB(220, 220, 220))
+		if (!environmentHasDarkTheme) {
+			parent.background = new Color(Display.current, new RGB(220, 220, 220))
+		}
 		resManager = new LocalResourceManager(JFaceResources.getResources(), parent)
 		new GridLayout() => [
 			marginWidth = 5
@@ -232,6 +236,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 			layoutData = new GridData(GridData.FILL_BOTH)
 		]
 		val sashForm = new SashForm(sash, SWT.VERTICAL)
+
 		createTree(sashForm)
 		createTextOutput(sashForm)
 		createToolbarForTextOutput(parent)
@@ -266,7 +271,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 		runAgainWithDynamicDiagramActivated = new ToolItem(toolbar, SWT.PUSH) => [
 			toolTipText = Messages.WollokTestResultView_runAgainWithDynamicDiagram
-			val pathImage = Activator.getDefault.getImageDescriptor("icons/run_test_with_dynamic_diagram.png")
+			val pathImage = Activator.getDefault.getImageDescriptor("icons/file_wtest_dynamic_diagram.png")
 			image = resManager.createImage(pathImage)
 			addListener(SWT.Selection)[this.relaunchDynamicDiagram]
 			enabled = false
@@ -285,8 +290,8 @@ class WollokTestResultView extends ViewPart implements Observer {
 	def createBar(Composite parent) {
 		bar = new Label(parent, SWT.SHADOW_IN.bitwiseOr(SWT.BORDER).bitwiseOr(SWT.CENTER))
 		// creates and cache colors
-		noResultColor = resManager.createColor(BAR_COLOR_NO_RESULT)
-		pendingColor = resManager.createColor(BAR_COLOR_PENDING)
+		noResultColor = resManager.createColor(if (environmentHasDarkTheme) BAR_COLOR_NO_RESULT_DARK else BAR_COLOR_NO_RESULT)
+		pendingColor = resManager.createColor(if (environmentHasDarkTheme) BAR_COLOR_PENDING_DARK else BAR_COLOR_PENDING)
 		successColor = resManager.createColor(BAR_COLOR_SUCCESS)
 		failedColor = resManager.createColor(BAR_COLOR_FAILED)
 		erroredColor = resManager.createColor(BAR_COLOR_ERRORED)
@@ -349,8 +354,10 @@ class WollokTestResultView extends ViewPart implements Observer {
 			textParent,
 			SWT.BORDER.bitwiseOr(SWT.WRAP).bitwiseOr(SWT.MULTI).bitwiseOr(SWT.V_SCROLL).bitwiseOr(SWT.H_SCROLL)
 		) => []
-		textOutput.background = new Color(Display.current, 255, 255, 255)
-		textOutput.foreground = new Color(Display.current, 50, 50, 50)
+		if (!environmentHasDarkTheme) {
+			textOutput.background = new Color(Display.current, 255, 255, 255)
+			textOutput.foreground = new Color(Display.current, 50, 50, 50)
+		}
 
 		new GridData => [
 			minimumHeight = 80
@@ -552,7 +559,7 @@ class WTestTreeLabelProvider extends LabelProvider {
 	}
 
 	def dispatch getImage(Object element) {
-		val imageDescriptor = Activator.getDefault.getImageDescriptor("icons/w.png")
+		val imageDescriptor = Activator.getDefault.getImageDescriptor("icons/file_wlk.png")
 		resourceManager.createImage(imageDescriptor)
 	}
 	

@@ -317,4 +317,8 @@ class WEclipseUtils {
 		val currentTheme = prefs.get("themeid", "")
 		currentTheme.contains("dark")
 	}
+	
+	def static themeSuffix() {
+		if (environmentHasDarkTheme) "-dark" else ""
+	}
 }

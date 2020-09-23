@@ -45,13 +45,13 @@ class WollokTestContainer {
 	
 	def getInternalImage() {
 		if (running) {
-			return "icons/describe_run.png"
+			return "icons/describe_run" + themeSuffix + ".png"
 		}
 		if (errored) {
-			return "icons/describe_error.png"
+			return "icons/describe_error" + themeSuffix + ".png"
 		}
 		if (failed) {
-			return "icons/describe_fail.png"
+			return "icons/describe_fail" + themeSuffix + ".png"
 		}
 		if (passed) {
 			return "icons/describe_ok.png"

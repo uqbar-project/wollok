@@ -20,6 +20,7 @@ class WollokHighlightingConfiguration extends DefaultHighlightingConfiguration {
 	public static val LOCAL_VAR_STYLE_ID = "LOCAL_VAR_STYLE_ID"
 	public static val PARAMETER_STYLE_ID = "PARAMETER_STYLE_ID"
 	public static val WOLLOK_DOC_STYLE_ID = "WOLLOK_DOC_STYLE_ID"
+	public static val COMPONENT_STYLE_ID = "COMPONENT_STYLE_ID"
 //	public static val KEYWORD_STYLE_ID = "KEYWORD_STYLE_ID"
 
 	boolean darkTheme = environmentHasDarkTheme
@@ -30,13 +31,14 @@ class WollokHighlightingConfiguration extends DefaultHighlightingConfiguration {
 		acceptDefaultHighlighting(LOCAL_VAR_STYLE_ID, "Local Variable", localVarTextStyle)
 		acceptDefaultHighlighting(PARAMETER_STYLE_ID, "Parameter", parameterTextStyle)
 		acceptDefaultHighlighting(WOLLOK_DOC_STYLE_ID, "Wollok DOC", wollokDocTextStyle)
+		acceptDefaultHighlighting(COMPONENT_STYLE_ID, "Object/Class/Mixin", componentTextStyle)
 //		acceptDefaultHighlighting(KEYWORD_STYLE_ID, "Keyword", keywordTextStyle)
 	}
 
 	def instanceVarTextStyle() {
 		defaultTextStyle().copy() => [
 			if (darkTheme) {
-				color = new RGB(19, 149, 214)
+				color = new RGB(156, 220, 254)
 			} else {
 				color = new RGB(0, 0, 192)
 			}
@@ -46,7 +48,7 @@ class WollokHighlightingConfiguration extends DefaultHighlightingConfiguration {
 	def wollokDocTextStyle() {
 		commentTextStyle.copy() => [
 			if (darkTheme) {
-				color = new RGB(83, 212, 141)
+				color = new RGB(119, 183, 103)
 			} else {
 				color = new RGB(127, 127, 159)
 			}
@@ -56,7 +58,7 @@ class WollokHighlightingConfiguration extends DefaultHighlightingConfiguration {
 	def localVarTextStyle() {
 		defaultTextStyle().copy() => [
 			if (darkTheme) {
-				color = new RGB(224, 179, 128)
+				color = new RGB(224, 179, 128) // usar el violeta
 			} else {
 				color = new RGB(125, 125, 185)
 			}
@@ -66,22 +68,32 @@ class WollokHighlightingConfiguration extends DefaultHighlightingConfiguration {
 	def parameterTextStyle() {
 		defaultTextStyle().copy() => [
 			if (darkTheme) {
-				color = new RGB(235, 145, 145)
+				color = new RGB(220, 220, 170)
 			} else {
 				color = new RGB(185, 125, 125)
 			}
 		]
 	}
 
-	// No effect!
+	// has no effect!
 	override keywordTextStyle() {
 		defaultTextStyle().copy => [
 			if (darkTheme) {
 				color = new RGB(19, 149, 214)				
 			} else {
 				color = new RGB(127, 0, 85)
+				style = SWT.BOLD
 			}
-			style = SWT.BOLD
+		]
+	}
+
+	def componentTextStyle() {
+		commentTextStyle.copy() => [
+			if (darkTheme) {
+				color = new RGB(57, 200, 176)
+			} else {
+				color = new RGB(0, 0, 0)
+			}
 		]
 	}
 

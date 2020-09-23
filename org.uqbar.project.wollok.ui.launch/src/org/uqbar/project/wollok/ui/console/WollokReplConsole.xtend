@@ -77,7 +77,7 @@ class WollokReplConsole extends TextConsole {
 	def static getConsoleName() { "Wollok REPL Console" }
 
 	new(ILaunchConfiguration configuration, boolean noAnsiFormat, String mode) {
-		super(consoleName, null, Activator.getDefault.getImageDescriptor("icons/w.png"), true)
+		super(consoleName, null, Activator.getDefault.getImageDescriptor("icons/file_wlk.png"), true)
 		this.background = backgroundEnabled
 		this.partitioner = new WollokReplConsolePartitioner(this)
 		this.document.documentPartitioner = this.partitioner

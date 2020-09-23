@@ -6,8 +6,10 @@ import org.eclipse.xtext.ide.editor.syntaxcoloring.IHighlightedPositionAcceptor
 import org.eclipse.xtext.nodemodel.ICompositeNode
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.util.CancelIndicator
+import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
+import org.uqbar.project.wollok.wollokDsl.WMixin
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
@@ -15,6 +17,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
+import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.ui.highlight.WollokHighlightingConfiguration.*
 
 /**
@@ -40,9 +43,20 @@ class WollokHighlightingCalculator extends DefaultSemanticHighlightingCalculator
 	
 	// ** customizations (as multiple dispatch methods)
 	def dispatch highlight(WNamedObject obj, ICompositeNode node, IHighlightedPositionAcceptor acceptor) {
+		addHighlight(WKO, obj.name, node, acceptor)
 		super.highlightElement(obj, acceptor, cancelIndicator)
-	}	
-	
+	}
+
+	def dispatch highlight(WClass clazz, ICompositeNode node, IHighlightedPositionAcceptor acceptor) {
+		addHighlight(CLASS, clazz.name, node, acceptor)
+		super.highlightElement(clazz, acceptor, cancelIndicator)
+	}
+
+	def dispatch highlight(WMixin mixin, ICompositeNode node, IHighlightedPositionAcceptor acceptor) {
+		addHighlight(MIXIN, mixin.name, node, acceptor)
+		super.highlightElement(mixin, acceptor, cancelIndicator)
+	}
+		
 	def dispatch highlight(WVariableReference obj, ICompositeNode node, IHighlightedPositionAcceptor acceptor) {
 		acceptor.addPosition(node.offset, node.length, styleFor(obj.ref))
 		false
@@ -68,4 +82,11 @@ class WollokHighlightingCalculator extends DefaultSemanticHighlightingCalculator
 	def dispatch isParameter(WVariable v) { 
 		v.eContainer instanceof WInitializer
 	}
+
+	def void addHighlight(String keyword, String name, ICompositeNode node, IHighlightedPositionAcceptor acceptor) {
+		val startObject = node.text.indexOf(keyword)
+		val start = node.text.indexOf(name)
+		acceptor.addPosition(node.offset + start - startObject, name.length, COMPONENT_STYLE_ID)
+	}	
+	
 }

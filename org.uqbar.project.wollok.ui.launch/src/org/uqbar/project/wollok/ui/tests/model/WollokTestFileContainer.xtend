@@ -9,6 +9,7 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.ui.launch.Activator
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 @Accessors
 class WollokTestFileContainer {
@@ -80,16 +81,16 @@ class WollokTestFileContainer {
 	
 	def String getInternalImage() {
 		if (running) {
-			return "icons/wtest_run.png"
+			return "icons/wtest_run" + themeSuffix + ".png"
 		}
 		if (errored) {
-			return "icons/wtest_error.png"
+			return "icons/wtest_error" + themeSuffix + ".png"
 		}
 		if (failed) {
-			return "icons/wtest_fail.png"
+			return "icons/wtest_fail" + themeSuffix + ".png"
 		}
 		if (passed) {
-			return "icons/wtest_ok.png"
+			return "icons/wtest_ok" + themeSuffix + ".png"
 		}
 		"icons/wtest.png"
 	}

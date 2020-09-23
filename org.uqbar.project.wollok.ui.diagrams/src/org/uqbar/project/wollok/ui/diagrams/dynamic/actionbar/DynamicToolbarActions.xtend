@@ -11,6 +11,8 @@ import org.uqbar.project.wollok.ui.diagrams.classes.StaticDiagramConfiguration
 import org.uqbar.project.wollok.ui.diagrams.dynamic.DynamicDiagramView
 import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
 
+import static org.uqbar.project.wollok.utils.WEclipseUtils.*
+
 /**
  * Clean dynamic diagram
  */ 
@@ -53,7 +55,7 @@ class RememberObjectPositionAction extends Action implements Observer {
 	new(DynamicDiagramView diagram) {
 		super(Messages.DynamicDiagram_RememberObjectPosition_Description, AS_CHECK_BOX)
 		this.diagram = diagram
-		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/push-pin.png")	
+		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/push-pin" + themeSuffix + ".png")
 		this.configuration = DynamicDiagramConfiguration.instance
 		this.configuration.addObserver(this)
 		this.checked = configuration.isRememberLocationsAndSizes
@@ -88,7 +90,7 @@ class EffectTransitionAction extends Action implements Observer {
 	
 	def void init() {
 		toolTipText = Messages.DynamicDiagram_EffectTransition_Description
-		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/transition2.png")
+		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/transition" + themeSuffix + ".png")
 		this.configuration = DynamicDiagramConfiguration.instance
 		this.checked = configuration.hasEffectTransition
 	}
@@ -121,7 +123,7 @@ class ShowHiddenObjectsAction extends Action {
 	def void init() {
 		configuration = DynamicDiagramConfiguration.instance
 		toolTipText = Messages.DynamicDiagram_ShowHiddenObjects_Description
-		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/eye.png")	
+		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/eye" + themeSuffix + ".png")	
 	}
 	
 	override run() {
