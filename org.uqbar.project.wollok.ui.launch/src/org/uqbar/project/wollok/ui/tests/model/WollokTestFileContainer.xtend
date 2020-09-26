@@ -45,7 +45,7 @@ class WollokTestFileContainer {
 		this.containers.size >= 1
 	}
 	
-	def getNoEmptyDescribes(){
+	def getNoEmptyDescribes() {
 		val suitesWithName = containers.filter [ suiteName !== null ] 
 		if (suitesWithName.isEmpty) {
 			return containers.head.tests
@@ -90,7 +90,7 @@ class WollokTestFileContainer {
 			return "icons/wtest_fail" + themeSuffix + ".png"
 		}
 		if (passed) {
-			return "icons/wtest_ok" + themeSuffix + ".png"
+			return "icons/wtest_ok.png"
 		}
 		"icons/wtest.png"
 	}

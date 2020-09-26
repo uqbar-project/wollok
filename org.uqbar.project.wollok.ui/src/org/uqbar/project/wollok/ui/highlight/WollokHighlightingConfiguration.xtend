@@ -58,7 +58,7 @@ class WollokHighlightingConfiguration extends DefaultHighlightingConfiguration {
 	def localVarTextStyle() {
 		defaultTextStyle().copy() => [
 			if (darkTheme) {
-				color = new RGB(224, 179, 128) // usar el violeta
+				color = new RGB(224, 179, 128)
 			} else {
 				color = new RGB(125, 125, 185)
 			}

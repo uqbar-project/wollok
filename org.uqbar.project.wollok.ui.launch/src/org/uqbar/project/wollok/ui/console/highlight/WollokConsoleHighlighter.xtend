@@ -12,8 +12,9 @@ import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.TerminalRule
 import org.eclipse.xtext.nodemodel.INode
 
+import static org.uqbar.project.wollok.utils.WEclipseUtils.*
+
 import static extension org.uqbar.project.wollok.ui.console.highlight.WTextExtensions.*
-import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**
  * Moved this logic to its own class.
@@ -31,7 +32,7 @@ import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
  */
 class WollokConsoleHighlighter {
 	public static val KEYWORD_COLOR_LIGHT = new Color(null, new RGB(127, 0, 85))
-	public static val KEYWORD_COLOR_DARK = new Color(null, new RGB(19, 149, 214))
+	public static val KEYWORD_COLOR_DARK = new Color(null, new RGB(73, 156, 213))
 
 	val terminalColorsLight = #{
 		"STRING" -> newColor(42, 0, 255),
@@ -41,10 +42,10 @@ class WollokConsoleHighlighter {
 	}
 
 	val terminalColorsDark = #{
-		"STRING" -> newColor(23,198,163),
-		"INT" -> newColor(104,151,187),
-		"SL_COMMENT" -> newColor(62, 127, 95),
-		"ML_COMMENT" -> newColor(62, 127, 95)
+		"STRING" -> newColor(205, 144, 105),
+		"INT" -> newColor(180, 205, 168),
+		"SL_COMMENT" -> newColor(119, 183, 103),
+		"ML_COMMENT" -> newColor(119, 183, 103)
 	}
 	
 	def terminalColors() {
@@ -60,7 +61,7 @@ class WollokConsoleHighlighter {
 	
 	def dispatch processASTNode(List<StyleRange> styles, INode n, Keyword it, LineStyleEvent event, int headerLength) { 
 		if (value.length > 1 && !value.allSymbols) {
-			addStyle(event, n, headerLength, styles, "KEYWORD", keywordColor, null, SWT.BOLD)
+			addStyle(event, n, headerLength, styles, "KEYWORD", keywordColor, null, if (environmentHasDarkTheme) SWT.NORMAL else SWT.BOLD)
 		}
 	}
 	
@@ -101,4 +102,3 @@ class WollokConsoleHighlighter {
 	}
 	
 }
-

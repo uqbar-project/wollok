@@ -24,6 +24,7 @@ import static org.uqbar.project.wollok.ui.highlight.WollokHighlightingConfigurat
  * Customizes highlighting
  * 
  * @author jfernandes
+ * @author fdodino     adding Class, Mixin & Object customization for dark mode
  */
 class WollokHighlightingCalculator extends DefaultSemanticHighlightingCalculator {
 	
@@ -85,8 +86,10 @@ class WollokHighlightingCalculator extends DefaultSemanticHighlightingCalculator
 
 	def void addHighlight(String keyword, String name, ICompositeNode node, IHighlightedPositionAcceptor acceptor) {
 		val startObject = node.text.indexOf(keyword)
-		val start = node.text.indexOf(name)
+		if (startObject == -1) return
+		val start = node.text.indexOf(name, startObject)
+		if (start == -1) return;
 		acceptor.addPosition(node.offset + start - startObject, name.length, COMPONENT_STYLE_ID)
-	}	
-	
+	}
+
 }
