@@ -24,6 +24,7 @@ import org.uqbar.project.wollok.ui.diagrams.classes.view.DiagramColors
 import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
 
 import static org.uqbar.project.wollok.utils.WEclipseUtils.*
+import org.eclipse.swt.graphics.Color
 
 /**
  * 
@@ -66,9 +67,9 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 			add(new Label => [
 				text = castedModel.valueString
 				if (environmentHasDarkTheme) {
-					setFont = JFaceResources.fontRegistry.getBold(JFaceResources.DEFAULT_FONT) 
+					// setFont = JFaceResources.fontRegistry.getBold(JFaceResources.DEFAULT_FONT) 
+					foregroundColor = new Color(null, 0, 0, 0)
 				}
-				setSize(75, 25)
 			])
 		]
 	}

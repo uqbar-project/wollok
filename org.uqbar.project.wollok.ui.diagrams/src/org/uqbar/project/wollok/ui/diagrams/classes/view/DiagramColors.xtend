@@ -30,11 +30,11 @@ class DiagramColors {
 	public static val DYNAMIC_DIAGRAM_BLUE = new Color(null, 199, 206, 224)
 
 	public static val OBJECTS_VALUE_NULL = DYNAMIC_DIAGRAM_WHITE
-	public static val OBJECTS_VALUE_NULL_DARK = new Color(null, 58, 70, 79)
+	public static val OBJECTS_VALUE_NULL_DARK = DYNAMIC_DIAGRAM_WHITE
 	public static val OBJECTS_WRE_BACKGROUND = CLASS_BACKGROUND
-	public static val OBJECTS_WRE_BACKGROUND_DARK = new Color(null, 173, 42, 26)
+	public static val OBJECTS_WRE_BACKGROUND_DARK = new Color(null, 173, 224, 201)
 	public static val OBJECTS_CUSTOM_BACKGROUND = DYNAMIC_DIAGRAM_BLUE
-	public static val OBJECTS_CUSTOM_BACKGROUND_DARK = new Color(null, 60, 100, 120)
+	public static val OBJECTS_CUSTOM_BACKGROUND_DARK = new Color(null, 32, 159, 223)
 	
 	// FONTS
 	public static val SYSTEM_FONT = Display.getDefault.systemFont.fontData.get(0)
