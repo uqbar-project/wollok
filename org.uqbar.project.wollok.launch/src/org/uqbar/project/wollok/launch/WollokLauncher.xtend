@@ -10,6 +10,7 @@ import org.uqbar.project.wollok.debugger.server.XDebuggerImpl
 import org.uqbar.project.wollok.debugger.server.out.AsyncXTextInterpreterEventPublisher
 import org.uqbar.project.wollok.debugger.server.out.XTextInterpreterEventPublisher
 import org.uqbar.project.wollok.debugger.server.rmi.DebuggerCommandHandlerFactory
+import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrame
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.WollokTestsFailedException
@@ -90,6 +91,8 @@ class WollokLauncher extends WollokChecker {
 	}
 
 	protected def createDebuggerOn(WollokInterpreter interpreter, int listenCommandsPort, int sendEventsPort) {
+		XDebugStackFrame.initAllVariables()
+		
 		val debugger = new XDebuggerImpl
 		debugger.interpreter = interpreter
 
@@ -97,7 +100,7 @@ class WollokLauncher extends WollokChecker {
 		registerCommandHandler(debugger, listenCommandsPort)
 		log.debug(listenCommandsPort + " opened !")
 		
-		log.debug("Connecting to client " + sendEventsPort)
+		println("Connecting to client " + sendEventsPort)
 		val client = connectToClient(sendEventsPort)
 		debugger.eventSender = client
 		debugger

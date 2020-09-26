@@ -62,6 +62,7 @@ class WollokVariable extends WollokDebugElement implements IVariable {
 	
 	override equals(Object o) {
 		try {
+			if (o === null) return false
 			val other = o as WollokVariable
 			return other.toString.equals(this.toString) 
 		} catch (ClassCastException e) {

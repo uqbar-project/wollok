@@ -7,9 +7,9 @@ import org.uqbar.project.wollok.debugger.server.out.XTextInterpreterEventPublish
 import org.uqbar.project.wollok.interpreter.api.XDebugger
 import org.uqbar.project.wollok.interpreter.api.XInterpreter
 import org.uqbar.project.wollok.interpreter.api.XThread
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**
  * xdebugger implementation that actually
@@ -20,7 +20,7 @@ import org.uqbar.project.wollok.interpreter.core.WollokObject
 // Migrate to java8 "ReentrantLock" to be able to check if it is paused (locked) or not
 class XDebuggerImpl implements XDebugger<WollokObject> {
 	static Logger log = Logger.getLogger(XDebuggerImpl)
-	XInterpreter<?,WollokObject> interpreter
+	@Accessors XInterpreter<?,WollokObject> interpreter
 	@Accessors var XTextInterpreterEventPublisher eventSender
 	val breakpoints = <XBreakpoint>newArrayList 
 	val Object suspendedLock = new Object
@@ -30,7 +30,6 @@ class XDebuggerImpl implements XDebugger<WollokObject> {
 	
 	XThread<WollokObject> debuggingThread
 	
-	def void setInterpreter(XInterpreter<?,?> interpreter) { this.interpreter = interpreter }
 	def void setEventSender(XTextInterpreterEventPublisher eventSender) { this.eventSender = eventSender }
 	
 	def void setState(XDebuggerState state) { this.state = state }
@@ -42,6 +41,7 @@ class XDebuggerImpl implements XDebugger<WollokObject> {
 	 * He will call us the "resume" command once he's ready.
 	 */	
 	override started() {
+		println("started!!!!! " + interpreter.currentThread)
 		debuggingThread = interpreter.currentThread
 		eventSender.started
 		//sleep
@@ -97,7 +97,14 @@ class XDebuggerImpl implements XDebugger<WollokObject> {
 	// ** metodos llamados por comandos
 	// ***********************************
 	
-	override getStack() { debuggingThread.stack }
+	override getStack() {
+		try {
+			println("debugging thread " + debuggingThread.stack)
+		} catch (Exception e) {
+			e.printStackTrace
+		}
+		debuggingThread.stack
+	}
 	
 	override setBreakpoint(String fileURI, int line) { breakpoints.add(new XBreakpoint(fileURI, line)) }
 	override clearBreakpoint(String fileURI, int line) {
