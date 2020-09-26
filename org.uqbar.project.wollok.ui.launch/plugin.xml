@@ -8,7 +8,7 @@
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
             id="org.uqbar.project.wollok.ui.launch.WollokLaunchConfigurationType"
-            modes="run"
+            modes="run, debug"
             name="Wollok Program"
             delegate="org.uqbar.project.wollok.ui.launch.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchDelegate"
             sourceLocatorId="org.uqbar.project.wollok.ui.launch.sourceLocator"
@@ -28,7 +28,7 @@
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
             id="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationType"
-            modes="run"
+            modes="run, debug"
             icon="icons/file_wlk.png"
             name="%wollok.launch.tests"
             delegate="org.uqbar.project.wollok.ui.launch.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchDelegate"
@@ -39,7 +39,7 @@
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
             id="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationType"
-            modes="run"
+            modes="run, debug"
             icon="icons/file_wlk.png"
             name="%wollok.launch.testsWithDynamicDiagram"
             delegate="org.uqbar.project.wollok.ui.launch.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchDelegate"
@@ -103,7 +103,7 @@
             description="Launch Wollok"
             id="org.uqbar.project.wollok.ui.launch.shortcut"
             label="Run Wollok Program"
-            modes="run"
+            modes="run, debug"
             icon="icons/file_wpgm.png">
           <contextualLaunch>
            <enablement>
@@ -132,7 +132,7 @@
             icon="icons/file_wlk.png"
             id="org.uqbar.project.wollok.ui.launch.shortcut.repl"
             label="Launch with Repl"
-            modes="run">
+            modes="run, debug">
           <contextualLaunch>
            <enablement>
              <with variable="selection">
@@ -155,7 +155,7 @@
             icon="icons/file_wtest.png"
             id="org.uqbar.project.wollok.ui.tests.shortcut"
             label="%wollok.launch.tests"
-            modes="run">
+            modes="run, debug">
           <contextualLaunch>
            <enablement>
              <with variable="selection">
@@ -176,7 +176,7 @@
             icon="icons/file_wtest_dynamic_diagram.png"
             id="org.uqbar.project.wollok.ui.testsWithDynamicDiagram.shortcut"
             label="%wollok.launch.testsWithDynamicDiagram"
-            modes="run">
+            modes="run, debug">
           <contextualLaunch>
            <enablement>
              <with variable="selection">
@@ -197,7 +197,7 @@
             icon="icons/file_wtest.png"
             id="org.uqbar.project.wollok.ui.allTests.shortcut"
             label="%wollok.launch.allTests"
-            modes="run">
+            modes="run, debug">
           <contextualLaunch>
            <enablement>
              <with variable="selection">
@@ -222,36 +222,36 @@
             id="org.uqbar.project.wollok.ui.launch.shortcut.run"
             name="Run Wollok">
       </command>
-   	  <!--command
+   	  <command
             categoryId="org.eclipse.debug.ui.category.run"
             description="Debug Wollok Program"
             id="org.uqbar.project.wollok.ui.launch.shortcut.debug"
             name="Debug Wollok">
-      </command-->
+      </command>
       <command
             categoryId="org.eclipse.debug.ui.category.run"
             description="Run Wollok Program with REPL"
             id="org.uqbar.project.wollok.ui.launch.shortcut.repl.run"
             name="Run Wollok REPL">
       </command>
-   	  <!--command
+   	  <command
             categoryId="org.eclipse.debug.ui.category.run"
             description="Debug Wollok Program with REPL"
             id="org.uqbar.project.wollok.ui.launch.shortcut.repl.debug"
             name="Debug Wollok REPL">
-      </command-->
+      </command>
       <command
             categoryId="org.eclipse.debug.ui.category.run"
             description="Run Wollok Tests"
             id="org.uqbar.project.wollok.ui.tests.shortcut.run"
             name="%wollok.run.tests">
       </command>
-   	  <!--command
+   	  <command
             categoryId="org.eclipse.debug.ui.category.run"
             description="Debug Wollok Tests"
             id="org.uqbar.project.wollok.ui.tests.shortcut.debug"
             name="%wollok.debug.tests">
-      </command-->
+      </command>
       <command
             categoryId="org.eclipse.debug.ui.category.run"
             defaultHandler="org.uqbar.project.wollok.ui.launch.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.launch.handlers.LaunchReplWithoutFileHandler"
@@ -285,7 +285,7 @@
    <!-- SHORTCUTS & BINDINGS -->
    
 	<!-- BREAKPOINTS -->
-	<!--extension point="org.eclipse.debug.core.breakpoints">
+	<extension point="org.eclipse.debug.core.breakpoints">
       <breakpoint
             markerType="org.uqbar.project.wollok.ui.launch.lineBreakpoint.marker"
             class="org.uqbar.project.wollok.debugger.model.WollokLineBreakpoint"
@@ -306,10 +306,10 @@
          <adapter type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget">
          </adapter>
       </factory>
-   </extension-->
+   </extension>
    
    <!-- DEBUG MODEL & CONTEXT -->
-   	<!--extension
+   	<extension
          point="org.eclipse.ui.contexts">
       <context
             name="Debugging Wollok"
@@ -331,12 +331,12 @@
             debugModelId="org.uqbar.project.wollok.debugger.model"
             contextId="org.uqbar.project.wollok.debugger.context">
       </modelContextBinding>
-   </extension-->
+   </extension>
    <!-- /DEBUG MODEL -->
    <!-- /BREAKPOINTS -->
     
     <!-- BREAKPOINTS ACTIONS -->
-    <!--extension point="org.eclipse.ui.editorActions">
+    <extension point="org.eclipse.ui.editorActions">
       <editorContribution targetID="org.uqbar.project.wollok.WollokDsl" 
                           id="org.uqbar.project.wollok.WollokDsl.rulerActions">
 	     <action
@@ -358,7 +358,7 @@
             id="org.uqbar.project.wollok.debugger.rulerContextMenu.toggleBreakpointAction">
          </action>
       </viewerContribution>
-   </extension-->
+   </extension>
    <extension
          point="org.eclipse.ui.views">
       <view
@@ -430,12 +430,12 @@
 	   </activityPatternBinding>
 	</extension--> 
 
-	<extension point="org.eclipse.ui.activities">  
+	<!--extension point="org.eclipse.ui.activities">  
 	   <activity id="hideDebug" name="MenuHidingActivity">  
 	   </activity>
 	   <activityPatternBinding activityId="hideDebug" pattern="org.eclipse.debug.internal.ui.actions.DebugDropDownAction">  
 	   </activityPatternBinding>
-	</extension> 
+	</extension--> 
 
 	<extension point="org.eclipse.ui.activities">  
 	   <activity id="hideRunExternalTool" name="MenuHidingActivity">  
@@ -458,12 +458,12 @@
 	   </activityPatternBinding>
 	</extension-->	
 
-	<extension point="org.eclipse.ui.activities">  
+	<!--extension point="org.eclipse.ui.activities">  
 	   <activity id="hideDebug" name="MenuHidingActivity">  
 	   </activity>
 	   <activityPatternBinding activityId="hideDebug" pattern="org.eclipse.debug.internal.ui.actions.DebugDropDownAction">
 	   </activityPatternBinding>
-	</extension>	
+	</extension-->	
 
 	<extension point="org.eclipse.ui.activities">  
 	   <activity id="hideOpenTask" name="MenuHidingActivity">  

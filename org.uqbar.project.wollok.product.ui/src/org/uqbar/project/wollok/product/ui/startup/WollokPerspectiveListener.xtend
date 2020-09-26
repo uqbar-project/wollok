@@ -60,7 +60,7 @@ class WollokPerspectiveListener implements IPerspectiveListener {
 		"tipsAndTricks",
 		"org.eclipse.debug.ui.actions.BreakpointTypesContribution",
 		// Debug
-		"org.eclipse.debug.internal.ui.actions.Debug",
+//		"org.eclipse.debug.internal.ui.actions.Debug",
 		// Project Properties
 		"projectProperties",
 		// Navigate - Open Attached Javadoc and Source files
@@ -141,39 +141,39 @@ class WollokPerspectiveListener implements IPerspectiveListener {
 		"org.eclipse.jdt.ui.actions.GoToType",
 		"org.eclipse.jdt.ui.actions.GoToPackage",
 		// DEBUG - we should remove them when Wollok debugger is up again
-		"DebugGroup",
-		"org.eclipse.debug.ui.actions.DebugLast",
-		"org.eclipse.debug.internal.ui.actions.Debug",
-		"org.eclipse.debug.internal.ui.actions.DebugDropDownAction",
-		"org.eclipse.debug.internal.ui.actions.DebugHistoryMenuAction",
-		"org.eclipse.debug.internal.ui.actions.DebugWithConfigurationAction",
-		"org.eclipse.debug.ui.actions.OpenDebugConfigurations",
-		"org.eclipse.debug.ui.actions.ToggleBreakpoint",
-		"org.eclipse.debug.ui.actions.ToggleLineBreakpoint",
-		"org.eclipse.debug.ui.actions.ToggleMethodBreakpoint",
-		"org.eclipse.debug.ui.actions.ToggleWatchpoint",
-		"org.eclipse.debug.ui.actions.SkipAllBreakpoints",
-		"org.eclipse.debug.ui.actions.RemoveAllBreakpoints",
-		"org.eclipse.jdt.debug.ui.JDTDebugActionSet",
-		"org.eclipse.jdt.debug.ui.actions.AddExceptionBreakpoint",
-		"org.eclipse.jdt.debug.ui.actions.AddClassPrepareBreakpoint",
-		"jdtGroup",
-		"ExternalToolsGroup",
-		"org.eclipse.jdt.debug.ui.actions.AllReferences",
-		"org.eclipse.jdt.debug.ui.actions.AllInstances",
-		"org.eclipse.jdt.debug.ui.actions.InstanceCount",
-		"org.eclipse.jdt.debug.ui.Watch",
-		"org.eclipse.jdt.debug.ui.actions.Inspect",
-		"org.eclipse.jdt.debug.ui.actions.Display",
-		"org.eclipse.jdt.debug.ui.actions.Execute",
-		"org.eclipse.jdt.debug.ui.actions.ForceReturn",
-		"emptyStepGroup",
-		"org.eclipse.debug.ui.actions.BreakpointTypesContribution",
+//		"DebugGroup",
+//		"org.eclipse.debug.ui.actions.DebugLast",
+//		"org.eclipse.debug.internal.ui.actions.Debug",
+//		"org.eclipse.debug.internal.ui.actions.DebugDropDownAction",
+//		"org.eclipse.debug.internal.ui.actions.DebugHistoryMenuAction",
+//		"org.eclipse.debug.internal.ui.actions.DebugWithConfigurationAction",
+//		"org.eclipse.debug.ui.actions.OpenDebugConfigurations",
+//		"org.eclipse.debug.ui.actions.ToggleBreakpoint",
+//		"org.eclipse.debug.ui.actions.ToggleLineBreakpoint",
+//		"org.eclipse.debug.ui.actions.ToggleMethodBreakpoint",
+//		"org.eclipse.debug.ui.actions.ToggleWatchpoint",
+//		"org.eclipse.debug.ui.actions.SkipAllBreakpoints",
+//		"org.eclipse.debug.ui.actions.RemoveAllBreakpoints",
+//		"org.eclipse.jdt.debug.ui.JDTDebugActionSet",
+//		"org.eclipse.jdt.debug.ui.actions.AddExceptionBreakpoint",
+//		"org.eclipse.jdt.debug.ui.actions.AddClassPrepareBreakpoint",
+//		"jdtGroup",
+//		"ExternalToolsGroup",
+//		"org.eclipse.jdt.debug.ui.actions.AllReferences",
+//		"org.eclipse.jdt.debug.ui.actions.AllInstances",
+//		"org.eclipse.jdt.debug.ui.actions.InstanceCount",
+//		"org.eclipse.jdt.debug.ui.Watch",
+//		"org.eclipse.jdt.debug.ui.actions.Inspect",
+//		"org.eclipse.jdt.debug.ui.actions.Display",
+//		"org.eclipse.jdt.debug.ui.actions.Execute",
+//		"org.eclipse.jdt.debug.ui.actions.ForceReturn",
+//		"emptyStepGroup",
+//		"org.eclipse.debug.ui.actions.BreakpointTypesContribution",
 		// Run external tools - if you want to allow you have to remove these lines 
 		"ExternalToolsGroup",
 		"org.eclipse.ui.externaltools.ExternalToolMenuDelegateMenu",
 		// Debug
-		"org.eclipse.jdt.debug.ui.commands.StepIntoSelection",
+//		"org.eclipse.jdt.debug.ui.commands.StepIntoSelection",
 		// Search
 		"org.eclipse.jdt.ui.actions.OpenJavaSearchPage",
 		"junit.actions.GotoTestAction",
@@ -259,7 +259,9 @@ class WollokPerspectiveListener implements IPerspectiveListener {
 	}
 
 	def dispatch void visit(PluginActionContributionItem it) {
-		if (shouldHideActionSet(id, it.action.actionDefinitionId) && it.id?.toLowerCase.contains("debug")) {
+		if (shouldHideActionSet(id, it.action.actionDefinitionId) 
+//			&& it.id?.toLowerCase.contains("debug")
+		) {
 			it.visible = false
 			it.update
 		}

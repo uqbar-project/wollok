@@ -89,11 +89,11 @@ class RemoveWizardsStartup implements WollokUIStartup {
 
 	def ignoredPerspectives() {
 		#[
-			"org.eclipse.jdt.ui.JavaPerspective",
+//			"org.eclipse.jdt.ui.JavaPerspective",
 			"org.eclipse.jdt.ui.JavaHierarchyPerspective",
 			"org.eclipse.mylyn.tasks.ui.perspectives.planning",
 			"org.eclipse.pde.ui.PDEPerspective",
-			"org.eclipse.debug.ui.DebugPerspective",
+//			"org.eclipse.debug.ui.DebugPerspective",
 			"org.eclipse.jdt.ui.JavaBrowsingPerspective"
 		].map[toLowerCase]
 	}
