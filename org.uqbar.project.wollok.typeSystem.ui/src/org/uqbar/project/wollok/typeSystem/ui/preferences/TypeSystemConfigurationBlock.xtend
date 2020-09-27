@@ -74,4 +74,16 @@ class TypeSystemConfigurationBlock extends OptionsConfigurationBlock {
 		super.dispose
 	}
 	
+	override performApply() {
+		// Hay que hacer esto para que no se rompa Xtext
+		savePreferences
+		true
+	}
+	
+	override performOk() {
+		// Hay que hacer esto para que no se rompa Xtext
+		savePreferences
+		true
+	}
+	
 }

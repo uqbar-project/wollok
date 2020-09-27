@@ -77,6 +77,7 @@ class TypeSystemPreferencePage extends PropertyAndPreferencePage implements IWor
 		if (builderConfigurationBlock !== null) {
 			scheduleCleanerJobIfNecessary(null)
 			builderConfigurationBlock.performApply
+			super.performApply
 		}
 	}
 	
