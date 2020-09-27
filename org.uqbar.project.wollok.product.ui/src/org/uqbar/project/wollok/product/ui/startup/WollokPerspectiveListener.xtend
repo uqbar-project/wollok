@@ -285,10 +285,10 @@ class WollokPerspectiveListener implements IPerspectiveListener {
 		"org.eclipse.mylyn.tasks.ui.command.openRemoteTask",
 		"org.eclipse.mylyn.context.ui.commands.toggle.focus.active.view",
 		"org.eclipse.xtext.ui.editor.OpenCallHierarchy",
-//		"org.eclipse.xtext.xbase.ui.organizeImports",
-//		"org.eclipse.xtext.xbase.ui.hierarchy.OpenCallHierarchy",
-//		"org.eclipse.jdt.ui.edit.text.java.open.hierarchy",
-//		"org.eclipse.xtext.xbase.ui.hierarchy.OpenTypeHierarchy",
+		"org.eclipse.xtext.xbase.ui.organizeImports",
+		"org.eclipse.xtext.xbase.ui.hierarchy.OpenCallHierarchy",
+		"org.eclipse.jdt.ui.edit.text.java.open.hierarchy",
+		"org.eclipse.xtext.xbase.ui.hierarchy.OpenTypeHierarchy",
 		"org.eclipse.xtend.ide.launching.junitShortcut.run",
 		"org.eclipse.xtend.ide.launching.junitPdeShortcut.debug",
 		"org.eclipse.xtend.ide.launching.localJavaShortcut.run",
@@ -299,7 +299,7 @@ class WollokPerspectiveListener implements IPerspectiveListener {
 		val bindingService = PlatformUI.workbench.getAdapter(typeof(IBindingService)) as IBindingService
 		bindingService.bindings.forEach [  
 			if (unwantedKeyBindings.includesCase(parameterizedCommand?.command?.id)) {
-				parameterizedCommand.command.undefine
+				parameterizedCommand.command.enabled = false
 			}
 		]
 	}
