@@ -19,6 +19,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.ui.highlight.WollokHighlightingConfiguration.*
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 /**
  * Customizes highlighting
@@ -44,20 +45,40 @@ class WollokHighlightingCalculator extends DefaultSemanticHighlightingCalculator
 	
 	// ** customizations (as multiple dispatch methods)
 	def dispatch highlight(WNamedObject obj, ICompositeNode node, IHighlightedPositionAcceptor acceptor) {
-		addHighlight(WKO, obj.name, node, acceptor)
-		super.highlightElement(obj, acceptor, cancelIndicator)
+		WKO.highlightComponent(obj, node, acceptor)
 	}
 
 	def dispatch highlight(WClass clazz, ICompositeNode node, IHighlightedPositionAcceptor acceptor) {
-		addHighlight(CLASS, clazz.name, node, acceptor)
-		super.highlightElement(clazz, acceptor, cancelIndicator)
+		CLASS.highlightComponent(clazz, node, acceptor)
+	}
+
+	def highlightComponent(String componentName, WMethodContainer methodContainer, ICompositeNode node, IHighlightedPositionAcceptor acceptor) {
+		val startKeyword = node.text.indexOf(componentName)
+		addHighlight(startKeyword, componentName, methodContainer.name, node, acceptor, COMPONENT_STYLE_ID)
+		if (methodContainer.parent !== null) {
+			addHighlight(startKeyword, INHERITS, methodContainer.parent.name, node, acceptor, COMPONENT_STYLE_ID)
+		}
+		if (methodContainer.mixins !== null) {
+			methodContainer.mixins.forEach [ addHighlight(startKeyword, MIXED_WITH, it.name, node, acceptor, COMPONENT_STYLE_ID)]
+		}
+		super.highlightElement(methodContainer, acceptor, cancelIndicator)		
+	}
+
+	def void addHighlight(int initialOffset, String keyword, String name, ICompositeNode node, IHighlightedPositionAcceptor acceptor, String style) {
+		val startKeyword = node.text.indexOf(keyword)
+		if (startKeyword == -1) return
+		val start = node.text.indexOf(name, startKeyword)
+		if (start == -1) return;
+		val offset = node.offset + start - initialOffset
+		acceptor.addPosition(offset, name.length, style)
 	}
 
 	def dispatch highlight(WMixin mixin, ICompositeNode node, IHighlightedPositionAcceptor acceptor) {
-		addHighlight(MIXIN, mixin.name, node, acceptor)
+		val startKeyword = node.text.indexOf(MIXIN)
+		addHighlight(startKeyword, MIXIN, mixin.name, node, acceptor, COMPONENT_STYLE_ID)
 		super.highlightElement(mixin, acceptor, cancelIndicator)
 	}
-		
+
 	def dispatch highlight(WVariableReference obj, ICompositeNode node, IHighlightedPositionAcceptor acceptor) {
 		acceptor.addPosition(node.offset, node.length, styleFor(obj.ref))
 		false
@@ -82,14 +103,6 @@ class WollokHighlightingCalculator extends DefaultSemanticHighlightingCalculator
 	def dispatch isParameter(WParameter p) { true }
 	def dispatch isParameter(WVariable v) { 
 		v.eContainer instanceof WInitializer
-	}
-
-	def void addHighlight(String keyword, String name, ICompositeNode node, IHighlightedPositionAcceptor acceptor) {
-		val startObject = node.text.indexOf(keyword)
-		if (startObject == -1) return
-		val start = node.text.indexOf(name, startObject)
-		if (start == -1) return;
-		acceptor.addPosition(node.offset + start - startObject, name.length, COMPONENT_STYLE_ID)
 	}
 
 }

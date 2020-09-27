@@ -60,10 +60,14 @@
 /instance/org.uqbar.project.wollok.WollokDsl/WollokNumberPreferences_CoercingStrategy=decimals
 /instance/org.uqbar.project.wollok.WollokDsl/classNameMustStartWithUpperCase=ERROR
 /instance/org.uqbar.project.wollok.WollokDsl/org.uqbar.project.wollok.WollokDsl.syntaxColorer.tokenStyles.INSTANCE_VAR_STYLE_ID.color=156,219,254
+/instance/org.uqbar.project.wollok.WollokDsl/org.uqbar.project.wollok.WollokDsl.syntaxColorer.tokenStyles.comment.color=119,183,103
+/instance/org.uqbar.project.wollok.WollokDsl/org.uqbar.project.wollok.WollokDsl.syntaxColorer.tokenStyles.error.color=245,59,59
 /instance/org.uqbar.project.wollok.WollokDsl/org.uqbar.project.wollok.WollokDsl.syntaxColorer.tokenStyles.keyword.color=73,156,213
 /instance/org.uqbar.project.wollok.WollokDsl/org.uqbar.project.wollok.WollokDsl.syntaxColorer.tokenStyles.keyword.style=0
 /instance/org.uqbar.project.wollok.WollokDsl/org.uqbar.project.wollok.WollokDsl.syntaxColorer.tokenStyles.number.color=180,205,168
 /instance/org.uqbar.project.wollok.WollokDsl/org.uqbar.project.wollok.WollokDsl.syntaxColorer.tokenStyles.string.color=205,144,105
+/instance/org.uqbar.project.wollok.WollokDsl/org.uqbar.project.wollok.WollokDsl.syntaxColorer.tokenStyles.COMPONENT_STYLE_ID.color=57,200,176
+/instance/org.uqbar.project.wollok.WollokDsl/org.uqbar.project.wollok.WollokDsl.syntaxColorer.tokenStyles.WOLLOK_DOC_STYLE_ID.color=119,183,103
 /instance/org.eclipse.emf.mwe2.language.ui/overriddenByCSS=,syntaxColorer.property_ref.color,syntaxColorer.property_ref.style,syntaxColorer.feature_ref.color,syntaxColorer.string_prop_ref.color,syntaxColorer.string_prop_ref.style,syntaxColorer.deprecated_element.color,syntaxColorer.deprecated_element.style,
 /instance/org.eclipse.emf.mwe2.language.ui/syntaxColorer.deprecated_element.color=171,31,54
 /instance/org.eclipse.emf.mwe2.language.ui/syntaxColorer.deprecated_element.style=536870912
