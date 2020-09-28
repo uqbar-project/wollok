@@ -6,6 +6,7 @@ import java.util.List
 import java.util.Map
 import org.eclipse.core.runtime.preferences.IEclipsePreferences
 import org.eclipse.debug.core.model.IStackFrame
+import org.eclipse.debug.ui.DebugUITools
 import org.eclipse.draw2d.IFigure
 import org.eclipse.draw2d.PositionConstants
 import org.eclipse.draw2d.graph.DirectedGraph
@@ -65,10 +66,7 @@ class DynamicDiagramView extends AbstractDiagramView implements IStackFrameConsu
 	ExportAction exportAction
 
 	// Frozen until debugger renaissance
-	// DebugContextListener debugListener
-	// New context state listener
-	// splitter and palette
-
+	DebugContextListener debugListener
 	DynamicDiagramConfiguration configuration = DynamicDiagramConfiguration.instance
 
 	public static List<XDebugStackFrameVariable> currentVariables = newArrayList
@@ -91,18 +89,16 @@ class DynamicDiagramView extends AbstractDiagramView implements IStackFrameConsu
 
 	override createPartControl(Composite parent) {
 		super.createPartControl(parent)
-		// Frozen until debugger renaissance
-		// debugListener = new DebugContextListener(this)
-		// DebugUITools.getDebugContextManager.addDebugContextListener(debugListener)
-		//
+		debugListener = new DebugContextListener(this)
+		DebugUITools.getDebugContextManager.addDebugContextListener(debugListener)
+		
 		// Check if there is an already started debug context
-		// val dc = DebugUITools.getDebugContext
-		// if (dc !== null) {
-		// val o = dc.getAdapter(IStackFrame)
-		// if (o instanceof IStackFrame)
-		// setStackFrame(o as IStackFrame)
-		// }
-		// End Frozen until debugger renaissance
+		val dc = DebugUITools.getDebugContext
+		if (dc !== null) {
+			val o = dc.getAdapter(IStackFrame)
+			if (o instanceof IStackFrame)
+				setStackFrame(o as IStackFrame)
+		}
 	}
 
 	override configureToolbar() {
