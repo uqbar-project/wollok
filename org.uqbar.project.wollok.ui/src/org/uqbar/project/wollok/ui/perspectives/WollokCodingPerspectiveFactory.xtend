@@ -33,7 +33,6 @@ class WollokCodingPerspectiveFactory implements IPerspectiveFactory {
 		]
 		
 		//I force the opening of the debug perspective. So both are together and usable.
-		// FED - commenting it until Wollok Debugger works
 		PlatformUI.workbench.showPerspective("org.eclipse.debug.ui.DebugPerspective", PlatformUI.workbench.activeWorkbenchWindow)
 	}
 	

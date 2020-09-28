@@ -100,7 +100,7 @@ class WollokLauncher extends WollokChecker {
 		registerCommandHandler(debugger, listenCommandsPort)
 		log.debug(listenCommandsPort + " opened !")
 		
-		println("Connecting to client " + sendEventsPort)
+		log.debug("Connecting to client " + sendEventsPort)
 		val client = connectToClient(sendEventsPort)
 		debugger.eventSender = client
 		debugger

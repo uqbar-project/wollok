@@ -60,7 +60,9 @@ class SteppingOver extends XDebuggerState {
  * @author jfernandes
  */
 class PauseOnNext extends XDebuggerState {
-	override before(XDebuggerImpl d, EObject e) { if (!e.isTransparent()) d.sleep }
+	override before(XDebuggerImpl d, EObject e) { 
+		if (!e.isTransparent()) d.sleep
+	}
 	override after(XDebuggerImpl d, EObject e) { }
 	override toString() { "PAUSE_ON_NEXT" }
 }

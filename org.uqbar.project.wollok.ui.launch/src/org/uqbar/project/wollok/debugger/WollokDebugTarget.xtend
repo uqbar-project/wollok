@@ -62,7 +62,7 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 		super(null)
 		this.prefs = preferenceStoreAccess.preferenceStore
 		this.launch = launch
-		target = this
+		this.target = this
 		this.process = process
 		
 		wollokThread = new WollokThread(this)
@@ -91,7 +91,6 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 				return client.getGlobal(DebugCommandHandler) as DebugCommandHandler
 			}
 			catch (ConnectException e) {
-				e.printStackTrace
 				retries++
 			}
 		} while (retries < 4)

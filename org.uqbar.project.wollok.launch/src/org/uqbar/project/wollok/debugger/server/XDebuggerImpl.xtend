@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.debugger.server
 
+import java.util.List
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
@@ -8,6 +9,8 @@ import org.uqbar.project.wollok.interpreter.api.XDebugger
 import org.uqbar.project.wollok.interpreter.api.XInterpreter
 import org.uqbar.project.wollok.interpreter.api.XThread
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.interpreter.stack.ObservableStack
+import org.uqbar.project.wollok.interpreter.stack.XStackFrame
 
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
@@ -24,7 +27,7 @@ class XDebuggerImpl implements XDebugger<WollokObject> {
 	@Accessors var XTextInterpreterEventPublisher eventSender
 	val breakpoints = <XBreakpoint>newArrayList 
 	val Object suspendedLock = new Object
-	EObject currentStepObject
+	List<EObject> stepObjects = newArrayList
 	XBreakpoint lastBreakpointHit
 	XDebuggerState state = new RunThroughDebuggerState
 	
@@ -41,14 +44,13 @@ class XDebuggerImpl implements XDebugger<WollokObject> {
 	 * He will call us the "resume" command once he's ready.
 	 */	
 	override started() {
-		println("started!!!!! " + interpreter.currentThread)
 		debuggingThread = interpreter.currentThread
 		eventSender.started
 		//sleep
 	}
 	
 	override aboutToEvaluate(EObject element) {
-		currentStepObject = element
+		stepObjects.add(element)
 		logEvent("BEFORE", element)
 		state.before(this, element)
 		checkBreakpointsAndSuspendIfHit(element)
@@ -61,7 +63,7 @@ class XDebuggerImpl implements XDebugger<WollokObject> {
 	override evaluated(EObject element) {
 		logEvent("AFTER", element)
 		state.after(this, element)
-		currentStepObject = null
+		stepObjects.remove(stepObjects.length - 1)
 	}
 	
 	override terminated() { eventSender.terminated }
@@ -77,7 +79,9 @@ class XDebuggerImpl implements XDebugger<WollokObject> {
 		}
 	}
 	
-	protected def sleep() { this.sleep(true) }
+	protected def sleep() { 
+		 this.sleep(true)
+	}
 	
 	protected def sleep(boolean sendingEvent) {
 		if (sendingEvent) eventSender.suspendStep
@@ -98,12 +102,7 @@ class XDebuggerImpl implements XDebugger<WollokObject> {
 	// ***********************************
 	
 	override getStack() {
-		try {
-			println("debugging thread " + debuggingThread.stack)
-		} catch (Exception e) {
-			e.printStackTrace
-		}
-		debuggingThread.stack
+		if (debuggingThread === null) new ObservableStack<XStackFrame<WollokObject>> else debuggingThread.stack
 	}
 	
 	override setBreakpoint(String fileURI, int line) { breakpoints.add(new XBreakpoint(fileURI, line)) }
@@ -141,4 +140,5 @@ class XDebuggerImpl implements XDebugger<WollokObject> {
 		System.exit(0)
 	}
 
+	def currentStepObject() { this.stepObjects.get(this.stepObjects.length - 1) }
 }
