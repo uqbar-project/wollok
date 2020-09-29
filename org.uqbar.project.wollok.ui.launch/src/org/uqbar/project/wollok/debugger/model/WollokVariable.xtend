@@ -47,13 +47,7 @@ class WollokVariable extends WollokDebugElement implements IVariable {
 	override verifyValue(IValue value) { false }
 	
 	def String getIcon() {
-		// eventually all variables will know their custom icons
-		if (adaptee.value instanceof XWollokCollectionDebugValue) 
-			'icons/listVariableIcon.gif'
-		else if (adaptee.variable.local)
-			'icons/localvariable_obj.png'
-		else
-			null
+		adaptee?.value?.icon
 	}
 	
 	override toString() {

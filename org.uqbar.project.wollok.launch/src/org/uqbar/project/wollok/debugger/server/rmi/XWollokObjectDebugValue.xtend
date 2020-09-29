@@ -9,6 +9,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.WollokObjectUtils.*
 import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
 import static org.uqbar.project.wollok.WollokConstants.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * A stack frame variable's value that holds a wollok object.
@@ -43,4 +44,13 @@ class XWollokObjectDebugValue extends XDebugValue {
 
 	override isWKO() { this.isNamedObject }
 
+	override icon() {
+//		if (typeName.equals(NUMBER)) {
+//			return "icons/debug_number.png"
+//		}
+//		if (typeName.equals(STRING)) {
+//			return "icons/debug_string.png"
+//		}
+		null
+	}
 }

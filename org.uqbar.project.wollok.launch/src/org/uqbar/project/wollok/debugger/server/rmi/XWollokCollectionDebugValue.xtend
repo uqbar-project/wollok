@@ -50,6 +50,10 @@ class XWollokListDebugValue extends XWollokCollectionDebugValue {
 		String.valueOf(i)
 	}
 	
+	override icon() { 
+		'icons/debug_list.gif'
+	}
+
 }
 
 class XWollokSetDebugValue extends XWollokCollectionDebugValue {
@@ -60,6 +64,10 @@ class XWollokSetDebugValue extends XWollokCollectionDebugValue {
 	
 	override getVariableName(int i, WollokObject collection, String concreteNativeType) {
 		""
+	}
+	
+	override icon() {
+		'icons/listVariableIcon.gif'
 	}
 		
 }
