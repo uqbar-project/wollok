@@ -17,7 +17,9 @@ class WollokTestLaunchDelegate extends WollokLaunchDelegate {
 
 	override launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		super.launch(configuration, mode, launch, monitor)
-		WollokTestResultView.activate()
+		if (!mode.isDebug) {
+			WollokTestResultView.activate()
+		}
 	}
 	
 	override configureLaunchParameters(ILaunchConfiguration config, int requestPort, int eventPort) {
