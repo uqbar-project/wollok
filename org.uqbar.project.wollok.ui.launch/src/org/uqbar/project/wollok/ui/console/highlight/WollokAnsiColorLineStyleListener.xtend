@@ -40,7 +40,6 @@ class WollokAnsiColorLineStyleListener implements LineStyleListener {
                 defStyle.background = WollokConsolePreferenceUtils.getDebugConsoleBgColor
         }
         else {
-            // defStyle = new StyleRange(1, lastRangeEnd, 0.toColor, 15.toColor, SWT.NORMAL)
             defStyle = new StyleRange(1, lastRangeEnd, null, null, SWT.NORMAL)
         }
 
