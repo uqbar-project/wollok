@@ -6,12 +6,11 @@ import org.eclipse.swt.SWT
 import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer
-import org.eclipse.xtext.ui.preferences.OptionsConfigurationBlock
 import org.uqbar.project.wollok.interpreter.nativeobj.WollokNumbersPreferences
 
 import static org.uqbar.project.wollok.ui.Messages.*
 
-class WollokNumbersConfigurationBlock extends OptionsConfigurationBlock {
+class WollokNumbersConfigurationBlock extends WollokAbstractConfigurationBlock {
 	
 	extension val WollokNumbersPreferences = WollokNumbersPreferences.instance
 
@@ -48,10 +47,6 @@ class WollokNumbersConfigurationBlock extends OptionsConfigurationBlock {
 		]
 		
 	}
-	
-	override protected getBuildJob(IProject project) {}
-	
-	override protected getFullBuildDialogStrings(boolean workspaceSettings) {}
 	
 	override getPropertyPrefix() { "NumbersConfiguration" }
 	

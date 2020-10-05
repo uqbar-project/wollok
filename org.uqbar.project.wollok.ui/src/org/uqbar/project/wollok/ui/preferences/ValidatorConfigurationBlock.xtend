@@ -71,7 +71,9 @@ class ValidatorConfigurationBlock extends AbstractValidatorConfigurationBlock {
 		]
 	}
 	
-	def getI18n(String string) { val k = "CheckGroup_" + string getProperties.getProperty(k, k) }
+	def getI18n(String title) { 
+		title.toLowerCase.splitCamelCase.firstUpper
+	}
 	
 	protected def doCreateContentsBlah(Composite parent, Iterable<Method> methods) {
 		val severityKeys = CheckSeverity.values.map[name]
@@ -123,5 +125,16 @@ class ValidatorConfigurationBlock extends AbstractValidatorConfigurationBlock {
 		restoreSectionExpansionStates = WollokActivator.getInstance.dialogSettings.addNewSection(SETTINGS_SECTION_NAME)
 		super.dispose
 	}
+
+	override performApply() {
+		// Hay que hacer esto para que no se rompa Xtext
+		savePreferences
+		true
+	}
 	
+	override performOk() {
+		// Hay que hacer esto para que no se rompa Xtext
+		savePreferences
+		true
+	}	
 }

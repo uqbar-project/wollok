@@ -22,6 +22,7 @@ import static extension org.uqbar.project.wollok.ui.console.highlight.AnsiUtils.
 import static extension org.uqbar.project.wollok.ui.console.highlight.WTextExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**
  * A line style listener for the console to highlight code
@@ -46,8 +47,6 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 	val programFooter =  System.lineSeparator + "}"
 	val headerLength = programHeader.length
 
-	val static DEFAULT_BACKGROUND_COLOR = newColor(255, 255, 255)
-		
 	@Inject ISemanticHighlightingCalculator calculator
 	@Inject TextAttributeProvider stylesProvider
 	@Inject XtextResourceSet resourceSet
@@ -69,8 +68,10 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 		val List<StyleRange> styles = event.styles.filter[length > 0].sortBy[start].toList
 
 		if (escaped.trim().startsWith(IMPORT)) {
-			styles.merge(new StyleRange(event.lineOffset + PROMPT_ANSI.length, IMPORT.length, KEYWORD_COLOR, DEFAULT_BACKGROUND_COLOR) => [
-				fontStyle = SWT.BOLD 
+			styles.merge(new StyleRange(event.lineOffset + PROMPT_ANSI.length, IMPORT.length, keywordColor, null) => [
+				if (!environmentHasDarkTheme) {
+					fontStyle = SWT.BOLD 
+				}
 			])
 		} else {
 			val resource = parseIt(programHeader + escaped + programFooter)

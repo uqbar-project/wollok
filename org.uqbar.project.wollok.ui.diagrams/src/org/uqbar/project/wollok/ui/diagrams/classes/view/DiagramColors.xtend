@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Display
  */
 class DiagramColors {
 	
+	// Static Diagram
 	public static val CLASS_FOREGROUND = new Color(null, 0, 0, 0)
 	public static val CLASS_BACKGROUND = new Color(null, 255, 229, 236)
 	public static val IMPORTED_CLASS_FOREGROUND = new Color(null, 31, 46, 46)
@@ -26,17 +27,16 @@ class DiagramColors {
 	
 	// Dynamic Diagram
 	public static val DYNAMIC_DIAGRAM_WHITE = new Color(null, 255, 255, 255)
-	public static val DYNAMIC_DIAGRAM_GREEN = new Color(null, 199, 224, 217)
 	public static val DYNAMIC_DIAGRAM_BLUE = new Color(null, 199, 206, 224)
 
 	public static val OBJECTS_VALUE_NULL = DYNAMIC_DIAGRAM_WHITE
-	public static val OBJECTS_WRE_BACKGROUND = DYNAMIC_DIAGRAM_GREEN
+	public static val OBJECTS_VALUE_NULL_DARK = DYNAMIC_DIAGRAM_WHITE
+	public static val OBJECTS_WRE_BACKGROUND = CLASS_BACKGROUND
+	public static val OBJECTS_WRE_BACKGROUND_DARK = new Color(null, 173, 224, 201)
 	public static val OBJECTS_CUSTOM_BACKGROUND = DYNAMIC_DIAGRAM_BLUE
-	public static val OBJECTS_WRE_BACKGROUND_COLORBLIND = CLASS_BACKGROUND
-	public static val OBJECTS_CUSTOM_BACKGROUND_COLORBLIND = DYNAMIC_DIAGRAM_BLUE
+	public static val OBJECTS_CUSTOM_BACKGROUND_DARK = new Color(null, 32, 159, 223)
 	
 	// FONTS
-	
 	public static val SYSTEM_FONT = Display.getDefault.systemFont.fontData.get(0)
 	
 	public static val CLASS_NAME_FONT = new Font(Display.getDefault, SYSTEM_FONT.name, SYSTEM_FONT.height.intValue + 2, SWT.BOLD)

@@ -58,7 +58,7 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 			val consoleManager = ConsolePlugin.getDefault().consoleManager
 			consoleManager.consoles.forEach [ shutdown ]
 			consoleManager.removeConsoles(consoleManager.consoles)
-			val console = new WollokReplConsole(configuration, mode)
+			val console = new WollokReplConsole(configuration, preferenceStoreAccess.noAnsiFormat, mode)
 			consoleManager.addConsoles(#[console])
 			console.startForProcess(launch.processes.get(0))
 		}
@@ -97,6 +97,7 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 		new WollokLauncherParameters => [
 			eventsPort = eventPort
 			requestsPort = requestPort
+			noAnsiFormat = preferenceStoreAccess.noAnsiFormat
 			wollokFiles += config.wollokFile
 			severalFiles = config.severalFiles
 			folder = config.folder
@@ -104,6 +105,7 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 			validate = config.hasRepl // Validate when the user enters code in the REPL.
 			dynamicDiagramActivated = config.dynamicDiagramActivated
 			libraries = config.libraries
+			darkMode = config.darkMode
 			if (config.hasRepl && preferenceStoreAccess.dynamicDiagramActivated) {
 				dynamicDiagramPort = Activator.getDefault.wollokDynamicDiagramListeningPort
 			}

@@ -12,6 +12,8 @@ import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.TerminalRule
 import org.eclipse.xtext.nodemodel.INode
 
+import static org.uqbar.project.wollok.utils.WEclipseUtils.*
+
 import static extension org.uqbar.project.wollok.ui.console.highlight.WTextExtensions.*
 
 /**
@@ -29,17 +31,29 @@ import static extension org.uqbar.project.wollok.ui.console.highlight.WTextExten
  * @author jfernandes
  */
 class WollokConsoleHighlighter {
-	public static val KEYWORD_COLOR = new Color(null, new RGB(127, 0, 85))
+	public static val KEYWORD_COLOR_LIGHT = new Color(null, new RGB(127, 0, 85))
+	public static val KEYWORD_COLOR_DARK = new Color(null, new RGB(73, 156, 213))
 
-	val terminalColors = #{
+	val terminalColorsLight = #{
 		"STRING" -> newColor(42, 0, 255),
 		"INT" -> newColor(125, 125, 125),
 		"SL_COMMENT" -> newColor(62, 127, 95),
 		"ML_COMMENT" -> newColor(62, 127, 95)
 	}
+
+	val terminalColorsDark = #{
+		"STRING" -> newColor(205, 144, 105),
+		"INT" -> newColor(180, 205, 168),
+		"SL_COMMENT" -> newColor(119, 183, 103),
+		"ML_COMMENT" -> newColor(119, 183, 103)
+	}
+	
+	def terminalColors() {
+		if (environmentHasDarkTheme) terminalColorsDark else terminalColorsLight  
+	} 
 	
 	def boolean allSymbols(String value) {
-		for(var i = 0; i < value.length; i++) {
+		for (var i = 0; i < value.length; i++) {
 			if (Character.isLetterOrDigit(value.charAt(i))) return false
 		}
 		return true
@@ -47,8 +61,12 @@ class WollokConsoleHighlighter {
 	
 	def dispatch processASTNode(List<StyleRange> styles, INode n, Keyword it, LineStyleEvent event, int headerLength) { 
 		if (value.length > 1 && !value.allSymbols) {
-			addStyle(event, n, headerLength, styles, "KEYWORD", KEYWORD_COLOR, null, SWT.BOLD)
+			addStyle(event, n, headerLength, styles, "KEYWORD", keywordColor, null, if (environmentHasDarkTheme) SWT.NORMAL else SWT.BOLD)
 		}
+	}
+	
+	def static keywordColor() {
+		if (environmentHasDarkTheme) KEYWORD_COLOR_DARK else KEYWORD_COLOR_LIGHT
 	}
 	
 	def dispatch processASTNode(List<StyleRange> styles, INode n, RuleCall it, LineStyleEvent event, int headerLength) {
@@ -60,7 +78,6 @@ class WollokConsoleHighlighter {
 	}
 	
 	def dispatch processASTNode(List<StyleRange> styles, INode n, EObject it, LineStyleEvent event, int headerLength) {
-//		println("UNKNOWN " + it)
 	}
 
 	def dispatch processASTNode(List<StyleRange> styles, INode n, Void it, LineStyleEvent event, int headerLength) { }
@@ -83,5 +100,5 @@ class WollokConsoleHighlighter {
 			addStyle(event, n, headerLength, styles, name, terminalColors.get(name))
 		}
 	}
+	
 }
-

@@ -6,11 +6,11 @@ import org.eclipse.swt.SWT
 import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer
-import org.eclipse.xtext.ui.preferences.OptionsConfigurationBlock
 import org.uqbar.project.wollok.ui.Messages
-import static extension org.uqbar.project.wollok.ui.preferences.WPreferencesUtils.*
 
-class WollokDynamicDiagramConfigurationBlock extends OptionsConfigurationBlock {
+import static org.uqbar.project.wollok.ui.preferences.WPreferencesUtils.*
+
+class WollokDynamicDiagramConfigurationBlock extends WollokAbstractConfigurationBlock {
 	
 	public static val ACTIVATE_DYNAMIC_DIAGRAM_REPL = "WollokDynamicDiagram_IntegrateRepl"
 	
@@ -31,14 +31,6 @@ class WollokDynamicDiagramConfigurationBlock extends OptionsConfigurationBlock {
 		
 	}
 	
-	override protected getBuildJob(IProject project) {}
-	
-	override protected getFullBuildDialogStrings(boolean workspaceSettings) {}
-	
 	override getPropertyPrefix() { "DynamicDiagramConfiguration" }
-	
-	override protected validateSettings(String changedKey, String oldValue, String newValue) {
-		
-	}
 	
 }

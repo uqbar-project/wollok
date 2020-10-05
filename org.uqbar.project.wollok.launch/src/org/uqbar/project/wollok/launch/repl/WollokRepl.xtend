@@ -16,12 +16,12 @@ import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.launch.WollokLauncher
 import org.uqbar.project.wollok.wollokDsl.WFile
 
+import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.launch.Messages.*
 import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import static org.uqbar.project.wollok.WollokConstants.*
 
 /**
  * 

@@ -199,7 +199,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(WARN)
 	@CheckGroup(WollokCheckGroup.NAMING_CONVENTION)
-	def referenciableNameMustStartWithLowerCase(WNamedObject c) {
+	def namedObjectMustStartWithLowerCase(WNamedObject c) {
 		if(Character.isUpperCase(c.name.charAt(0))) report(WollokDslValidator_OBJECT_NAME_MUST_START_LOWERCASE, c,
 			WNAMED__NAME, OBJECT_NAME_MUST_START_LOWERCASE)
 	}
@@ -207,7 +207,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(WARN)
 	@CheckGroup(WollokCheckGroup.NAMING_CONVENTION)
-	def referenciableNameMustStartWithLowerCase(WParameter c) {
+	def parameterNameMustStartWithLowerCase(WParameter c) {
 		if(Character.isUpperCase(c.name.charAt(0))) report(WollokDslValidator_PARAMETER_NAME_MUST_START_LOWERCASE, c,
 			WNAMED__NAME, PARAMETER_NAME_MUST_START_LOWERCASE)
 	}
@@ -215,7 +215,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(WARN)
 	@CheckGroup(WollokCheckGroup.NAMING_CONVENTION)
-	def referenciableNameMustStartWithLowerCase(WVariable c) {
+	def variableNameMustStartWithLowerCase(WVariable c) {
 		if(Character.isUpperCase(c.name.charAt(0)) && !c.isGlobal) report(WollokDslValidator_VARIABLE_NAME_MUST_START_LOWERCASE, c,
 			WNAMED__NAME, VARIABLE_NAME_MUST_START_LOWERCASE)
 	}
@@ -1075,6 +1075,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	
 	@Check
 	@DefaultSeverity(WARN)
+	@CheckGroup(WollokCheckGroup.NAMING_CONVENTION)
 	def classNameCannotBeCoreReservedWord(WClass c) {
 		if (ALL_LIBS_FILE.contains(c.eResource.URI.lastSegment)) {
 			return
@@ -1274,7 +1275,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(WARN)
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
-	def noEffectlessExpressionsInSequence(WProgram sequence) {
+	def noEffectlessExpressionsInProgram(WProgram sequence) {
 		sequence.elements.allButLast.forEach[ it, index |
 			if (isPure)
 				report(WollokDslValidator_INVALID_EFFECTLESS_EXPRESSION_IN_SEQUENCE, it.eContainer, WPROGRAM__ELEMENTS, index)
