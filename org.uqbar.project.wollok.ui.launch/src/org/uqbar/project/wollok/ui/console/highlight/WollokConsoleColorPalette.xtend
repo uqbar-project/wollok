@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.ui.console.highlight
 
 import org.eclipse.swt.graphics.RGB
 import static extension org.uqbar.project.wollok.utils.OperatingSystemUtils.*
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**
  * 
@@ -15,7 +16,7 @@ class WollokConsoleColorPalette {
     public static val PALETTE_XTERM = "paletteXTerm"
 
     // http://en.wikipedia.org/wiki/ANSI_escape_code
-    val static RGB[] paletteVGA = #[
+    val static RGB[] paletteVGA_light = #[
         new RGB(  0,   0,   0), // black
         new RGB(170,   0,   0), // red
         new RGB(  0, 170,   0), // green
@@ -33,6 +34,26 @@ class WollokConsoleColorPalette {
         new RGB( 85, 255, 255), // bright cyan
         new RGB(255, 255, 255)  // white
     ]
+
+    val static RGB[] palette_dark = #[
+        new RGB(  0,   0,   0), // black
+        new RGB(170,   0,   0), // red
+        new RGB(  0, 170,   0), // green
+        new RGB(170,  85,   0), // brown/yellow
+        new RGB( 37, 131, 218), // blue
+        new RGB(170,   0, 170), // magenta
+        new RGB( 10, 246, 250), // cyan
+        new RGB(170, 170, 170), // gray
+        new RGB( 85,  85,  85), // dark gray
+        new RGB(255,  85,  85), // bright red
+        new RGB( 85, 255,  85), // bright green
+        new RGB(255, 255,  85), // yellow
+        new RGB( 85,  85, 255), // bright blue
+        new RGB(255,  85, 255), // bright magenta
+        new RGB( 85, 255, 255), // bright cyan
+        new RGB(255, 255, 255)  // white
+    ]
+
     val static RGB[] paletteXP = #[
         new RGB(  0,   0,   0), // black
         new RGB(128,   0,   0), // red
@@ -51,6 +72,7 @@ class WollokConsoleColorPalette {
         new RGB(  0, 255, 255), // bright cyan
         new RGB(255, 255, 255)  // white
     ]
+
     val static RGB[] paletteMac = #[
         new RGB(  0,   0,   0), // black
         new RGB(194,  54,  33), // red
@@ -69,6 +91,7 @@ class WollokConsoleColorPalette {
         new RGB( 20, 240, 240), // bright cyan
         new RGB(233, 235, 235)  // white
     ]
+
     static val RGB[] palettePuTTY = #[
         new RGB(  0,   0,   0), // black
         new RGB(187,   0,   0), // red
@@ -87,7 +110,8 @@ class WollokConsoleColorPalette {
         new RGB( 85, 255, 255), // bright cyan
         new RGB(255, 255, 255)  // white
     ]
-    static val RGB[] paletteXTerm = #[
+
+    static val RGB[] paletteXTerm_light = #[
         new RGB(  0,   0,   0), // black
         new RGB(205,   0,   0), // red
         new RGB(  0, 205,   0), // green
@@ -146,8 +170,10 @@ class WollokConsoleColorPalette {
 
     def static void setPalette(String paletteName) {
         currentPaletteName = paletteName
-        if (PALETTE_VGA.equalsIgnoreCase(paletteName))
-            palette = paletteVGA
+        if (environmentHasDarkTheme) 
+        	palette = palette_dark
+        else if (PALETTE_VGA.equalsIgnoreCase(paletteName))
+            palette = paletteVGA_light
         else if (PALETTE_WINXP.equalsIgnoreCase(paletteName))
             palette = paletteXP
         else if (PALETTE_MAC.equalsIgnoreCase(paletteName))
@@ -155,7 +181,7 @@ class WollokConsoleColorPalette {
         else if (PALETTE_PUTTY.equalsIgnoreCase(paletteName))
             palette = palettePuTTY
         else if (PALETTE_XTERM.equalsIgnoreCase(paletteName))
-            palette = paletteXTerm
+            palette = paletteXTerm_light
         else {
             if (isOsWindows)
                 setPalette(PALETTE_WINXP)

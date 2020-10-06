@@ -33,6 +33,8 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WollokDslFactory
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
+import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
+import org.eclipse.osgi.util.NLS
 
 import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.validation.WollokDslValidator.*
@@ -44,8 +46,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import static extension org.uqbar.project.wollok.utils.StringUtils.*
-import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
-import org.eclipse.osgi.util.NLS
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**
  * Custom quickfixes.
@@ -599,7 +600,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		// create local var
 		if (canCreateLocalVariable) {
 			issueResolutionAcceptor.accept(issue, Messages.WollokDslQuickFixProvider_create_local_variable_name,
-				Messages.WollokDslQuickFixProvider_create_local_variable_description, "variable.gif") [ e, context |
+				Messages.WollokDslQuickFixProvider_create_local_variable_description, 'variable' + themeSuffix + '.png') [ e, context |
 				val newVarName = xtextDocument.get(issue.offset, issue.length)
 				val firstExpressionInContext = e.firstExpressionInContext
 				context.insertBefore(firstExpressionInContext, VAR + " " + newVarName)
@@ -609,7 +610,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		// create instance var
 		if (hasMethodContainer) {
 			issueResolutionAcceptor.accept(issue, Messages.WollokDslQuickFixProvider_create_instance_variable_name,
-				Messages.WollokDslQuickFixProvider_create_instance_variable_description, "variable.gif") [ e, context |
+				Messages.WollokDslQuickFixProvider_create_instance_variable_description, 'variable' + themeSuffix + '.png') [ e, context |
 				val newVarName = xtextDocument.get(issue.offset, issue.length)
 				e.declaringContext.insertVariable(newVarName, context)
 			]
@@ -618,7 +619,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		// create parameter
 		if (hasParameters) {
 			issueResolutionAcceptor.accept(issue, Messages.WollokDslQuickFixProvider_add_parameter_method_name,
-				Messages.WollokDslQuickFixProvider_add_parameter_method_description, "variable.gif") [ e, context |
+				Messages.WollokDslQuickFixProvider_add_parameter_method_description, 'variable' + themeSuffix + '.png') [ e, context |
 				val newVarName = xtextDocument.get(issue.offset, issue.length)
 				val method = (e as WExpression).method
 				method.parameters += (WollokDslFactory.eINSTANCE.createWParameter => [name = newVarName])
@@ -661,7 +662,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			issueResolutionAcceptor.accept(issue,
 				NLS.bind(Messages.WollokDslQuickFixProvider_add_import_name, nameWithWildcard),
 				NLS.bind(Messages.WollokDslQuickFixProvider_add_import_description, nameWithWildcard),
-				"w.png", [ e, context |
+				"file_wlk.png", [ e, context |
 					xtextDocument.insertWildcardImport(e, nameWithWildcard)
 				], 1)
 			issueResolutionAcceptor.accept(issue,

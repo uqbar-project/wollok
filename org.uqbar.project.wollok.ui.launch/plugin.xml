@@ -17,7 +17,7 @@
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
       <launchConfigurationTypeImage
-            icon="icons/w.png"
+            icon="icons/file_wlk.png"
             configTypeID="org.uqbar.project.wollok.ui.launch.WollokLaunchConfigurationType"
             id="org.uqbar.project.wollok.ui.launch.WollokLaunchConfigurationTypeImage">
       </launchConfigurationTypeImage>
@@ -29,7 +29,7 @@
       <launchConfigurationType
             id="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationType"
             modes="run"
-            icon="icons/w.png"
+            icon="icons/file_wlk.png"
             name="%wollok.launch.tests"
             delegate="org.uqbar.project.wollok.ui.launch.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchDelegate"
             sourceLocatorId="org.uqbar.project.wollok.ui.launch.sourceLocator"
@@ -40,7 +40,7 @@
       <launchConfigurationType
             id="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationType"
             modes="run"
-            icon="icons/w.png"
+            icon="icons/file_wlk.png"
             name="%wollok.launch.testsWithDynamicDiagram"
             delegate="org.uqbar.project.wollok.ui.launch.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchDelegate"
             sourceLocatorId="org.uqbar.project.wollok.ui.launch.sourceLocator"
@@ -129,7 +129,7 @@
       <shortcut
             class="org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchShortcutWithRepl"
             description="Launch Wollok with Repl"
-            icon="icons/w.png"
+            icon="icons/file_wlk.png"
             id="org.uqbar.project.wollok.ui.launch.shortcut.repl"
             label="Launch with Repl"
             modes="run">
@@ -173,7 +173,7 @@
       <shortcut
             class="org.uqbar.project.wollok.ui.tests.shortcut.WollokTestDynamicDiagramLaunchShortcut"
             description="Launch Wollok Tests with Dynamic Diagram"
-            icon="icons/run_test_with_dynamic_diagram.png"
+            icon="icons/file_wtest_dynamic_diagram.png"
             id="org.uqbar.project.wollok.ui.testsWithDynamicDiagram.shortcut"
             label="%wollok.launch.testsWithDynamicDiagram"
             modes="run">

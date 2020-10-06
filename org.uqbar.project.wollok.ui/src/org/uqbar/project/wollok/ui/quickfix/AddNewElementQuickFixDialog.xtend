@@ -442,7 +442,7 @@ class WollokMethodContainerLabelProvider extends LabelProvider {
 	}
 
 	def dispatch getImage(Object element) {
-		showImage("w.png")
+		showImage("file_wlk.png")
 	}
 
 	def showImage(String path) {

@@ -32,9 +32,4 @@ object incompatibility {
 		// XPEC T warnings --> "Type system: expected <<Boolean>> but found <<String>>" at "{n => "ERROR"}"
 		// return [1,2,3].any({n => "ERROR"})
 	// }
-	
-	method infinite_closure_type(c) {
-		// XPECT warnings --> "Type system: Infinite recursive type" at "c"
-		return [c].filter(c)
-	}	
 }

@@ -24,6 +24,7 @@ import org.uqbar.project.wollok.ui.diagrams.Messages
 import org.uqbar.project.wollok.ui.diagrams.classes.StaticDiagramConfiguration
 
 import static extension org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ImageSaveUtil.*
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**
  * 
@@ -51,7 +52,7 @@ class ExportAction extends Action {
 	
 	def void init() {
 		toolTipText = Messages.StaticDiagram_Export_Description
-		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/export.png")	
+		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/export-icon" + themeSuffix + ".png")	
 	}
 	
 	override run() {
@@ -135,7 +136,7 @@ class ShowVariablesToggleButton extends Action implements Observer {
 		this.configuration = configuration
 		this.configuration.addObserver(this)
 		this.checked = configuration.showVariables
-		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/show-variables-small.png")
+		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/show-variables" + themeSuffix + ".png")
 	}
 
 	override run() {
@@ -161,7 +162,7 @@ class RememberShapePositionsToggleButton extends Action implements Observer {
 		this.configuration = configuration
 		this.configuration.addObserver(this)
 		this.checked = configuration.isRememberLocationsAndSizes
-		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/push-pin.png")
+		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/push-pin" + themeSuffix + ".png")
 	}
 	
 	

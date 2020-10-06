@@ -17,10 +17,14 @@ import org.eclipse.gef.NodeEditPart
 import org.eclipse.gef.Request
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart
 import org.eclipse.gef.editpolicies.ComponentEditPolicy
+import org.eclipse.jface.resource.JFaceResources
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.view.DiagramColors
 import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
+
+import static org.uqbar.project.wollok.utils.WEclipseUtils.*
+import org.eclipse.swt.graphics.Color
 
 /**
  * 
@@ -55,14 +59,17 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 			layoutManager = new StackLayout
 		
 			this.ellipse = createShape() => [
-				backgroundColor = colorFor(castedModel)
-				lineWidth = lineWidthFor(castedModel)				
+				backgroundColor = backgroundColorFor(castedModel)
+				lineWidth = lineWidthFor(castedModel)
 				opaque = true
 			]
 			add(this.ellipse)
 			add(new Label => [
 				text = castedModel.valueString
-				setSize(75, 25)
+				if (environmentHasDarkTheme) {
+					// setFont = JFaceResources.fontRegistry.getBold(JFaceResources.DEFAULT_FONT) 
+					foregroundColor = new Color(null, 0, 0, 0)
+				}
 			])
 		]
 	}
@@ -71,14 +78,19 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 		new Ellipse
 	}
 	
-	def colorFor(VariableModel model) {
-		val configuration = DynamicDiagramConfiguration.instance
+	def backgroundColorFor(VariableModel model) {
 		if (model.valueString == "null")
-			DiagramColors.OBJECTS_VALUE_NULL
-		else if (model.isUserDefined)
-			if (configuration.colorBlindEnabled) DiagramColors.OBJECTS_CUSTOM_BACKGROUND_COLORBLIND else DiagramColors.OBJECTS_CUSTOM_BACKGROUND
-		else
-			if (configuration.colorBlindEnabled) DiagramColors.OBJECTS_WRE_BACKGROUND_COLORBLIND else DiagramColors.OBJECTS_WRE_BACKGROUND
+			if (environmentHasDarkTheme) {
+				DiagramColors.OBJECTS_VALUE_NULL_DARK
+			} else {
+				DiagramColors.OBJECTS_VALUE_NULL
+			}
+		else if (model.isUserDefined) {
+			if (environmentHasDarkTheme) DiagramColors.OBJECTS_CUSTOM_BACKGROUND_DARK else DiagramColors.OBJECTS_CUSTOM_BACKGROUND
+		}
+		else {
+			if (environmentHasDarkTheme) DiagramColors.OBJECTS_WRE_BACKGROUND_DARK else DiagramColors.OBJECTS_WRE_BACKGROUND
+		}
 	}
 
 	def lineWidthFor(VariableModel model) {

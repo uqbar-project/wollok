@@ -9,11 +9,12 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo
+import org.uqbar.project.wollok.typesystem.exceptions.CannotBeVoidException
 
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
+import static extension org.uqbar.project.wollok.typesystem.constraints.types.RecursiveTypeValidator.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
-import org.uqbar.project.wollok.typesystem.exceptions.CannotBeVoidException
 
 /**
  * @author npasserini
@@ -110,6 +111,7 @@ class UnifyVariables extends AbstractInferenceStrategy {
 	// ************************************************************************
 	def copyTypeInfoFrom(TypeVariable v1, TypeVariable v2) {
 		try {
+			v2.typeInfo.validateRecursiveType(newArrayList(v1))
 			v1.typeInfo = v2.typeInfo
 			changed = true
 			Ready

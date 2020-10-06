@@ -118,11 +118,6 @@ class DynamicDiagramView extends AbstractDiagramView implements IStackFrameConsu
 		]
 
 		site.actionBars.toolBarManager => [
-//			add(new ZoomComboContributionItem(site.workbenchWindow.activePage, #{
-//				ZoomManager.FIT_ALL,
-//				ZoomManager.FIT_HEIGHT,
-//				ZoomManager.FIT_WIDTH
-//			} as String[]))
 			add(zoomIn)
 			add(zoomOut)
 			add(colorBlindAction)

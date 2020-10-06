@@ -18,13 +18,12 @@ class KeyboardListenerTest {
 	
 	@Before
 	def void init() {
-		val ANY_KEY = 0
 		gameboard = mock(Gameboard)
 		keyboard = mock(Keyboard)
 		action = mock(Runnable)
 		
 		Keyboard.instance = keyboard		
-		listener = new KeyboardListener(ANY_KEY, action)
+		listener = new KeyboardListener("ANY", action)
 	}
 	
 	@Test

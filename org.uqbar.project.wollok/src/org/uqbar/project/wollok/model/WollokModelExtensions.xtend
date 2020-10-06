@@ -15,6 +15,7 @@ import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.impl.ImportNormalizer
 import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.WollokConstants
+import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
@@ -73,13 +74,12 @@ import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 import wollok.lang.Exception
 
 import static org.uqbar.project.wollok.WollokConstants.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 import static extension org.uqbar.project.wollok.libraries.WollokLibExtensions.*
 import static extension org.uqbar.project.wollok.model.ResourceUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
-import static extension org.uqbar.project.wollok.sdk.WollokSDK.*
-import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 
 /**
  * Extension methods to Wollok semantic model.
@@ -957,4 +957,5 @@ class WollokModelExtensions {
 
 	def static dispatch boolean hasNamedParameters(WPositionalArgumentsList l) { false }
 	def static dispatch boolean hasNamedParameters(WNamedArgumentsList l) { true }
+	
 }

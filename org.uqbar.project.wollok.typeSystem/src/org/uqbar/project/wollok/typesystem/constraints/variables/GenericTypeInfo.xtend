@@ -15,10 +15,10 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.Concrete
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.CompatibilityTypes.isCompatible
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.MessageLookupExtensions.*
+import static extension org.uqbar.project.wollok.typesystem.constraints.types.RecursiveTypeValidator.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.SubtypingRules.isSuperTypeOf
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.AnalysisResultReporter.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
-import org.uqbar.project.wollok.typesystem.exceptions.InfiniteRecursiveTypeException
 
 class GenericTypeInfo extends TypeInfo {
 	@Accessors
@@ -112,19 +112,15 @@ class GenericTypeInfo extends TypeInfo {
 		}
 	}
 	
-	def dispatch validateInfiniteRecursiveType(WollokType type, TypeVariable offender, MaximalConcreteTypes maxTypes) {
-		// No possible 
+	def validateInfiniteRecursiveType(WollokType it, TypeVariable offender, MaximalConcreteTypes maxTypes) {
+		try {
+			doValidateRecursiveType(users)
+		} catch(TypeSystemException typeError) {
+			offender.addError(typeError)
+			maxTypes.state = Error	
+		}
 	}
 	
-	def dispatch validateInfiniteRecursiveType(GenericTypeInstance it, TypeVariable offender, MaximalConcreteTypes maxTypes) {
-		typeParameters.values.forEach[paramVar | 
-			if (users.contains(paramVar)) {
-				offender.addError(new InfiniteRecursiveTypeException(offender))
-				maxTypes.state = Error	
-			}
-		]
-			
-	}
 
 	/** 
 	 * Join maxtype information coming from two different tvar's. Null information has to be taken care from both sides, 

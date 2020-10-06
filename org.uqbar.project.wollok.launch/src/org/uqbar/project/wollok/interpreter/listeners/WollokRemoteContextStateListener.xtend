@@ -10,6 +10,7 @@ import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrame
 import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrameVariable
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.api.XInterpreterListener
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 class WollokRemoteContextStateListener implements XInterpreterListener {
 
@@ -21,6 +22,7 @@ class WollokRemoteContextStateListener implements XInterpreterListener {
 	boolean firstTime = true
 	boolean forRepl
 	List<XDebugStackFrameVariable> variables
+	Boolean singleTest = null
 
 	new(WollokInterpreter interpreter, int requestPort, boolean forRepl) {
 		this.forRepl = forRepl
@@ -33,7 +35,10 @@ class WollokRemoteContextStateListener implements XInterpreterListener {
 	override started() {}
 
 	override terminated() {
-		this.detectChanges(!forRepl)
+		if (singleTest === null) {
+			singleTest = false
+		}
+		this.detectChanges(!forRepl && singleTest)
 		variables.notifyPossibleStateChanged	
 	}
 
@@ -44,7 +49,10 @@ class WollokRemoteContextStateListener implements XInterpreterListener {
 	override aboutToEvaluate(EObject element) {}
 
 	override evaluated(EObject element) {
-		if (!forRepl) {
+		if (singleTest === null) {
+			singleTest = element.isSingleTest
+		}
+		if (!forRepl && singleTest) {
 			this.detectChanges(false)
 		}
 	}

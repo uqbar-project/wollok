@@ -6,6 +6,7 @@ import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.swt.graphics.Image;
 import org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages;
 import org.uqbar.project.wollok.ui.launch.Activator;
+import org.uqbar.project.wollok.utils.WEclipseUtils;
 
 public enum WollokTestState {
 	PENDING {
@@ -53,7 +54,7 @@ public enum WollokTestState {
 	ERROR {
 		@Override
 		public String getImageName() {
-			return "icons/test_error.png";
+			return "icons/test_error" + WEclipseUtils.themeSuffix() + ".png";
 		}
 
 		@Override
@@ -75,7 +76,7 @@ public enum WollokTestState {
 	RUNNING {
 		@Override
 		public String getImageName() {
-			return "icons/test_run.png";
+			return "icons/test_run" + WEclipseUtils.themeSuffix() + ".png";
 		}
 
 		@Override
@@ -97,7 +98,7 @@ public enum WollokTestState {
 	ASSERT {
 		@Override
 		public String getImageName() {
-			return "icons/test_fail.png";
+			return "icons/test_fail" + WEclipseUtils.themeSuffix() + ".png";
 		}
 
 		@Override

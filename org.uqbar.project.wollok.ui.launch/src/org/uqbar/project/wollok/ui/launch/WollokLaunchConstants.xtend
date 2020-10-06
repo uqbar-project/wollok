@@ -33,6 +33,7 @@ class WollokLaunchConstants {
 	public static val ATTR_WOLLOK_LIBS = "ATTR_WOLLOK_LIBS"
 	public static val ATTR_RESTARTING_STATE = "ATTR_RESTARTING_STATE"
 	public static val ATTR_LAST_COMMANDS = "ATTR_LAST_COMMANDS"
+	public static val ATTR_WOLLOK_DARK_MODE = "ATTR_WOLLOK_DARK_MODE"
 	
 	static def getCommandPort(ILaunchConfiguration config) {
 		config.getAttribute(ATTR_WOLLOK_DEBUG_COMMAND_PORT, -1) // -1 ?

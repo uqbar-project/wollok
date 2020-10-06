@@ -202,6 +202,12 @@ public class Messages extends NLS {
 	public static String WollokNumbersPreferencePage_numberCoercingStrategy;
 	public static String WollokNumbersPreferencePage_numberPrintingStrategy;
 
+	// ****************************
+	// ** Console preference page
+	// ****************************
+	public static String WollokConsolePreferencePage_output_formatter;
+	public static String WollokConsolePreferencePage_regular_description;
+	public static String WollokConsolePreferencePage_ansiColored_description;
 	
 	// **************************************
 	// ** Dynamic diagram preference page

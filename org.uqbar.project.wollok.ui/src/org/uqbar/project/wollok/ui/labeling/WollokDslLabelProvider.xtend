@@ -31,6 +31,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import static extension org.uqbar.project.wollok.WollokConstants.*
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**
  * Provides labels for EObjects.
@@ -54,7 +55,7 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 		switch (eResource.URI.fileExtension) {
 			case TEST_EXTENSION: "file_wtest.png"
 			case PROGRAM_EXTENSION: "file_wpgm.png"
-			default: "w.png"
+			default: "file_wlk.png"
 		}
 	}
 
@@ -112,24 +113,24 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	def image(WVariableDeclaration it) { 
 		if (property) {
 			if (writeable) 
-				'property-small.png'
+				'property.png'
 			else
-				'property-const-small.png'
+				'property-const.png'
 		} else {
 			if (writeable)
-				'variable-small.png'
+				'variable' + themeSuffix + '.png'
 			else 
-				'constant-small.png'
+				'constant' + themeSuffix + '.png'
 		} 
 	}
 
 	def text(WVariable it) { name + concatResolvedType(": ", it) }
 
-	def image(WVariable ele) { 'variable.gif' }
+	def image(WVariable ele) { 'variable' + themeSuffix + '.png' }
 
 	def text(WParameter it) { textForParam }
 
-	def image(WParameter ele) { 'variable.gif' }
+	def image(WParameter ele) { 'variable' + themeSuffix + '.png' }
 
 	def textForParam(WReferenciable it) { // solo para wparam y wclosureparam
 		name + concatResolvedType(": ", it)

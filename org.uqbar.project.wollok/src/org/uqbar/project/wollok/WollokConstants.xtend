@@ -38,7 +38,10 @@ class WollokConstants {
 	public static val DEFAULT_FILE_PREFIX_SIZE = 5 
 
 	public static val LIBRARY_FOLDER = "org.uqbar.project.wollok.lib"
-		
+
+	public static val REGULAR_FORMATTER = "Regular"
+	public static val ANSI_COLORED_FORMATTER = "ANSI-Colored"
+
 	// grammar elements here for being used in quickfixes, validators, and
 	// any code that generates wollok code
 	
