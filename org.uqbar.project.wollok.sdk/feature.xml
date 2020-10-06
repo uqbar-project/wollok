@@ -2,7 +2,7 @@
 <feature
       id="org.uqbar.project.wollok.sdk"
       label="Wollok Language Feature"
-      version="2.0.1"
+      version="2.0.2"
       provider-name="Uqbar Foundation"
       os="linux,macosx,win32">
 
