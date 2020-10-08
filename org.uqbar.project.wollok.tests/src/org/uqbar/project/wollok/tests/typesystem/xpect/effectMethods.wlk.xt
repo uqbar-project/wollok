@@ -17,7 +17,7 @@ object pepita {
 	}
 }
 
-object entrenador {
+class Entrenador {
 	// XPECT effectStatus --> Change
 	method liberar(ave) {
 		ave.volar(10)

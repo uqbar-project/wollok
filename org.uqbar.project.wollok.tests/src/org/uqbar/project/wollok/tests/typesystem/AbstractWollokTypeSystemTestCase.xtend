@@ -164,11 +164,11 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	}
 	
 	def assertEffectOf(EObject program, EffectStatus expectedEffect, String programToken) {
-		assertEquals("Unmatched effect status for '" + programToken + "'", expectedEffect, program.findByText(programToken).effectStatus)
+		assertEquals("Unmatched effect status for '" + programToken + "'", expectedEffect.name, program.findByText(programToken).effectStatus.name)
 	}
 	
 	def assertEffectOfMethod(EObject program, EffectStatus expectedEffect, String methodFQN) {
-		assertEquals("Unmatched effect status for method '" + methodFQN + "'", expectedEffect, findMethod(methodFQN).effectStatus)
+		assertEquals("Unmatched effect status for method '" + methodFQN + "'", expectedEffect.name, findMethod(methodFQN).effectStatus.name)
 	}
 
 	def noIssues(EObject program) {
