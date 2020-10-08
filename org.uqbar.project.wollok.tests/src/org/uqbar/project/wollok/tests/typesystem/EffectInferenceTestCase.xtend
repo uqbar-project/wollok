@@ -48,9 +48,16 @@ class EffectInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertEffectOfMethod(Nothing, "o.m")
 		]
 	}
+	
+	@Test
+	def void local_change_not_produce_effect() {
+		''' object o { method m() { var x = 1; x = 2 } } '''.parseAndInfer.asserting [
+			assertEffectOfMethod(Nothing, "o.m")
+		]
+	}
 
 	@Test
-	def void method_produce_effect() {
+	def void method_produce_effect_on_named_object() {
 		''' object o { 
 			var x
 			method m() {
@@ -68,8 +75,7 @@ class EffectInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			object o { 
 				var x = 1
 				method m(ave) {
-					ave.comer(x) 
-					return 42
+					ave.comer(x)
 				}
 			}
 			
@@ -101,6 +107,62 @@ class EffectInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			assertEffectOfMethod(Nothing, "o.m")
+		]
+	}
+	
+	@Test
+	def void method_produce_effect_on_class_instance() {
+		''' 
+		class C { 
+			var x
+			method m() {
+				x = 1 
+			}
+		} 
+		'''.parseAndInfer.asserting [
+			assertEffectOfMethod(Change, "C.m")
+		]
+	}
+	
+	@Test
+	def void method_produce_effect_locally_on_class_instance() {
+		''' 
+		class C { 
+			var x
+			method m() {
+				x = 1 
+			}
+		}
+		
+		object o {
+			method t() {
+				new C().m()
+			}
+		} 
+		'''.parseAndInfer.asserting [
+			assertEffectOfMethod(Change, "C.m")
+			assertEffectOfMethod(Nothing, "o.t")
+		]
+	}
+	
+	@Test
+	def void method_produce_effect_non_locally_on_class_instance() {
+		''' 
+		class C { 
+			var x
+			method m() {
+				x = 1 
+			}
+		}
+		
+		object o {
+			method t(c) {
+				c.m()
+			}
+		} 
+		'''.parseAndInfer.asserting [
+			assertEffectOfMethod(Change, "C.m")
+			assertEffectOfMethod(Change, "o.t")
 		]
 	}
 }
