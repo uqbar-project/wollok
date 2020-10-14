@@ -8,11 +8,11 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
 @Accessors
 abstract class EffectStatus {
-	val EObject context
+	val TypeVariable context
 
 	def static Change() { new Change(null) }
 
-	def static Change(EObject context) { new Change(context) }
+	def static Change(TypeVariable context) { new Change(context) }
 
 	def static Nothing() { new Nothing() }
 
@@ -24,7 +24,7 @@ abstract class EffectStatus {
 		this.context = null
 	}
 
-	new(EObject context) {
+	new(TypeVariable context) {
 		this.context = context
 	}
 
@@ -37,7 +37,7 @@ abstract class EffectStatus {
 
 class Change extends EffectStatus {
 
-	new(EObject context) {
+	new(TypeVariable context) {
 		super(context)
 	}
 
@@ -72,10 +72,11 @@ class EffectStatusExtensions {
 	}
 
 	static def contextualizeChange(EffectStatus change, EffectStatus other, TypeVariable tvar) {
-		if (change.context === null || change.context.isGlobal) { // Global change
+		val context = change.context?.programElement
+		if (context === null || context.isGlobal) { // Global change
 			return change
 		}
-		if (tvar.contextAffects(change.context)) {
+		if (tvar.contextAffects(context)) {
 			return change
 		} else {
 			return other
@@ -84,14 +85,14 @@ class EffectStatusExtensions {
 	}
 
 	static def contextAffects(TypeVariable tvar, EObject changeContext) {
-		(tvar.owner as ProgramElementTypeVariableOwner).programElement.context.includesContext(changeContext)
+		tvar.programElement.eContainer.includesContext(changeContext)
 	}
 
 	static def Boolean includesContext(EObject tvarContext, EObject changeContext) {
-		tvarContext !== null && (tvarContext == changeContext || tvarContext.context.includesContext(changeContext))
+		tvarContext !== null && (tvarContext == changeContext || tvarContext.eContainer.includesContext(changeContext))
 	}
-
-	static def context(EObject it) { eContainer }
+	
+	static def programElement(TypeVariable it) { (owner as ProgramElementTypeVariableOwner).programElement }
 
 	static dispatch def isGlobal(EObject it) { false }
 	static dispatch def isGlobal(WNamedObject it) { true }

@@ -223,8 +223,12 @@ class EffectConstraintGenerator {
 	def dispatch void generate(WAssignment it) {
 //		effectDepends(feature.ref)
 		effectDepends(value)
-		effectStatus(Change(feature.ref.declarationContext))
+		effectStatus(Change(feature.ref.declarationContext.tvarEffect))
 	}
+	
+	def dispatch tvarEffect(EObject it) { tvar }
+	def dispatch tvarEffect(WProgram it) { null }
+	def dispatch tvarEffect(WClass it) { null } //TODO: Build Self type
 
 	// ************************************************************************
 	// ** Flow control
