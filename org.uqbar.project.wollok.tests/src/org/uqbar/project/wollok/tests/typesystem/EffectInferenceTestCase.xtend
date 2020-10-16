@@ -61,8 +61,7 @@ class EffectInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 		''' object o { 
 			var x
 			method m() {
-				x = 1 
-				return 42
+				x = 1
 			}
 		} '''.parseAndInfer.asserting [
 			assertEffectOfMethod(Change, "o.m")
@@ -150,18 +149,20 @@ class EffectInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 		''' 
 		class C { 
 			var x
-			method m() {
+			method effect() {
 				x = 1 
 			}
 		}
 		
 		object o {
-			method t(c) {
-				c.m()
+			const c = new C()
+			
+			method t() {
+				c.effect()
 			}
 		} 
 		'''.parseAndInfer.asserting [
-			assertEffectOfMethod(Change, "C.m")
+			assertEffectOfMethod(Change, "C.effect")
 			assertEffectOfMethod(Change, "o.t")
 		]
 	}

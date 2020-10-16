@@ -10,6 +10,7 @@ import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
+import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 
 /**
  * I represent a type parameter that is bound to a class, for example I am the {@code E} in {@code List<E>}.
@@ -66,6 +67,10 @@ class MethodTypeParameterVariable extends TypeVariableSchema {
 	}
 	
 	override instanceFor(ConcreteType concreteReceiver, MessageSend messageSend) {
+		messageSend.param
+	}
+
+	def param(MessageSend messageSend) {
 		// TODO Tal vez necesitamos un nuevo tipo de owner asociado al messageSend. 
 		// Por ahora lo asocié a lo más parecido que tenemos que es el owner del return type del message send.
 		// (Se parece porque el owner del return type es sintácticamente la expresión entera (message send).
@@ -85,6 +90,15 @@ class MethodTypeParameterVariable extends TypeVariableSchema {
 
 	def dispatch ITypeVariable typeParameter(EObject unknownObject) {
 		throw new TypeSystemException(NLS.bind(Messages.RuntimeTypeSystemException_EXTRACTING_TYPE_CLASS_NOT_IMPLEMENTED, unknownObject.class))
+	}
+	
+
+	def dispatch ITypeVariable typeParameter(WMemberFeatureCall memberFeatureCall) {
+		memberFeatureCall.findMessageSend.param
+	}
+	
+	def findMessageSend(WMemberFeatureCall memberFeatureCall) {
+		memberFeatureCall.memberCallTarget.tvar.typeInfo.messages.findFirst[ returnType.owner.getErrorReportTarget() === memberFeatureCall ]
 	}
 
 	override toString() '''t(«owner.debugInfo»: method type parameter «paramName»)'''

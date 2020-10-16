@@ -45,6 +45,10 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.EffectSt
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
+import org.uqbar.project.wollok.typesystem.constraints.variables.ProgramElementTypeVariableOwner
+import org.uqbar.project.wollok.typesystem.GenericType
+import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 
 /**
  * @author npasserini
@@ -221,14 +225,19 @@ class EffectConstraintGenerator {
 	}
 
 	def dispatch void generate(WAssignment it) {
-//		effectDepends(feature.ref)
 		effectDepends(value)
 		effectStatus(Change(feature.ref.declarationContext.tvarEffect))
 	}
 	
-	def dispatch tvarEffect(EObject it) { tvar }
-	def dispatch tvarEffect(WProgram it) { null }
-	def dispatch tvarEffect(WClass it) { null } //TODO: Build Self type
+	//TODO: Abstraer esto
+	def dispatch tvarEffect(EObject it) { if (isGlobal) null else tvar }
+	def dispatch tvarEffect(WClass it) { TypeVariable.methodTypeParameter(asOwner, new GenericType(it, typeSystem), "", GenericTypeInfo.SELF ) => [ register ] }
+
+
+	//TODO: Duplicated
+	def asOwner(EObject programElement) {
+		new ProgramElementTypeVariableOwner(programElement)
+	}
 
 	// ************************************************************************
 	// ** Flow control

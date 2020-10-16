@@ -56,6 +56,7 @@ import static org.uqbar.project.wollok.scoping.WollokResourceCache.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.fqn
 import static extension org.uqbar.project.wollok.typesystem.annotations.TypeDeclarations.*
 import org.uqbar.project.wollok.typesystem.constraints.variables.EffectStatus
+import org.uqbar.project.wollok.typesystem.constraints.variables.EffectStatusExtensions
 
 /**
  * @author npasserini
@@ -108,6 +109,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		effectConstraintGenerator = new EffectConstraintGenerator(this)
 		genericTypes = newHashMap
 		allTypes = null
+		EffectStatusExtensions.registry = registry
 
 		// This shouldn't be necessary if all global objects had type annotations
 		allCoreWKOs.forEach[newTypeVariable.beSealed(objectType)]

@@ -175,7 +175,7 @@ class WollokModelExtensions {
 	def static dispatch boolean isAConstructor(WFixture it) { true }
 
 	/** A variable is global if its declaration (i.e. its eContainer) is direct child of a WFile element */
-	def static dispatch boolean isGlobal(WVariableDeclaration it) {
+	def static dispatch boolean isGlobal(EObject it) {
 		eContainer instanceof WFile
 	}
 	def static dispatch boolean isGlobal(WVariable it) {
