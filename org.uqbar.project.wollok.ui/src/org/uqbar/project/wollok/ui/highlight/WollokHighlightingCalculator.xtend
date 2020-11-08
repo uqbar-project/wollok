@@ -65,6 +65,7 @@ class WollokHighlightingCalculator extends DefaultSemanticHighlightingCalculator
 	}
 
 	def void addHighlight(int initialOffset, String keyword, String name, ICompositeNode node, IHighlightedPositionAcceptor acceptor, String style) {
+		if (node === null || node.text === null) return
 		val startKeyword = node.text.indexOf(keyword)
 		if (startKeyword == -1) return
 		val start = node.text.indexOf(name, startKeyword)
