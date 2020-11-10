@@ -30,15 +30,15 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.StringUtils.*
 
 @Accessors
-abstract class AbstractDiagramConfiguration extends Observable {
+abstract class AbstractDiagramConfiguration extends Observable implements Serializable {
 
 	/** Notification Events  */
 	public static String CONFIGURATION_CHANGED = "configuration"
 	
 	/** Internal state */	
 	boolean rememberLocationsAndSizes = true
-	Map<String, Point> locations = newHashMap
-	Map<String, Dimension> sizes = newHashMap
+	protected Map<String, Point> locations = newHashMap
+	protected Map<String, Dimension> sizes = newHashMap
 
 	/** 
 	 ******************************************************
@@ -83,12 +83,10 @@ abstract class AbstractDiagramConfiguration extends Observable {
 
 	def void saveSize(Shape shape) {
 		if (!isRememberLocationsAndSizes) return;
-		println("ponemos " + shape.toString)
 		sizes.put(shape.toString, new Dimension => [
 			height = shape.size.height
 			width = shape.size.width
 		])
-		println("sizes " + this.sizes)
 		this.setChanged
 	}
 	
@@ -102,8 +100,6 @@ abstract class AbstractDiagramConfiguration extends Observable {
 	}
 	
 	def Dimension getSize(Shape shape) {
-		println("get size")
-		println("shape " + shape.toString + ": " + sizes.get(shape.toString))
 		sizes.get(shape.toString)
 	}
 	
@@ -118,7 +114,7 @@ abstract class AbstractDiagramConfiguration extends Observable {
  *  
  */
 @Accessors
-class StaticDiagramConfiguration extends AbstractDiagramConfiguration implements Serializable {
+class StaticDiagramConfiguration extends AbstractDiagramConfiguration {
 
 	/** Internal state */	
 	boolean showVariables = false
@@ -278,12 +274,10 @@ class StaticDiagramConfiguration extends AbstractDiagramConfiguration implements
 	 * If resource changed, configuration should clean up its state
 	 */
 	def void setResource(IResource resource) {
-		println("set resource!!")
 		val previousFileName = this.originalFileName
 		this.resource = resource
 		this.isPlatformFile = resource.project.locationURI === null
 		if (!this.isPlatformFile) {
-			println("isPlatformFile")
 			this.fullPath = resource.project.locationURI.rawPath + File.separator + WollokConstants.DIAGRAMS_FOLDER
 			this.originalFileName = resource.location.lastSegment
 		} else {
@@ -291,14 +285,11 @@ class StaticDiagramConfiguration extends AbstractDiagramConfiguration implements
 			this.fullPath = WollokConstants.DIAGRAMS_FOLDER
 			this.originalFileName = resource.name
 		}
-		println("full path " + this.fullPath)
-		println("original file name " + this.originalFileName)
 		// Starting from project/source folder,
 		// and discarding file name (like objects.wlk) 
 		//     we try to recreate same folder structure
 		this.createDiagramsFolderIfNotExists()
 		if (!this.originalFileName.equals(previousFileName)) {
-			println("previous file name es " + previousFileName)
 			this.init
 			this.loadConfiguration
 		}
@@ -308,7 +299,6 @@ class StaticDiagramConfiguration extends AbstractDiagramConfiguration implements
 	}
 	
 	override protected synchronized setChanged() {
-		println("set changed")
 		super.setChanged()
 		this.saveConfiguration()
 	}
@@ -375,42 +365,32 @@ class StaticDiagramConfiguration extends AbstractDiagramConfiguration implements
 	}
 	
 	
-	/** 
+	/**  
 	 ******************************************************
 	 *  CONFIGURATION LOAD & SAVE TO EXTERNAL FILE 
 	 *******************************************************
 	 */	
 	def void loadConfiguration() {
-		println("load configuration")
-		println("resource can be used? " + this.resourceCanBeUsed)
 		if (this.resourceCanBeUsed) {
 			try {
 				val file = new FileInputStream(staticDiagramFile)
 				val ois = new ObjectInputStream(file)
 				val newConfiguration = ois.readObject as StaticDiagramConfiguration
 				this.copyFrom(newConfiguration)
-				println("objects con los sizes: " + this.sizes)
 			} catch (FileNotFoundException e) {
 				// nothing to worry, it will be saved afterwards
-				println("file not found exception")
 			} catch (InvalidClassException e) {
 				// nothing to worry, configuration preferences for static diagram
 				// serialized in a file changed, but it will be saved afterwards
-				println("invalid class exception")
 			} 
 		}
 	}
 	
 	def void saveConfiguration() {
-		println("save configuration")
-		println("resource can be used " + this.resourceCanBeUsed)
 		if (this.resourceCanBeUsed) {
 			val file = new FileOutputStream(staticDiagramFile)
 			val oos = new ObjectOutputStream(file)
-			println("static diagram file " + staticDiagramFileName)
-			println("qué onda sizes? " + this.sizes)
 			oos.writeObject(this)
-			println("grabamos!")
 			oos.close
 			file.close
 		}
@@ -459,7 +439,6 @@ class StaticDiagramConfiguration extends AbstractDiagramConfiguration implements
 		val directory = new File(this.fullPath)
 		
 		if (!directory.exists) {
-			println("creo el directorio " + directory)
 			directory.mkdirs			
 		}
 	}

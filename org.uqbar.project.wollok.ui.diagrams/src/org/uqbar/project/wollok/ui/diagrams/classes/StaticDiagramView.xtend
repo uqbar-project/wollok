@@ -24,7 +24,6 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart
 import org.eclipse.gef.editparts.ZoomManager
 import org.eclipse.gef.ui.actions.ActionRegistry
-import org.eclipse.gef.ui.actions.ZoomComboContributionItem
 import org.eclipse.gef.ui.properties.UndoablePropertySheetPage
 import org.eclipse.gef.ui.views.palette.PalettePage
 import org.eclipse.jface.action.Separator
