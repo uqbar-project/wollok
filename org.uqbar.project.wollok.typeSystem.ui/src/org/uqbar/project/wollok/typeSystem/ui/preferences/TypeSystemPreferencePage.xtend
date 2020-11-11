@@ -65,26 +65,21 @@ class TypeSystemPreferencePage extends PropertyAndPreferencePage implements IWor
 	}
 
 	override performOk() {
-		if (builderConfigurationBlock !== null) {
-			scheduleCleanerJobIfNecessary(container)
-			if (!builderConfigurationBlock.performOk)
-				return false
-		}
+		scheduleCleanerJobIfNecessary(container)
+		builderConfigurationBlock.performOk
 		super.performOk
 	}
 
 	override performApply() {
-		if (builderConfigurationBlock !== null) {
-			scheduleCleanerJobIfNecessary(null)
-			builderConfigurationBlock.performApply
-		}
+		scheduleCleanerJobIfNecessary(null)
+		builderConfigurationBlock.performApply
+		super.performApply
 	}
 	
 	def scheduleCleanerJobIfNecessary(IPreferencePageContainer preferencePageContainer) {
 		//TODO: podría ser inteligente y solo buildear si hubo cambios en ciertas propiedades.
 		// ver BuilderPreferencePage
-		val c = container as IWorkbenchPreferenceContainer
-		c.registerUpdateJob(new Job(Messages.WollokTypeSystemPreference_REBUILD_JOB_TITLE) {
+		(container as IWorkbenchPreferenceContainer).registerUpdateJob(new Job(Messages.WollokTypeSystemPreference_REBUILD_JOB_TITLE) {
 			override protected run(IProgressMonitor monitor) {
 				rebuild(monitor)
 				Status.OK_STATUS
