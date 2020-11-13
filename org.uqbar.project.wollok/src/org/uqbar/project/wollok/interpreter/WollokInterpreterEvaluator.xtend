@@ -14,6 +14,7 @@ import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.core.CallableSuper
+import org.uqbar.project.wollok.interpreter.core.LazyWollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
@@ -511,7 +512,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	// ********************************************************************************************
 	def initializeObject(WollokObject wollokObject, EList<WInitializer> namedParameters) {
 		namedParameters.forEach([ namedParameter |
-			wollokObject.setReference(namedParameter.initializer.name, namedParameter.initialValue.eval)
+			wollokObject.setReference(namedParameter.initializer.name, new LazyWollokObject(interpreter, wollokObject.behavior, [ | namedParameter.initialValue.eval ]))
 		])
 	}
 

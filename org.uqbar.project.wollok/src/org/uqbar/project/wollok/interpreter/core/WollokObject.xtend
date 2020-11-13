@@ -173,10 +173,20 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		if (variableName == SELF)
 			this
 		else if (instanceVariables.containsKey(variableName)) {
-			instanceVariables.get(variableName)
+			getVariableValue(variableName)
 		}
 		else
 			parentContext.resolve(variableName)
+	}
+	
+	def getVariableValue(String variableName) {
+		val value = instanceVariables.get(variableName)
+		if (value instanceof LazyWollokObject) {
+			val newValue = value.eval
+			instanceVariables.put(variableName, newValue)
+			return newValue
+		}
+		value
 	}
 
 	override setReference(String name, WollokObject value) {

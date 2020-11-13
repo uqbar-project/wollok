@@ -26,7 +26,7 @@ class LazyWollokObject extends WollokObject {
 	}
 	
 	override call(String message, WollokObject... parameters) {
-		if (message !== "eval")
+		if (!message.equals("eval"))
 			throw messageNotUnderstood(Messages.WollokInterpreter_lazyValuesOnlySupportEval)
 		eval
 	}
