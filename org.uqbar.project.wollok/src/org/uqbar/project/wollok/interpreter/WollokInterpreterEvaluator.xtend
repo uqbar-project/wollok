@@ -512,7 +512,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	// ********************************************************************************************
 	def initializeObject(WollokObject wollokObject, EList<WInitializer> namedParameters) {
 		namedParameters.forEach([ namedParameter |
-			wollokObject.setReference(namedParameter.initializer.name, new LazyWollokObject(interpreter, wollokObject.behavior, [ | namedParameter.initialValue.eval ]))
+			wollokObject.setSafeReference(namedParameter.initializer.name, new LazyWollokObject(interpreter, wollokObject.behavior, [ | namedParameter.initialValue.eval ]))
 		])
 	}
 

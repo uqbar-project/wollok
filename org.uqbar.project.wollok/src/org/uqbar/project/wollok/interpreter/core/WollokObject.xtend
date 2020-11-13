@@ -200,6 +200,16 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		listeners.forEach[fieldChanged(name, oldValue, value)]
 	}
 
+	// Fixes issue #1957 - avoids a loop when defining cyclic references
+	def setSafeReference(String name, LazyWollokObject value) {
+		try {
+			val newValue = value.eval
+			setReference(name, newValue)
+		} catch (StackOverflowError e) {
+			setReference(name, value)
+		}
+	}
+
 	// query (kind of reflection api)
 	override allReferenceNames() {
 		instanceVariables.keySet.map [ variableName | 
