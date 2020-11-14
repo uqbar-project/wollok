@@ -36,5 +36,5 @@ class LazyWollokObject extends WollokObject {
 			evaluated = lazyValue.apply
 		evaluated	
 	}
-	
+
 }

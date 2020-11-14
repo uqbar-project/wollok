@@ -75,6 +75,7 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * It's the real "interpreter".
@@ -512,7 +513,13 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	// ********************************************************************************************
 	def initializeObject(WollokObject wollokObject, EList<WInitializer> namedParameters) {
 		namedParameters.forEach([ namedParameter |
-			wollokObject.setSafeReference(namedParameter.initializer.name, new LazyWollokObject(interpreter, wollokObject.behavior, [ | namedParameter.initialValue.eval ]))
+			val value = 
+				if (namedParameter.initialValue.shouldBeLazilyInitialized)
+					new LazyWollokObject(interpreter, wollokObject.behavior, [ | namedParameter.initialValue.eval ])
+				else
+					namedParameter.initialValue.eval
+
+			wollokObject.setReference(namedParameter.initializer.name, value)			
 		])
 	}
 
