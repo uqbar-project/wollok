@@ -49,7 +49,7 @@ class CamionReutilizable inherits Camion {
 	
 	override method getCosos() = destinos.map{destino => destino.getCosos()}.flatten() 
 	
-	method descargarCamionEn(unLugar) { destino.remove(destinos.detect{destino => destino.getLugar() == unLugar}) }
+	method descargarCamionEn(unLugar) { destinos.remove(destinos.detect{destino => destino.getLugar() == unLugar}) }
 	
 	method cargarUnCosoEnDestino(unCoso, unLugar) {
 		if(self.puedeCargar(unCoso)) {
