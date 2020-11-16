@@ -8,6 +8,7 @@ import java.io.InvalidClassException
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
+import java.net.URLDecoder
 import java.util.List
 import java.util.Map
 import java.util.Observable
@@ -397,7 +398,7 @@ class StaticDiagramConfiguration extends AbstractDiagramConfiguration {
 	}
 	
 	def getStaticDiagramFile() {
-		new File(fullPath, staticDiagramFileName)
+		new File(URLDecoder.decode(fullPath, "UTF-8"), staticDiagramFileName)
 	}
 	
 	def getStaticDiagramFileName() {
