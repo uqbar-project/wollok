@@ -6,12 +6,6 @@ import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 
 import static org.uqbar.project.wollok.typesystem.constraints.variables.EffectStatus.*
 
-/**
- * The most basic inference tests
- * 
- * @author npasserini
- * @author jfernandes
- */
 class EffectInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 
 	@Parameters(name="{index}: {0}")
@@ -34,7 +28,7 @@ class EffectInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertEffectOf(Change, "x = 1")
 		]
 	}
-	
+
 	@Test
 	def void empty_method_not_produce_effect() {
 		''' object o { method m() { } } '''.parseAndInfer.asserting [
@@ -48,7 +42,7 @@ class EffectInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertEffectOfMethod(Nothing, "o.m")
 		]
 	}
-	
+
 	@Test
 	def void local_change_not_produce_effect() {
 		''' object o { method m() { var x = 1; x = 2 } } '''.parseAndInfer.asserting [
@@ -88,7 +82,6 @@ class EffectInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertEffectOfMethod(Change, "o.m")
 		]
 	}
-	
 
 	@Test
 	def void method_not_produce_effect_transitive() {
@@ -108,59 +101,80 @@ class EffectInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertEffectOfMethod(Nothing, "o.m")
 		]
 	}
-	
+
 	@Test
 	def void method_produce_effect_on_class_instance() {
 		''' 
-		class C { 
-			var x
-			method m() {
-				x = 1 
-			}
-		} 
+			class C { 
+				var x
+				method m() {
+					x = 1 
+				}
+			} 
 		'''.parseAndInfer.asserting [
 			assertEffectOfMethod(Change, "C.m")
 		]
 	}
-	
+
 	@Test
-	def void method_produce_effect_locally_on_class_instance() {
+	def void method_produce_locally_effect_on_class_instance() {
 		''' 
-		class C { 
-			var x
-			method m() {
-				x = 1 
+			class C { 
+				var x
+				method m() {
+					x = 1 
+				}
 			}
-		}
-		
-		object o {
-			method t() {
-				new C().m()
-			}
-		} 
+			
+			object o {
+				method t() {
+					new C().m()
+				}
+			} 
 		'''.parseAndInfer.asserting [
 			assertEffectOfMethod(Change, "C.m")
 			assertEffectOfMethod(Nothing, "o.t")
 		]
 	}
-	
+
 	@Test
-	def void method_produce_effect_non_locally_on_class_instance() {
+	def void method_produce_non_locally_effect_on_class_instance() {
 		''' 
-		class C { 
-			var x
-			method effect() {
-				x = 1 
+			class C { 
+				var x
+				method effect() {
+					x = 1 
+				}
 			}
-		}
-		
-		object o {
-			const c = new C()
 			
-			method t() {
-				c.effect()
+			object o {
+				const c = new C()
+				
+				method t() {
+					c.effect()
+				}
+			} 
+		'''.parseAndInfer.asserting [
+			assertEffectOfMethod(Change, "C.effect")
+			assertEffectOfMethod(Change, "o.t")
+		]
+	}
+
+	@Test
+	def void method_produce_effect_on_param() {
+		''' 
+			class C { 
+				var x
+				method effect() {
+					x = 1 
+				}
 			}
-		} 
+			
+			object o {
+				method t(c) {
+					c.effect()
+				}
+			} 
 		'''.parseAndInfer.asserting [
 			assertEffectOfMethod(Change, "C.effect")
 			assertEffectOfMethod(Change, "o.t")
