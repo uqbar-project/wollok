@@ -8,6 +8,7 @@ import java.io.InvalidClassException
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
+import java.net.URLDecoder
 import java.util.List
 import java.util.Map
 import java.util.Observable
@@ -30,20 +31,16 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.StringUtils.*
 
 @Accessors
-abstract class AbstractDiagramConfiguration extends Observable {
+abstract class AbstractDiagramConfiguration extends Observable implements Serializable {
 
 	/** Notification Events  */
 	public static String CONFIGURATION_CHANGED = "configuration"
 	
 	/** Internal state */	
 	boolean rememberLocationsAndSizes = true
-	Map<String, Point> locations
-	Map<String, Dimension> sizes
+	protected Map<String, Point> locations = newHashMap
+	protected Map<String, Dimension> sizes = newHashMap
 
-	new() {
-		init
-	}
-	
 	/** 
 	 ******************************************************
 	 *  STATE INITIALIZATION 
@@ -118,7 +115,7 @@ abstract class AbstractDiagramConfiguration extends Observable {
  *  
  */
 @Accessors
-class StaticDiagramConfiguration extends AbstractDiagramConfiguration implements Serializable {
+class StaticDiagramConfiguration extends AbstractDiagramConfiguration {
 
 	/** Internal state */	
 	boolean showVariables = false
@@ -369,7 +366,7 @@ class StaticDiagramConfiguration extends AbstractDiagramConfiguration implements
 	}
 	
 	
-	/** 
+	/**  
 	 ******************************************************
 	 *  CONFIGURATION LOAD & SAVE TO EXTERNAL FILE 
 	 *******************************************************
@@ -395,11 +392,13 @@ class StaticDiagramConfiguration extends AbstractDiagramConfiguration implements
 			val file = new FileOutputStream(staticDiagramFile)
 			val oos = new ObjectOutputStream(file)
 			oos.writeObject(this)
+			oos.close
+			file.close
 		}
 	}
 	
 	def getStaticDiagramFile() {
-		new File(fullPath, staticDiagramFileName)
+		new File(URLDecoder.decode(fullPath, "UTF-8"), staticDiagramFileName)
 	}
 	
 	def getStaticDiagramFileName() {
