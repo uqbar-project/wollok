@@ -532,7 +532,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static void superClassesIncludingYourselfTopDownDo(WClass cl, (WClass)=>void action) {
-		if (cl.equals(cl.parent)) return; // avoid stack overflow
+		if (cl.hasCyclicHierarchy) return;
 		if (cl.parent !== null) cl.parent.superClassesIncludingYourselfTopDownDo(action)
 		action.apply(cl)
 	}
@@ -550,7 +550,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	
 	def static dispatch feature(EObject o) { null }
 	def static dispatch feature(WMemberFeatureCall call) { call.feature }
-	def static dispatch feature(WSuperInvocation call) { call.method.name }
+	def static dispatch feature(WSuperInvocation call) { call.method?.name }
 	def static dispatch feature(WUnaryOperation o) { o.feature }
 	def static dispatch feature(WBinaryOperation o) { o.feature }
 	def static dispatch feature(WPostfixOperation o) { o.feature }

@@ -39,8 +39,8 @@ abstract class AbstractModel extends Shape {
 	
 	protected val static TOP_POSITION = 10
 	protected val static DEFAULT_WIDTH = 120
-	protected val static ELEMENT_WIDTH = 50
-	protected val static MAX_ELEMENT_WIDTH = 230
+	protected val static ELEMENT_WIDTH = 150
+	protected val static MAX_ELEMENT_WIDTH = 400
 	protected val static MAX_ELEMENT_HEIGHT = 300
 	protected val static ELEMENT_HEIGHT = 55
 	protected val static WIDTH_SEPARATION_BETWEEN_ELEMENTS = 20
