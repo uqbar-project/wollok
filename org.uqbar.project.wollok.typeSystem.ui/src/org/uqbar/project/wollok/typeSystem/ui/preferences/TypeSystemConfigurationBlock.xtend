@@ -73,5 +73,17 @@ class TypeSystemConfigurationBlock extends OptionsConfigurationBlock {
 		restoreSectionExpansionStates = WollokActivator.getInstance.dialogSettings.addNewSection(SETTINGS_SECTION_NAME)
 		super.dispose
 	}
+
+	override performApply() {
+		// Hay que hacer esto para que no se rompa Xtext
+		savePreferences
+		true
+	}
+	
+	override performOk() {
+		// Hay que hacer esto para que no se rompa Xtext
+		savePreferences
+		true
+	}
 	
 }
