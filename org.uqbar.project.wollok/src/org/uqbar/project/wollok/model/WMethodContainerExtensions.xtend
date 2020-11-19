@@ -532,7 +532,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static void superClassesIncludingYourselfTopDownDo(WClass cl, (WClass)=>void action) {
-		if (cl.equals(cl.parent)) return; // avoid stack overflow
+		if (cl.hasCyclicHierarchy) return;
 		if (cl.parent !== null) cl.parent.superClassesIncludingYourselfTopDownDo(action)
 		action.apply(cl)
 	}
