@@ -396,7 +396,7 @@ class StaticDiagramView extends AbstractDiagramView implements IDocumentListener
 				if (model instanceof ClassModel) {
 					val clazz = model.getComponent
 					if (clazz !== null) {
-						this.selection = new StructuredSelection(clazz) ?: selection
+						this.selection = new StructuredSelection(clazz)
 						val selectionChangedEvent = new SelectionChangedEvent(this, selection)
 						currentListeners.forEach [ listener |
 							listener.selectionChanged(selectionChangedEvent)
