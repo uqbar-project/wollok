@@ -11,6 +11,7 @@ import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrameVariable
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.api.XInterpreterListener
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.utils.XTextExtensions.* 
 
 class WollokRemoteContextStateListener implements XInterpreterListener {
 
@@ -49,7 +50,8 @@ class WollokRemoteContextStateListener implements XInterpreterListener {
 	override aboutToEvaluate(EObject element) {}
 
 	override evaluated(EObject element) {
-		if (singleTest === null) {
+		// be careful, can be null or false
+		if (singleTest === null || !singleTest) {
 			singleTest = element.isSingleTest
 		}
 		if (!forRepl && singleTest) {
