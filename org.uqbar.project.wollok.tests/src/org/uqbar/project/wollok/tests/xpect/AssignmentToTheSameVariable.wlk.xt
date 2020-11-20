@@ -20,7 +20,7 @@ class Golondrina {
 		z = y
 		const w = y
 		
-		alimento.hacerAlgo(x,y,z,w)
+		alimento.hacerAlgo(y,z,w)
 	}
 
 }

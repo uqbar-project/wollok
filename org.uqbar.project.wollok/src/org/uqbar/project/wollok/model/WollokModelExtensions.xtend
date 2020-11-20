@@ -185,6 +185,9 @@ class WollokModelExtensions {
 	def static dispatch boolean isGlobal(WParameter it) { false }
 	def static dispatch boolean isGlobal(WCatch it) { false }
 
+	def static dispatch boolean hasGlobalDefinitions(WClosure it) { false }
+	def static dispatch boolean hasGlobalDefinitions(EObject e) { true }
+
 	// ************************************************************************
 	// ** Variable & parameter usage
 	// ************************************************************************

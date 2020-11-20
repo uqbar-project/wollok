@@ -108,6 +108,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		].map [ r |
 			resourceDescriptionManager.getResourceDescription(r).exportedObjects
 		].flatten + objectsFromManifests
+		
 		importedObjects
 	}
 
