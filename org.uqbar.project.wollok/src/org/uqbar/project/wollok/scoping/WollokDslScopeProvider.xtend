@@ -82,9 +82,11 @@ class WollokDslScopeProvider extends AbstractDeclarativeScopeProvider {
 		eContainer.scope + parameters
 	}
 
-	def dispatch IScope scope(WClosure it) { eContainer.scope + parameters }
-
 	def dispatch IScope scope(WMethodDeclaration it) {
+		eContainer.scope + parameters
+	}
+
+	def dispatch IScope scope(WClosure it) { 
 		eContainer.scope + parameters
 	}
 
