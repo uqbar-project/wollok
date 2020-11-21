@@ -650,6 +650,29 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			report(WollokDslValidator_DUPLICATED_VARIABLE_IN_HIERARCHY)
 		]
 	}
+
+
+	@Check
+	@DefaultSeverity(ERROR)
+	@NotConfigurable
+	def duplicatedVariableInLinearization(MixedMethodContainer m) {
+		val inheritedVariables = (m.mixins + m.parents).map[variables].flatten
+		m.variables.filter[v|inheritedVariables.exists[name == v.name]].forEach [
+			report(WollokDslValidator_DUPLICATED_VARIABLE_IN_HIERARCHY)
+		]
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	@NotConfigurable
+	def duplicatedVariableInLinearization(WConstructorCall call) {
+		if (call.mixins.isEmpty) return;
+		val inheritedVariables = call.mixins.map[variables].flatten
+		val duplicatedVariables = call.classRef.allVariables.filter[v|inheritedVariables.exists[name == v.name]]
+		if (!duplicatedVariables.isEmpty) {
+			report(NLS.bind(WollokDslValidator_DUPLICATED_VARIABLE_IN_CONSTRUCTOR_CALL, duplicatedVariables.map [ name ].join(", ")), call)
+		}
+	}
 	
 	@Check
 	@DefaultSeverity(WARN)
