@@ -55,4 +55,33 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 		}
 		'''.interpretPropagatingErrors
 	}
+
+	@Test
+	def void instantiatingAClassWithNamedParameters() {
+		'''
+		mixin MundoCerrado {
+			var property a = 2
+			const property d = "hola"
+			
+			method noVaAAndar() = a == self.b()
+			method b()
+		}
+		
+		class Mundo {
+			var property b = ""
+		}
+		
+		class MundoFeliz inherits Mundo {
+			var property c = true
+		}
+		
+		test "la clase se inicializa correctamente con los parámetros nombrados" {
+			const yo = new MundoFeliz(a = 1, b = 2) with MundoCerrado
+			assert.equals(yo.a(), 1)
+			assert.equals(yo.b(), 2)
+			assert.that(yo.c())
+			assert.equals(yo.d(), "hola")
+		}
+		'''.interpretPropagatingErrors
+	}
 }

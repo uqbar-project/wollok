@@ -330,23 +330,34 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		}
 		var WollokObject wollokObject
 		if (call.hasNamedParameters) {
-			wollokObject = newInstance(call.classRef, call.initializers)
+			if (call.mixins.isEmpty) {
+				wollokObject = newInstance(call.classRef, call.initializers)
+			} else {
+				wollokObject = call.newInstanceWithMixins => [
+					initializeObject(call.initializers)
+				]
+			}
 		} else {
 			val values = call.values.evalEach
 			if (call.mixins.empty)
 				wollokObject = newInstance(call.classRef, values)
 			else {
-				val container = new MixedMethodContainer(call.classRef, call.mixins)
-				wollokObject = new WollokObject(interpreter, container) => [ wo |
-					// mixins first
-					call.mixins.forEach[addMembersTo(wo)]
-					call.classRef.addInheritsMembers(wo)
-					wo.invokeConstructor(values.toArray(newArrayOfSize(values.size)))
+				wollokObject = call.newInstanceWithMixins => [
+					invokeConstructor(values.toArray(newArrayOfSize(values.size)))
 				]
 			}
 		}
 		wollokObject.callInitIfDefined
 		wollokObject
+	}
+
+	def newInstanceWithMixins(WConstructorCall call) {
+		val container = new MixedMethodContainer(call.classRef, call.mixins)
+		new WollokObject(interpreter, container) => [ wo |
+			// mixins first
+			call.mixins.forEach[addMembersTo(wo)]
+			call.classRef.addInheritsMembers(wo)
+		]		
 	}
 
 	def newInstance(String classFQN, WollokObject... arguments) {

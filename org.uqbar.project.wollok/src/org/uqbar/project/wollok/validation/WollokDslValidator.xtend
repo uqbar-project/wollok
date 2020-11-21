@@ -250,7 +250,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@NotConfigurable
 	def checkUnexistentNamedParametersInConstructor(WConstructorCall it) {
 		if (!hasNamedParameters) return;
-		classRef.validateNamedParameters(argumentList)
+		classRef.validateNamedParameters(argumentList, mixins)
 	}
 
 	@Check
@@ -270,8 +270,12 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	}
 
 	def void validateNamedParameters(WClass clazz, WArgumentList parameterList) {
-		if (clazz.name === null) return  // avoid validation for non-existent classes
-		val validAttributes = clazz.allVariableNames
+		validateNamedParameters(clazz, parameterList, #[])
+	}
+
+	def void validateNamedParameters(WClass clazz, WArgumentList parameterList, List<WMixin> additionalMixins) {
+		if (clazz.name === null) return;  // avoid validation for non-existent classes
+		val validAttributes = clazz.allVariableNames + (clazz.mixins + additionalMixins).flatMap [ allVariableNames ]
 		val invalidInitializers = parameterList.initializers.filter [ !validAttributes.contains(initializer.name) ]
 		invalidInitializers.forEach [ 
 			reportEObject(NLS.bind(WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR, initializer.name, clazz.name), initializer.eContainer, WollokDslValidator.ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR)
