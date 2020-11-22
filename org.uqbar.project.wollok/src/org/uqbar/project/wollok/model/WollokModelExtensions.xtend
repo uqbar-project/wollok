@@ -269,9 +269,6 @@ class WollokModelExtensions {
 
 	// ojo podría ser un !ObjectLiteral
 	def static declaringContext(WMethodDeclaration m) { m.eContainer as WMethodContainer } //
-	def static dispatch constructorsFor(WSelfDelegatingConstructorCall dc, WClass c) { c.constructors }
-
-	def static dispatch constructorsFor(WSuperDelegatingConstructorCall dc, WClass c) { c.parent.constructors }
 
 	def static dispatch String constructorName(WConstructor c, WSelfDelegatingConstructorCall dc) {
 		constructorName(c, "self")
@@ -283,10 +280,6 @@ class WollokModelExtensions {
 
 	def static dispatch String constructorName(WConstructor c, String constructorCall) {
 		(constructorCall ?: "constructor") + "(" + c.parameters.map[name].join(",") + ")"
-	}
-
-	def static constructorParameters(WClass c) {
-		c.constructors.map[constructorName("")].join(", ")
 	}
 
 	def static methodName(WMethodDeclaration d) {
@@ -359,10 +352,6 @@ class WollokModelExtensions {
 		matches(call.feature, call.memberCallArguments)
 	}
 
-	def static isValidConstructorCall(WConstructorCall c) {
-		c.classRef.hasConstructorForArgs(c.arguments.size)
-	}
-
 	def static dispatch EList<WExpression> values(WConstructorCall c) {
 		if(c.argumentList === null) return ECollections.emptyEList
 		c.argumentList.values
@@ -405,12 +394,6 @@ class WollokModelExtensions {
 
 	def static dispatch EList<? extends EObject> arguments(EObject o) { ECollections.emptyEList }
 
-	def static hasConstructorDefinitions(WClass c) { c.constructors !== null && c.constructors.size > 0 }
-
-	def static boolean hasConstructorForArgs(WClass c, int nrOfArgs) {
-		(nrOfArgs == 0 && c.inheritsDefaultConstructor) || c.allConstructors.exists[matches(nrOfArgs)]
-	}
-
 	def static getArgument(WArgumentList l, String name) {
 		val initializer = l.initializers.findFirst[init|init.initializer.name == name]
 		if(initializer === null) return null
@@ -421,18 +404,6 @@ class WollokModelExtensions {
 		arguments.filter(WAssignment).map[feature].toList
 	}
 
-	def static boolean inheritsDefaultConstructor(WClass c) {
-		if(c.hasConstructorDefinitions) {
-			return false
-		}
-
-		if(!c.hasCustomParent) {
-			return true
-		}
-
-		return c.parent.inheritsDefaultConstructor
-	}
-	
 	def static boolean hasInitializeMethod(WClass clazz) {
 		clazz.methods.map [ name ].contains(INITIALIZE_METHOD)
 	}
@@ -440,30 +411,6 @@ class WollokModelExtensions {
 	def static boolean hasCustomParent(WClass c) {
 		c.parent !== null && !c.parent.fqn.equalsIgnoreCase(WollokConstants.FQN_ROOT_CLASS)
 	}
-
-	def static EList<WConstructor> allConstructors(WClass c) {
-		if(c.hasConstructorDefinitions || !c.hasCustomParent)
-			c.constructors
-		else
-			c.parent.allConstructors
-	}
-
-	/**
-	 * Look for a constructor matching the number of parameters, 
-	 * but only among the constructors written in the class itself. 
-	 * Ignore constructor inheritance.
-	 */
-	def static getOwnConstructor(WClass clazz, int nrOfParams) {
-		clazz.constructors.findFirst[matches(nrOfParams)]
-	}
-
-	def static dispatch boolean shouldCheckInitialization(WMethodContainer mc) { true }
-	def static dispatch boolean shouldCheckInitialization(WClass c) { c.hasConstructors } 
-	
-	def static boolean hasConstructors(WMethodContainer c) { !c.getConstructors.isEmpty }
-
-	def static dispatch List<WConstructor> getConstructors(EObject o) { newArrayList }
-	def static dispatch List<WConstructor> getConstructors(WClass c) { c.allConstructors }
 
 	def static matches(WConstructor it, int nrOfArgs) {
 		if(hasVarArgs)
@@ -474,16 +421,6 @@ class WollokModelExtensions {
 
 	def static dispatch hasVarArgs(WConstructor it) { parameters.exists[isVarArg] }
 	def static dispatch hasVarArgs(WMethodDeclaration it) { parameters.exists[isVarArg] }
-
-	def static superClassRequiresNonEmptyConstructor(WClass it) { parent !== null && !parent.hasEmptyConstructor }
-
-	def static superClassRequiresNonEmptyConstructor(WNamedObject it) { parent !== null && !parent.hasEmptyConstructor }
-
-	def static superClassRequiresNonEmptyConstructor(WObjectLiteral it) {
-		parent !== null && !parent.hasEmptyConstructor
-	}
-
-	def static hasEmptyConstructor(WClass c) { !c.hasConstructorDefinitions || c.hasConstructorForArgs(0) }
 
 	// For objects or classes
 	def static declaredVariables(WMethodContainer obj) { obj.members.filter(WVariableDeclaration).map[variable] }

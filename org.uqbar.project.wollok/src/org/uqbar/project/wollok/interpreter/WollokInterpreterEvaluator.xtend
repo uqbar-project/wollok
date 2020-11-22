@@ -286,9 +286,6 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			l.addObjectMembers(wo)
 			l.parent.addInheritsMembers(wo)
 			l.addMixinsMembers(wo)
-			if (l.hasParentParameterValues)
-				wo.invokeConstructor(l.parentParameters.values.evalEach)
-
 			if (l.hasParentParameterInitializers) {
 				wo.initializeObject(l.parentParameters.initializers)
 			}
@@ -341,7 +338,6 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 					// mixins first
 					call.mixins.forEach[addMembersTo(wo)]
 					call.classRef.addInheritsMembers(wo)
-					wo.invokeConstructor(values.toArray(newArrayOfSize(values.size)))
 				]
 			}
 		}
@@ -360,14 +356,8 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		]
 	}
 
-	def newInstance(WClass classRef, WollokObject... arguments) {
-		if (!classRef.hasConstructorForArgs(arguments.size)) {
-			throw newWollokExceptionAsJava(Messages.WollokDslValidator_WCONSTRUCTOR_CALL__ARGUMENTS + " " +
-				classRef.prettyPrintConstructors)
-		}
-		val wo = classRef.createInstance
-		wo.invokeConstructor(arguments.toArray(newArrayOfSize(arguments.size)))
-		wo
+	def newInstance(WClass wollokClass, WollokObject... arguments) {
+		wollokClass.createInstance
 	}
 
 	def newInstance(WClass wollokClass, EList<WInitializer> initializers) {
@@ -540,9 +530,6 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 				if (namedObject.native)
 					wollokObject.nativeObjects.put(namedObject,
 						namedObject.createNativeObject(wollokObject, interpreter))
-
-				if (namedObject.hasParentParameterValues)
-					wollokObject.invokeConstructor(namedObject.parentParameters.values.evalEach)
 
 				if (namedObject.hasParentParameterInitializers)
 					wollokObject.initializeObject(namedObject.parentParameters.initializers)

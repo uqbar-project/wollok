@@ -4,9 +4,7 @@ import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.osgi.util.NLS
 import org.uqbar.project.wollok.Messages
-import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
-import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
@@ -61,21 +59,6 @@ class HumanReadableUtils {
 		'''«op.feature»(«op.rightOperand.sourceCode»)'''
 	}
 	
-	def static prettyPrint(WConstructorCall c) {
-		c.classRef.prettyPrintConstructors
-	}
-
-	def static prettyPrintConstructors(WClass c) {
-		val newPrevExpression = WollokConstants.INSTANTIATION + " " + c.declaringContext.name + "("
-		val newPostExpression = ")"
-		val constructors = (c.declaringContext as WClass).allConstructors
-		if (constructors.isEmpty) {
-			newPrevExpression + newPostExpression
-		} else {
-			constructors.map[newPrevExpression + parameters.map[name].join(", ") + newPostExpression].join(" or ")
-		}
-	}
-
 	def static uninitializedNamedParameters(WConstructorCall it) {
 		val uninitializedAttributes = classRef.allVariableDeclarations.filter [ right === null ]
 		val namedArguments = initializers.map [ initializer.name ]

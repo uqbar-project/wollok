@@ -15,6 +15,7 @@ import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WListLiteral
@@ -29,24 +30,21 @@ import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
-import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
-import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WSuite
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
+import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WSuite
-import org.uqbar.project.wollok.wollokDsl.WFixture
-import org.uqbar.project.wollok.wollokDsl.WTest
-import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * @author npasserini
@@ -59,7 +57,6 @@ class ConstraintGenerator {
 	ConstructorCallConstraintsGenerator constructorCallConstraintsGenerator
 	ObjectParentConstraintsGenerator objectParentConstraintsGenerator
 	SuperInvocationConstraintsGenerator superInvocationConstraintsGenerator
-	DelegatingConstructorCallConstraintsGenerator delegatingConstructorCallConstraintsGenerator
 	InitializerConstraintsGenerator initializerConstraintsGenerator
 	UnaryOperationsConstraintsGenerator unaryOperationsConstraintsGenerator
 
@@ -70,7 +67,6 @@ class ConstraintGenerator {
 		this.constructorCallConstraintsGenerator = new ConstructorCallConstraintsGenerator(registry)
 		this.objectParentConstraintsGenerator = new ObjectParentConstraintsGenerator(registry)
 		this.superInvocationConstraintsGenerator = new SuperInvocationConstraintsGenerator(registry)
-		this.delegatingConstructorCallConstraintsGenerator = new DelegatingConstructorCallConstraintsGenerator(registry)
 		this.initializerConstraintsGenerator = new InitializerConstraintsGenerator(registry)
 		this.unaryOperationsConstraintsGenerator = new UnaryOperationsConstraintsGenerator(typeSystem)
 	}
@@ -133,7 +129,6 @@ class ConstraintGenerator {
 	def dispatch void generate(WClass it) {
 		// TODO Process supertype information: parent? and mixins
 		members.forEach[generateVariables]
-		constructors.forEach[generateVariables]
 	}
 
 	def dispatch void generate(WObjectLiteral it) {
@@ -396,19 +391,6 @@ class ConstraintGenerator {
 		superInvocationConstraintsGenerator.add(it)
 	}
 	
-
-	def dispatch void generate(WSelfDelegatingConstructorCall it) {
-		newTypeVariable
-		arguments.forEach[generateVariables]
-		delegatingConstructorCallConstraintsGenerator.add(it)
-	}
-
-	def dispatch void generate(WSuperDelegatingConstructorCall it) {
-		newTypeVariable
-		arguments.forEach[generateVariables]
-		delegatingConstructorCallConstraintsGenerator.add(it)
-	}
-
 	// ************************************************************************
 	// ** Method overriding
 	// ************************************************************************
@@ -417,7 +399,6 @@ class ConstraintGenerator {
 		constructorCallConstraintsGenerator.run()
 		objectParentConstraintsGenerator.run()
 		superInvocationConstraintsGenerator.run()
-		delegatingConstructorCallConstraintsGenerator.run()
 		initializerConstraintsGenerator.run()
 	}
 

@@ -6,6 +6,7 @@ import org.eclipse.core.resources.IResource
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
+import org.eclipse.osgi.util.NLS
 import org.eclipse.xtext.nodemodel.INode
 import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.ui.editor.model.IXtextDocument
@@ -17,6 +18,7 @@ import org.eclipse.xtext.util.concurrent.IUnitOfWork
 import org.eclipse.xtext.validation.Issue
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
+import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
 import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WAssignment
@@ -28,25 +30,21 @@ import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
-import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WollokDslFactory
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
-import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
-import org.eclipse.osgi.util.NLS
 
 import static org.uqbar.project.wollok.WollokConstants.*
+import static org.uqbar.project.wollok.utils.WEclipseUtils.*
 import static org.uqbar.project.wollok.validation.WollokDslValidator.*
 
-import static extension java.lang.Math.*
 import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
-import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import static extension org.uqbar.project.wollok.utils.StringUtils.*
-import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
 /**
  * Custom quickfixes.
@@ -107,81 +105,6 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	 * 							Constructors
 	 * ***********************************************************************
 	 */
-	@Fix(WollokDslValidator.REQUIRED_SUPERCLASS_CONSTRUCTOR)
-	def addConstructorsFromSuperclass(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_add_constructors_superclass_name,
-			Messages.WollokDslQuickFixProvider_add_constructors_superclass_description, null) [ e, it |
-			val _object = e as WNamedObject
-			val firstConstructor = _object.parent.constructors.map['''(«parameters.map[name].join(',')») '''].head
-			xtextDocument.replace(issue.offset + issue.length, 0, firstConstructor)
-		]
-	}
-
-	@Fix(WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL)
-	def createConstructorInClass(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_create_constructor_class_name,
-			Messages.WollokDslQuickFixProvider_create_constructor_class_description, null) [ e, it |
-			val call = e as WConstructorCall
-			val clazz = call.classRef
-			val constructor = call.defaultStubConstructor.toString 
-			clazz.insertConstructor(constructor, it)
-		]
-	}
-
-	@Fix(WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL)
-	def adjustConstructorCall(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_adjust_constructor_call_name,
-			Messages.WollokDslQuickFixProvider_adjust_constructor_call_description, null) [ e, it |
-			val call = e as WConstructorCall
-			val clazz = call.classRef
-			val numberOfParameters = call.arguments.size
-			val constructors = clazz.constructors.sortBy [ a | (a.parameters.size - numberOfParameters).abs ]
-			var paramsSize = 0
-			var WConstructor constructor = null
-			if (!constructors.isEmpty) {
-				constructor = constructors.head
-				paramsSize = constructor.parameters.size
-			}
-			val diffSize = numberOfParameters - paramsSize
-			var List<String> newParams = newArrayList
-			val List<String> paramsConstructor = if (constructor === null) newArrayList else constructor.parameters.map [ name ]
-			if (diffSize < 0) {
-				newParams = (call.arguments.map [ node.text.trim ]
-					+ ((1..diffSize.abs).map [ paramsConstructor.get(it + numberOfParameters - 1) ])).toList
-			} else {
-				newParams =	call.arguments.subList(0, paramsSize)
-					.map [ node.text.trim ].toList
-			}
-			val newConstructorCall = INSTANTIATION + " " + clazz.name + "(" +
-				newParams.join(", ") + ")"
-			xtextDocument.replaceWith(call, newConstructorCall)
-		]
-	}
-
-	@Fix(CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
-	def createConstructorInSuperClass(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_create_constructor_superclass_name,
-			Messages.WollokDslQuickFixProvider_create_constructor_superclass_description, null) [ e, it |
-			val delegatingConstructor = (e as WConstructor).delegatingConstructorCall
-			val parent = e.wollokClass.parent
-
-			val constructor = '''
-				«tabChar»constructor(«(1..delegatingConstructor.arguments.size).map["param" + it].join(",")»){
-				«tabChar»«tabChar»//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
-				«tabChar»}'''
-
-			parent.insertConstructor(constructor, it)
-		]
-	}
-
-	@Fix(DUPLICATED_CONSTRUCTOR)
-	def deleteDuplicatedConstructor(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_remove_constructor_name,
-			Messages.WollokDslQuickFixProvider_remove_constructor_description, null) [ e, it |
-			xtextDocument.delete(e)
-		]
-	}
-
 	@Fix(WollokDslValidator.PROPERTY_ONLY_ALLOWED_IN_CERTAIN_METHOD_CONTAINERS)
 	def deleteBadPropertyDefinition(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_remove_property_definition_name,
@@ -733,22 +656,6 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		«margin»}''' + System.lineSeparator
 	}
 
-	def defaultStubConstructor(WConstructorCall call) {
-		call.arguments.size.defaultStubConstructor
-	}
-
-	def defaultStubConstructor(int paramsSize) {
-		var args = ""
-		val margin = 1.output(tabChar)
-		if (paramsSize >= 1) {
-			args = (1..paramsSize).map [ i | "param" + i ].join(", ")
-		}
-		'''
-		«margin»«CONSTRUCTOR»(«args») {
-		«margin»	//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
-		«margin»}'''	
-	}
-	
 	def adjustMargin(WMethodContainer mc) {
 		if (mc.behaviors.empty) tabChar else ""
 	}

@@ -11,10 +11,8 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.resource.XtextResourceSet
-import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
-import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
@@ -45,7 +43,6 @@ import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuite
-import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WTry
@@ -190,7 +187,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static behaviors(WMethodContainer c) {
 		return <EObject>newArrayList => [
-			addAll(c.constructors())
 			if (c.fixture !== null) {
 				add(c.fixture)
 			}
@@ -199,10 +195,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		] 
 	}
 
-	def static dispatch constructors(WMethodContainer c) { c.members.filter(WConstructor) }
-	def static dispatch constructors(WClass c) { c.constructors }
-	def static dispatch constructors(WTest t) { newArrayList }
-	
 	def static methods(WMethodContainer c) { c.members.filter(WMethodDeclaration) }
 	
 	def static dispatch tests(WMethodContainer c) { newArrayList }
@@ -452,7 +444,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch abstractionName(WNamedObject o) { WollokConstants.WKO }
 	def static dispatch abstractionName(WMixin m) { WollokConstants.MIXIN }
 	def static dispatch abstractionName(WMethodDeclaration m) { WollokConstants.METHOD }
-	def static dispatch abstractionName(WConstructor c) { WollokConstants.CONSTRUCTOR }
 	
 	def static boolean inheritsMethod(WMethodContainer it, String name, int argSize) {
 		(mixins !== null && mixins.exists[m| m.hasOrInheritsMethod(name, argSize)])
@@ -567,47 +558,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static dispatch isKindOf(WMethodContainer c1, WMethodContainer c2) { c1 == c2 }
 	def static dispatch isKindOf(WClass c1, WClass c2) { WollokModelExtensions.isSuperTypeOf(c2, c1) }
-
-	def static WConstructor resolveConstructor(WClass originalClazz, WClass clazz, Object... arguments) {
-		if (clazz.parent === null) {
-			//default constructor
-			return null
-		}
-		if (clazz.hasConstructorDefinitions) {
-			clazz.constructors.findFirst[ matches(arguments.size) ]
-		} else {
-			originalClazz.resolveConstructor(clazz.parent, arguments)
-		}
-	}
-
-	def static dispatch WConstructor resolveConstructor(WClass clazz, Object... arguments) {
-		clazz.resolveConstructor(clazz, arguments)
-	}
-	def static dispatch WConstructor resolveConstructor(WObjectLiteral obj, Object... arguments) {
-		obj.parent.resolveConstructor(arguments)
-	}
-	def static dispatch WConstructor resolveConstructor(WNamedObject obj, Object... arguments) {
-		obj.parent.resolveConstructor(arguments)
-	}
-	def static dispatch WConstructor resolveConstructor(MixedMethodContainer obj, Object... arguments) {
-		obj.clazz.resolveConstructor(arguments)
-	}
-	
-	def static dispatch WConstructor resolveConstructor(WMethodContainer otherContainer, Object... arguments) {
-		throw new WollokRuntimeException(Messages.WollokInterpreter_constructorCallNotAllowed)
-	}
-
-
-	// ************************************************************************
-	// ** Constructors delegation, etc.
-	// ************************************************************************
-
-	def static dispatch resolveConstructorReference(WMethodContainer behave, WSelfDelegatingConstructorCall call) { behave.resolveConstructor(call.arguments) }
-	def static dispatch resolveConstructorReference(WMethodContainer behave, WSuperDelegatingConstructorCall call) { findConstructorInSuper(behave, call.arguments) }
-
-	def static findConstructorInSuper(WMethodContainer behave, Object[] args) {
-		(behave as WClass).parent?.resolveConstructor(args)
-	}
 
 	// ************************************************************************
 	// ** unorganized
@@ -800,13 +750,15 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		val parent = o.eContainer
 		parent !== null && parent.isPropertyAllowed
 	}
-	
-	def static hasCyclicDefinition(WConstructor it) {
-		if (delegatingConstructorCall === null) return false
-		if (delegatingConstructorCall.hasNamedParameters) return false
-		delegatingConstructorCall.callsSelf && parameters.size == delegatingConstructorCall.arguments.size
+
+	def static dispatch WConstructor resolveConstructor(WMethodContainer methodContainer, Object... arguments) {
+		null
 	}
-	
+
+	def static dispatch WConstructor resolveConstructor(MixedMethodContainer obj, Object... arguments) {
+		obj.clazz.resolveConstructor(arguments)
+	}
+       
 	def static dispatch callsSelf(WDelegatingConstructorCall it) { false }
 	def static dispatch callsSelf(WSelfDelegatingConstructorCall it) { true }
 

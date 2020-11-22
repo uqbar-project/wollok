@@ -10,7 +10,6 @@ import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
 /**
  * @author npasserini
@@ -22,15 +21,8 @@ abstract class ConstructorConstraintsGenerator<T extends EObject> extends CrossR
 	}
 	
 	def generate(EObject it, WClass clazz, EList<WExpression> values) {
-		val constructor = clazz.resolveConstructor(values)
-
-		// Constructor might be null when neither the referred class nor any of it superclasses define a constructor,
-		// And wouldn't be an error if the constructor call has no parameters.
-		// TODO Handle and inform error conditions.
-		// TODO 2: We should consider also argumentList.initializers
-		constructor?.parameters?.biForEach(values) [ param, arg |
-			param.tvarOrParam.instanceFor(it.tvar).beSupertypeOf(arg.tvar)
-		]		
+		// Wollok 3.0.0 removed constructor idea, so constructor is null
+		// TODO: We should consider also argumentList.initializers
 	}
 }
 

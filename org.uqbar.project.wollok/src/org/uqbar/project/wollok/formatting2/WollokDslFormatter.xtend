@@ -15,7 +15,6 @@ import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
-import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
@@ -97,11 +96,6 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		]
 		c.variableDeclarations.formatVariableDeclarations(document)
 		
-		c.constructors.forEach [
-			format
-			append [ setNewLines(2) ]
-		]
-
 		c.methods.forEach [
 			format
 			append [ setNewLines(2) ]
@@ -346,18 +340,6 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		} else {
 			end.prepend [ newLine ]
 		}
-	}
-
-	def dispatch void format(WConstructor c, extension IFormattableDocument document) {
-		c.regionFor.keyword(WollokConstants.CONSTRUCTOR).append [ noSpace ]
-		c.parameters.formatParameters(document)
-		c.regionFor.feature(WNAMED__NAME).append [ noSpace ]
-		c.regionFor.keyword(WollokConstants.ASSIGNMENT).surround [ oneSpace ]
-		c.delegatingConstructorCall?.format
-		c.expression => [
-			surround [ oneSpace ]
-			format
-		]
 	}
 
 	def dispatch void format(WConstructorCall c, extension IFormattableDocument document) {
