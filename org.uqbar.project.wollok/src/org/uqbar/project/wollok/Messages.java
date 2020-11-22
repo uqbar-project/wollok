@@ -59,6 +59,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_CYCLIC_HIERARCHY;
 	public static String WollokDslValidator_DUPLICATED_METHOD;
 	public static String WollokDslValidator_DUPLICATED_VARIABLE_IN_HIERARCHY;
+	public static String WollokDslValidator_DUPLICATED_VARIABLE_IN_CONSTRUCTOR_CALL;
 	public static String WollokDslValidator_DUPLICATED_NAME;
 	public static String WollokDslValidator_DUPLICATED_REFERENCE_FROM_IMPORTS;
 	public static String WollokDslValidator_METHOD_ON_THIS_DOESNT_EXIST;
