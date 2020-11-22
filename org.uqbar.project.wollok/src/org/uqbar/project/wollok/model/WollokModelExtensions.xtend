@@ -499,17 +499,6 @@ class WollokModelExtensions {
 		exps.filter(WReferenciable).exists[it != named && name == named.name]
 	}
 
-	def static dispatch boolean isInConstructor(EObject obj) { obj.eContainer !== null && obj.eContainer.inConstructor }
-	def static dispatch boolean isInConstructor(WConstructor obj) { true }
-	def static dispatch boolean isInConstructor(WClass obj) { false }
-	def static dispatch boolean isInConstructor(WMethodDeclaration obj) { false }
-
-	def static dispatch boolean isInConstructorBody(EObject obj) {
-		obj.eContainer !== null && obj.eContainer.isInConstructorBody
-	}
-
-	def static dispatch boolean isInConstructorBody(WBlockExpression obj) { obj.isInConstructor }
-
 	// *****************************
 	// ** Valid returns
 	// *****************************
@@ -881,18 +870,8 @@ class WollokModelExtensions {
 	def static dispatch boolean hasNamedParameters(EObject o) { false }
 
 	def static dispatch boolean hasNamedParameters(WConstructorCall c) {
-		if(c.argumentList === null) return false
-		c.argumentList.hasNamedParameters
-	}
-
-	def static dispatch boolean hasNamedParameters(WSelfDelegatingConstructorCall c) {
-		if(c.argumentList === null) return false
-		c.argumentList.hasNamedParameters
-	}
-
-	def static dispatch boolean hasNamedParameters(WSuperDelegatingConstructorCall c) {
-		if(c.argumentList === null) return false
-		c.argumentList.hasNamedParameters
+		// if(c.argumentList === null) return false
+		true
 	}
 
 	def static dispatch boolean hasNamedParameters(WPositionalArgumentsList l) { false }

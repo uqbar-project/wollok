@@ -64,12 +64,12 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_METHOD_ON_THIS_DOESNT_EXIST;
 	public static String WollokDslValidator_METHOD_DOESNT_EXIST;
 	public static String WollokDslValidator_METHOD_DOESNT_EXIST_BUT_SIMILAR_FOUND;
+	public static String WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR_CALL;
 	public static String WollokDslValidator_METHOD_DOESNT_EXIST_CASE_SENSITIVE;
 	public static String WollokDslValidator_VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES;
 	public static String WollokDslValidator_INITIALIZATION_VALUE_FOR_VARIABLE_NEVER_USED;
 	public static String WollokDslValidator_WARN_VARIABLE_NEVER_ASSIGNED;
 	public static String WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED;
-	public static String WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED_IN_CONSTRUCTOR;
 	public static String WollokDslValidator_GLOBAL_VARIABLE_NOT_ALLOWED;
 	public static String WollokDslValidator_MISSING_ASSIGNMENTS_IN_CONSTRUCTOR_CALL;
 	public static String WollokDslValidator_VARIABLE_NEVER_USED;
@@ -110,21 +110,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_DONT_COMPARE_AGAINST_TRUE_OR_FALSE;
 	public static String WollokDslValidator_DO_NOT_COMPARE_FOR_EQUALITY_WKO;
 	
-	public static String WollokDslValidator_DUPLICATED_CONSTRUCTOR;
-	public static String WollokDslValidator_MUST_CALL_SUPERCLASS_CONSTRUCTOR;
-	public static String WollokDslValidator_CANNOT_ACCESS_INSTANCE_METHOD_WITHIN_CONSTRUCTOR_DELEGATION;
-	public static String WollokDslValidator_CANNOT_ACCESS_SUPER_METHODS_WITHIN_CONSTRUCTOR_DELEGATION;
-	public static String WollokDslValidator_CANNOT_ACCESS_INSTANCE_VARIABLES_WITHIN_CONSTRUCTOR_DELEGATION;
-	public static String WollokDslValidator_REDUNDANT_CONSTRUCTOR_CALL_SUPERCLASS_WITHOUT_DEFAULT_CONSTRUCTOR;
-	public static String WollokDslValidator_INVALID_CONSTRUCTOR_CALL_SUPERCLASS_WITHOUT_CONSTRUCTORS;
-	public static String WollokDslValidator_INVALID_CONSTRUCTOR_CALL;
-	public static String WollokDslValidator_CONSTRUCTOR_HAS_CYCLIC_DELEGATION;
-	public static String WollokDslValidator_WCONSTRUCTOR_CALL__ARGUMENTS;
-	public static String WollokDslValidator_OBJECT_MUST_CALL_SUPERCLASS_CONSTRUCTOR;
-	public static String WollokDslValidator_NO_SUPERCLASS_CONSTRUCTOR;
-	public static String WollokDslValidator_NO_RETURN_EXPRESSION_IN_CONSTRUCTOR;
 	public static String WollokDslValidator_CANNOT_RETURN_ASSIGNMENT;
-	public static String WollokDslValidator_SUPER_EXPRESSION_IN_CONSTRUCTOR;
 	public static String WollokDslValidator_RETURN_FORGOTTEN;
 	public static String WollokDslValidator_CANT_USE_RETURN_EXPRESSION_IN_ARGUMENT;
 	public static String WollokDslValidator_METHOD_DOES_NOT_RETURN_A_VALUE_ON_EVERY_POSSIBLE_FLOW;
@@ -142,8 +128,6 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_TEST_WITH_ONLY_FLAG_SHOULD_BE_SINGLE;
 	
 	public static String WollokDslValidator_OVERRIDING_A_METHOD_SHOULD_DO_SOMETHING_DIFFERENT;
-	public static String WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR;
-	public static String WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_DELEGATED_CONSTRUCTOR;
 	
 	public static String WollokRuntime_WrongMessage_EMPTY_LIST;
 	

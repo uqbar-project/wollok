@@ -9,7 +9,6 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.osgi.util.NLS
-import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.naming.IQualifiedNameConverter
 import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.validation.Check
@@ -31,7 +30,6 @@ import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
-import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
@@ -128,9 +126,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val REQUIRED_SUPERCLASS_CONSTRUCTOR = "REQUIRED_SUPERCLASS_CONSTRUCTOR"
 	public static val DUPLICATED_CONSTRUCTOR = "DUPLICATED_CONSTRUCTOR"
 	public static val UNNECESARY_OVERRIDE = "UNNECESARY_OVERRIDE"
-	public static val ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR = "ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR"
-	public static val MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR = "MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR"
-	public static val MUST_CALL_SUPER = "MUST_CALL_SUPER"
+	public static val ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR_CALL = "ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR_CALL"
+	public static val MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR_CALL = "MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR_CALL"
 	public static val TYPE_SYSTEM_ERROR = "TYPE_SYSTEM_ERROR"
 	public static val NATIVE_METHOD_CANNOT_OVERRIDES = "NATIVE_METHOD_CANNOT_OVERRIDES"
 	public static val BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION = "BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION"
@@ -269,11 +266,11 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	}
 
 	def void validateNamedParameters(WClass clazz, WArgumentList parameterList) {
-		if (clazz.name === null) return  // avoid validation for non-existent classes
+		if (clazz.name === null || parameterList === null || parameterList.initializers === null) return  // avoid validation for non-existent classes && no named parameters
 		val validAttributes = clazz.allVariableNames
 		val invalidInitializers = parameterList.initializers.filter [ !validAttributes.contains(initializer.name) ]
 		invalidInitializers.forEach [ 
-			reportEObject(NLS.bind(WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR, initializer.name, clazz.name), initializer.eContainer, WollokDslValidator.ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR)
+			reportEObject(NLS.bind(WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR_CALL, initializer.name, clazz.name), initializer.eContainer, WollokDslValidator.ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR_CALL)
 		]
 	}
 
@@ -285,7 +282,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			val unusedVarDeclarations = uninitializedNamedParameters
 			if (!unusedVarDeclarations.isEmpty) {
 				val variableNames = unusedVarDeclarations.map [ variable.name ].join(", ")
-				reportEObject(NLS.bind(WollokDslValidator_MISSING_ASSIGNMENTS_IN_CONSTRUCTOR_CALL, variableNames), it, MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR)
+				reportEObject(NLS.bind(WollokDslValidator_MISSING_ASSIGNMENTS_IN_CONSTRUCTOR_CALL, variableNames), it, MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR_CALL)
 			}
 		}
 	}
@@ -340,15 +337,6 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		}
 	}
 
-	// SELF
-	@Check
-	@DefaultSeverity(WARN)
-	@NotConfigurable	
-	def cannotUseSelfInConstructorDelegation(WSelf it) {
-		if (EcoreUtil2.getContainerOfType(it, WDelegatingConstructorCall) !== null)
-			report(WollokDslValidator_CANNOT_ACCESS_INSTANCE_METHOD_WITHIN_CONSTRUCTOR_DELEGATION, it)
-	}
-
 	@Check
 	@DefaultSeverity(ERROR)
 	@NotConfigurable	
@@ -363,14 +351,6 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def dontUseWKONameOnWKOUseSelfInstead(WVariableReference it) {
 		if (ref == declaringContext)
 			report(WollokDslValidator_DONT_USE_WKONAME_WITHIN_IT, it, null, DONT_USE_WKONAME_WITHIN_IT)
-	}
-
-	@Check
-	@DefaultSeverity(ERROR)
-	@NotConfigurable	
-	def cannotUseSuperInConstructorDelegation(WSuperInvocation it) {
-		if (EcoreUtil2.getContainerOfType(it, WDelegatingConstructorCall) !== null)
-			report(WollokDslValidator_CANNOT_ACCESS_SUPER_METHODS_WITHIN_CONSTRUCTOR_DELEGATION, it)
 	}
 
 	@Check
@@ -1073,14 +1053,6 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	@NotConfigurable
-	def noReturnStatementInConstructor(WReturnExpression it) {
-		if (it.inConstructor)
-			report(WollokDslValidator_NO_RETURN_EXPRESSION_IN_CONSTRUCTOR, it, WRETURN_EXPRESSION__EXPRESSION)
-	}
-
-	@Check
-	@DefaultSeverity(ERROR)
-	@NotConfigurable
 	def cannotReturnAssignment(WReturnExpression it) {
 		if (expression !== null && expression.isAssignment)
 			report(WollokDslValidator_CANNOT_RETURN_ASSIGNMENT, it, WRETURN_EXPRESSION__EXPRESSION)
@@ -1094,14 +1066,6 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			report(WollokDslValidator_CANT_USE_RETURN_EXPRESSION_IN_ARGUMENT, it, WRETURN_EXPRESSION__EXPRESSION, CANT_USE_RETURN_EXPRESSION_IN_ARGUMENT)
 	}
 	
-	@Check
-	@DefaultSeverity(ERROR)
-	@NotConfigurable
-	def noSuperInConstructorBody(WSuperInvocation it) {
-		if (it.isInConstructorBody)
-			report(WollokDslValidator_SUPER_EXPRESSION_IN_CONSTRUCTOR, it, WSUPER_INVOCATION__MEMBER_CALL_ARGUMENTS)
-	}
-
 	@Check
 	@DefaultSeverity(WARN)
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)

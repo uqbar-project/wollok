@@ -23,7 +23,6 @@ import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
-import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
@@ -100,11 +99,6 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 
-	/** 
-	 * ***********************************************************************
-	 * 							Constructors
-	 * ***********************************************************************
-	 */
 	@Fix(WollokDslValidator.PROPERTY_ONLY_ALLOWED_IN_CERTAIN_METHOD_CONTAINERS)
 	def deleteBadPropertyDefinition(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_remove_property_definition_name,
@@ -132,18 +126,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 
-	@Fix(MUST_CALL_SUPER)
-	def addCallToSuperInConstructor(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_add_call_super_name,
-			Messages.WollokDslQuickFixProvider_add_call_super_description, null) [ e, it |
-			val const = e as WConstructor
-			val call = " = super()" // this could be more involved here and useful for the user :P
-			val paramCloseOffset = const.node.text.indexOf(")")
-			xtextDocument.replace(e.before + paramCloseOffset - 1, 0, call)
-		]
-	}
-
-	@Fix(WollokDslValidator.ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR)
+	@Fix(WollokDslValidator.ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR_CALL)
 	def deleteUnexistentAttributeInConstructorCall(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_remove_attribute_initialization_name,
 			Messages.WollokDslQuickFixProvider_remove_attribute_initialization_description, null) [ e, it |
@@ -153,7 +136,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 
-	@Fix(WollokDslValidator.MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR)
+	@Fix(WollokDslValidator.MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR_CALL)
 	def addMissingAttributesInConstructorCall(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_add_missing_initializations_name,
 			Messages.WollokDslQuickFixProvider_add_missing_initializations_description, null) [ e, it |
