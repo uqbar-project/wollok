@@ -93,7 +93,9 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 		// If in a suite, we should create a suite wko so this will be our current context to eval the tests
 		try {
 			val suiteObject = new SuiteBuilder(suite, interpreter).forTest(test).build
-			interpreter.performOnStack(test, suiteObject, [ | test.eval])
+			interpreter.performOnStack(test, suiteObject, [ |
+				test.eval
+			])
 		} catch (Exception e) {
 			handleExceptionInTest(e, test)
 		} 
@@ -150,7 +152,7 @@ class SuiteBuilder {
 			suiteObject.addMember(member)
 		]
 		suite.initializeMethods.forEach [ initMethod |
-			interpreter.performOnStack(test, suiteObject, [| interpreter.eval(initMethod) ])
+			interpreter.performOnStack(test, suiteObject, [| interpreter.eval(initMethod.expression) ])			
 		]
 		if (test !== null) {
 			// Now, declaring test local variables as suite wko instance variables
