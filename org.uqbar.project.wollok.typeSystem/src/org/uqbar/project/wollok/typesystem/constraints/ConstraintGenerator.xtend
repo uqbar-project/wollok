@@ -14,7 +14,6 @@ import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WFile
-import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WListLiteral
@@ -141,7 +140,6 @@ class ConstraintGenerator {
 	
 	def dispatch void generate(WSuite it) {
 		members.forEach[generateVariables]
-		fixture?.generateVariables
 		tests.forEach[generateVariables]
 	}
 
@@ -193,10 +191,6 @@ class ConstraintGenerator {
 
 	def dispatch void generate(WParameter it) {
 		newTypeVariable.beNonVoid
-	}
-	
-	def dispatch void generate(WFixture it) {
-		elements.forEach[generateVariables]
 	}
 	
 	def dispatch void generate(WTest it) {

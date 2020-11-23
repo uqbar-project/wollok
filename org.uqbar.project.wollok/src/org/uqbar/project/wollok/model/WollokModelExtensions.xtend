@@ -37,7 +37,6 @@ import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
-import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
@@ -160,15 +159,15 @@ class WollokModelExtensions {
 	def static dispatch isModifiableFrom(WReferenciable v, WAssignment from) { true }
 
 	def static boolean initializesInstanceValueFromConstructor(WAssignment a, WVariable v) {
-		v.declaration.initValue === null && a.isWithinConstructor
+		v.declaration.initValue === null && a.isWithinInitializer
 	}
 
-	def static boolean isWithinConstructor(EObject e) {
-		e.eContainer !== null && (e.eContainer.isAConstructor || e.eContainer.isWithinConstructor)
+	def static boolean isWithinInitializer(EObject e) {
+		e.eContainer !== null && (e.eContainer.isAnInitializer || e.eContainer.isWithinInitializer)
 	}
 
-	def static dispatch boolean isAConstructor(EObject it) { false }
-	def static dispatch boolean isAConstructor(WFixture it) { true }
+	def static dispatch boolean isAnInitializer(EObject it) { false }
+	def static dispatch boolean isAnInitializer(WMethodContainer it) { name.equals(INITIALIZE_METHOD) }
 
 	/** A variable is global if its declaration (i.e. its eContainer) is direct child of a WFile element */
 	def static dispatch boolean isGlobal(WVariableDeclaration it) {

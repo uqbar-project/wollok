@@ -146,9 +146,10 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def dispatch WollokObject evaluate(WTest it) { elements.evalAll }
 
 	def dispatch WollokObject evaluate(WSuite it) {
+		val initializeMethods = initializeMethods
 		tests.fold(null) [ a, test |
 			members.forEach[m|evaluate(m)]
-			fixture.elements.forEach[evaluate]
+			initializeMethods.forEach [ evaluate ]
 			test.eval
 		]
 	}

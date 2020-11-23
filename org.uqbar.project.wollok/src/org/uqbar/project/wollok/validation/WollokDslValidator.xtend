@@ -31,7 +31,6 @@ import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
-import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
@@ -362,34 +361,34 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def cannotReassignValues(WAssignment a) {
 		val variable = a.feature.ref
 		if(!variable.isModifiableFrom(a)
-			&& !a.isWithinConstructor) {
+			&& !a.isWithinInitializer) {
 			report(WollokDslValidator_CANNOT_MODIFY_VAL, a, WASSIGNMENT__FEATURE,
 			cannotModifyErrorId(a.feature))
 		}
 	}
 
-	@Check
-	@DefaultSeverity(ERROR)
-	@NotConfigurable	
-	def cannotReassignValuesInFixture(WAssignment a) {
-		val declaringFixture = a.declaringFixture
-		if (declaringFixture === null) return;
-		val variable = a.feature.ref
-		if (declaringFixture.hasSeveralAssignmentsFor(variable)) {
-			if (!variable.writableVarRef) {
-				report(WollokDslValidator_CANNOT_MODIFY_VAL, a, WASSIGNMENT__FEATURE,
-					cannotModifyErrorId(a.feature))
-			}
-		}
-	}
+//	@Check
+//	@DefaultSeverity(ERROR)
+//	@NotConfigurable	
+//	def cannotReassignValuesInFixture(WAssignment a) {
+//		val declaringFixture = a.declaringFixture
+//		if (declaringFixture === null) return;
+//		val variable = a.feature.ref
+//		if (declaringFixture.hasSeveralAssignmentsFor(variable)) {
+//			if (!variable.writableVarRef) {
+//				report(WollokDslValidator_CANNOT_MODIFY_VAL, a, WASSIGNMENT__FEATURE,
+//					cannotModifyErrorId(a.feature))
+//			}
+//		}
+//	}
 
-	def dispatch boolean hasSeveralAssignmentsFor(WFixture it, WReferenciable variable) {
-		elements.filter [ hasAssignmentsFor(variable) ].size > 1
-	}
+//	def dispatch boolean hasSeveralAssignmentsFor(WFixture it, WReferenciable variable) {
+//		elements.filter [ hasAssignmentsFor(variable) ].size > 1
+//	}
 
-	def dispatch boolean hasSeveralAssignmentsFor(WBlockExpression it, WReferenciable variable) {
-		expressions.filter [ hasAssignmentsFor(variable) ].size > 1
-	}
+//	def dispatch boolean hasSeveralAssignmentsFor(WBlockExpression it, WReferenciable variable) {
+//		expressions.filter [ hasAssignmentsFor(variable) ].size > 1
+//	}
 	
 	def dispatch boolean hasAssignmentsFor(EObject e, WReferenciable variable) {
 		false
@@ -1173,15 +1172,6 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		}
 	}	
 
-	@Check
-	@DefaultSeverity(WARN)
-	@CheckGroup(WollokCheckGroup.POTENTIAL_DESIGN_PROBLEM)	
-	def emptyFixture(WFixture it) {
-		if (elements.isEmpty) {
-			report(WollokDslValidator_FIXTURE_CANNOT_BE_EMPTY, it, WFIXTURE__ELEMENTS)
-		}
-	}
-	
 	@Check
 	@DefaultSeverity(WARN)
 	@CheckGroup(WollokCheckGroup.POTENTIAL_DESIGN_PROBLEM)	

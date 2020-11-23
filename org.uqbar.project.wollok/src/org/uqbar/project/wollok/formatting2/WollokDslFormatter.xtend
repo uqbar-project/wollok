@@ -18,7 +18,6 @@ import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
-import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WListLiteral
@@ -387,8 +386,6 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		s.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ setNewLines(2) ].prepend [ oneSpace ]
 		s.interior [ indent ]
 		s.variableDeclarations.formatVariableDeclarations(document)
-		s.fixture.format
-		s.fixture.append [ setNewLines(2) ]
 		s.methods.forEach [ 
 			format 
 			append [ setNewLines(2) ]
@@ -398,17 +395,6 @@ class WollokDslFormatter extends AbstractFormatter2 {
 			append [ setNewLines(2) ]
 		]
 		s.regionFor.keyword(WollokConstants.END_EXPRESSION).surround[ setNewLines(2) ]
-	}
-
-	def dispatch void format(WFixture f, extension IFormattableDocument document) {
-		f.regionFor.keyword(WollokConstants.FIXTURE).append [ oneSpace ]
-		f.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ newLine ].prepend [ oneSpace ]
-		f.interior [ indent ]
-		f.elements.forEach [ e | 
-			e.surround [ newLine ]
-			e.format(document, false) 
-		]
-		f.regionFor.keyword(WollokConstants.END_EXPRESSION).prepend[ newLine ]
 	}
 
 	def dispatch void format(WPostfixOperation o, extension IFormattableDocument document) {

@@ -149,11 +149,9 @@ class SuiteBuilder {
 		suite.members.forEach [ member |
 			suiteObject.addMember(member)
 		]
-		if (suite.fixture !== null) {
-			suite.fixture.elements.forEach [ element |
-				interpreter.performOnStack(test, suiteObject, [| interpreter.eval(element) ])
-			]
-		}		
+		suite.initializeMethods.forEach [ initMethod |
+			interpreter.performOnStack(test, suiteObject, [| interpreter.eval(initMethod) ])
+		]
 		if (test !== null) {
 			// Now, declaring test local variables as suite wko instance variables
 			test.variableDeclarations.forEach[ variable |

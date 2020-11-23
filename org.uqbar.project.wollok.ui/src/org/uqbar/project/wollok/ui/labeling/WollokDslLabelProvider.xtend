@@ -8,7 +8,6 @@ import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
-import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WMixin
@@ -30,7 +29,6 @@ import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
 /**
@@ -71,15 +69,11 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 
 	def image(WSuite it) { 'describe.png' }
 
-	def image(WFixture it) { 'fixture.png' }
-
 	def image(WNamedObject it) { 'wollok-icon-object_16.png' }
 
 	def image(WObjectLiteral it) { 'wollok-icon-object_16.png' }
 
 	def text(WObjectLiteral it) { 'object' }
-
-	def text(WFixture it) { 'fixture' }
 
 	def text(WNamedObject it) { name ?: "<...>" }
 

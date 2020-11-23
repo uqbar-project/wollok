@@ -25,7 +25,6 @@ import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WFile
-import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -76,7 +75,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static WMethodContainer declaringContext(EObject it)	{ EcoreUtil2.getContainerOfType(it, WMethodContainer) }
 	def static WMethodDeclaration declaringMethod(EObject it)	{ EcoreUtil2.getContainerOfType(it, WMethodDeclaration) }
 	def static WArgumentList declaringArgumentList(EObject it)  { EcoreUtil2.getContainerOfType(it, WArgumentList) }
- 	def static WFixture declaringFixture(EObject it)			{ EcoreUtil2.getContainerOfType(it, WFixture) }
 	def static WClosure declaringClosure(EObject it)			{ EcoreUtil2.getContainerOfType(it, WClosure) }
 	def static WConstructorCall declaringConstructorCall(EObject it){ EcoreUtil2.getContainerOfType(it, WConstructorCall) }
 	
@@ -182,9 +180,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static behaviors(WMethodContainer c) {
 		return <EObject>newArrayList => [
-			if (c.fixture !== null) {
-				add(c.fixture)
-			}
 			addAll(c.methods)
 			addAll(c.tests)     // we need to add both methods and tests for describe suites
 		] 
@@ -260,8 +255,15 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		test.elements.flatMap [ variableDeclarations ].toList
 	}
 
-	def static dispatch EObject fixture(WMethodContainer c) { null }
-	def static dispatch EObject fixture(WSuite s) { s.fixture }
+	def static List<WMethodDeclaration> initializeMethods(WMethodContainer it) { initializeMethodsRecursive(newArrayList).reverse }
+
+	private def static List<WMethodDeclaration> initializeMethodsRecursive(WMethodContainer it, List<WMethodDeclaration> result) {
+		val initMethod = methods.findFirst [ name.equals(INITIALIZE_METHOD) ]
+		if (initMethod !== null) {
+			result.add(initMethod)
+		}
+		if (parent === null) result else initializeMethodsRecursive(result) 
+	}
 	
 	def static variables(WMethodContainer c) { c.variableDeclarations.variables }
 	def static variables(WProgram p) { p.elements.filter(WVariableDeclaration).variables }
@@ -617,7 +619,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		ele.declaringContext !== null
 	}
 	
-	def dispatch static boolean canCreateLocalVariable(WFixture it) { false }
 	def dispatch static boolean canCreateLocalVariable(WTest it) { true }
 	def dispatch static boolean canCreateLocalVariable(WMethodContainer it) { true }
 	def dispatch static boolean canCreateLocalVariable(WProgram it) { true }
@@ -738,7 +739,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean isPropertyAllowed(WProgram p) { false }
 	def static dispatch boolean isPropertyAllowed(WMethodDeclaration m) { false }
 	def static dispatch boolean isPropertyAllowed(WClosure c) { false }
-	def static dispatch boolean isPropertyAllowed(WFixture f) { false }
 	def static dispatch boolean isPropertyAllowed(WMethodContainer mc) { true }
 	def static dispatch boolean isPropertyAllowed(EObject o) {
 		val parent = o.eContainer

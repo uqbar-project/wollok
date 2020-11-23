@@ -36,17 +36,9 @@ WSuite:
 	'describe' name=STRING 
 	'{'
 		(members+=WVariableDeclaration ';'?)*
-		(fixture=WFixture)?
 		(members+=WMethodDeclaration ';'?)*
 		(tests+=WTest)*
 	'}'
-;
-
-WFixture:
-	{WFixture}
-	'fixture' '{'
-		(elements+=WExpression ';'?)*
-	'}'	
 ;
 
 WPackage:
