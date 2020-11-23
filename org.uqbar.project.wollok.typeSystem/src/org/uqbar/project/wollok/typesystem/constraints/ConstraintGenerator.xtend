@@ -12,7 +12,6 @@ import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
-import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
@@ -149,13 +148,6 @@ class ConstraintGenerator {
 	// ************************************************************************
 	// ** Methods and closures
 	// ************************************************************************
-	def dispatch void generate(WConstructor it) {
-		// TODO Process superconstructor information.
-		parameters.forEach[generateVariables]
-		expression?.generateVariables
-		delegatingConstructorCall?.generateVariables
-	}
-
 	def dispatch void generate(WMethodDeclaration it) {
 		newTypeVariable
 		parameters.forEach[generateVariables]

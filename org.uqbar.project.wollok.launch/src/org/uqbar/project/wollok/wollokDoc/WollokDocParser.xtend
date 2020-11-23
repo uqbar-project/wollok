@@ -14,8 +14,6 @@ import org.eclipse.xtext.documentation.impl.MultiLineCommentDocumentationProvide
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.launch.WollokChecker
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
-import org.uqbar.project.wollok.wollokDsl.WClass
-import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration

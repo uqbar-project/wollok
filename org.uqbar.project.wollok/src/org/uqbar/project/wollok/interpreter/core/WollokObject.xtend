@@ -14,14 +14,12 @@ import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 import org.uqbar.project.wollok.interpreter.natives.DefaultNativeObjectFactory
-import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
-import static org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilder.*
@@ -118,10 +116,6 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		} catch (RuntimeException e) {
 			throw new RuntimeException(NLS.bind(Messages.WollokInterpreter_errorWhileMessageNotUnderstood, e.message), e)
 		}
-	}
-
-	def createEvaluationContext(WConstructor declaration, WollokObject... values) {
-		asEvaluationContext(declaration.parameters.createMap(values))
 	}
 
 	override resolve(String variableName) {

@@ -34,10 +34,8 @@ import org.uqbar.project.wollok.wollokDsl.WPositionalArgumentsList
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
-import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuite
-import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThrow
@@ -497,22 +495,6 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		]
 	}
 
-	def dispatch void format(WSelfDelegatingConstructorCall s, extension IFormattableDocument document) {
-		if (s.previousHiddenRegion.length > 1) {
-			s.prepend [ oneSpace ]
-		}
-		s.regionFor.keyword(WollokConstants.SELF).append [ noSpace ]
-		s.argumentList.format
-	}
-
-	def dispatch void format(WSuperDelegatingConstructorCall s, extension IFormattableDocument document) {
-		if (s.previousHiddenRegion.length > 1) {
-			s.prepend [ oneSpace ]
-		}
-		s.regionFor.keyword(WollokConstants.SUPER).append [ noSpace ]
-		s.argumentList.format
-	}
-	
 	/** 
 	 * *******************************************************
 	 * 

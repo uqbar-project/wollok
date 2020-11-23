@@ -9,7 +9,6 @@ import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
-import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WNamedArgumentsList
@@ -61,7 +60,6 @@ class GuessMinTypeVisitor extends AbstractWollokVisitor {
 	def dispatch afterVisit(WFile it) {}
 	def dispatch afterVisit(WProgram it) {}
 	def dispatch afterVisit(WClass it) {}
-	def dispatch afterVisit(WConstructor it) {}
 	def dispatch afterVisit(WInitializer it) {}
 	def dispatch afterVisit(WCatch it) {}
 	def dispatch afterVisit(Import it) {}

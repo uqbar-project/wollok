@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.typesystem
 
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
-import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
 import static org.uqbar.project.wollok.sdk.WollokSDK.*
@@ -15,10 +14,6 @@ class TypeSystemUtils {
 	// helper
 	def static functionType(WMethodDeclaration m, extension TypeSystem ts) {
 		"(" + m.parameters.types(ts) + ') => ' + m.type.name
-	}
-	
-	def static constructorType(WConstructor it, extension TypeSystem ts) {
-		"(" + parameters.map[type?.name].join(", ") + ")"
 	}
 	
 	def static types(EList<? extends EObject> elements, extension TypeSystem ts) {

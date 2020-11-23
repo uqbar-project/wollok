@@ -378,28 +378,6 @@ WMember:
 	WVariableDeclaration | WMethodDeclaration
 ;
 
-WConstructor:
-	{WConstructor} 'constructor' '(' (parameters+=WParameter (',' parameters+=WParameter)*)? ')'
-		('=' delegatingConstructorCall=WDelegatingConstructorCall)?
-		(expression=WBlockExpression)?
-;
-
-WDelegatingConstructorCall:
-	WSelfDelegatingConstructorCall | WSuperDelegatingConstructorCall
-;
-
-WSelfDelegatingConstructorCall:
-	{WSelfDelegatingConstructorCall} 'self' '(' 
-	(=> argumentList=WPositionalArgumentsList)?
-	')'
-;
-
-WSuperDelegatingConstructorCall:
-	{WSuperDelegatingConstructorCall} 'super' '(' 
-	(=> argumentList=WPositionalArgumentsList)?
-	')'
-;
-
 WConstructorCall:
 	'new' classRef=[WClass|QualifiedName] '('
 	(=> argumentList=WArgumentList)?

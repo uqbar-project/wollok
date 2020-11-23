@@ -10,9 +10,7 @@ import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
-import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
-import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
@@ -167,11 +165,6 @@ abstract class AbstractWollokVisitor {
 	def dispatch void visitChildren(WPackage it) { elements.visitAll }
 	def dispatch void visitChildren(WUnaryOperation it) { operand.visit }
 	def dispatch void visitChildren(WClosure it) { expression.visit }
-	def dispatch void visitChildren(WConstructor it) {
-		delegatingConstructorCall.visit
-		expression.visit
-	}
-	def dispatch void visitChildren(WDelegatingConstructorCall it) { argumentList.visit }
 	def dispatch void visitChildren(WPositionalArgumentsList it) { values.visitAll }
 	def dispatch void visitChildren(WMethodDeclaration it) { expression.visit }
 

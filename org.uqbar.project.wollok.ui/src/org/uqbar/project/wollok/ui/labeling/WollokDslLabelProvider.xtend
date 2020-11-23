@@ -7,7 +7,6 @@ import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WClass
-import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
@@ -27,11 +26,12 @@ import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
+import static org.uqbar.project.wollok.WollokConstants.*
+import static org.uqbar.project.wollok.utils.WEclipseUtils.*
+
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import static extension org.uqbar.project.wollok.WollokConstants.*
-import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**
  * Provides labels for EObjects.
@@ -139,11 +139,6 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	def text(WMethodDeclaration m) {
 		(m.name ?: "<...>") + '(' + m.parameters.map[(name) + concatResolvedType(": ", it)].join(', ') + ')' +
 			if(m.supposedToReturnValue) (" → " + concatResolvedType("", m)) else ""
-	}
-
-	def text(WConstructor c) {
-		c.declaringContext?.name + '(' +
-			c.parameters.map[name + concatResolvedType(": ", it)].join(', ') + ')'
 	}
 
 	def image(WMethodDeclaration method) {

@@ -34,7 +34,6 @@ import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
-import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
@@ -58,10 +57,8 @@ import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
-import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuite
-import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThrow
@@ -171,7 +168,6 @@ class WollokModelExtensions {
 	}
 
 	def static dispatch boolean isAConstructor(EObject it) { false }
-	def static dispatch boolean isAConstructor(WConstructor it) { true }
 	def static dispatch boolean isAConstructor(WFixture it) { true }
 
 	/** A variable is global if its declaration (i.e. its eContainer) is direct child of a WFile element */
@@ -270,18 +266,6 @@ class WollokModelExtensions {
 	// ojo podría ser un !ObjectLiteral
 	def static declaringContext(WMethodDeclaration m) { m.eContainer as WMethodContainer } //
 
-	def static dispatch String constructorName(WConstructor c, WSelfDelegatingConstructorCall dc) {
-		constructorName(c, "self")
-	}
-
-	def static dispatch String constructorName(WConstructor c, WSuperDelegatingConstructorCall dc) {
-		constructorName(c, "super")
-	}
-
-	def static dispatch String constructorName(WConstructor c, String constructorCall) {
-		(constructorCall ?: "constructor") + "(" + c.parameters.map[name].join(",") + ")"
-	}
-
 	def static methodName(WMethodDeclaration d) {
 		d.declaringContext.name + "." + d.messageName
 	}
@@ -373,16 +357,6 @@ class WollokModelExtensions {
 		ECollections.emptyEList
 	}
 
-	def static dispatch EList<? extends EObject> arguments(WSelfDelegatingConstructorCall c) {
-		if(c.argumentList === null) return ECollections.emptyEList
-		c.argumentList.arguments
-	}
-
-	def static dispatch EList<? extends EObject> arguments(WSuperDelegatingConstructorCall c) {
-		if(c.argumentList === null) return ECollections.emptyEList
-		c.argumentList.arguments
-	}
-
 	def static dispatch EList<? extends EObject> arguments(WConstructorCall c) {
 		if(c.argumentList === null) return ECollections.emptyEList
 		c.argumentList.arguments
@@ -412,15 +386,7 @@ class WollokModelExtensions {
 		c.parent !== null && !c.parent.fqn.equalsIgnoreCase(WollokConstants.FQN_ROOT_CLASS)
 	}
 
-	def static matches(WConstructor it, int nrOfArgs) {
-		if(hasVarArgs)
-			nrOfArgs >= parameters.filter[!isVarArg].size
-		else
-			nrOfArgs == parameters.size
-	}
-
-	def static dispatch hasVarArgs(WConstructor it) { parameters.exists[isVarArg] }
-	def static dispatch hasVarArgs(WMethodDeclaration it) { parameters.exists[isVarArg] }
+	def static hasVarArgs(WMethodDeclaration it) { parameters.exists[isVarArg] }
 
 	// For objects or classes
 	def static declaredVariables(WMethodContainer obj) { obj.members.filter(WVariableDeclaration).map[variable] }
@@ -485,10 +451,6 @@ class WollokModelExtensions {
 	}
 
 	def static dispatch boolean isDuplicated(WClosure it, WReferenciable r) {
-		parameters.existsMoreThanOne(r) || eContainer.isDuplicated(r)
-	}
-
-	def static dispatch boolean isDuplicated(WConstructor it, WReferenciable r) {
 		parameters.existsMoreThanOne(r) || eContainer.isDuplicated(r)
 	}
 
@@ -580,14 +542,10 @@ class WollokModelExtensions {
 		EcoreUtil2.getContainerOfType(it, WMethodDeclaration) !== null
 	}
 
-	def static isLocalToConstructor(WVariableDeclaration it) {
-		EcoreUtil2.getContainerOfType(it, WConstructor) !== null
-	}
-
 	def static isLocalToTest(WVariableDeclaration it) { EcoreUtil2.getContainerOfType(it, WTest) !== null }
 
 	def static isLocal(WVariableDeclaration it) {
-		isLocalToConstructor || isLocalToTest || isLocalToMethod
+		isLocalToTest || isLocalToMethod
 	}
 
 	def static onlyUsedInReturn(WVariableDeclaration it) {

@@ -6,7 +6,7 @@ class Ave {
 	method cumplirAnios() {
 		edad++
 	}
-	method volar() { energia -= 10 }
+	method volar() { energia = energia - 10 }
 }
 class Golondrina inherits Ave {
 	const peso

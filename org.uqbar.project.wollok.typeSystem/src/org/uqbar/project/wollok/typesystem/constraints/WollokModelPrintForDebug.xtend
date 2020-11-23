@@ -22,7 +22,6 @@ import org.uqbar.project.wollok.wollokDsl.WollokDslFactory
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WConstructor
 
 class WollokModelPrintForDebug {
 	static def dispatch String debugInfo(EObject obj) {
@@ -100,9 +99,6 @@ class WollokModelPrintForDebug {
 	static def dispatch String debugInfoInContext(WParameter it)
 		'''«debugInfo» from «eContainer.debugInfoInContext»'''
 
-	static def dispatch String debugInfoInContext(WConstructor it)
-		'''«debugInfo»«parameterNames» in «eContainer.debugInfoInContext»'''
-		
 	static def dispatch String debugInfoInContext(WVariableReference it)
 		'''«debugInfo»«declaringContainer.debugInfoInContextIfPresent»]'''
 

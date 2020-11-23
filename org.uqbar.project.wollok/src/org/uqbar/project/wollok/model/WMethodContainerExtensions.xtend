@@ -21,9 +21,7 @@ import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
-import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
-import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WFile
@@ -41,7 +39,6 @@ import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
-import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuite
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
@@ -78,7 +75,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static WMethodContainer declaringContext(EObject it)	{ EcoreUtil2.getContainerOfType(it, WMethodContainer) }
 	def static WMethodDeclaration declaringMethod(EObject it)	{ EcoreUtil2.getContainerOfType(it, WMethodDeclaration) }
-	def static WConstructor declaringConstructor(EObject it)	{ EcoreUtil2.getContainerOfType(it, WConstructor) }
 	def static WArgumentList declaringArgumentList(EObject it)  { EcoreUtil2.getContainerOfType(it, WArgumentList) }
  	def static WFixture declaringFixture(EObject it)			{ EcoreUtil2.getContainerOfType(it, WFixture) }
 	def static WClosure declaringClosure(EObject it)			{ EcoreUtil2.getContainerOfType(it, WClosure) }
@@ -126,7 +122,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static dispatch parameters(EObject e) { null }
 	def static dispatch parameters(WMethodDeclaration it) { parameters }
-	def static dispatch parameters(WConstructor it) { parameters }
 	
 	def static dispatch parameterNames(EObject o) {
 		val parameters = o.parameters
@@ -741,7 +736,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static dispatch boolean isPropertyAllowed(WSuite s) { false	}
 	def static dispatch boolean isPropertyAllowed(WProgram p) { false }
-	def static dispatch boolean isPropertyAllowed(WConstructor c) { false }
 	def static dispatch boolean isPropertyAllowed(WMethodDeclaration m) { false }
 	def static dispatch boolean isPropertyAllowed(WClosure c) { false }
 	def static dispatch boolean isPropertyAllowed(WFixture f) { false }
@@ -750,17 +744,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		val parent = o.eContainer
 		parent !== null && parent.isPropertyAllowed
 	}
-
-	def static dispatch WConstructor resolveConstructor(WMethodContainer methodContainer, Object... arguments) {
-		null
-	}
-
-	def static dispatch WConstructor resolveConstructor(MixedMethodContainer obj, Object... arguments) {
-		obj.clazz.resolveConstructor(arguments)
-	}
-       
-	def static dispatch callsSelf(WDelegatingConstructorCall it) { false }
-	def static dispatch callsSelf(WSelfDelegatingConstructorCall it) { true }
 
 	def static dispatch hasParentParameterValues(WObjectLiteral l) {
 		l.parentParameters !== null && !l.parentParameters.values.empty

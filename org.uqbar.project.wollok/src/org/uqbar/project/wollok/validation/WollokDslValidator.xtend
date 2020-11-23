@@ -28,7 +28,6 @@ import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
-import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
@@ -372,21 +371,6 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	@NotConfigurable	
-	def cannotReassignValuesInConstructors(WAssignment a) {
-		val declaringConstructor = a.declaringConstructor
-		if (declaringConstructor === null) return;
-		val variable = a.feature.ref
-		if (declaringConstructor.hasSeveralAssignmentsFor(variable)) {
-			if (!variable.writableVarRef) {
-				error(WollokDslValidator_CANNOT_MODIFY_VAL, a, WASSIGNMENT__FEATURE,
-					cannotModifyErrorId(a.feature))
-			}
-		}
-	}
-
-	@Check
-	@DefaultSeverity(ERROR)
-	@NotConfigurable	
 	def cannotReassignValuesInFixture(WAssignment a) {
 		val declaringFixture = a.declaringFixture
 		if (declaringFixture === null) return;
@@ -401,11 +385,6 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	def dispatch boolean hasSeveralAssignmentsFor(WFixture it, WReferenciable variable) {
 		elements.filter [ hasAssignmentsFor(variable) ].size > 1
-	}
-
-	def dispatch boolean hasSeveralAssignmentsFor(WConstructor it, WReferenciable variable) {
-		if (expression === null) return false
-		expression.hasSeveralAssignmentsFor(variable)
 	}
 
 	def dispatch boolean hasSeveralAssignmentsFor(WBlockExpression it, WReferenciable variable) {
@@ -717,13 +696,6 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		}
 	}
 
-	@Check
-	@DefaultSeverity(WARN)
-	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
-	def unusedParameters(WConstructor it) {
-		checkUnusedParameters(it.parameters)
-	}
-	
 	@Check
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
 	def variableSingleAssignmentShouldBeConst(WVariableDeclaration it) {

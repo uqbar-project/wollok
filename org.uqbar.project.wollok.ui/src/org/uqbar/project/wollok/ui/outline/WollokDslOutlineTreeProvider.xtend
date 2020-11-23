@@ -5,7 +5,6 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.ui.editor.outline.IOutlineNode
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider
 import org.uqbar.project.wollok.wollokDsl.WAssignment
-import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
@@ -62,7 +61,6 @@ class WollokDslOutlineTreeProvider extends DefaultOutlineTreeProvider {
 	
 	/** don't want to go deep inside a method */
 	def _isLeaf(WMethodDeclaration m) 	{ true }
-	def _isLeaf(WConstructor c) 		{ true }
 	def _isLeaf(WMemberFeatureCall c) 	{ true }
 	def _isLeaf(WTest t)			 	{ true }
 	def _isLeaf(WFixture t)			 	{ true }
