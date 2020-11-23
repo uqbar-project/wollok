@@ -10,10 +10,8 @@ describe "group of tests" {
 	var b
 	const c = 4
 	
-	fixture {
-		// XPECT errors --> "Cannot modify constants" at "a"
+	method initialize() {
 		a = new X(x = 10)
-		// XPECT errors --> "Cannot modify constants" at "a"
 		a = 8
 		b = 1
 		b = 3

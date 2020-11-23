@@ -167,7 +167,7 @@ class WollokModelExtensions {
 	}
 
 	def static dispatch boolean isAnInitializer(EObject it) { false }
-	def static dispatch boolean isAnInitializer(WMethodContainer it) { name.equals(INITIALIZE_METHOD) }
+	def static dispatch boolean isAnInitializer(WMethodDeclaration it) { name.equals(INITIALIZE_METHOD) }
 
 	/** A variable is global if its declaration (i.e. its eContainer) is direct child of a WFile element */
 	def static dispatch boolean isGlobal(WVariableDeclaration it) {

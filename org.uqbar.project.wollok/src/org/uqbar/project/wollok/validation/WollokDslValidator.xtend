@@ -366,29 +366,6 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			cannotModifyErrorId(a.feature))
 		}
 	}
-
-//	@Check
-//	@DefaultSeverity(ERROR)
-//	@NotConfigurable	
-//	def cannotReassignValuesInFixture(WAssignment a) {
-//		val declaringFixture = a.declaringFixture
-//		if (declaringFixture === null) return;
-//		val variable = a.feature.ref
-//		if (declaringFixture.hasSeveralAssignmentsFor(variable)) {
-//			if (!variable.writableVarRef) {
-//				report(WollokDslValidator_CANNOT_MODIFY_VAL, a, WASSIGNMENT__FEATURE,
-//					cannotModifyErrorId(a.feature))
-//			}
-//		}
-//	}
-
-//	def dispatch boolean hasSeveralAssignmentsFor(WFixture it, WReferenciable variable) {
-//		elements.filter [ hasAssignmentsFor(variable) ].size > 1
-//	}
-
-//	def dispatch boolean hasSeveralAssignmentsFor(WBlockExpression it, WReferenciable variable) {
-//		expressions.filter [ hasAssignmentsFor(variable) ].size > 1
-//	}
 	
 	def dispatch boolean hasAssignmentsFor(EObject e, WReferenciable variable) {
 		false

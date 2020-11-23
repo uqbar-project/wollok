@@ -28,12 +28,12 @@ class QuickFixTest extends AbstractWollokQuickFixTestCase {
 	}
 
 	@Test
-	def changeDeclarationToVarInFixture(){
+	def changeDeclarationToVarInInitializeMethodOfATest(){
 		val initial = #['''
 			describe "some tests" {
 				const x
 				
-				fixture {
+				method initialize() {
 					x = 23
 				}
 				
@@ -48,7 +48,7 @@ class QuickFixTest extends AbstractWollokQuickFixTestCase {
 			describe "some tests" {
 				var x
 				
-				fixture {
+				method initialize() {
 					x = 23
 				}
 				
