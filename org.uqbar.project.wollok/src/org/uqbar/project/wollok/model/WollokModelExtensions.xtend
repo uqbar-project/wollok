@@ -185,6 +185,9 @@ class WollokModelExtensions {
 	def static dispatch boolean isGlobal(WParameter it) { false }
 	def static dispatch boolean isGlobal(WCatch it) { false }
 
+	def static dispatch boolean hasGlobalDefinitions(WClosure it) { false }
+	def static dispatch boolean hasGlobalDefinitions(EObject e) { true }
+
 	// ************************************************************************
 	// ** Variable & parameter usage
 	// ************************************************************************
@@ -201,7 +204,7 @@ class WollokModelExtensions {
 		ParameterUsesVisitor.usesOf(parameter, parameter.declarationContext)
 	}
 
-	def static isUsed(WReferenciable ref) { !ref.uses.isEmpty }
+	def static isUsed(WReferenciable ref) { ref !== null && !ref.uses.isEmpty }
 
 	def static indexOfUse(WVariableReference ref) {
 		ref.ref.uses.indexOf(ref.eContainer)

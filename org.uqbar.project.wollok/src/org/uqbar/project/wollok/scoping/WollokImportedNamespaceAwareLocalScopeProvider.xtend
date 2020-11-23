@@ -47,7 +47,7 @@ class WollokImportedNamespaceAwareLocalScopeProvider extends AbstractGlobalScope
 	// ************************************************************************
 	override getScope(EObject context, EReference reference) {
 		synchronized(context.eResource)
-			synchronized(context.eResource.resourceSet)
+			// synchronized(context.eResource.resourceSet)
 				context.computeScope(reference)
 	}
 
@@ -69,9 +69,9 @@ class WollokImportedNamespaceAwareLocalScopeProvider extends AbstractGlobalScope
 	// ** Internal implementation
 	// ************************************************************************
 	protected def IScope computeScope(EObject context, EReference reference) {
-		val IScope parent = if(context.eContainer !== null)
+		val IScope parent = if (context.eContainer !== null)
 				context.eContainer.computeScope(reference)
-			else
+			else 
 				context.eResource.resourceScope(reference)
 
 		context.localElementsScope(parent, reference)
@@ -144,11 +144,11 @@ class WollokImportedNamespaceAwareLocalScopeProvider extends AbstractGlobalScope
 	protected def getAllDescriptions(Resource resource) {
 		val Iterable<EObject> allContents = new Iterable<EObject>() {
 			override Iterator<EObject> iterator() {
-				EcoreUtil.getAllContents(resource, false)
+				EcoreUtil.getAllContents(resource, false).filter [ eContainer === null || eContainer.hasGlobalDefinitions ]
 			}
 		}
 		val allDescriptions = Scopes.scopedElementsFor(allContents, qualifiedNameProvider)
-		return new MultimapBasedSelectable(allDescriptions)
+		new MultimapBasedSelectable(allDescriptions)
 	}
 
 	protected def createImportScope(IScope parent, List<ImportNormalizer> namespaceResolvers, ISelectable importFrom,
