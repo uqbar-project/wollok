@@ -122,10 +122,20 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		if (variableName == SELF)
 			this
 		else if (instanceVariables.containsKey(variableName)) {
-			instanceVariables.get(variableName)
+			getVariableValue(variableName)
 		}
 		else
 			parentContext.resolve(variableName)
+	}
+	
+	def getVariableValue(String variableName) {
+		val value = instanceVariables.get(variableName)
+		if (value instanceof LazyWollokObject) {
+			val newValue = value.eval
+			instanceVariables.put(variableName, newValue)
+			return newValue
+		}
+		value
 	}
 
 	override setReference(String name, WollokObject value) {
@@ -143,7 +153,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	override allReferenceNames() {
 		instanceVariables.keySet.map [ variableName | 
 			val isConstantReference = constantReferences.contains(variableName)
-			val wollokObject = instanceVariables.get(variableName)
+			val wollokObject = getVariableValue(variableName)
 			new WVariable(variableName, System.identityHashCode(wollokObject), false, isConstantReference)
 		] + #[SELF_VAR]
 	}
