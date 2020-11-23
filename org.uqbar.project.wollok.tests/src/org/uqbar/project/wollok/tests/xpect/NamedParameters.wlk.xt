@@ -14,11 +14,8 @@ class Golondrina inherits Ave {
 }
 class Torcaza inherits Ave {
 	var color
-	constructor(_color) {
-		color = _color
-		energia = 10
-		edad = 1
-	}
+	
+	method esLinda() = color === "rojo"
 }
 class Entrenador {
 	var pepita = null
@@ -40,19 +37,18 @@ class Entrenador {
 		otraPepita = new Golondrina(edad = 10, peso = 5, energia = 56)
 	}
 	method crearTorcaza() {
-		torcaza = new Torcaza("azul")
 		torcaza = new Torcaza(color = "rojo", energia = 25, edad = 3)
 		// XPECT errors --> "You must provide initial value to the following references: energia" at "new Torcaza(color = "rojo")"
 		torcaza = new Torcaza(color = "rojo")
 		// XPECT errors --> "You must provide initial value to the following references: color, energia" at "new Torcaza(edad = 5)"
 		torcaza = new Torcaza(edad = 5)
-		// XPECT errors --> "Wrong number of arguments. Should be new Torcaza(_color)" at "new Torcaza()"
+		// XPECT errors --> "You must provide initial value to the following references: color, energia" at "new Torcaza()"
 		torcaza = new Torcaza()
 	}
 }
 
 class Heroe {
-	const nombre = null
+	const nombre
 	const traje = null
 	
 	method quienSoy() = nombre
@@ -71,54 +67,6 @@ object charlie {
 	const angel2 = object inherits Heroe(nombre = "") {}
 	
 	method quienCumpleMision() = [angel1, angel2]
-}
-class AntiHeroe inherits Heroe {
-	var fraseCabecera
-	constructor(_fraseCabecera) {
-		fraseCabecera = _fraseCabecera
-	}
-}
-class Villano inherits AntiHeroe {
-	var nivelMaldad
-	// XPECT errors --> "Named parameters are not allowed here" at "_fraseCabecera = \"No soy malo, estoy enojado\""
-	constructor(_fraseCabecera) = super(_fraseCabecera = "No soy malo, estoy enojado") {
-		nivelMaldad = 2		
-	}
-}
-class ReVillano inherits AntiHeroe {
-	var nivelMaldad
-	/* XPECT errors ---
-		"Couldn't resolve reference to 'ciudadesQueAma'." at "ciudadesQueAma"
-		"Named parameters are not allowed here" at "ciudadesQueAma = ["New York"]"
-	--- */
-	constructor(_fraseCabecera) = super(ciudadesQueAma = ["New York"]) {
-		nivelMaldad = 2
-	}
-	constructor(_nivelMaldad, _fraseCabecera) = self(_fraseCabecera) {
-		nivelMaldad = _nivelMaldad
-	}
-}
-
-class A {
-	var a
-	var b = 1
-	constructor(_a) {
-		a = _a
-	}
-	/* XPECT errors ---
-		"Couldn't resolve reference to '_a'." at "_a"
-		"Named parameters are not allowed here" at "_a = x"
-	--- */
-	constructor(x, y) = self(_a = x) {
-		b = y
-	}
-	/* XPECT errors ---
-		"Couldn't resolve reference to 'inexistente'." at "inexistente"
-		"Named parameters are not allowed here" at "x = y, inexistente = 3"
-	--- */
-	constructor(x, y, z) = self(x = y, inexistente = 3) {
-		b = y
-	}
 }
 
 class Something {

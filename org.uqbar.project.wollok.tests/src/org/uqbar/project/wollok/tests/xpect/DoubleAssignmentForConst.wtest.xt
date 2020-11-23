@@ -1,34 +1,8 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 class X {
 	const x
-	constructor(_e) {
-		// XPECT errors --> "Cannot modify constants" at "x"
-		x = _e
-		// XPECT errors --> "Cannot modify constants" at "x"
-		x = 2
-	}
-}
-
-class X2 {
-	var f
-	constructor(_f) {
-		f = _f
-		f = 2
-	}
-}
-
-class X3 {
-	const x
-	constructor(_e) {
-		x = _e
-	}
-}
-
-class Y {
-	const e
-	constructor(_e) {
-		e = _e
-	}
+	
+	method x() = x
 }
 
 describe "group of tests" {
@@ -38,7 +12,7 @@ describe "group of tests" {
 	
 	fixture {
 		// XPECT errors --> "Cannot modify constants" at "a"
-		a = new X(10)
+		a = new X(x = 10)
 		// XPECT errors --> "Cannot modify constants" at "a"
 		a = 8
 		b = 1

@@ -801,4 +801,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch isCustom(WMethodContainer o) { !o.fqn.startsWith("wollok.") }
 	def static dispatch isCustom(EObject o) { false }
 
+	def static dispatch shouldCheckInitialization(WMethodContainer it) { true }
+	def static dispatch shouldCheckInitialization(WClass it) { false }
 }

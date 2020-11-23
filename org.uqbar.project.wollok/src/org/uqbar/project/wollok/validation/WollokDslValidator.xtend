@@ -246,7 +246,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@NotConfigurable
 	def checkUnexistentNamedParametersInConstructor(WConstructorCall it) {
 		if (!hasNamedParameters) return;
-		classRef.validateNamedParameters(argumentList)
+		classRef.validateNamedParameters(argumentList, mixins)
 	}
 
 	@Check
@@ -266,8 +266,12 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	}
 
 	def void validateNamedParameters(WClass clazz, WArgumentList parameterList) {
-		if (clazz.name === null || parameterList === null || parameterList.initializers === null) return  // avoid validation for non-existent classes && no named parameters
-		val validAttributes = clazz.allVariableNames
+		validateNamedParameters(clazz, parameterList, #[])
+	}
+
+	def void validateNamedParameters(WClass clazz, WArgumentList parameterList, List<WMixin> additionalMixins) {
+		if (clazz.name === null) return;  // avoid validation for non-existent classes
+		val validAttributes = clazz.allVariableNames + (clazz.mixins + additionalMixins).flatMap [ allVariableNames ]
 		val invalidInitializers = parameterList.initializers.filter [ !validAttributes.contains(initializer.name) ]
 		invalidInitializers.forEach [ 
 			reportEObject(NLS.bind(WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR_CALL, initializer.name, clazz.name), initializer.eContainer, WollokDslValidator.ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR_CALL)
@@ -688,7 +692,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def unusedVariablesAndInitializedConstants(WVariableDeclaration it) {
 		val assignments = variable.assignments
 		val declaringContext = it.declaringContext
-		val shouldCheckInitialization = declaringContext === null
+		val shouldCheckInitialization = declaringContext === null || declaringContext.shouldCheckInitialization
 		// Variable has no assignments
 		if (assignments.empty && shouldCheckInitialization) {
 			if (writeable)

@@ -870,8 +870,7 @@ class WollokModelExtensions {
 	def static dispatch boolean hasNamedParameters(EObject o) { false }
 
 	def static dispatch boolean hasNamedParameters(WConstructorCall c) {
-		// if(c.argumentList === null) return false
-		true
+		c.argumentList !== null
 	}
 
 	def static dispatch boolean hasNamedParameters(WPositionalArgumentsList l) { false }
