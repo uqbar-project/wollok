@@ -960,5 +960,7 @@ class WollokModelExtensions {
 
 	def static dispatch boolean hasNamedParameters(WPositionalArgumentsList l) { false }
 	def static dispatch boolean hasNamedParameters(WNamedArgumentsList l) { true }
-	
+
+	def static dispatch boolean shouldBeLazilyInitialized(EObject e) { false }
+	def static dispatch boolean shouldBeLazilyInitialized(WVariableReference v) { v.ref.global }	
 }
