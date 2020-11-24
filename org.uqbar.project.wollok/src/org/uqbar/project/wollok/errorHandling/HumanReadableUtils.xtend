@@ -1,10 +1,13 @@
 package org.uqbar.project.wollok.errorHandling
 
+import java.util.List
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.osgi.util.NLS
 import org.uqbar.project.wollok.Messages
+import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
+import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
@@ -60,7 +63,9 @@ class HumanReadableUtils {
 	}
 	
 	def static uninitializedNamedParameters(WConstructorCall it) {
-		val uninitializedAttributes = classRef.allVariableDeclarations.filter [ right === null ]
+		var uninitializedAttributes = classRef.allVariableDeclarations.filter [ right === null ]
+		val attributesInitializedInMethod = classRef.initializeMethods.flatMap [ method | method.assignments ].map [ feature ]
+		uninitializedAttributes = uninitializedAttributes.filter [ attributesInitializedInMethod.contains(it) ]
 		val namedArguments = initializers.map [ initializer.name ]
 		uninitializedAttributes.filter [ arg | !namedArguments.contains(arg.variable.name) ]
 	}
@@ -70,6 +75,13 @@ class HumanReadableUtils {
 			[ variable.name + " = value" ].join(", ")
 	}
 	
+	def static List<WAssignment> assignments(WMethodDeclaration m) {
+		if (!(m.expression instanceof WBlockExpression)) {
+			return newArrayList
+		}
+		(m.expression as WBlockExpression).expressions.filter(WAssignment).toList
+	}
+
 	// ************************************************************************
 	// ** Errors
 	// ************************************************************************

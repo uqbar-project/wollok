@@ -262,7 +262,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		if (initMethod !== null) {
 			result.add(initMethod)
 		}
-		if (parent === null) result else initializeMethodsRecursive(result) 
+		if (parent === null) result else parent.initializeMethodsRecursive(result) 
 	}
 	
 	def static variables(WMethodContainer c) { c.variableDeclarations.variables }

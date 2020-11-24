@@ -50,5 +50,23 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 			Assert.assertEquals("Couldn't resolve reference to pepa", e.originalCause.message)
 		}
 	}
-	
+
+	// BORRAR
+	@Test
+	def void tx() {
+		'''
+		class C {
+		  var property a = 1
+		  var property b = a + 1
+		}
+		
+		describe "lazy initialization on instances" {
+		
+		  test "overriding default initialization: variable -> value" {
+		    assert.equals(3, new C(a = 2).b())
+		  }
+		
+		}
+		'''.interpretPropagatingErrors		
+	}	
 }

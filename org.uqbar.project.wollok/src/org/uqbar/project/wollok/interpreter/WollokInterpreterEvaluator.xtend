@@ -75,7 +75,6 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * It's the real "interpreter".
@@ -340,6 +339,26 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		wollokObject
 	}
 
+	@Deprecated
+	// Use newInstance with initializers
+	def newInstance(String classFQN, WollokObject... arguments) {
+		newInstance(classFinder.searchClass(classFQN, interpreter.rootContext), arguments)
+	}
+
+	@Deprecated
+	// Use newInstance with initializers
+	def newInstance(WClass wollokClass, WollokObject... arguments) {
+		wollokClass.createInstance
+	}
+
+	def newInstance(WClass wollokClass, EList<WInitializer> initializers) {
+		new WollokObject(interpreter, wollokClass) => [ wo |
+			wo.initializeObject(initializers)
+			wollokClass.addInheritsMembers(wo)
+			wollokClass.addMixinsMembers(wo)
+		]
+	}
+
 	def newInstanceWithMixins(WConstructorCall call) {
 		val container = new MixedMethodContainer(call.classRef, call.mixins)
 		new WollokObject(interpreter, container) => [ wo |
@@ -349,24 +368,12 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		]		
 	}
 
-	def newInstance(String classFQN, WollokObject... arguments) {
-		newInstance(classFinder.searchClass(classFQN, interpreter.rootContext), arguments)
-	}
-
+	@Deprecated
+	// We should get rid of this method
 	def WollokObject createInstance(WClass classRef) {
 		new WollokObject(interpreter, classRef) => [ wo |
 			classRef.addInheritsMembers(wo)
 			classRef.addMixinsMembers(wo)
-		]
-	}
-
-	def newInstance(WClass wollokClass, WollokObject... arguments) {
-		wollokClass.createInstance
-	}
-
-	def newInstance(WClass wollokClass, EList<WInitializer> initializers) {
-		wollokClass.createInstance => [
-			initializeObject(initializers)
 		]
 	}
 

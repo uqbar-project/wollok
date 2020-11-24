@@ -9,9 +9,22 @@ class A {
 
 class B inherits A {
 	var property b
-	
+
+	// does not require override because it is initialize	
 	method initialize() {
+		// can call to super although it has not override on its definition
+		// because it is initialize
 		super()
 		b = 2
 	}
 }
+
+class C {
+	var property a = 1
+	const property b  // does not cause a validation warning because initialize takes care of it
+  
+	method initialize() {
+		b = a + 1
+	}
+}
+
