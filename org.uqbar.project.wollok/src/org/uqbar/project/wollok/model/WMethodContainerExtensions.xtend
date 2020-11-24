@@ -258,7 +258,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static List<WMethodDeclaration> initializeMethods(WMethodContainer it) { initializeMethodsRecursive(newArrayList).reverse }
 
 	private def static List<WMethodDeclaration> initializeMethodsRecursive(WMethodContainer it, List<WMethodDeclaration> result) {
-		val initMethod = methods.findFirst [ name.equals(INITIALIZE_METHOD) ]
+		val initMethod = methods.findFirst [ isInitializer ]
 		if (initMethod !== null) {
 			result.add(initMethod)
 		}
@@ -786,4 +786,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static dispatch shouldCheckInitialization(WMethodContainer it) { true }
 	def static dispatch shouldCheckInitialization(WClass it) { false }
+
+	def static isInitializer(WMethodDeclaration m) { m.name.equals(INITIALIZE_METHOD) }
 }

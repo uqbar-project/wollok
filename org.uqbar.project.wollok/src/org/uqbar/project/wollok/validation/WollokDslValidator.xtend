@@ -436,6 +436,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(WARN)
 	@CheckGroup(WollokCheckGroup.EXPLICIT_INTENTION)
 	def methodActuallyOverrides(WMethodDeclaration m) {
+		if (m.isInitializer) return
 		val overrides = m.actuallyOverrides
 		if (overrides && !m.overrides)
 			m.report(WollokDslValidator_METHOD_MUST_HAVE_OVERRIDE_KEYWORD, METHOD_MUST_HAVE_OVERRIDE_KEYWORD)
@@ -789,6 +790,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	@CheckGroup(WollokCheckGroup.POTENTIAL_DESIGN_PROBLEM)
 	def superInvocationOnlyInValidMethod(WSuperInvocation sup) {
+		if (sup.method.isInitializer) return;
 		if (!sup.method.overrides && !sup.isInMixin)
 			report(WollokDslValidator_SUPER_ONLY_OVERRIDING_METHOD, sup)
 		else if (sup.memberCallArguments.size != sup.method.parameters.size)
