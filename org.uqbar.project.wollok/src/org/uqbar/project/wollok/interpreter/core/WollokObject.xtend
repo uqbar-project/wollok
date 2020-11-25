@@ -53,16 +53,8 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	def dispatch void addMember(WMethodDeclaration method) { /** Nothing to do */ }
 
 	def dispatch void addMember(WVariableDeclaration declaration) {
-		declaration.addMember(true)
-	}
-
-	def void addMember(WVariableDeclaration declaration, boolean initializeIt) {
 		val variableName = declaration.variable.name
-		if (!instanceVariables.containsKey(variableName)) {
-			instanceVariables.put(variableName, interpreter.performOnStack(declaration, this) [|
-				if (initializeIt) declaration.right?.eval else null
-			])
-		}
+		instanceVariables.put(variableName, null)
 		if (!declaration.writeable) {
 			constantReferences.add(variableName)
 		}
@@ -71,6 +63,16 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 			if (!declaration.writeable) {
 				constantsProperties.add(variableName)
 			}
+		}
+	}
+
+	def void initializeAttribute(WVariableDeclaration declaration) {
+		val variableName = declaration.variable.name
+		if (!this.isInitialized(variableName)) {
+			val value = interpreter.performOnStack(declaration, this) [
+				declaration.right?.eval
+			]
+			instanceVariables.put(variableName, value)
 		}
 	}
 
@@ -267,6 +269,10 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	override showableInStackTrace() { true }
 
 	override variableShowableInDynamicDiagram(String name) { true }
+		
+	def isInitialized(String variableName) {
+		instanceVariables.get(variableName) !== null
+	}
 	
 }
 

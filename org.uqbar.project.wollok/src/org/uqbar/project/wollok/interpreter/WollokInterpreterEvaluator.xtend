@@ -147,10 +147,10 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def dispatch WollokObject evaluate(WTest it) { elements.evalAll }
 
 	def dispatch WollokObject evaluate(WSuite it) {
-		val initializeMethods = initializeMethods
+		val initMethod = initializeMethod
 		tests.fold(null) [ a, test |
 			members.forEach[m|evaluate(m)]
-			initializeMethods.forEach [ evaluate ]
+			initMethod.evaluate
 			test.eval
 		]
 	}
@@ -285,13 +285,19 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	def dispatch evaluate(WObjectLiteral l) {
 		new WollokObject(interpreter, l) => [ wo |
+			// 1. adding attributes: mixins call - mixin linearization - class hierarchy
 			l.addObjectMembers(wo)
 			l.parent.addInheritsMembers(wo)
 			l.addMixinsMembers(wo)
+			// 2. initialized named parameters
 			if (l.hasParentParameterInitializers) {
 				wo.initializeObject(l.parentParameters.initializers)
 			}
-			
+			// 3. initialize pending attributes (not passed in named parameters)
+			l.mixins.forEach [ initializeMembers(wo) ]
+			l.parent.initializeMembers(wo)			
+			l.variableDeclarations.forEach [ wo.initializeAttribute(it) ]
+			// 4. last initialization opportunity - initialize method
 			wo.callInitIfDefined
 		]
 	}
@@ -305,7 +311,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	def addObjectMembers(WMethodContainer it, WollokObject wo) {
-		members.forEach[wo.addMember(it)]
+		members.forEach[ wo.addMember(it) ]
 	}
 
 	def addInheritsMembers(WClass it, WollokObject wo) {
@@ -315,8 +321,17 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		]
 	}
 
+	def initializeMembers(WClass clazz, WollokObject wo) {
+		clazz.allVariableDeclarations
+			.forEach [ wo.initializeAttribute(it) ]
+	}
+
 	def addMixinsMembers(WMethodContainer it, WollokObject wo) {
 		mixins.forEach[addMembersTo(wo)]
+	}
+
+	def initializeMembers(WMethodContainer it, WollokObject wo) {
+		variableDeclarations.forEach[wo.initializeAttribute(it)]
 	}
 
 	def dispatch evaluate(WReturnExpression it) {
@@ -327,53 +342,40 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		if (call.classRef.eResource === null) {
 			throw newWollokExceptionAsJava(Messages.LINKING_COULD_NOT_RESOLVE_REFERENCE + call.classNameWhenInvalid)
 		}
-		val wollokObject = 
-			if (call.mixins.isEmpty) {
-				newInstance(call.classRef, call.initializers)
-			} else {
-				call.newInstanceWithMixins => [
-					initializeObject(call.initializers)
-				]
-			}
-		wollokObject.callInitIfDefined
-		wollokObject
+		val wollokClass = call.classRef
+		val container = if (call.mixins.isEmpty) wollokClass else new MixedMethodContainer(call.classRef, call.mixins) 
+		new WollokObject(interpreter, container) => [ wo |
+			// 1. adding attributes: mixins call - mixin linearization - class hierarchy
+			call.mixins.forEach[ addMembersTo(wo) ]
+			wollokClass.addMixinsMembers(wo)
+			wollokClass.addInheritsMembers(wo)
+			// 2. initialized named parameters
+			wo.initializeObject(call.initializers)
+			// 3. initialize pending attributes (not passed in named parameters)
+			wollokClass.initializeMembers(wo)
+			call.mixins.forEach[ initializeMembers(wo) ]
+			// 4. last initialization opportunity - initialize method
+			wo.callInitIfDefined
+		]
 	}
 
-	@Deprecated
-	// Use newInstance with initializers
 	def newInstance(String classFQN, WollokObject... arguments) {
 		newInstance(classFinder.searchClass(classFQN, interpreter.rootContext), arguments)
 	}
 
-	@Deprecated
-	// Use newInstance with initializers
 	def newInstance(WClass wollokClass, WollokObject... arguments) {
 		wollokClass.createInstance
 	}
 
-	def newInstance(WClass wollokClass, EList<WInitializer> initializers) {
+	def WollokObject createInstance(WClass wollokClass) {
 		new WollokObject(interpreter, wollokClass) => [ wo |
-			wo.initializeObject(initializers)
-			wollokClass.addInheritsMembers(wo)
+			// 1. adding attributes: mixin linearization - class hierarchy
 			wollokClass.addMixinsMembers(wo)
-		]
-	}
-
-	def newInstanceWithMixins(WConstructorCall call) {
-		val container = new MixedMethodContainer(call.classRef, call.mixins)
-		new WollokObject(interpreter, container) => [ wo |
-			// mixins first
-			call.mixins.forEach[addMembersTo(wo)]
-			call.classRef.addInheritsMembers(wo)
-		]		
-	}
-
-	@Deprecated
-	// We should get rid of this method
-	def WollokObject createInstance(WClass classRef) {
-		new WollokObject(interpreter, classRef) => [ wo |
-			classRef.addInheritsMembers(wo)
-			classRef.addMixinsMembers(wo)
+			wollokClass.addInheritsMembers(wo)
+			// 3. initialize pending attributes
+			wollokClass.initializeMembers(wo)
+			// Here we should NOT call to the initialize method, because
+			// it would override the values we want to have
 		]
 	}
 
@@ -540,19 +542,26 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			// first add it to solve cross-refs !
 			interpreter.currentContext.addGlobalReference(qualifiedName, wollokObject, true)
 			try {
-				namedObject.addObjectMembers(wollokObject)
-				namedObject.parent.addInheritsMembers(wollokObject)
+				// 1. adding attributes: mixin linearization - class hierarchy
 				namedObject.addMixinsMembers(wollokObject)
+				namedObject.parent.addInheritsMembers(wollokObject)
+				namedObject.addObjectMembers(wollokObject)
 
 				if (namedObject.native)
 					wollokObject.nativeObjects.put(namedObject,
 						namedObject.createNativeObject(wollokObject, interpreter))
 
+				// 2. initialized named parameters over the parent (if it has)
 				if (namedObject.hasParentParameterInitializers)
 					wollokObject.initializeObject(namedObject.parentParameters.initializers)
 
+				// 3. initialize pending attributes (not passed in named parameters)
+				namedObject.mixins.forEach [ initializeMembers(wollokObject) ]
+				namedObject.parent.initializeMembers(wollokObject)
+				namedObject.initializeMembers(wollokObject)			
+
+				// 4. last initialization opportunity - initialize method
 				wollokObject.callInitIfDefined
-				
 			} catch (RuntimeException e) {
 				// if init failed remove it !
 				interpreter.currentContext.removeGlobalReference(qualifiedName)

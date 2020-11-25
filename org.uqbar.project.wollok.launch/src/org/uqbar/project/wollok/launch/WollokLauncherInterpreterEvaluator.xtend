@@ -148,16 +148,17 @@ class SuiteBuilder {
 		// Suite -> suite wko
 		val suiteObject = new WollokObject(interpreter, suite)
 		// Declaring suite variables as suite wko instance variables
-		suite.members.forEach [ member |
-			suiteObject.addMember(member)
+		suite.variableDeclarations.forEach [ attribute |
+			suiteObject.addMember(attribute)
+			suiteObject.initializeAttribute(attribute)
 		]
-		suite.initializeMethods.forEach [ initMethod |
-			interpreter.performOnStack(test, suiteObject, [| interpreter.eval(initMethod.expression) ])			
-		]
+		if (suite.initializeMethod !== null) {
+			interpreter.performOnStack(test, suiteObject, [| interpreter.eval(suite.initializeMethod.expression) ])			
+		}
 		if (test !== null) {
 			// Now, declaring test local variables as suite wko instance variables
-			test.variableDeclarations.forEach[ variable |
-				suiteObject.addMember(variable, false)
+			test.variableDeclarations.forEach[ attribute |
+				suiteObject.addMember(attribute)
 			]
 		}
 		suiteObject

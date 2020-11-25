@@ -255,10 +255,12 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		test.elements.flatMap [ variableDeclarations ].toList
 	}
 
+	def static WMethodDeclaration initializeMethod(WMethodContainer it) { methods.findFirst [ isInitializer ] }
+
 	def static List<WMethodDeclaration> initializeMethods(WMethodContainer it) { initializeMethodsRecursive(newArrayList).reverse }
 
 	private def static List<WMethodDeclaration> initializeMethodsRecursive(WMethodContainer it, List<WMethodDeclaration> result) {
-		val initMethod = methods.findFirst [ isInitializer ]
+		val initMethod = initializeMethod
 		if (initMethod !== null) {
 			result.add(initMethod)
 		}

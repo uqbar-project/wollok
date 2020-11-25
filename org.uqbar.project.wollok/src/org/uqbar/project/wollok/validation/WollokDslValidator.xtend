@@ -360,8 +360,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@NotConfigurable	
 	def cannotReassignValues(WAssignment a) {
 		val variable = a.feature.ref
-		if(!variable.isModifiableFrom(a)
-			&& !a.isWithinInitializer) {
+		if (!variable.isModifiableFrom(a)) {
 			report(WollokDslValidator_CANNOT_MODIFY_VAL, a, WASSIGNMENT__FEATURE,
 			cannotModifyErrorId(a.feature))
 		}

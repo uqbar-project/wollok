@@ -64,8 +64,9 @@ class HumanReadableUtils {
 	
 	def static uninitializedNamedParameters(WConstructorCall it) {
 		var uninitializedAttributes = classRef.allVariableDeclarations.filter [ right === null ]
-		val attributesInitializedInMethod = classRef.initializeMethods.flatMap [ method | method.assignments ].map [ feature ]
-		uninitializedAttributes = uninitializedAttributes.filter [ attributesInitializedInMethod.contains(it) ]
+//		Checking against initialize methods also, currently disregarded
+//		val attributesInitializedInMethod = classRef.initializeMethods.flatMap [ method | method.assignments ].map [ feature ]
+//		uninitializedAttributes = uninitializedAttributes.filter [ attributesInitializedInMethod.contains(it) ]
 		val namedArguments = initializers.map [ initializer.name ]
 		uninitializedAttributes.filter [ arg | !namedArguments.contains(arg.variable.name) ]
 	}

@@ -15,6 +15,7 @@ describe "group of tests" {
 		a = 8
 		b = 1
 		b = 3
+		// XPECT errors --> "Cannot modify constants" at "c"
 		c = 55
 	}
 	

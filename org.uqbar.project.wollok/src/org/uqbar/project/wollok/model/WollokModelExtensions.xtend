@@ -277,7 +277,7 @@ class WollokModelExtensions {
 		"(" + d.parameters.map[name].join(", ") + ")"
 	}
 
-	def static void addMembersTo(WMethodContainer cl, WollokObject wo) { cl.members.forEach[wo.addMember(it)] }
+	def static void addMembersTo(WMethodContainer mc, WollokObject wo) { mc.members.forEach[wo.addMember(it)] }
 
 	// se puede ir ahora que esta bien la jerarquia de WReferenciable (?)
 	def dispatch messagesSentTo(WVariable v) { v.allMessageSent }
