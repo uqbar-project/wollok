@@ -35,7 +35,6 @@ class WollokExceptionExtensions {
 	}
 
 	def static WollokProgramExceptionWrapper newWollokExceptionAsJava(String message) {
-		println("message " + message)
 		new WollokProgramExceptionWrapper(newWollokException(message))
 	}
 
