@@ -3,9 +3,10 @@ package org.uqbar.project.wollok.launch.tests.json
 import java.io.PrintWriter
 import java.util.List
 import org.eclipse.xtext.validation.Issue
-import org.uqbar.project.wollok.launch.Wollok
+import org.uqbar.project.wollok.Wollok
 import org.uqbar.project.wollok.launch.WollokLauncherIssueHandler
 import org.uqbar.project.wollok.server.JSonWriter
+
 import static extension org.uqbar.project.wollok.server.JSonWriter.*
 
 /**
