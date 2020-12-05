@@ -38,8 +38,13 @@ import org.eclipse.ui.IPageLayout
 import org.eclipse.ui.PartInitException
 import org.eclipse.ui.PlatformUI
 import org.eclipse.ui.texteditor.ITextEditor
+import org.eclipse.xtext.diagnostics.Severity
 import org.eclipse.xtext.ui.editor.XtextEditor
 import org.eclipse.xtext.ui.editor.model.XtextDocumentUtil
+import org.eclipse.xtext.ui.editor.model.edit.IModificationContext
+import org.eclipse.xtext.validation.CheckType
+import org.eclipse.xtext.validation.Issue.IssueImpl
+import org.eclipse.xtext.ui.editor.model.edit.IssueModificationContext.Factory
 
 import static org.uqbar.project.wollok.WollokConstants.*
 
@@ -210,7 +215,11 @@ class WEclipseUtils {
 	}
 
 	def static allWollokFiles(IProject project) {
-		project.allMembers.filter[isWollokExtension].map[convertToEclipseURI].toList
+		project.allWollokResources.map[convertToEclipseURI].toList
+	}
+
+	def static allWollokResources(IProject project) {
+		project.allMembers.filter[isWollokExtension]
 	}
 
 	def static convertToEclipseURI(IResource res) {
@@ -321,4 +330,34 @@ class WEclipseUtils {
 	def static themeSuffix() {
 		if (environmentHasDarkTheme) "-dark" else ""
 	}
+
+	def static getPackage(IFile file) {
+		val allSegments = file.projectRelativePath.segments
+		if (allSegments.length === 0) return ""
+		val reversedSegments = allSegments.reverse.subList(1, allSegments.length - 1)
+		val indexOfSrc = allSegments.indexOf(SOURCE_FOLDER)
+		val packageList = if (indexOfSrc === -1) reversedSegments.reverse else reversedSegments.subList(0, indexOfSrc - 1)
+		packageList.join(".")
+	}
+	
+	def static getNameForImport(IFile file) {
+		val lastSegment = file.location.lastSegment
+		if (lastSegment === null) return ""
+		val fileParts = lastSegment.split("\\.")
+		if (fileParts.length < 2) return lastSegment
+		fileParts.get(0)
+	}
+
+	def static IModificationContext createModificationContext(Factory modificationContextFactory, URI mainFile, String associatedCode) {
+		modificationContextFactory.createModificationContext(new IssueImpl => [
+			uriToProblem = mainFile
+			length = 0
+			column = 0
+			code = associatedCode
+			message = "Refactoring"
+			severity = Severity.INFO
+			type = CheckType.EXPENSIVE
+		])
+	}
+
 }
