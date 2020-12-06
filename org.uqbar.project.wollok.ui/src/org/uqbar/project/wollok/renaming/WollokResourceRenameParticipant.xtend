@@ -40,7 +40,7 @@ class WollokResourceRenameParticipant extends JdtRenameParticipant {
 	def static dispatch replaceImports(IFile file, String newName, IssueModificationContext.Factory modificationContextFactory, IResourceSetProvider resourceSetProvider) {
 		val package = file.getPackage
 		val oldImport = package + "." + file.nameForImport
-		val newImport = package + "." + newName.split("\\.").get(0)
+		val newImport = package + "." + newName.forImport
 		val fileToChangePath = file.rawLocationURI.path
 		file.project.allWollokResources.forEach [ wollokFile |
 			val mainFile = wollokFile.convertToEclipseURI
@@ -51,16 +51,8 @@ class WollokResourceRenameParticipant extends JdtRenameParticipant {
 					override runInUIThread(IProgressMonitor monitor) {
 						val xtextDocument = modificationContext.getXtextDocument(mainFile)
 						val importToSearch = '''«IMPORT» «oldImport».'''
-						xtextDocument.modify(new IUnitOfWork<Object, XtextResource>() {
-							override exec(XtextResource state) throws Exception {
-								var offset = xtextDocument.search(0, importToSearch, true, true, false)
-								while (offset !== -1) {
-									xtextDocument.replace(offset, importToSearch.length, '''«IMPORT» «newImport».''')
-									offset = xtextDocument.search(offset + 1, importToSearch, true, true, false)
-								}
-								return null
-							}
-						})
+						val importToReplace = '''«IMPORT» «newImport».'''
+						xtextDocument.replaceAllOccurrences(importToSearch, importToReplace)
 						activePage.saveEditor(activeEditor, false)
 						Status.OK_STATUS
 					}

@@ -39,12 +39,15 @@ import org.eclipse.ui.PartInitException
 import org.eclipse.ui.PlatformUI
 import org.eclipse.ui.texteditor.ITextEditor
 import org.eclipse.xtext.diagnostics.Severity
+import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.ui.editor.XtextEditor
+import org.eclipse.xtext.ui.editor.model.IXtextDocument
 import org.eclipse.xtext.ui.editor.model.XtextDocumentUtil
 import org.eclipse.xtext.ui.editor.model.edit.IModificationContext
+import org.eclipse.xtext.ui.editor.model.edit.IssueModificationContext.Factory
+import org.eclipse.xtext.util.concurrent.IUnitOfWork
 import org.eclipse.xtext.validation.CheckType
 import org.eclipse.xtext.validation.Issue.IssueImpl
-import org.eclipse.xtext.ui.editor.model.edit.IssueModificationContext.Factory
 
 import static org.uqbar.project.wollok.WollokConstants.*
 
@@ -343,8 +346,12 @@ class WEclipseUtils {
 	def static getNameForImport(IFile file) {
 		val lastSegment = file.location.lastSegment
 		if (lastSegment === null) return ""
-		val fileParts = lastSegment.split("\\.")
-		if (fileParts.length < 2) return lastSegment
+		lastSegment.forImport
+	}
+	
+	def static forImport(String fileName) {
+		val fileParts = fileName.split("\\.")
+		if (fileParts.length < 2) return fileName
 		fileParts.get(0)
 	}
 
@@ -360,4 +367,16 @@ class WEclipseUtils {
 		])
 	}
 
+	def static void replaceAllOccurrences(IXtextDocument xtextDocument, String textToReplace, String newText) {
+		xtextDocument.modify(new IUnitOfWork<Object, XtextResource>() {
+			override exec(XtextResource state) throws Exception {
+				var offset = xtextDocument.search(0, textToReplace, true, true, false)
+				while (offset !== -1) {
+					xtextDocument.replace(offset, textToReplace.length, newText)
+					offset = xtextDocument.search(offset + 1, textToReplace, true, true, false)
+				}
+				return null
+			}
+		})		
+	}
 }
