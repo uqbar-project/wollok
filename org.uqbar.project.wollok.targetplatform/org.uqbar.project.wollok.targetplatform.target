@@ -7,8 +7,8 @@
 			<repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.20.0/" />
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-			<unit id="org.eclipse.babel.nls_eclipse_es.feature.group" version="4.16.0.v20201010073410" />
-			<repository location="https://download.eclipse.org/technology/babel/update-site/R0.18.1/2020-06/" />
+			<unit id="org.eclipse.babel.nls_eclipse_es.feature.group" version="4.14.0.v20201010124911" />
+			<repository location="https://download.eclipse.org/technology/babel/update-site/R0.18.1/2019-12/" />
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 			<unit id="org.eclipse.equinox.sdk.feature.group" version="0.0.0" />
