@@ -7,10 +7,8 @@ import org.eclipse.core.runtime.Status
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.ui.progress.UIJob
 import org.eclipse.xtext.common.types.ui.refactoring.participant.JdtRenameParticipant
-import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.ui.editor.model.edit.IssueModificationContext
 import org.eclipse.xtext.ui.resource.IResourceSetProvider
-import org.eclipse.xtext.util.concurrent.IUnitOfWork
 import org.uqbar.project.wollok.scoping.WollokResourceCache
 import org.uqbar.project.wollok.wollokDsl.Import
 
@@ -38,9 +36,9 @@ class WollokResourceRenameParticipant extends JdtRenameParticipant {
 	}
 
 	def static dispatch replaceImports(IFile file, String newName, IssueModificationContext.Factory modificationContextFactory, IResourceSetProvider resourceSetProvider) {
-		val package = file.getPackage
-		val oldImport = package + "." + file.nameForImport
-		val newImport = package + "." + newName.forImport
+		val package = file.getPackageForImport
+		val oldImport = package + file.nameForImport
+		val newImport = package + newName.forImport
 		val fileToChangePath = file.rawLocationURI.path
 		file.project.allWollokResources.forEach [ wollokFile |
 			val mainFile = wollokFile.convertToEclipseURI
@@ -52,6 +50,7 @@ class WollokResourceRenameParticipant extends JdtRenameParticipant {
 						val xtextDocument = modificationContext.getXtextDocument(mainFile)
 						val importToSearch = '''«IMPORT» «oldImport».'''
 						val importToReplace = '''«IMPORT» «newImport».'''
+						monitor.beginTask("Changing " + mainFile.toString, 50)
 						xtextDocument.replaceAllOccurrences(importToSearch, importToReplace)
 						activePage.saveEditor(activeEditor, false)
 						Status.OK_STATUS

@@ -334,13 +334,13 @@ class WEclipseUtils {
 		if (environmentHasDarkTheme) "-dark" else ""
 	}
 
-	def static getPackage(IFile file) {
+	def static getPackageForImport(IFile file) {
 		val allSegments = file.projectRelativePath.segments
 		if (allSegments.length === 0) return ""
 		val reversedSegments = allSegments.reverse.subList(1, allSegments.length - 1)
 		val indexOfSrc = allSegments.indexOf(SOURCE_FOLDER)
 		val packageList = if (indexOfSrc === -1) reversedSegments.reverse else reversedSegments.subList(0, indexOfSrc - 1)
-		packageList.join(".")
+		packageList.join(".") + if (packageList.isEmpty) "" else "."
 	}
 	
 	def static getNameForImport(IFile file) {
