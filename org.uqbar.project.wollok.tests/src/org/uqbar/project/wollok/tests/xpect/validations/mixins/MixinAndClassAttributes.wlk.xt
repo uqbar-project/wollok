@@ -1,0 +1,20 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+mixin MundoCerrado {
+	var property a = 2
+	
+	method noVaAAndar() = a == self.b()
+	method b()
+}
+
+class Mundo {
+	var property a = ""
+	
+	method b() = 2
+}
+
+class MundoFeliz inherits Mundo {
+	var property c = true
+}
+
+// XPECT errors --> "There are instance variables with the same name in the hierarchy: [a]" at "new MundoFeliz() with MundoCerrado"
+const alf = new MundoFeliz() with MundoCerrado
