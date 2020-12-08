@@ -35,10 +35,11 @@ class WollokResourceRenameParticipant extends JdtRenameParticipant {
 		result
 	}
 
-	def static dispatch replaceImports(IFile file, String newName, IssueModificationContext.Factory modificationContextFactory, IResourceSetProvider resourceSetProvider) {
+	def static dispatch void replaceImports(IFile file, String newName, IssueModificationContext.Factory modificationContextFactory, IResourceSetProvider resourceSetProvider) {
 		val package = file.getPackageForImport
 		val oldImport = package + file.nameForImport
 		val newImport = package + newName.forImport
+		if (oldImport.equals(newImport)) return
 		val fileToChangePath = file.rawLocationURI.path
 		file.project.allWollokResources.forEach [ wollokFile |
 			val mainFile = wollokFile.convertToEclipseURI
@@ -61,7 +62,7 @@ class WollokResourceRenameParticipant extends JdtRenameParticipant {
 		]
 	}
 	
-	def static dispatch replaceImports(Object object, String newName, IssueModificationContext.Factory modificationContextFactory, IResourceSetProvider resourceSetProvider) {}
+	def static dispatch void replaceImports(Object object, String newName, IssueModificationContext.Factory modificationContextFactory, IResourceSetProvider resourceSetProvider) {}
 	
 	def static dispatch relatedToImport(EObject o, String oldName) {}
 	def static dispatch relatedToImport(Import it, String oldName) {
