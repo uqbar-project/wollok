@@ -9,6 +9,8 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+import org.uqbar.project.wollok.interpreter.listeners.WollokTestListener
 import org.uqbar.project.wollok.launch.tests.WollokTestsReporter
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WSuite
@@ -104,11 +106,16 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	}
 
 	override dispatch evaluate(WTest test) {
+		val testListener = new WollokTestListener
 		try {
 			wollokTestsReporter.testStarted(test)
+			interpreter.addInterpreterListener(testListener)
 			test.elements.forEach [ expr |
 				interpreter.performOnStack(expr, currentContext) [ | expr.eval ]
 			]
+			if (testListener.hasNoAssertions) {
+				throw new WollokProgramExceptionWrapper(newWollokAssertionException(Messages.TEST_NO_MESSAGE_TO_ASSERT))
+			}
 			wollokTestsReporter.reportTestOk(test)
 			null
 		} catch (Exception e) {
