@@ -50,5 +50,5 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 			Assert.assertEquals("Couldn't resolve reference to pepa", e.originalCause.message)
 		}
 	}
-	
+
 }

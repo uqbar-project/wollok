@@ -114,8 +114,12 @@ class WollokModelExtensions {
 
 
 	def static WMethodDeclaration getInitMethod(WMethodContainer it) {
+		getMethod(INITIALIZE_METHOD)
+	}
+	
+	def static WMethodDeclaration getMethod(WMethodContainer it, String methodName) {
 		methods.findFirst [ m |
-			m.name.equals(INITIALIZE_METHOD) && m.arguments.isEmpty
+			m.name.equals(methodName) && m.arguments.isEmpty
 		]
 	}
 
@@ -330,6 +334,14 @@ class WollokModelExtensions {
 
 	def static isCallOnThis(WMemberFeatureCall c) { c.memberCallTarget instanceof WSelf }
 
+	def static dispatch receiver(WVariableReference variable) {
+		variable.ref.name ?: ""
+	}
+	
+	def static dispatch receiver(WSelf variable) { "self" }
+	
+	def static dispatch receiver(WExpression expression) { "" }
+	
 	def static WMethodDeclaration resolveMethod(WMemberFeatureCall it, WollokClassFinder finder) {
 		if(isCallOnThis)
 			method.declaringContext.findMethod(it)
@@ -914,7 +926,7 @@ class WollokModelExtensions {
 	def static dispatch boolean sendsMessageToAssert(EObject e) { false }
 
 	def static dispatch boolean sendsMessageToAssert(WMemberFeatureCall c) {
-		c.memberCallTarget.isAssertWKO
+		c.memberCallTarget.isAssertWKO || c.memberCallTarget.sendsMessageToAssertInMethod(c.feature)
 	}
 
 	def static dispatch boolean sendsMessageToAssert(WTry t) {
@@ -932,6 +944,14 @@ class WollokModelExtensions {
 
 	def static dispatch boolean sendsMessageToAssert(WCatch c) {
 		c.expression.sendsMessageToAssert
+	}
+
+	def static dispatch sendsMessageToAssertInMethod(WExpression e, String methodName) {
+		false
+	}
+
+	def static dispatch sendsMessageToAssertInMethod(WTest t, String methodName) {
+		true
 	}
 
 	def static dispatch boolean isAssertWKO(EObject e) { false }
