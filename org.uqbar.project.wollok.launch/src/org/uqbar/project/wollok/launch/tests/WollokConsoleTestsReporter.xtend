@@ -175,11 +175,16 @@ class WollokConsoleTestsReporter extends DefaultWollokTestsReporter {
 		println(ansi
 			.a("  ").fg(YELLOW).a(test.name).a(": ✗ FAILED (").a(test.totalTime).a("ms) => ").reset
 			.fg(YELLOW).a(assertionError.message).reset
-			.fg(YELLOW).a(" (").a(resource.trimFragment).a(":").a(lineNumber).a(")").reset
+			.showStackTrace(assertionError, lineNumber, resource)
+		)
+	}
+		
+	def showStackTrace(Ansi ansi, AssertionException assertionError, int lineNumber, URI resource) {
+		if ((resource === null) || lineNumber === 0) return ansi.reset
+		return ansi.fg(YELLOW).a(" (").a(resource.trimFragment).a(":").a(lineNumber).a(")").reset
 			.a("\n    ")
 			.fg(YELLOW).a(assertionError.wollokException?.convertStackTrace.join("\n    ")).reset
 			.a("\n")
-		)
 	}
 	
 	private def printException(WTest test, Exception exception, int lineNumber, URI resource) {
