@@ -922,36 +922,32 @@ class WollokModelExtensions {
 		tests.empty && !suites.empty
 	}
 
-	def static dispatch boolean sendsMessageToAssert(Void e) { false }
-	def static dispatch boolean sendsMessageToAssert(EObject e) { false }
+	def static dispatch boolean sendsMessageToAssert(Void e, WollokClassFinder finder) { false }
+	def static dispatch boolean sendsMessageToAssert(EObject e, WollokClassFinder finder) { false }
 
-	def static dispatch boolean sendsMessageToAssert(WMemberFeatureCall c) {
-		c.memberCallTarget.isAssertWKO || c.memberCallTarget.sendsMessageToAssertInMethod(c.feature)
+	def static dispatch boolean sendsMessageToAssert(WMemberFeatureCall call, WollokClassFinder finder) {
+		call.memberCallTarget.isAssertWKO || call.sendsMessageToAssertInMethod(finder)
 	}
 
-	def static dispatch boolean sendsMessageToAssert(WTry t) {
-		t.expression.sendsMessageToAssert || t.catchBlocks.exists[sendsMessageToAssert] ||
-			t.alwaysExpression.sendsMessageToAssert
+	def static dispatch boolean sendsMessageToAssert(WTry t, WollokClassFinder finder) {
+		t.expression.sendsMessageToAssert(finder) || t.catchBlocks.exists[sendsMessageToAssert(finder)] ||
+			t.alwaysExpression.sendsMessageToAssert(finder)
 	}
 
-	def static dispatch boolean sendsMessageToAssert(WClosure c) {
-		c.expression.sendsMessageToAssert
+	def static dispatch boolean sendsMessageToAssert(WClosure c, WollokClassFinder finder) {
+		c.expression.sendsMessageToAssert(finder)
 	}
 
-	def static dispatch boolean sendsMessageToAssert(WBlockExpression b) {
-		b.expressions.exists[sendsMessageToAssert]
+	def static dispatch boolean sendsMessageToAssert(WBlockExpression b, WollokClassFinder finder) {
+		b.expressions.exists[sendsMessageToAssert(finder)]
 	}
 
-	def static dispatch boolean sendsMessageToAssert(WCatch c) {
-		c.expression.sendsMessageToAssert
+	def static dispatch boolean sendsMessageToAssert(WCatch c, WollokClassFinder finder) {
+		c.expression.sendsMessageToAssert(finder)
 	}
 
-	def static dispatch sendsMessageToAssertInMethod(WExpression e, String methodName) {
-		false
-	}
-
-	def static dispatch sendsMessageToAssertInMethod(WTest t, String methodName) {
-		true
+	def static sendsMessageToAssertInMethod(WMemberFeatureCall call, WollokClassFinder finder) {
+		call.resolveMethod(finder).sendsMessageToAssert(finder)
 	}
 
 	def static dispatch boolean isAssertWKO(EObject e) { false }
