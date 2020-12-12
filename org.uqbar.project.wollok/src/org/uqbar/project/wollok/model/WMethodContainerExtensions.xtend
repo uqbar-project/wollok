@@ -344,6 +344,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(MixedMethodContainer it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WClass it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WSuite it) { methods }
+	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WProgram it) { elements.filter(WMethodDeclaration) }
 	
 	def static allVariables(WMethodContainer it) {
 		allVariableDeclarations.map [ variable ]

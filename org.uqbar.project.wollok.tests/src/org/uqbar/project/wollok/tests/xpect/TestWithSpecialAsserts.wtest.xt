@@ -1,0 +1,41 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+import wollok.lib.assert
+
+describe "asserts unificados" {
+	const ave = object {
+		var property energia = 100
+		method volar() { energia = energia - 10 }
+		method planear() { energia = energia - 5 }
+	}
+	const energiaInicial = ave.energia()
+	
+	method bajoEnergia() {
+		assert.that(ave.energia() < energiaInicial)
+	}
+	
+	method preguntarSiBajoEnergia() {
+		return ave.energia() < energiaInicial
+	}
+
+	test "al volar la energia baja" {
+		ave.volar()
+		self.bajoEnergia()
+	}
+
+	test "al planear la energia baja" {
+		ave.planear()
+		self.bajoEnergia()
+	}
+
+	test "al planear sin asserts" {
+		// XPECT warnings --> "Tests must send at least one message to assert object" at "ave.planear()"
+		ave.planear()
+	}
+
+	test "al planear sin asserts llamando a métodos que no usan assert" {
+		// XPECT warnings --> "Tests must send at least one message to assert object" at "ave.planear()"
+		ave.planear()
+		self.preguntarSiBajoEnergia()
+	}
+
+}

@@ -343,13 +343,15 @@ class WollokModelExtensions {
 	def static dispatch receiver(WExpression expression) { "" }
 	
 	def static WMethodDeclaration resolveMethod(WMemberFeatureCall it, WollokClassFinder finder) {
-		if(isCallOnThis)
-			method.declaringContext.findMethod(it)
-		else if(isCallToWellKnownObject)
-			resolveWKO(finder).findMethod(it)
-		else
-			// TODO: call to super (?)
-			null
+		if (isCallOnThis && declaringContext !== null) {
+			return declaringContext.findMethod(it)
+		}
+		if (isCallToWellKnownObject) {
+			val wko = resolveWKO(finder)
+			return if (wko === null) null else wko.findMethod(it)
+		}
+		// TODO: call to super / variable reference
+		return null
 	}
 
 	def static isCallToWellKnownObject(WMemberFeatureCall c) { c.memberCallTarget.isWellKnownObject }
@@ -501,10 +503,11 @@ class WollokModelExtensions {
 	def static declaredVariables(WMethodContainer obj) { obj.members.filter(WVariableDeclaration).map[variable] }
 	
 	def static dispatch WMethodDeclaration method(Void it) { null }
-	def static dispatch WMethodDeclaration method(EObject it) { null }
 	def static dispatch WMethodDeclaration method(WMethodDeclaration it) { it }
 	def static dispatch WMethodDeclaration method(WExpression it) { eContainer.method }
 	def static dispatch WMethodDeclaration method(WParameter it) { eContainer.method }
+	def static dispatch WMethodDeclaration method(WTest it) { eContainer.method }
+	def static dispatch WMethodDeclaration method(EObject it) { null }
 
 	def static isInMixin(EObject e) { e.declaringContext instanceof WMixin }
 
@@ -947,7 +950,8 @@ class WollokModelExtensions {
 	}
 
 	def static sendsMessageToAssertInMethod(WMemberFeatureCall call, WollokClassFinder finder) {
-		call.resolveMethod(finder).sendsMessageToAssert(finder)
+		val method = call.resolveMethod(finder)
+		method !== null && method.expression.sendsMessageToAssert(finder)
 	}
 
 	def static dispatch boolean isAssertWKO(EObject e) { false }

@@ -2,7 +2,7 @@
 import wollok.lib.assert
 
 test "testWithBinaryOperation" {
-	// XPECT warnings --> "Tests must send at least one message to assert WKO" at "1 + 1"
+	// XPECT warnings --> "Tests must send at least one message to assert object" at "1 + 1"
 	1 + 1
 }
 
@@ -11,12 +11,12 @@ test "okTest" {
 }
 
 test "testForVariable" {
-	// XPECT warnings --> "Tests must send at least one message to assert WKO" at "assert"
+	// XPECT warnings --> "Tests must send at least one message to assert object" at "assert"
 	assert
 }
 
 test "testForBinaryOperationForAssert" {
-	// XPECT warnings --> "Tests must send at least one message to assert WKO" at "assert + 1"
+	// XPECT warnings --> "Tests must send at least one message to assert object" at "assert + 1"
 	assert + 1
 }
 
@@ -38,7 +38,7 @@ test "testOkCatchWithAssert" {
 }
 
 test "testBadTryCatchWithAssert" {
-	// XPECT warnings --> "Tests must send at least one message to assert WKO" at "try { 		1 / 0 	} catch e : Exception { 		1 + 1 	}"
+	// XPECT warnings --> "Tests must send at least one message to assert object" at "try { 		1 / 0 	} catch e : Exception { 		1 + 1 	}"
 	try {
 		1 / 0
 	} catch e : Exception {
