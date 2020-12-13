@@ -29,8 +29,14 @@ log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
 log4j.appender.stdout.layout.ConversionPattern=%5p [%t] (%F:%L) - %m%n
 «ENDFILE»
 
-«FILE "src/WOLLOK.ROOT"-»
-wollokRoot
+«FILE "package.json"-»
+{
+  "name": "«projectName»",
+  "version": "1.0.0",
+  "wollokVersion": "«version»",
+  "author": "«author»",
+  "license": "ISC"
+}
 «ENDFILE»
 
 «ENDDEFINE»
