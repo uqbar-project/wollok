@@ -9,6 +9,14 @@ describe "asserts unificados" {
 	}
 	const energiaInicial = ave.energia()
 	
+	method bajoEnergiaIndirectamente() {
+		self.bajoEnergiaMuyIndirectamente()
+	}
+
+	method bajoEnergiaMuyIndirectamente() {
+		self.bajoEnergia()
+	}
+	
 	method bajoEnergia() {
 		assert.that(ave.energia() < energiaInicial)
 	}
@@ -36,6 +44,11 @@ describe "asserts unificados" {
 		// XPECT warnings --> "Tests must send at least one message to assert object" at "ave.planear()"
 		ave.planear()
 		self.preguntarSiBajoEnergia()
+	}
+
+	test "al planear y usar asserts en métodos después de varias llamadas" {
+		ave.planear()
+		self.bajoEnergiaIndirectamente()
 	}
 
 }

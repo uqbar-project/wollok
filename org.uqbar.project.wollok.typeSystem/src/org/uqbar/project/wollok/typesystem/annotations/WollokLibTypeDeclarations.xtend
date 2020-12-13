@@ -11,6 +11,7 @@ class WollokLibTypeDeclarations extends TypeDeclarations {
 		assertWKO >> "notThat" === #[Boolean] => Void
 		assertWKO >> "equals" === #[T, T] => Void
 		assertWKO >> "notEquals" === #[T, T] => Void
+		assertWKO >> "doesNotThrowException" === #[closure(#[], T)] => Void
 		assertWKO >> "throwsException" === #[closure(#[], T)] => Void
 		assertWKO >> "throwsExceptionLike" === #[ExceptionType, closure(#[], T)] => Void
 		assertWKO >> "throwsExceptionWithMessage" === #[String, closure(#[], T)] => Void
