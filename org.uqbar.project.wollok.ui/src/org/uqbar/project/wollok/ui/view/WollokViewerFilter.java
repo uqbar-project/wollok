@@ -25,7 +25,7 @@ import org.eclipse.jface.viewers.ViewerFilter;
  */
 @SuppressWarnings("restriction")
 public class WollokViewerFilter extends ViewerFilter {
-	private List<String> hiddenFiles = Arrays.asList("build.properties", "log4j.properties", "WOLLOK.ROOT");
+	private List<String> hiddenFiles = Arrays.asList("build.properties", "log4j.properties", "package.json");
 	private List<String> hiddenFolders = Arrays.asList("META-INF", "OSGI-INF");
 	private List<String> hiddenProjects = Arrays.asList("__EMPTY__");
 	private List<Class<?>> hiddenClasses = Arrays.<Class<?>>asList(LibraryContainer.class, ClassPathContainer.class);

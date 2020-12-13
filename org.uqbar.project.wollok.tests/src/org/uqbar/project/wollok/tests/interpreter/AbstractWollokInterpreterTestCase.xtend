@@ -44,7 +44,7 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 		WDate.FORMATTER = DateTimeFormatter.ofPattern("d/M/yy")
 
 		new File("target/test-files").mkdirs
-		new File("target/test-files/WOLLOK.ROOT").createNewFile
+		new File("target/test-files/package.json").createNewFile
 	}
 
 	@After
