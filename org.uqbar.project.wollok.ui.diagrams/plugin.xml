@@ -15,7 +15,7 @@
         <view
               category="org.uqbar.project.wollok.ui.diagrams.category"
               class="org.uqbar.project.wollok.ui.diagrams.classes.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.diagrams.dynamic.DynamicDiagramView"
-              icon="icons/object_diagram_icon.png"
+              icon="icons/object_diagram_icon3.png"
               id="org.uqbar.project.wollok.ui.diagrams.object"
               name="%dynamicDiagramView"
               restorable="true">

@@ -5,17 +5,17 @@ import com.google.gson.stream.JsonWriter
 import java.io.PrintWriter
 import java.util.List
 import org.eclipse.emf.common.util.URI
+import org.uqbar.project.wollok.Wollok
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
-import org.uqbar.project.wollok.launch.Wollok
 import org.uqbar.project.wollok.launch.tests.WollokTestsReporter
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WTest
 import wollok.lib.AssertionException
 
-import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
-import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
-import org.uqbar.project.wollok.interpreter.core.WollokObject
+import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
 /**
  * A test reporter that prints to console in JSON format.
