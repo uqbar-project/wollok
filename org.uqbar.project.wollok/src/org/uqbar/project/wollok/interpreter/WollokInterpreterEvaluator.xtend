@@ -410,8 +410,12 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	def dispatch WollokObject evaluate(WAssignment a) {
+		val variable = a.feature.ref
+		if (!variable.isModifiableFrom(a)) {
+			throw newWollokExceptionAsJava(Messages.WollokDslValidator_CANNOT_MODIFY_VAL)
+		}
 		val newValue = a.value.eval
-		interpreter.currentContext.setReference(a.feature.ref.name, newValue)
+		interpreter.currentContext.setReference(variable.name, newValue)
 		getVoid(interpreter as WollokInterpreter, a)
 	}
 

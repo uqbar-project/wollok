@@ -151,20 +151,12 @@ class WollokModelExtensions {
 	// ** WReferenciable
 	// ************************************************************************
 	def static dispatch isModifiableFrom(WVariable v, WAssignment from) {
-		v.declaration.isWriteable || from.initializesInstanceValueFromConstructor(v)
+		v.declaration.isWriteable
 	}
 	
 	def static dispatch isModifiableFrom(WParameter v, WAssignment from) { false }
 
 	def static dispatch isModifiableFrom(WReferenciable v, WAssignment from) { true }
-
-	def static boolean initializesInstanceValueFromConstructor(WAssignment a, WVariable v) {
-		v.declaration.initValue === null && a.isWithinInitializer
-	}
-
-	def static boolean isWithinInitializer(EObject e) {
-		e.eContainer !== null && (e.eContainer.isAnInitializer || e.eContainer.isWithinInitializer)
-	}
 
 	def static dispatch boolean isAnInitializer(EObject it) { false }
 	def static dispatch boolean isAnInitializer(WMethodDeclaration it) { isInitializer }
