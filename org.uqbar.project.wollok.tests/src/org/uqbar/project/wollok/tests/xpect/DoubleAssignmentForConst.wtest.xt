@@ -11,7 +11,9 @@ describe "group of tests" {
 	const c = 4
 	
 	method initialize() {
+		// XPECT errors --> "Cannot modify constants" at "a"
 		a = new X(x = 10)
+		// XPECT errors --> "Cannot modify constants" at "a"
 		a = 8
 		b = 1
 		b = 3

@@ -1,8 +1,9 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 class A {
-	const property a
+	const property a = 2
 	
 	method initialize() {
+		// XPECT errors --> "Cannot modify constants" at "a"
 		a = 1
 	}
 }
@@ -10,7 +11,6 @@ class A {
 class B inherits A {
 	var property b
 
-	// does not require override because it is initialize	
 	method initialize() {
 		// can call to super although it has not override on its definition
 		// because it is initialize
@@ -21,9 +21,10 @@ class B inherits A {
 
 class C {
 	var property a = 1
-	const property b  // does not cause a validation warning because initialize takes care of it
+	const property b
   
 	method initialize() {
+		// XPECT errors --> "Cannot modify constants" at "b"
 		b = a + 1
 	}
 }
