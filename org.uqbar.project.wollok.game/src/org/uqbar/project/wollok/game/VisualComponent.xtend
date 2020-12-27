@@ -10,6 +10,7 @@ import org.uqbar.project.wollok.game.gameboard.Window
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 import static extension org.uqbar.project.wollok.game.helpers.WollokConventionExtensions.*
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 @Accessors
 class VisualComponent {
@@ -18,20 +19,26 @@ class VisualComponent {
 
 	List<BalloonMessage> balloonMessages = newArrayList
 	boolean showAttributes = false
+	
+	boolean hasText = false
+	boolean hasTextColor = false
+	boolean hasImage = false
 
 	WollokObject wObject
 	WollokObject wPosition
 
 	new(WollokObject object) {
-		wObject = object
-		wObject?.position // Force evaluate position when is added
+		this(object, object.position)
 	}
 
 	new(WollokObject object, WollokObject position) {
 		wObject = object
 		wPosition = position
+		hasText = wObject.understands(TEXT_CONVENTION)
+		hasTextColor = wObject.understands(TEXT_COLOR_CONVENTION)
+		hasImage = wObject.understands(IMAGE_CONVENTION)
 	}
-
+	
 	def getAttributes() {
 		wObject.printableVariables.filter[value !== null].map[key + ":" + value.toString].toList
 	}
@@ -58,13 +65,24 @@ class VisualComponent {
 	def void draw(Window window) {
 		window => [
 			drawMe
+			drawText
 			drawAttributesIfNecesary
 			drawBalloonIfNecesary
 		]
 	}
 
 	def drawMe(Window window) {
-		window.draw(image, position)
+		if(hasImage) {
+			window.draw(image, position)
+		}
+	}
+	
+	def drawText(Window window) {
+		if(hasText) {
+			val text = wObject.call(TEXT_CONVENTION).wollokToJava(String) as String
+			val color = hasTextColor ? Color.valueOf(wObject.call(TEXT_COLOR_CONVENTION).wollokToJava(String) as String) : DEFAULT_TEXT_COLOR  
+		    window.writeText(text,  getPosition(), color)	  
+		}	
 	}
 
 	def drawAttributesIfNecesary(Window window) {
