@@ -607,7 +607,8 @@
             finalPerspective="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspective"
             icon="icons/file_wlk.png"
             id="org.uqbar.project.wollok.ui.wizard.objects.NewWollokObjectsWizard"
-            name="%wollokObjectsAndClasses">
+            name="%wollokObjectsAndClasses"
+            >
             <description>%wollokObjectsAndClassesDescription</description>
       </wizard>
       <wizard

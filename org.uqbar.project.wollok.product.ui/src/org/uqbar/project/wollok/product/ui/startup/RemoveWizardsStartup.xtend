@@ -12,6 +12,7 @@ import org.eclipse.ui.wizards.IWizardCategory
 import org.eclipse.ui.wizards.IWizardDescriptor
 import org.eclipse.ui.wizards.IWizardRegistry
 import org.uqbar.project.wollok.ui.WollokUIStartup
+import org.eclipse.core.runtime.Platform
 
 /**
  * Programmatically hacks eclipse workbench to
@@ -50,6 +51,7 @@ class RemoveWizardsStartup implements WollokUIStartup {
 		for (wizard : categories.allWizards) {
 			if (!wizard.id.includeWizards || wizard.id.excludeWizards) {
 				val wizardElement = wizard as WorkbenchWizardElement
+				//Platform.getLog(getClass()).info("removing " + wizardElement.id)
 				registry.removeExtension(wizardElement.configurationElement.declaringExtension, #[wizardElement])
 			}
 		}
@@ -62,6 +64,8 @@ class RemoveWizardsStartup implements WollokUIStartup {
 		"org\\.eclipse\\.jdt\\.ui\\.wizards\\.NewSourceFolderCreationWizard",
 		"org\\.eclipse\\.team\\.svn\\...*",
 		"org\\.eclipse\\.egit\\..*",
+//		"org\\.eclipse\\.xtend\\.ide\\.wizards\\.NewXtend.*",
+//		"org\\.eclipse\\.jdt\\.ui\\.wizards\\.New.*",
 		"org\\.uqbar\\...*"
 		
 	]
