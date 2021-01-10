@@ -26,6 +26,8 @@ class VisualComponent {
 
 	WollokObject wObject
 	WollokObject wPosition
+	
+	String font = "mi fuente"
 
 	new(WollokObject object) {
 		this(object, object.position)

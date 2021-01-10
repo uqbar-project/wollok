@@ -194,5 +194,10 @@ class GameObject {
 	def boardGround(String image) { board.boardGround = image }
 	
 	def doCellSize(WollokObject size) { board.cellsize = size.coerceToInteger }
+	
+	def font(WollokObject wollokObject) {
+		val visualObject = board.findIfExistsVisual(wollokObject)
+		if (visualObject !== null) visualObject.font else "nothing"
+	}
 
 }
