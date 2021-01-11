@@ -65,19 +65,6 @@ class HumanReadableUtils {
 		'''«op.feature»(«op.rightOperand.sourceCode»)'''
 	}
 
-	def static dispatch List<WVariableDeclaration> uninitializedNamedParameters(WConstructorCall it) {
-		val uninitializedAttributes = classRef.allVariableDeclarations.filter[right === null].toList
-		uninitializedAttributes.addAll(mixins.flatMap[allVariableDeclarations].filter[right === null])
-		val namedArguments = initializers.map[initializer.name]
-		uninitializedAttributes.filter[arg|!namedArguments.contains(arg.variable.name)].toList
-	}
-
-	def static dispatch List<WVariableDeclaration> uninitializedNamedParameters(WNamedObject it) {
-		val uninitializedAttributes = allVariableDeclarations.filter[right === null].toList
-		val namedArguments = if (parentParameters !== null) parentParameters.initializers.map [ initializer.name ] else #[]
-		uninitializedAttributes.filter[arg|!namedArguments.contains(arg.variable.name)].toList
-	}
-
 	def static createInitializersForNamedParametersInConstructor(WConstructorCall it) {
 		uninitializedNamedParameters.map[variable.name + " = value"].join(", ")
 	}

@@ -335,6 +335,20 @@ class WollokModelExtensions {
 	def static dispatch EList<WExpression> values(WPositionalArgumentsList l) { l.values }
 	def static dispatch EList<WExpression> values(EObject o) { ECollections.emptyEList }
 
+	def static dispatch List<WVariableDeclaration> uninitializedNamedParameters(WConstructorCall it) {
+		val uninitializedAttributes = classRef.allVariableDeclarations.filter[right === null].toList
+		uninitializedAttributes.addAll(mixins.flatMap[allVariableDeclarations].filter[right === null])
+		val namedArguments = initializers.map[initializer.name]
+		uninitializedAttributes.filter[arg|!namedArguments.contains(arg.variable.name)].toList
+	}
+
+	def static dispatch List<WVariableDeclaration> uninitializedNamedParameters(WNamedObject it) {
+		println("all variable declarations " + allVariableDeclarations)
+		val uninitializedAttributes = allVariableDeclarations.filter[right === null].toList
+		val namedArguments = if (parentParameters !== null) parentParameters.initializers.map [ initializer.name ] else #[]
+		uninitializedAttributes.filter[arg|!namedArguments.contains(arg.variable.name)].toList
+	}
+
 	def static dispatch EList<WInitializer> initializers(WConstructorCall c) {
 		if(c.argumentList === null) return ECollections.emptyEList
 		c.argumentList.initializers
