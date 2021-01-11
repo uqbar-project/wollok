@@ -17,6 +17,7 @@ class Torcaza inherits Ave {
 	
 	method esLinda() = color === "rojo"
 }
+
 class Entrenador {
 	var pepita = null
 	var otraPepita = null
@@ -83,3 +84,24 @@ object somethingBuilder {
 	
 	method buildCompleteSomething() = new Something(anotherValue = 2, aValue = 3)
 }
+
+mixin M {
+  const w   // OK
+  const x = 5 // OK
+  var y       // OK
+  var z = 9   // OK
+  
+  method reset() {
+  	y = 2
+  	z = z + 4
+  }
+  method calculate() = w + x + y + z
+}
+
+class A {
+  const a
+  method calculate() = a + 5
+}
+
+// XPECT errors --> "You must provide initial value to the following references: a, w, y" at "new A() with M"
+const a = new A() with M

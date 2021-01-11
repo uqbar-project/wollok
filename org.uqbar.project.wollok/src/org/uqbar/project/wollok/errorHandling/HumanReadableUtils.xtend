@@ -63,7 +63,8 @@ class HumanReadableUtils {
 	}
 	
 	def static uninitializedNamedParameters(WConstructorCall it) {
-		var uninitializedAttributes = classRef.allVariableDeclarations.filter [ right === null ]
+		var uninitializedAttributes = classRef.allVariableDeclarations.filter [ right === null ].toList
+		uninitializedAttributes.addAll(mixins.flatMap [ allVariableDeclarations ].filter [ right === null ])
 //		Checking against initialize methods also, currently disregarded
 //		val attributesInitializedInMethod = classRef.initializeMethods.flatMap [ method | method.assignments ].map [ feature ]
 //		uninitializedAttributes = uninitializedAttributes.filter [ attributesInitializedInMethod.contains(it) ]
