@@ -1,8 +1,8 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
 
-object pepita inherits Golondrina(energia = 1) { }
+object pepita inherits Golondrina(energia = 1, nombre = "Pepita") { }
 object pepona inherits Ave(nombre = "Pepona") { }
-object pepe inherits Ave { }
+object pepe inherits Ave(nombre = "Pepe") { }
 
 class Golondrina inherits Ave {
 	// XPECT type at energia --> Number

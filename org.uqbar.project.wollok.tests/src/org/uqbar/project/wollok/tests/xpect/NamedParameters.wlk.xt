@@ -49,7 +49,7 @@ class Entrenador {
 }
 
 class Heroe {
-	const nombre
+	const nombre = null
 	const traje = null
 	
 	method quienSoy() = nombre
@@ -105,3 +105,27 @@ class A {
 
 // XPECT errors --> "You must provide initial value to the following references: a, w, y" at "new A() with M"
 const a = new A() with M
+
+class C {
+  const w
+  const x = 5 
+  var y
+  var z = 9
+  
+  method reset() {
+  	y = y + 3
+  	z = z + 1
+  }
+  method calculate() = w + x + y + z
+}
+
+// XPECT errors --> "You must provide initial value to the following references: w, y" at "object o1 inherits C {}"
+object o1 inherits C {}                             // ERROR! no pasa un valor para w
+object o2 inherits C(w = 1, x = 2, y = 3, z = 4) {} // OK
+// XPECT errors --> "You must provide initial value to the following references: w" at "object o3 inherits C(       x = 2, y = 3, z = 4) {}"
+object o3 inherits C(       x = 2, y = 3, z = 4) {} // ERROR! w es una constante sin default
+object o4 inherits C(w = 1,        y = 3, z = 4) {} // OK x es una constante pero tiene default
+// XPECT errors --> "You must provide initial value to the following references: y" at "object o5 inherits C(w = 1, x = 2,        z = 4) {}"
+object o5 inherits C(w = 1, x = 2,        z = 4) {} // ERROR! y es una variable sin default
+// XPECT errors --> "You must provide initial value to the following references: y" at "object o6 inherits C(w = 1, x = 2       , z = 4) {}"
+object o6 inherits C(w = 1, x = 2       , z = 4) {} // OK
