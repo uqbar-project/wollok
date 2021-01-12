@@ -144,3 +144,7 @@ class ParentB inherits ParentA {
 
 // XPECT errors --> "You must provide initial value to the following references: b, a" at "object c inherits ParentB {}"
 object c inherits ParentB {}
+
+// XPECT errors --> "You must provide initial value to the following references: b, a" at "object inherits ParentB {}"
+const d = object inherits ParentB {}
+
