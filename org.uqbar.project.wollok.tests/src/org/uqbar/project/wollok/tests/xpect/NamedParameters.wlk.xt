@@ -130,6 +130,17 @@ object o5 inherits C(w = 1, x = 2,        z = 4) {} // ERROR! y es una variable 
 // XPECT errors --> "You must provide initial value to the following references: y" at "object o6 inherits C(w = 1, x = 2       , z = 4) {}"
 object o6 inherits C(w = 1, x = 2       , z = 4) {} // OK
 
+// XPECT errors --> "You must provide initial value to the following references: w, y" at "object inherits C {}"
+const p1 = object inherits C {}                             // ERROR! no pasa un valor para w
+const p2 = object inherits C(w = 1, x = 2, y = 3, z = 4) {} // OK
+// XPECT errors --> "You must provide initial value to the following references: w" at "object inherits C(       x = 2, y = 3, z = 4) {}"
+const p3 = object inherits C(       x = 2, y = 3, z = 4) {} // ERROR! w no tiene default
+const p4 = object inherits C(w = 1,        y = 3, z = 4) {} // OK x tiene default
+// XPECT errors --> "You must provide initial value to the following references: y" at "object inherits C(w = 1, x = 2,        z = 4) {}"
+const p5 = object inherits C(w = 1, x = 2,        z = 4) {} // ERROR! y no tiene default
+// XPECT errors --> "You must provide initial value to the following references: y" at "object inherits C(w = 1, x = 2       , z = 4) {}"
+const p6 = object inherits C(w = 1, x = 2       , z = 4) {} // OK
+
 class ParentA {
 	const a
 	
