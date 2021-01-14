@@ -52,6 +52,7 @@ import static org.uqbar.project.wollok.sdk.WollokSDK.*
 import static extension org.eclipse.xtext.EcoreUtil2.*
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
+import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.notNullAnd
 
@@ -232,16 +233,73 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean isValidReturnExpression(WBlockExpression expr) { true }
 	def static dispatch boolean isValidReturnExpression(WMethodDeclaration method) { true }
 
-	def static allVariableDeclarations(WMethodContainer it) { 
-		linearizeHierarchy.fold(newArrayList) [variableDeclarations, type |
+	def static allVariableDeclarations(WMethodContainer it) {
+		// Step 1 - Obtaining all variable declarations 
+		val variableDeclarations = linearizeHierarchy.fold(newArrayList) [variableDeclarations, type |
 			variableDeclarations.addAll(type.variableDeclarations)
 			variableDeclarations
 		]
+		// Step 2 - Detecting dependencies among variable declarations
+		// for example:
+		// const a = b + 1
+		// const b = 2
+		// const c = a + b
+		// should finish in the current map:
+		// a -> [b]
+		// b -> []
+		// c -> [a, b]
+		val variableDependenciesGraph = <WVariableDeclaration, List<WVariable>>newHashMap
+		variableDeclarations.forEach [ variableDeclaration |
+			if (variableDeclaration.right !== null) {
+				val dependencies = variableDeclaration.right.dependenciesOnInit(variableDeclaration)
+				variableDependenciesGraph.put(variableDeclaration, dependencies)
+			}
+		]
+		// Ordering variable declarations based on dependencies
+		// based on previous example:
+		// if a depends on b, and c depends on a & b
+		// the order should be: b, then a, then c
+		// We assure each declaration is sorted after all dependencies
+		new ArrayList(variableDeclarations).forEach [ variableDeclaration |
+			val variableDependencies = variableDependenciesGraph.get(variableDeclaration)
+			if (variableDependencies !== null && !variableDependencies.isEmpty) {
+				val variables = variableDeclarations.map [ variable ]
+				val maximumDependencyIndex = variableDependencies.map [ variables.indexOf(it) ].max
+				if (maximumDependencyIndex > 0) {
+					val index = variableDeclarations.indexOf(variableDeclaration)
+					variableDeclarations.add(maximumDependencyIndex + 1, variableDeclaration)
+					variableDeclarations.remove(index)
+				}
+			}
+		]
+		variableDeclarations
 	}
 	
+	def static dispatch List<WVariable> dependenciesOnInit(EObject o, WVariableDeclaration variable) { newArrayList }
+	def static dispatch List<WVariable> dependenciesOnInit(WBinaryOperation operation, WVariableDeclaration variable) {
+		newArrayList => [
+			addIfVariable(operation.leftOperand, it)
+			addIfVariable(operation.rightOperand, it)
+		]
+	}
+	def static dispatch List<WVariable> dependenciesOnInit(WVariableDeclaration declaration, WVariableDeclaration variable) {
+		newArrayList => [
+			add(declaration.variable)
+		]
+	}
+	
+	def static void addIfVariable(EObject o, List<WVariable> variableDeclarations) {
+		if (o instanceof WVariableReference) {
+			val variable = o.ref
+			if (variable instanceof WVariable) {
+				variableDeclarations.add(variable)
+			}
+		}
+	}
+
 	def static dispatch List<WVariableDeclaration> variableDeclarations(EObject o) { newArrayList }
 	def static dispatch List<WVariableDeclaration> variableDeclarations(WBlockExpression b) { b.expressions.filter(WVariableDeclaration).toList }
-	def static dispatch List<WVariableDeclaration> variableDeclarations(WMethodContainer c) { c.members.filter(WVariableDeclaration).toList }
+	def static dispatch List<WVariableDeclaration> variableDeclarations(WMethodContainer c) {c.members.filter(WVariableDeclaration).toList }
 	def static dispatch List<WVariableDeclaration> variableDeclarations(WVariableDeclaration e) {
 		#[e]
 	}
