@@ -214,7 +214,12 @@ public class Messages extends NLS {
 	// **************************************
 	
 	public static String WollokDynamicDiagramPreferencePage_integrateREPL_description;
+
+	// **************************************
+	// ** Advanced Programming
+	// **************************************
 	
+	public static String WollokAdvancedProgrammingConfigurationPreferencePage_active_description;
 	
 	// ****************************
 	// ** Refactoring
@@ -258,5 +263,6 @@ public class Messages extends NLS {
 
 	private Messages() {
 	}
+
 
 }

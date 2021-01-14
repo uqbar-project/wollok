@@ -9,7 +9,8 @@ import org.eclipse.jface.preference.IPreferenceStore
  */
 class WPreferencesUtils {
 	public static val TRUE = IPreferenceStore.TRUE
+	public static val FALSE = IPreferenceStore.FALSE
 	
-	def static booleanPrefValues() { #[TRUE, IPreferenceStore.FALSE ] }
+	def static booleanPrefValues() { #[TRUE, FALSE ] }
 	
 }

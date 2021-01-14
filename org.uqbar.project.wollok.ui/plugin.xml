@@ -139,6 +139,14 @@
             >
             <keywordReference id="org.uqbar.project.wollok.ui.keyword_WollokDsl"/>
        </page>
+       <page
+	    	class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.preferences.WollokAdvancedProgrammingPreferencePage"
+            id="org.uqbar.project.wollok.WollokDsl.advancedProgramming"
+            category="org.uqbar.project.wollok.WollokDsl"
+            name="%advancedProgramming"
+            >
+            <keywordReference id="org.uqbar.project.wollok.ui.keyword_WollokDsl"/>
+       </page>
         <page
             category="org.uqbar.project.wollok.WollokDsl"
             class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.syntaxcoloring.SyntaxColoringPreferencePage"

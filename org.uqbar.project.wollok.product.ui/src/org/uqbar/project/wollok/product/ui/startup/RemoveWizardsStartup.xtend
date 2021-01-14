@@ -13,6 +13,11 @@ import org.eclipse.ui.wizards.IWizardDescriptor
 import org.eclipse.ui.wizards.IWizardRegistry
 import org.uqbar.project.wollok.ui.WollokUIStartup
 import org.eclipse.core.runtime.Platform
+import org.uqbar.project.wollok.ui.preferences.WollokAdvancedProgrammingConfigurationBlock
+import org.eclipse.core.runtime.preferences.IScopeContext
+import org.eclipse.core.runtime.preferences.BundleDefaultsScope
+import org.uqbar.project.wollok.ui.preferences.WollokAdvancedProgrammingConfigurationBlock
+import org.eclipse.core.runtime.preferences.ConfigurationScope
 
 /**
  * Programmatically hacks eclipse workbench to
@@ -24,7 +29,18 @@ import org.eclipse.core.runtime.Platform
  */
 class RemoveWizardsStartup implements WollokUIStartup {
 
+    static String PREFERENCE_STORE_NAME = "org.uqbar.project.wollok.WollokDsl"
 	override startup() {
+		
+		val advanced = Platform.getPreferencesService().getBoolean(PREFERENCE_STORE_NAME, WollokAdvancedProgrammingConfigurationBlock.ACTIVATE_ADVANCED_PROGRAMMING, false, #[BundleDefaultsScope.INSTANCE] as IScopeContext[])
+		
+		if(! advanced) {
+			removeAdvacedFeatures
+		}
+		
+	}
+	
+	def removeAdvacedFeatures() {	
 		PlatformUI.workbench.newWizardRegistry.removeWizards
 		PlatformUI.workbench.exportWizardRegistry.removeWizards
 		PlatformUI.workbench.importWizardRegistry.removeWizards
@@ -35,7 +51,7 @@ class RemoveWizardsStartup implements WollokUIStartup {
 			window.addPerspectiveListener(new WollokPerspectiveListener)
 
 		// TODO: find a way to remove extensions
-//		Platform.extensionRegistry.extensionPoints.map[p | p.extensions.toList ].flatten.forEach[
+//		Platform.extensionRegistry.extension
 //			println('''Extension  «extensionPointUniqueIdentifier» :: «it.simpleIdentifier» | «label»''')
 //			Platform.extensionRegistry.remove
 //		]
