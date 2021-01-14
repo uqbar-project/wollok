@@ -89,18 +89,4 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	}
 	
-	@Test
-	def void xxz() {
-		'''
-		class C {
-		  var property a = 1
-		  const property b = a + 1
-		  const property c = b + a
-		}
-		
-		test "lazy error" {
-			assert.equals(new C().b(), 2)
-		}
-		'''.interpretPropagatingErrors
-	}
 }
