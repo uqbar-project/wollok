@@ -9,6 +9,7 @@ import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer
 import org.uqbar.project.wollok.ui.Messages
 
 import static org.uqbar.project.wollok.ui.preferences.WPreferencesUtils.*
+import org.eclipse.ui.PlatformUI
 
 class WollokAdvancedProgrammingConfigurationBlock extends WollokAbstractConfigurationBlock {
 		
@@ -47,7 +48,7 @@ class WollokAdvancedProgrammingConfigurationBlock extends WollokAbstractConfigur
 	override savePreferences() {
 		super.savePreferences()
 		if (initialValue != currentValue) {
-			//TODO RESTART ECLIPSE	
+			PlatformUI.workbench.restart(true)	
 		}
 	}
 	
