@@ -233,11 +233,15 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean isValidReturnExpression(WMethodDeclaration method) { true }
 
 	def static allVariableDeclarations(WMethodContainer it) {
-		// Step 1 - Obtaining all variable declarations 
-		val variableDeclarations = linearizeHierarchy.fold(newArrayList) [variableDeclarations, type |
+		linearizeHierarchy.fold(newArrayList) [variableDeclarations, type |
 			variableDeclarations.addAll(type.variableDeclarations)
 			variableDeclarations
 		]
+	}
+
+	def static allVariableDeclarations(WMethodContainer it, WollokObject wo) {
+		// Step 1 - Obtaining all variable declarations 
+		val variableDeclarations = allVariableDeclarations
 		// Step 2 - Detecting dependencies among variable declarations
 		// for example:
 		// const a = b + 1
@@ -249,7 +253,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		// c -> [a, b]
 		val variableDependenciesGraph = <WVariableDeclaration, List<WVariable>>newHashMap
 		variableDeclarations.forEach [ variableDeclaration |
-			if (variableDeclaration.right !== null) {
+			if (variableDeclaration.right !== null && !wo.isInitialized(variableDeclaration.variable.name)) {
 				val dependencies = variableDeclaration.right.dependenciesOnInit(variableDeclaration)
 				variableDependenciesGraph.put(variableDeclaration, dependencies)
 			}

@@ -294,9 +294,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 				wo.initializeObject(l.parentParameters.initializers)
 			}
 			// 3. initialize pending attributes (not passed in named parameters)
-			l.mixins.forEach [ initializeMembers(wo) ]
-			l.parent.initializeMembers(wo)			
-			l.variableDeclarations.forEach [ wo.initializeAttribute(it) ]
+			l.allVariableDeclarations(wo).forEach [ wo.initializeAttribute(it) ]
 			// 4. last initialization opportunity - initialize method
 			wo.callInitIfDefined
 		]
@@ -322,7 +320,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	def initializeMembers(WClass clazz, WollokObject wo) {
-		clazz.allVariableDeclarations
+		clazz.allVariableDeclarations(wo)
 			.forEach [ wo.initializeAttribute(it) ]
 	}
 
@@ -331,7 +329,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	def initializeMembers(WMethodContainer it, WollokObject wo) {
-		variableDeclarations.forEach[wo.initializeAttribute(it)]
+		allVariableDeclarations(wo).forEach[wo.initializeAttribute(it)]
 	}
 
 	def dispatch evaluate(WReturnExpression it) {
@@ -560,8 +558,6 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 					wollokObject.initializeObject(namedObject.parentParameters.initializers)
 
 				// 3. initialize pending attributes (not passed in named parameters)
-				namedObject.mixins.forEach [ initializeMembers(wollokObject) ]
-				namedObject.parent.initializeMembers(wollokObject)
 				namedObject.initializeMembers(wollokObject)			
 
 				// 4. last initialization opportunity - initialize method
