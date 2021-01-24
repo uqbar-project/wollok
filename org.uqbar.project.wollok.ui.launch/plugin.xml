@@ -8,7 +8,7 @@
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
             id="org.uqbar.project.wollok.ui.launch.WollokLaunchConfigurationType"
-            modes="run"
+            modes="run, debug"
             name="Wollok Program"
             delegate="org.uqbar.project.wollok.ui.launch.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchDelegate"
             sourceLocatorId="org.uqbar.project.wollok.ui.launch.sourceLocator"

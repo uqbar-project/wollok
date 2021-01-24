@@ -7,7 +7,6 @@ import org.eclipse.core.runtime.dynamichelpers.IExtensionChangeHandler
 import org.eclipse.core.runtime.preferences.BundleDefaultsScope
 import org.eclipse.core.runtime.preferences.IScopeContext
 import org.eclipse.ui.PlatformUI
-import org.eclipse.ui.commands.ICommandService
 import org.eclipse.ui.internal.Workbench
 import org.eclipse.ui.internal.WorkbenchWindow
 import org.eclipse.ui.internal.dialogs.WorkbenchWizardElement
@@ -47,22 +46,6 @@ class RemoveWizardsStartup implements WollokUIStartup {
 		PlatformUI.workbench.exportWizardRegistry.removeWizards
 		PlatformUI.workbench.importWizardRegistry.removeWizards
 	
-
-		val commandService = PlatformUI.workbench.getService(ICommandService);
-
-		//val categoria = commandService.getCategory("org.eclipse.debug.ui.category.run")
-		//val c = commandService.getCommand("org.eclipse.m2e.core.pomFileAction.run")
-		
-		//val handlerService = PlatformUI.workbench.getService(IHandlerService)
-
-		val decorator = new CommandServiceFilter(commandService, #["org.eclipse.m2e."]);
-		
-		
-	    val m = PlatformUI.workbench.class.getMethod("registerService", Class, Object)
-		m.accessible = true
-		m.invoke(PlatformUI.workbench, ICommandService, decorator)	    
-	    decorator.readRegistry
-
 		val window = Workbench.instance.activeWorkbenchWindow as WorkbenchWindow
 		if (window !== null)
 			window.addPerspectiveListener(new WollokPerspectiveListener)

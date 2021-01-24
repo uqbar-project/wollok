@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.interpreter
 
 import com.google.inject.Inject
 import com.google.inject.Injector
+import java.io.PrintStream
 import java.io.Serializable
 import java.util.List
 import org.apache.commons.logging.Log
@@ -25,6 +26,7 @@ import org.uqbar.project.wollok.interpreter.threads.WThread
 import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 import static extension org.uqbar.project.wollok.model.FlowControlExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.interpreter.core.WollokNativeExceptionWrapper
 
 /**
  * XInterpreter impl for Wollok language.
@@ -148,9 +150,13 @@ class WollokInterpreter implements XInterpreter<EObject, WollokObject>, IWollokI
 			.filter [ stackDTO | stackDTO.hasContextDescription ]
 			.map [ stackDTO | stackDTO.elementForStackTrace ]
 			.join(System.lineSeparator)
-		
+			
 		println(errorLine)
+		if (e instanceof WollokNativeExceptionWrapper) {
+			println(e.nativeAsString)
+		}
 	}
+		
 
 	def evalBinary(WollokObject a, String operand, WollokObject b) {
 		evaluator.resolveBinaryOperation(operand).apply(a, [|b])

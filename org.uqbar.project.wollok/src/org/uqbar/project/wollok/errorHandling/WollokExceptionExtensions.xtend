@@ -11,6 +11,9 @@ import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import org.uqbar.project.wollok.interpreter.core.WollokNativeExceptionWrapper
+import java.io.StringWriter
+import java.io.PrintWriter
 
 /**
  * Extension methods for handling Wollok errors.
@@ -109,7 +112,11 @@ class WollokExceptionExtensions {
 		val className = wollokException.call("className").wollokToJava(String) as String
 		val message = exception.wollokMessage
 		val concatMessage = if (message !== null) ": " + message else "" 
-		return className + concatMessage
+		var extra = ""
+		if(exception instanceof WollokNativeExceptionWrapper) {
+			extra = exception.nativeAsString()
+		}
+		return className + concatMessage + extra
 	}
 
 	def static dispatch String convertToString(WollokInterpreterException exception) {

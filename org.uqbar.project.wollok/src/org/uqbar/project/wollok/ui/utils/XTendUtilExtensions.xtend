@@ -20,6 +20,7 @@ import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionEx
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.interpreter.core.WollokNativeExceptionWrapper
 
 /**
  * Utilities for xtend code
@@ -187,7 +188,7 @@ class XTendUtilExtensions {
 				e.cause.class.name.equalsIgnoreCase(ASSERTION_EXCEPTION_FQN))
 				e.cause
 			else {
-				new WollokProgramExceptionWrapper(e.cause.message.newWollokException)
+				new WollokNativeExceptionWrapper(e.cause.message.newWollokException, e.cause)
 			}
 		}
 

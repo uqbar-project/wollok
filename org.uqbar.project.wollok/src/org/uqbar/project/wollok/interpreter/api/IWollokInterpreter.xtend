@@ -30,4 +30,5 @@ interface IWollokInterpreter {
 	def EvaluationContext<WollokObject> getCurrentContext()
 
 	def void printStackTraceInConsole(WollokProgramExceptionWrapper e)
+	
 }

@@ -20,6 +20,7 @@ import org.uqbar.project.wollok.launch.repl.AnsiColoredReplOutputFormatter
 import org.uqbar.project.wollok.launch.repl.RegularReplOutputFormatter
 import org.uqbar.project.wollok.launch.repl.WollokRepl
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 /**
  * Main program launcher for the interpreter.
@@ -46,7 +47,14 @@ class WollokLauncher extends WollokChecker {
 			System.exit(0)
 		} catch (WollokTestsFailedException e) {
 			throw e
-		} catch (Exception e) {
+		} 
+		catch (Exception e) {
+//		    if( e instanceof WollokProgramExceptionWrapper) {
+//				System.err.println(e.wollokException)
+//				System.err.println(e.wollokMessage)
+//				System.err.println(e.wollokStackTrace)
+//			}
+			
 			System.exit(-1)
 		}
 		
@@ -78,6 +86,11 @@ class WollokLauncher extends WollokChecker {
 				val stackTrace = e.stackTrace.map [ "\tat " + className + "." + methodName + " (" + fileName + ":" + lineNumber + ")" ].join("\n")
 				println("Error in Wollok Launcher => " + e.message + "\n" + stackTrace)
 			}
+//			if( e instanceof WollokProgramExceptionWrapper) {
+//				System.err.println(e.wollokException)
+//				System.err.println(e.wollokMessage)
+//				System.err.println(e.wollokStackTrace)
+//			}
 			System.exit(-1)
 		}
 	}
