@@ -15,7 +15,6 @@ import org.eclipse.xtext.scoping.impl.SimpleScope
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
-import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamed
@@ -77,10 +76,6 @@ class WollokDslScopeProvider extends AbstractDeclarativeScopeProvider {
 	// containers which declares elements
 
 	def dispatch IScope scope(WObjectLiteral it) { declaredVariables.asScope }
-
-	def dispatch IScope scope(WConstructor it) {
-		eContainer.scope + parameters
-	}
 
 	def dispatch IScope scope(WMethodDeclaration it) {
 		eContainer.scope + parameters

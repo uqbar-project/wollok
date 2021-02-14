@@ -17,6 +17,7 @@ class MethodsCalledOnWellKnowObjects inherits A {
 	var e
 	method setA(a) { e = a }
 
+	
 	method asParameter() {
 		// XPECT errors --> "Message send "eat(10)" produces no value (missing return in method?)" at "eat"
 		self.setA(pepita.eat(10))
@@ -82,7 +83,7 @@ class MethodsCalledOnWellKnowObjects inherits A {
 	
 	method asConstructorArg() {
 		// XPECT errors --> "Message send "eat(10)" produces no value (missing return in method?)" at "eat"
-		return new B(pepita.eat(10)) 
+		return new B(a = pepita.eat(10)) 
 	}
 	
 	// XPECT errors --> "Message send "eat(10)" produces no value (missing return in method?)" at "eat"
@@ -90,5 +91,5 @@ class MethodsCalledOnWellKnowObjects inherits A {
 }
 
 class B {
-	constructor(a) {}
+	var property a
 }

@@ -36,17 +36,9 @@ WSuite:
 	'describe' name=STRING 
 	'{'
 		(members+=WVariableDeclaration ';'?)*
-		(fixture=WFixture)?
 		(members+=WMethodDeclaration ';'?)*
 		(tests+=WTest)*
 	'}'
-;
-
-WFixture:
-	{WFixture}
-	'fixture' '{'
-		(elements+=WExpression ';'?)*
-	'}'	
 ;
 
 WPackage:
@@ -361,7 +353,6 @@ WClass:
 		('mixed with' mixins+=[WMixin|QualifiedName] (('and'|',') mixins+=[WMixin|QualifiedName])*)? 
 	'{'
 		(members+=WVariableDeclaration ';'?)*
-		(constructors+=WConstructor)*
 		(members+=WMethodDeclaration ';'?)*
 	'}'
 ;
@@ -377,30 +368,6 @@ WMixin:
 
 WMember:
 	WVariableDeclaration | WMethodDeclaration
-;
-
-WConstructor:
-	{WConstructor} 'constructor' '(' (parameters+=WParameter (',' parameters+=WParameter)*)? ')'
-		('=' delegatingConstructorCall=WDelegatingConstructorCall)?
-		(expression=WBlockExpression)?
-;
-
-WDelegatingConstructorCall:
-	WSelfDelegatingConstructorCall | WSuperDelegatingConstructorCall
-;
-
-// somehow this should be references to WConstructor
-WSelfDelegatingConstructorCall:
-	{WSelfDelegatingConstructorCall} 'self' '(' 
-	(=> argumentList=WPositionalArgumentsList)?
-	')'
-;
-
-// somehow this should be references to WConstructor
-WSuperDelegatingConstructorCall:
-	{WSuperDelegatingConstructorCall} 'super' '(' 
-	(=> argumentList=WPositionalArgumentsList)?
-	')'
 ;
 
 WConstructorCall:

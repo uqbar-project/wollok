@@ -13,8 +13,6 @@ class Camion {
 	var cargaMaxima
 	var estado = disponible
 	
-	constructor(cargaMaximaPosible) { cargaMaxima = cargaMaximaPosible }
-
 	method getCosos() = cosos
 
 	method cargaActual() =self.getCosos().sum{bulto => bulto.peso()}
@@ -45,8 +43,6 @@ class Camion {
 class CamionReutilizable inherits Camion {
 	var destinos = []
 	
-	constructor(cargaMaximaPosible) = super(cargaMaximaPosible)
-	
 	override method getCosos() = destinos.map{destino => destino.getCosos()}.flatten() 
 	
 	method descargarCamionEn(unLugar) { destinos.remove(destinos.detect{destino => destino.getLugar() == unLugar}) }
@@ -69,7 +65,6 @@ class Destino {
 	var lugar
 	var cosos = []
 	
-	constructor(unLugar) { lugar = unLugar }
 	method getLugar() = lugar 
 	method getCosos() = cosos
 }
@@ -80,13 +75,6 @@ class Bulto {
 	var pesoEstructura
 	var contenido
 	
-	constructor(unaCantidadCajas, pesoCadaCaja, pesoEstructuraMadera, contenidoCaja) {
-		cantidadCajas - unaCantidadCajas
-		pesoCaja = pesoCadaCaja
-		pesoEstructura = pesoEstructuraMadera
-		contenido = contenidoCaja
-	}
-	
 	method peso() = (pesoCaja * cantidadCajas) + pesoEstructura
 	
 	method getContenido() = contenido
@@ -95,11 +83,6 @@ class Bulto {
 class Caja {
 	var pesoCaja
 	var contenido
-	
-	constructor(pesoCadaCaja, contenidoCaja) {
-		pesoCaja = pesoCadaCaja
-		contenido = contenidoCaja
-	}
 	
 	method peso() = pesoCaja
 	
@@ -110,11 +93,6 @@ class Bidon {
 	var capacidad
 	var densidad
 	var contenido
-	
-	constructor(capacidadLitros, densidadLiquido) {
-		capacidad = capacidadLitros
-		densidad = densidadLiquido
-	}
 	
 	method peso() = capacidad * densidad
 	method getContenido() = contenido

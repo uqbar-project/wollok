@@ -59,7 +59,6 @@ class WollokConstants {
 	public static val SUPER = "super"
 	public static val NULL = "null"
 	public static val METHOD = "method"
-	public static val CONSTRUCTOR = "constructor"
 	public static val VAR = "var"
 	public static val PROPERTY = "property"
 	public static val CONST = "const"

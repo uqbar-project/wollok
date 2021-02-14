@@ -72,13 +72,9 @@ class WithUsedVariablesClass {
 	var x
 	var y
 	
-	// XPECT warnings --> "Variable x is never assigned in this constructor" at "{ 		y = asd 	}"
-	constructor(asd){
-		y = asd
-	}
-	
 	method doSomething(){
 		x = 1
+		y = 2
 	}
 }
 

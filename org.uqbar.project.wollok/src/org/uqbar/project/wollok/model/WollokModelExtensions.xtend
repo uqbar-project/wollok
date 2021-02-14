@@ -34,11 +34,9 @@ import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
-import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
-import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
@@ -58,10 +56,8 @@ import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
-import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuite
-import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThrow
@@ -115,7 +111,7 @@ class WollokModelExtensions {
 
 	def static WMethodDeclaration getInitMethod(WMethodContainer it) {
 		methods.findFirst [ m |
-			m.name.equals(INITIALIZE_METHOD) && m.arguments.isEmpty
+			m.isInitializer && m.arguments.isEmpty
 		]
 	}
 
@@ -155,24 +151,15 @@ class WollokModelExtensions {
 	// ** WReferenciable
 	// ************************************************************************
 	def static dispatch isModifiableFrom(WVariable v, WAssignment from) {
-		v.declaration.isWriteable || from.initializesInstanceValueFromConstructor(v)
+		v.declaration.isWriteable
 	}
 	
 	def static dispatch isModifiableFrom(WParameter v, WAssignment from) { false }
 
 	def static dispatch isModifiableFrom(WReferenciable v, WAssignment from) { true }
 
-	def static boolean initializesInstanceValueFromConstructor(WAssignment a, WVariable v) {
-		v.declaration.initValue === null && a.isWithinConstructor
-	}
-
-	def static boolean isWithinConstructor(EObject e) {
-		e.eContainer !== null && (e.eContainer.isAConstructor || e.eContainer.isWithinConstructor)
-	}
-
-	def static dispatch boolean isAConstructor(EObject it) { false }
-	def static dispatch boolean isAConstructor(WConstructor it) { true }
-	def static dispatch boolean isAConstructor(WFixture it) { true }
+	def static dispatch boolean isAnInitializer(EObject it) { false }
+	def static dispatch boolean isAnInitializer(WMethodDeclaration it) { isInitializer }
 
 	/** A variable is global if its declaration (i.e. its eContainer) is direct child of a WFile element */
 	def static dispatch boolean isGlobal(WVariableDeclaration it) {
@@ -269,25 +256,6 @@ class WollokModelExtensions {
 
 	// ojo podría ser un !ObjectLiteral
 	def static declaringContext(WMethodDeclaration m) { m.eContainer as WMethodContainer } //
-	def static dispatch constructorsFor(WSelfDelegatingConstructorCall dc, WClass c) { c.constructors }
-
-	def static dispatch constructorsFor(WSuperDelegatingConstructorCall dc, WClass c) { c.parent.constructors }
-
-	def static dispatch String constructorName(WConstructor c, WSelfDelegatingConstructorCall dc) {
-		constructorName(c, "self")
-	}
-
-	def static dispatch String constructorName(WConstructor c, WSuperDelegatingConstructorCall dc) {
-		constructorName(c, "super")
-	}
-
-	def static dispatch String constructorName(WConstructor c, String constructorCall) {
-		(constructorCall ?: "constructor") + "(" + c.parameters.map[name].join(",") + ")"
-	}
-
-	def static constructorParameters(WClass c) {
-		c.constructors.map[constructorName("")].join(", ")
-	}
 
 	def static methodName(WMethodDeclaration d) {
 		d.declaringContext.name + "." + d.messageName
@@ -301,7 +269,7 @@ class WollokModelExtensions {
 		"(" + d.parameters.map[name].join(", ") + ")"
 	}
 
-	def static void addMembersTo(WMethodContainer cl, WollokObject wo) { cl.members.forEach[wo.addMember(it)] }
+	def static void addMembersTo(WMethodContainer mc, WollokObject wo) { mc.members.forEach[wo.addMember(it)] }
 
 	// se puede ir ahora que esta bien la jerarquia de WReferenciable (?)
 	def dispatch messagesSentTo(WVariable v) { v.allMessageSent }
@@ -359,10 +327,6 @@ class WollokModelExtensions {
 		matches(call.feature, call.memberCallArguments)
 	}
 
-	def static isValidConstructorCall(WConstructorCall c) {
-		c.classRef.hasConstructorForArgs(c.arguments.size)
-	}
-
 	def static dispatch EList<WExpression> values(WConstructorCall c) {
 		if(c.argumentList === null) return ECollections.emptyEList
 		c.argumentList.values
@@ -371,6 +335,31 @@ class WollokModelExtensions {
 	def static dispatch EList<WExpression> values(WPositionalArgumentsList l) { l.values }
 	def static dispatch EList<WExpression> values(EObject o) { ECollections.emptyEList }
 
+	def static List<WVariableDeclaration> uninitializedReferences(WMethodContainer it) {
+		allVariableDeclarations.filter[right === null].toList
+	}
+
+	def static List<String> argumentsNames(EList<WInitializer> initializers) {
+		if (initializers !== null) initializers.map [ initializer.name ] else #[]
+	}
+
+	def static dispatch List<WVariableDeclaration> uninitializedNamedParameters(WConstructorCall it) {
+		val uninitializedAttributes = classRef.uninitializedReferences
+		uninitializedAttributes.addAll(mixins.flatMap[allVariableDeclarations].filter[right === null])
+		internalUninitializedNamedParameters(uninitializedAttributes, initializers.argumentsNames ?: #[])
+	}
+
+	def static dispatch List<WVariableDeclaration> uninitializedNamedParameters(WNamedObject it) {
+		internalUninitializedNamedParameters(uninitializedReferences, parentParameters?.initializers?.argumentsNames ?: #[])
+	}
+
+	def static dispatch List<WVariableDeclaration> uninitializedNamedParameters(WObjectLiteral it) {
+		internalUninitializedNamedParameters(uninitializedReferences, parentParameters?.initializers?.argumentsNames ?: #[])
+	}
+
+	def static internalUninitializedNamedParameters(List<WVariableDeclaration> uninitializedReferences, List<String> namedParameters) {
+		uninitializedReferences.filter[arg|!namedParameters.contains(arg.variable.name)].toList
+	}
 	def static dispatch EList<WInitializer> initializers(WConstructorCall c) {
 		if(c.argumentList === null) return ECollections.emptyEList
 		c.argumentList.initializers
@@ -384,16 +373,6 @@ class WollokModelExtensions {
 		ECollections.emptyEList
 	}
 
-	def static dispatch EList<? extends EObject> arguments(WSelfDelegatingConstructorCall c) {
-		if(c.argumentList === null) return ECollections.emptyEList
-		c.argumentList.arguments
-	}
-
-	def static dispatch EList<? extends EObject> arguments(WSuperDelegatingConstructorCall c) {
-		if(c.argumentList === null) return ECollections.emptyEList
-		c.argumentList.arguments
-	}
-
 	def static dispatch EList<? extends EObject> arguments(WConstructorCall c) {
 		if(c.argumentList === null) return ECollections.emptyEList
 		c.argumentList.arguments
@@ -405,12 +384,6 @@ class WollokModelExtensions {
 
 	def static dispatch EList<? extends EObject> arguments(EObject o) { ECollections.emptyEList }
 
-	def static hasConstructorDefinitions(WClass c) { c.constructors !== null && c.constructors.size > 0 }
-
-	def static boolean hasConstructorForArgs(WClass c, int nrOfArgs) {
-		(nrOfArgs == 0 && c.inheritsDefaultConstructor) || c.allConstructors.exists[matches(nrOfArgs)]
-	}
-
 	def static getArgument(WArgumentList l, String name) {
 		val initializer = l.initializers.findFirst[init|init.initializer.name == name]
 		if(initializer === null) return null
@@ -421,18 +394,6 @@ class WollokModelExtensions {
 		arguments.filter(WAssignment).map[feature].toList
 	}
 
-	def static boolean inheritsDefaultConstructor(WClass c) {
-		if(c.hasConstructorDefinitions) {
-			return false
-		}
-
-		if(!c.hasCustomParent) {
-			return true
-		}
-
-		return c.parent.inheritsDefaultConstructor
-	}
-	
 	def static boolean hasInitializeMethod(WClass clazz) {
 		clazz.methods.map [ name ].contains(INITIALIZE_METHOD)
 	}
@@ -441,49 +402,7 @@ class WollokModelExtensions {
 		c.parent !== null && !c.parent.fqn.equalsIgnoreCase(WollokConstants.FQN_ROOT_CLASS)
 	}
 
-	def static EList<WConstructor> allConstructors(WClass c) {
-		if(c.hasConstructorDefinitions || !c.hasCustomParent)
-			c.constructors
-		else
-			c.parent.allConstructors
-	}
-
-	/**
-	 * Look for a constructor matching the number of parameters, 
-	 * but only among the constructors written in the class itself. 
-	 * Ignore constructor inheritance.
-	 */
-	def static getOwnConstructor(WClass clazz, int nrOfParams) {
-		clazz.constructors.findFirst[matches(nrOfParams)]
-	}
-
-	def static dispatch boolean shouldCheckInitialization(WMethodContainer mc) { true }
-	def static dispatch boolean shouldCheckInitialization(WClass c) { c.hasConstructors } 
-	
-	def static boolean hasConstructors(WMethodContainer c) { !c.getConstructors.isEmpty }
-
-	def static dispatch List<WConstructor> getConstructors(EObject o) { newArrayList }
-	def static dispatch List<WConstructor> getConstructors(WClass c) { c.allConstructors }
-
-	def static matches(WConstructor it, int nrOfArgs) {
-		if(hasVarArgs)
-			nrOfArgs >= parameters.filter[!isVarArg].size
-		else
-			nrOfArgs == parameters.size
-	}
-
-	def static dispatch hasVarArgs(WConstructor it) { parameters.exists[isVarArg] }
-	def static dispatch hasVarArgs(WMethodDeclaration it) { parameters.exists[isVarArg] }
-
-	def static superClassRequiresNonEmptyConstructor(WClass it) { parent !== null && !parent.hasEmptyConstructor }
-
-	def static superClassRequiresNonEmptyConstructor(WNamedObject it) { parent !== null && !parent.hasEmptyConstructor }
-
-	def static superClassRequiresNonEmptyConstructor(WObjectLiteral it) {
-		parent !== null && !parent.hasEmptyConstructor
-	}
-
-	def static hasEmptyConstructor(WClass c) { !c.hasConstructorDefinitions || c.hasConstructorForArgs(0) }
+	def static hasVarArgs(WMethodDeclaration it) { parameters.exists[isVarArg] }
 
 	// For objects or classes
 	def static declaredVariables(WMethodContainer obj) { obj.members.filter(WVariableDeclaration).map[variable] }
@@ -551,27 +470,12 @@ class WollokModelExtensions {
 		parameters.existsMoreThanOne(r) || eContainer.isDuplicated(r)
 	}
 
-	def static dispatch boolean isDuplicated(WConstructor it, WReferenciable r) {
-		parameters.existsMoreThanOne(r) || eContainer.isDuplicated(r)
-	}
-
 	// default case is to delegate up to container
 	def static dispatch boolean isDuplicated(EObject it, WReferenciable r) { eContainer.isDuplicated(r) }
 
 	def static existsMoreThanOne(Iterable<?> exps, WNamed named) {
 		exps.filter(WReferenciable).exists[it != named && name == named.name]
 	}
-
-	def static dispatch boolean isInConstructor(EObject obj) { obj.eContainer !== null && obj.eContainer.inConstructor }
-	def static dispatch boolean isInConstructor(WConstructor obj) { true }
-	def static dispatch boolean isInConstructor(WClass obj) { false }
-	def static dispatch boolean isInConstructor(WMethodDeclaration obj) { false }
-
-	def static dispatch boolean isInConstructorBody(EObject obj) {
-		obj.eContainer !== null && obj.eContainer.isInConstructorBody
-	}
-
-	def static dispatch boolean isInConstructorBody(WBlockExpression obj) { obj.isInConstructor }
 
 	// *****************************
 	// ** Valid returns
@@ -654,14 +558,10 @@ class WollokModelExtensions {
 		EcoreUtil2.getContainerOfType(it, WMethodDeclaration) !== null
 	}
 
-	def static isLocalToConstructor(WVariableDeclaration it) {
-		EcoreUtil2.getContainerOfType(it, WConstructor) !== null
-	}
-
 	def static isLocalToTest(WVariableDeclaration it) { EcoreUtil2.getContainerOfType(it, WTest) !== null }
 
 	def static isLocal(WVariableDeclaration it) {
-		isLocalToConstructor || isLocalToTest || isLocalToMethod
+		isLocalToTest || isLocalToMethod
 	}
 
 	def static onlyUsedInReturn(WVariableDeclaration it) {
@@ -944,18 +844,7 @@ class WollokModelExtensions {
 	def static dispatch boolean hasNamedParameters(EObject o) { false }
 
 	def static dispatch boolean hasNamedParameters(WConstructorCall c) {
-		if(c.argumentList === null) return false
-		c.argumentList.hasNamedParameters
-	}
-
-	def static dispatch boolean hasNamedParameters(WSelfDelegatingConstructorCall c) {
-		if(c.argumentList === null) return false
-		c.argumentList.hasNamedParameters
-	}
-
-	def static dispatch boolean hasNamedParameters(WSuperDelegatingConstructorCall c) {
-		if(c.argumentList === null) return false
-		c.argumentList.hasNamedParameters
+		c.argumentList !== null
 	}
 
 	def static dispatch boolean hasNamedParameters(WPositionalArgumentsList l) { false }

@@ -13,6 +13,7 @@ import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
+import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNullLiteral
@@ -49,6 +50,7 @@ class WEvaluationExtension {
 	}
 
 	def static dispatch isExpressionReturns(EObject obj) { false }
+	def static dispatch isExpressionReturns(WInitializer it) { true }
 	def static dispatch isExpressionReturns(WMethodDeclaration method) { method.isExpressionReturns }
 
 	/**

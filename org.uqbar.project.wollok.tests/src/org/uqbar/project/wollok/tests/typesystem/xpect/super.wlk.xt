@@ -5,13 +5,6 @@ class Ave {
 	var nombre
 	var energia = 100
 	
-	// XPECT type at nom --> String
-	constructor(nom) {
-		nombre = nom
-	}
-	
-	constructor() = self("") { }
-	
 	// XPECT methodType at come --> (Number) => Void	
 	method come(gramos) {
 		energia = energia + gramos 
@@ -22,13 +15,6 @@ class Ave {
 }
 
 class Golondrina inherits Ave {
-	
-	// XPECT type at e2 --> Number
-	constructor(e2) = super("pepita")  {
-		self.vola()
-	}
-	
-	constructor() = self(1) { }
 	
 	// XPECT methodType at vola --> () => Void
 	method vola() {
@@ -43,11 +29,6 @@ class Golondrina inherits Ave {
 
 class GolondrinaMentirosa inherits Golondrina {
 
-	// XPECT type at e3 --> Number	
-	constructor(e3) = super(e3) {
-		self.vola()
-	}
-	
 	// XPECT methodType at energia --> () => Number
 	override method energia() = super() + 10
 }
@@ -57,7 +38,7 @@ class GolondrinaMentirosa inherits Golondrina {
 class EntrenadorChanta inherits EntrenadorDeGolondrinas {
 	// XPECT methodType at alimentar --> (Golondrina) => Void
 	override method alimentar(ave) { 
-		super(new GolondrinaMentirosa(1))
+		super(new GolondrinaMentirosa(nombre = "Claudia", energia = 1))
 	}
 	
 	// XPECT methodType at hacerQueVuele --> (Golondrina) => Void
@@ -70,20 +51,15 @@ class EntrenadorChanta inherits EntrenadorDeGolondrinas {
 	override method pajaro() {
 		// XPECT type at p --> Golondrina
 		const p = super()
-		return new GolondrinaMentirosa(1)
+		return new GolondrinaMentirosa(nombre = "Claudia", energia = 1)
 	} 
 }
 
 class EntrenadorDeGolondrinas inherits EntrenadorDeAves {
 	
-	// XPECT type at g --> Golondrina
-	constructor(g) = super(g) {
-		g.vola()
-	}
-	
 	// XPECT methodType at alimentar --> (Golondrina) => Void
 	override method alimentar(ave) { 
-		super(new Golondrina())
+		super(new Golondrina(nombre = "Edmundo"))
 	}
 	
 	// XPECT methodType at hacerQueVuele --> (Golondrina) => Void	
@@ -95,36 +71,31 @@ class EntrenadorDeGolondrinas inherits EntrenadorDeAves {
 	override method pajaro() {
 		// XPECT type at a --> Ave
 		const a = super()
-		return new Golondrina()
+		return new Golondrina(nombre = "Firulais")
 	}
 	
-	method hacerVolarGolondrina() { self.hacerQueVuele(new Golondrina()) }
+	method hacerVolarGolondrina() { self.hacerQueVuele(new Golondrina(nombre = "Pedro")) }
 }
 
 class EntrenadorDeAves {
 	const ave
 	
-	// XPECT type at a --> Ave
-	constructor(a) {
-		ave = a	
-	}
-	
 	// XPECT methodType at alimentar --> (Golondrina) => Void
 	method alimentar(ave) { ave.come(10) }
 	
 	// XPECT methodType at pajaro --> () => Ave
-	method pajaro() = new Ave()
+	method pajaro() = new Ave(nombre = "Pedro")
 	
 	method alimentarAve() {
 		// TODO: Fail!
-		// self.alimentar(new Ave()) 
+		// self.alimentar(new Ave(nombre = "Pedro")) 
 	}
 	
 	method alimentarFavorita() { ave.come(1) }
 }
 
 object wollok {
-	method entrenadorDeAves() = new EntrenadorDeAves(new Ave())
-	method entrenadorDeGolondrinas() = new EntrenadorDeGolondrinas(new Golondrina())
+	method entrenadorDeAves() = new EntrenadorDeAves(ave = new Ave(nombre = "Pedro"))
+	method entrenadorDeGolondrinas() = new EntrenadorDeGolondrinas(ave = new Golondrina(nombre = "Pedro"))
 }
 

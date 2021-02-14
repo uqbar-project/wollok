@@ -8,11 +8,7 @@ class Viaje {
 }
 
 class Excursion {
-	const property lugar
-	
-	constructor() {
-		lugar = "Mar del Plata"
-	}
+	const property lugar = "Mar del Plata"
 }
 
 describe "properties initialization in constructor call" {

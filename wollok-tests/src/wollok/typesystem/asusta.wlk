@@ -22,7 +22,6 @@ class Asustador {
 
 class AsustadorNato inherits Asustador {
 	var puntosTerrorInnatos
-	constructor (p) { puntosTerrorInnatos = p	}
 	override method puntosDeTerror() = puntosTerrorInnatos * self.getEdad()
 }
 

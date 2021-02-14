@@ -15,11 +15,9 @@ import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
-import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
-import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WListLiteral
@@ -35,10 +33,8 @@ import org.uqbar.project.wollok.wollokDsl.WPositionalArgumentsList
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
-import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuite
-import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThrow
@@ -97,11 +93,6 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		]
 		c.variableDeclarations.formatVariableDeclarations(document)
 		
-		c.constructors.forEach [
-			format
-			append [ setNewLines(2) ]
-		]
-
 		c.methods.forEach [
 			format
 			append [ setNewLines(2) ]
@@ -348,18 +339,6 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		}
 	}
 
-	def dispatch void format(WConstructor c, extension IFormattableDocument document) {
-		c.regionFor.keyword(WollokConstants.CONSTRUCTOR).append [ noSpace ]
-		c.parameters.formatParameters(document)
-		c.regionFor.feature(WNAMED__NAME).append [ noSpace ]
-		c.regionFor.keyword(WollokConstants.ASSIGNMENT).surround [ oneSpace ]
-		c.delegatingConstructorCall?.format
-		c.expression => [
-			surround [ oneSpace ]
-			format
-		]
-	}
-
 	def dispatch void format(WConstructorCall c, extension IFormattableDocument document) {
 		c.prepend [ indent ]
 		c.regionFor.keyword(WollokConstants.INSTANTIATION).append [ oneSpace ]
@@ -407,8 +386,6 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		s.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ setNewLines(2) ].prepend [ oneSpace ]
 		s.interior [ indent ]
 		s.variableDeclarations.formatVariableDeclarations(document)
-		s.fixture.format
-		s.fixture.append [ setNewLines(2) ]
 		s.methods.forEach [ 
 			format 
 			append [ setNewLines(2) ]
@@ -418,17 +395,6 @@ class WollokDslFormatter extends AbstractFormatter2 {
 			append [ setNewLines(2) ]
 		]
 		s.regionFor.keyword(WollokConstants.END_EXPRESSION).surround[ setNewLines(2) ]
-	}
-
-	def dispatch void format(WFixture f, extension IFormattableDocument document) {
-		f.regionFor.keyword(WollokConstants.FIXTURE).append [ oneSpace ]
-		f.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ newLine ].prepend [ oneSpace ]
-		f.interior [ indent ]
-		f.elements.forEach [ e | 
-			e.surround [ newLine ]
-			e.format(document, false) 
-		]
-		f.regionFor.keyword(WollokConstants.END_EXPRESSION).prepend[ newLine ]
 	}
 
 	def dispatch void format(WPostfixOperation o, extension IFormattableDocument document) {
@@ -515,22 +481,6 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		]
 	}
 
-	def dispatch void format(WSelfDelegatingConstructorCall s, extension IFormattableDocument document) {
-		if (s.previousHiddenRegion.length > 1) {
-			s.prepend [ oneSpace ]
-		}
-		s.regionFor.keyword(WollokConstants.SELF).append [ noSpace ]
-		s.argumentList.format
-	}
-
-	def dispatch void format(WSuperDelegatingConstructorCall s, extension IFormattableDocument document) {
-		if (s.previousHiddenRegion.length > 1) {
-			s.prepend [ oneSpace ]
-		}
-		s.regionFor.keyword(WollokConstants.SUPER).append [ noSpace ]
-		s.argumentList.format
-	}
-	
 	/** 
 	 * *******************************************************
 	 * 
