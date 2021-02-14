@@ -297,11 +297,9 @@ const                  kmRecorridos= 0 method comer(gr) { energia = energia + gr
 		'''
   class Presentacion {
 	var fecha
-	var musicos
+	var musicos = []
 	var lugar
-	constructor() {
-		musicos = []
-	}
+
 	method fecha(_fecha) {
 		fecha = _fecha
 	}
@@ -328,12 +326,8 @@ const                  kmRecorridos= 0 method comer(gr) { energia = energia + gr
 		class Presentacion {
 		
 			var fecha
-			var musicos
+			var musicos = []
 			var lugar
-		
-			constructor() {
-				musicos = []
-			}
 		
 			method fecha(_fecha) {
 				fecha = _fecha

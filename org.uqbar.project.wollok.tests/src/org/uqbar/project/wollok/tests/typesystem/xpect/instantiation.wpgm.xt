@@ -1,13 +1,11 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
 
-// Clase sin constructor, permite constructor vacío
 class Persona {
 	method comoEstas() {
 		return "bien"
 	}
 }
 
-// Clase sin constructores para instanciación directa
 class Direccion {
 	const calle = "Medrano"
 	const numero = 951
@@ -16,7 +14,7 @@ class Direccion {
 	method tipar() = calle.charAt(numero)
 }
 
-// Clase sin constructores, instanciación directa usando variables de superclase
+// Instanciación directa usando variables de superclase
 class DireccionRemota inherits Direccion {
 	const ciudad = new Ciudad(km = 0)
 	
@@ -32,20 +30,13 @@ class Ciudad {
 	method kmDondeEsta() = km
 }
 
-// Clase con múltiples constructores
 class Point {
 	var x
 	var y
 	
-	constructor() { x = 0; y = 0 }
-	constructor(ax, ay) {
-		x = ax ; y = ay
-	}
-	
 	method tipar() = x / y
 }
 
-// Clase con constructores heredados
 class Point3D inherits Point {
 	const z = 0
 	
@@ -80,8 +71,8 @@ class MultipleConstructors {
 	method noParameters() = new Point()
 	
 	// XPECT methodType at withParameters --> (Number, Number) => Point
-	method withParameters(x, y) = new Point(x, y)
+	method withParameters(x, y) = new Point(x = x, y = y)
 
 	// XPECT methodType at inherited --> (Number, Number) => Point3D
-	method inherited(x, y) = new Point3D(x, y)
+	method inherited(x, y) = new Point3D(x = x, y = y)
 }

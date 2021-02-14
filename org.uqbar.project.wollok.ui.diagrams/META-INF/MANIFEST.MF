@@ -1,3 +1,4 @@
+Automatic-Module-Name: org.uqbar.project.wollok.ui.diagrams
 Manifest-Version: 1.0
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -217,5 +218,4 @@ SHA1-Digest: rsmSqMNg+yT7hNbLxFAgdMm/0XU=
 
 Name: org/eclipse/gef/examples/shapes/parts/DiagramTreeEditPart.class
 SHA1-Digest: Jxk5uRHl2OgLDg5LAh14gohSH8o=
-Automatic-Module-Name: org.uqbar.project.wollok.ui.diagrams
 

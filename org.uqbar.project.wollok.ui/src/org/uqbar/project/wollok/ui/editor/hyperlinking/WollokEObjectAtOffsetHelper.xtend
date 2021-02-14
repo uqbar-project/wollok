@@ -47,7 +47,7 @@ class WollokEObjectAtOffsetHelper extends EObjectAtOffsetHelper {
 	}
 	
 	protected def dispatch isCrossReference(EObject it, INode node) { false }
-	protected def dispatch isCrossReference(WConstructorCall it, INode node) { classRef.resolveConstructor(arguments) !== null }
+	protected def dispatch isCrossReference(WConstructorCall it, INode node) { false }
 	protected def dispatch isCrossReference(WMemberFeatureCall it, INode node) { isResolvedToMethod }
 	protected def dispatch isCrossReference(WSuperInvocation it, INode node) { !isInMixin }
 	protected def dispatch isCrossReference(Import it, INode node) { node.text != "*" }
@@ -67,11 +67,11 @@ class WollokEObjectAtOffsetHelper extends EObjectAtOffsetHelper {
 		}
 	}
 	
-	def dispatch resolveReference(EObject it, INode node) { null }
-	def dispatch resolveReference(WConstructorCall it, INode node) { classRef.resolveConstructor(arguments) }
-	def dispatch resolveReference(WMemberFeatureCall it, INode node) { resolveMethod(classFinder) }
-	def dispatch resolveReference(WSuperInvocation it, INode node) { superMethod }
-	def dispatch resolveReference(Import it, INode node) {
+	def dispatch EObject resolveReference(EObject it, INode node) { null }
+	def dispatch EObject resolveReference(WConstructorCall it, INode node) { null }
+	def dispatch EObject resolveReference(WMemberFeatureCall it, INode node) { resolveMethod(classFinder) }
+	def dispatch EObject resolveReference(WSuperInvocation it, INode node) { superMethod }
+	def dispatch EObject resolveReference(Import it, INode node) {
 		val found = it.getScope(scopeProvider).getElements(upTo(node.text).toFQN)
 		if (found.empty)
 			throw new UnresolvableCrossReference

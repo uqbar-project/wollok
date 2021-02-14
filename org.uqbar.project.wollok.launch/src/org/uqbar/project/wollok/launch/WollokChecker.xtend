@@ -14,12 +14,13 @@ import org.eclipse.xtext.validation.CheckMode
 import org.eclipse.xtext.validation.IResourceValidator
 import org.eclipse.xtext.validation.Issue
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
+import org.uqbar.project.wollok.Wollok
 import org.uqbar.project.wollok.WollokConstants
+import org.uqbar.project.wollok.interpreter.WollokTestsFailedException
 import org.uqbar.project.wollok.interpreter.nativeobj.WollokNumbersPreferences
 import org.uqbar.project.wollok.launch.setup.WollokLauncherSetup
 import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WFile
-import org.uqbar.project.wollok.interpreter.WollokTestsFailedException
 
 /**
  * Wollok checker program.

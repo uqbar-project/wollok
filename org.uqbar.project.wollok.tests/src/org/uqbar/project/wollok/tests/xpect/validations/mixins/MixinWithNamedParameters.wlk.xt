@@ -1,0 +1,18 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+mixin MundoCerrado {
+	var property a = 2
+	
+	method noVaAAndar() = a == self.b()
+	method b()
+}
+
+class Mundo {
+	var property b = ""
+}
+
+class MundoFeliz inherits Mundo {
+	var property c = true
+}
+
+const yo = new MundoFeliz(a = 1, b = 2) with MundoCerrado
+const otro = new MundoFeliz(c = 1, b = 2) with MundoCerrado

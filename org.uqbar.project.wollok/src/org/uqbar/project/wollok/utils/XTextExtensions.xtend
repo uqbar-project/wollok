@@ -9,7 +9,6 @@ import org.eclipse.xtext.util.ITextRegionWithLineInformation
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.stack.SourceCodeLocation
-import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -37,9 +36,6 @@ class XTextExtensions {
 	def static dispatch String contextDescription(WExpression e) { e.method.contextDescription }
 	def static dispatch String contextDescription(WMethodDeclaration m) {
 		m.declaringContext.contextName + "." + m.name + "(" + m.parameters.map[name].join(",") + ")"
-	}
-	def static dispatch String contextDescription(WConstructor m) {
-		m.declaringContext.contextName + "." + "(" + m.parameters.map[name].join(",") + ")"
 	}
 	
 	def static toSourceCodeLocation(ITextRegionWithLineInformation t, URI file) {
