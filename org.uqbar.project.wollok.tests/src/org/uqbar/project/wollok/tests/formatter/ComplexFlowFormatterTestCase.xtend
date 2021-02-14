@@ -390,11 +390,6 @@ var nombre = ""
 				var bloqueNumeroPositivo =        {    num   =>          num > 0 }               
 				
 				
-	constructor(canciones) {
-		nombre = "MASHUP" + self.concatenarNombres(canciones)
-		duracion = self.cancionMasLarga(canciones)
-		letra = self.concatenarCanciones(canciones).trim()
-	}
 
 
 
@@ -415,12 +410,6 @@ var nombre = ""
 				var letra = ""
 				var bloqueNumeroPositivo = { num => num > 0 }
 			
-				constructor(canciones) {
-					nombre = "MASHUP" + self.concatenarNombres(canciones)
-					duracion = self.cancionMasLarga(canciones)
-					letra = self.concatenarCanciones(canciones).trim()
-				}
-
 				method concatenarNombres(canciones) {
 					return canciones.fold("", { acum , cancion => acum + cancion.nombre() })
 				}

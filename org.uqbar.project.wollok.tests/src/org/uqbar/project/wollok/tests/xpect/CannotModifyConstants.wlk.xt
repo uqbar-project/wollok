@@ -3,13 +3,7 @@
 class A {
 	const x = "sarasa"
 	
-	constructor() {
-		x = 23
-	}
-
-	constructor(_aParam) {
-		
-	}
+	method x() = x
 	
 	method s() {
 		const aBlock = {a =>

@@ -41,9 +41,8 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 	WollokDslGrammarAccess grammarAccess
 
 	Set<SpecialMessage> syntaxDiagnosis = #{
-		new SpecialMessage(VAR, Messages.SYNTAX_DIAGNOSIS_REFERENCES_BEFORE_CONSTRUCTOR_AND_METHODS),
-		new SpecialMessage(CONST, Messages.SYNTAX_DIAGNOSIS_REFERENCES_BEFORE_CONSTRUCTOR_AND_METHODS),
-		new SpecialMessage(CONSTRUCTOR, Messages.SYNTAX_DIAGNOSIS_CONSTRUCTOR_BEFORE_METHODS),
+		new SpecialMessage(VAR, Messages.SYNTAX_DIAGNOSIS_REFERENCES_BEFORE_METHODS),
+		new SpecialMessage(CONST, Messages.SYNTAX_DIAGNOSIS_REFERENCES_BEFORE_METHODS),
 		new SpecialMessage(FIXTURE, Messages.SYNTAX_DIAGNOSIS_FIXTURE_BEFORE_TESTS),
 		new SpecialMessage(ASIGNATION,
 			Messages.SYNTAX_MISSING_BRACKETS_IN_METHOD, [ context, exception |
@@ -87,13 +86,6 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 			}
 		}		
 		
-		if (token.notNullAnd[equalsIgnoreCase(CONSTRUCTOR)]) {
-			if (declaringContext === null)
-				return new SyntaxErrorMessage(Messages.SYNTAX_DIAGNOSIS_CONSTRUCTOR_NOT_ALLOWED_HERE_GENERIC, SYNTAX_DIAGNOSTIC)
-			else if (!declaringContext.canDefineConstructors)
-				return new SyntaxErrorMessage(NLS.bind(Messages.SYNTAX_DIAGNOSIS_CONSTRUCTOR_NOT_ALLOWED_HERE, declaringContext?.constructionName), SYNTAX_DIAGNOSTIC)
-		}		
-
 		if (token.notNullAnd[equalsIgnoreCase(FIXTURE)]) {
 			if (declaringContext === null)
 				return new SyntaxErrorMessage(Messages.SYNTAX_DIAGNOSIS_FIXTURE_NOT_ALLOWED_HERE_GENERIC, SYNTAX_DIAGNOSTIC)
@@ -171,9 +163,7 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 	}
 	def dispatch SpecialMessage changeParserMessage(EObject o, AbstractRule r, Exception e) { null }
 	def dispatch SpecialMessage changeParserMessage(WArgumentList l, ParserRule r, MismatchedTokenException e) {
-		if (r.name.equalsIgnoreCase("WVariable")) {
-			new SpecialMessage(e.token.text, Messages.SYNTAX_DIAGNOSIS_CONSTRUCTOR_WITH_BOTH_INITIALIZERS_AND_VALUES)
-		} else null
+		null
 	}
 }
 

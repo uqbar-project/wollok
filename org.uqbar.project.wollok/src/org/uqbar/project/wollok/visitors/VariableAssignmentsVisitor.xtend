@@ -5,8 +5,6 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
-import org.uqbar.project.wollok.wollokDsl.WConstructor
-import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
@@ -17,7 +15,6 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.isMultiOpAssignment
 
 /**
@@ -30,7 +27,6 @@ class VariableAssignmentsVisitor extends AbstractWollokVisitor {
 	@Accessors
 	List<EObject> uses = newArrayList
 	List<WMethodDeclaration> methodsAlreadyVisited = newArrayList
-	List<WConstructor> constructorsAlreadyVisited = newArrayList
 	
 	@Accessors
 	WVariable lookedFor
@@ -47,14 +43,6 @@ class VariableAssignmentsVisitor extends AbstractWollokVisitor {
 		addIf[variable == lookedFor && right !== null]
 	}
 
-	def dispatch beforeVisit(WDelegatingConstructorCall it) {
-		val constructor = declaringContext.resolveConstructor(arguments)
-		if (constructor !== null && !constructorsAlreadyVisited.contains(constructor)) {
-			constructorsAlreadyVisited.add(constructor)
-			constructor.visit
-		}
-	}
-	
 	def dispatch beforeVisit(WMemberFeatureCall it) {
 		addIf[feature == lookedFor.name && memberCallArguments.size == 1 ]
 		declaringContext?.findMethod(it)?.visit

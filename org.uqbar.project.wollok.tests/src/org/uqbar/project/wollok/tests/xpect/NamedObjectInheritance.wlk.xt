@@ -1,57 +1,5 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 
-// test case
-
-class WithDefaultConstructor {}
-object inheritingFromWitDefaultConstructor inherits WithDefaultConstructor {}
-
-
-// test case
-
-class WithSingleOneArgConstructor {
-	constructor(param) { }	
-}
-
-// XPECT errors --> "Object must explicitly call a superclass constructor: (param)" at "WithSingleOneArgConstructor"
-object one inherits WithSingleOneArgConstructor { }
-
-
-// test case
-
-class TwoConstructors {
-	constructor(param) { }
-	constructor(p1, p2) { }
-}
-
-// XPECT errors --> "Object must explicitly call a superclass constructor: (param), (p1,p2)" at "TwoConstructors"
-object two inherits TwoConstructors { }
-
-object o1 inherits TwoConstructors("hola") { }
-object o2 inherits TwoConstructors(23) { }
-object o3 inherits TwoConstructors("hola", 23) { }
-
-// XPECT errors --> "No superclass constructor or wrong number of arguments. You must explicitly call a constructor: (param), (p1,p2)" at "TwoConstructors"
-object o4 inherits TwoConstructors("hola", 23, "chau") { }
-
-// test case
-
-class WithExplicitDefaultConstructor {
-	constructor() {}
-}
-
-object explicit inherits WithExplicitDefaultConstructor { }
-
-
-// test case
-
-class WithExplicitDefaultConstructorAndAnother {
-	constructor() {}
-	constructor(a) {}
-}
-
-object explicitWithAnother inherits WithExplicitDefaultConstructorAndAnother { }
-
-
 // abstract class
 class A {
 	method blah()
@@ -76,10 +24,6 @@ object aB inherits B {}
 
 class Animal {
 	var property nombre
-	constructor(_nombre) {
-		nombre = _nombre
-	}
 }
 
 object ornitorrinco inherits Animal(nombre = "julian") {} 
-

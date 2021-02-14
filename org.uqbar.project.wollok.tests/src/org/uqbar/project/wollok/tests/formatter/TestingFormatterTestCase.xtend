@@ -129,12 +129,12 @@ assert.that(true)}}''', '''
 	}
 
 	@Test
-	def void testSimpleDescribeWithFixture() throws Exception {
+	def void testSimpleDescribeWithInitializeMethod() throws Exception {
 		assertFormatting(
     	'''describe            "group of tests" 
 { 
-	var a
-fixture { a = 1 }
+	var a method
+initialize() { a = 1 }
 
 test "aSimpleTest"
 {
@@ -146,7 +146,7 @@ assert.equals(1, a)}}''', '''
 			
 				var a
 			
-				fixture {
+				method initialize() {
 					a = 1
 				}
 			
@@ -160,12 +160,12 @@ assert.equals(1, a)}}''', '''
 	}
 
 	@Test
-	def void testSimpleDescribeWithFixtureSeveralLines() throws Exception {
+	def void testSimpleDescribeWithInitializeMethodInSeveralLines() throws Exception {
 		assertFormatting(
     	'''describe            "group of tests" 
 { 
 	var a var b var c           = 3
-fixture { a = 1 
+method                   initialize() { a = 1 
 
 
 
@@ -194,7 +194,7 @@ assert.equals(b.length() - 1, c)
 				var b
 				var c = 3
 			
-				fixture {
+				method initialize() {
 					a = 1
 					b = "hola"
 				}
@@ -249,7 +249,7 @@ assert.equals(1, a)
 	}
 
 	@Test
-	def void testComplexFixtureDefinition() throws Exception {
+	def void testComplexInitializeDefinition() throws Exception {
 		assertFormatting(
 			'''
 		import musicos.*
@@ -259,7 +259,7 @@ assert.equals(1, a)
 		var cisne
 			var laFamilia var presentacionLunaPark         var presentacionLaTrastienda
 		
-			fixture {
+			method initialize() {
 				cisne = new Cancion(312, "Hoy el viento se abrió quedó vacío el aire una vez más y el manantial brotó y nadie está aquí y puedo ver que solo estallan las hojas al brillar")
 				laFamilia = new Cancion(264, "Quiero brindar por mi gente sencilla, por el amor brindo por la familia")
 				presentacionLunaPark = new Presentacion()
@@ -292,7 +292,7 @@ assert.equals(1, a)
 					var presentacionLunaPark
 					var presentacionLaTrastienda
 				
-					fixture {
+					method initialize() {
 						cisne = new Cancion(312, "Hoy el viento se abrió quedó vacío el aire una vez más y el manantial brotó y nadie está aquí y puedo ver que solo estallan las hojas al brillar")
 						laFamilia = new Cancion(264, "Quiero brindar por mi gente sencilla, por el amor brindo por la familia")
 						presentacionLunaPark = new Presentacion()
@@ -342,7 +342,7 @@ assert.equals(1, a)
 	}
 
 	@Test
-	def void testFixtureWithComplexDefinition() {
+	def void testAnotherInitializeWithComplexDefinition() {
 		assertFormatting(
 			'''
 describe "testDeMusicGuide" {
@@ -372,9 +372,9 @@ describe "testDeMusicGuide" {
 	var presentacionEnTrastienda
 	// guitarras
 	const fender = new Guitarra()
-	const gibson = new Gibson()
+	const gibson = new Gibson() method
 
-	fixture {
+	initialize() {
 		soledad = new VocalistaPopular().habilidad(55).palabraBienInterpretada("amor").agregarAlbum(laSole).agregarCancionDeSuAutoria(eres).agregarCancionDeSuAutoria(corazonAmericano)
 		kike = new MusicoDeGrupo().habilidad(60).plusPorCantarEnGrupo(20)
 		lucia = new VocalistaPopular().habilidad(70).palabraBienInterpretada("familia").grupo("Pimpinela")
@@ -419,7 +419,7 @@ describe "testDeMusicGuide" {
 					const fender = new Guitarra()
 					const gibson = new Gibson()
 				
-					fixture {
+					method initialize() {
 						soledad = new VocalistaPopular().habilidad(55).palabraBienInterpretada("amor").agregarAlbum(laSole).agregarCancionDeSuAutoria(eres).agregarCancionDeSuAutoria(corazonAmericano)
 						kike = new MusicoDeGrupo().habilidad(60).plusPorCantarEnGrupo(20)
 						lucia = new VocalistaPopular().habilidad(70).palabraBienInterpretada("familia").grupo("Pimpinela")
