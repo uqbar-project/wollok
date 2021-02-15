@@ -555,7 +555,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			val resource = xtextDocument.getAdapter(typeof(IResource))
 			new AddNewElementQuickFixDialog(newClassName, false, resource, context, e)
 		]
-			
+
 	}
 	
 	protected def addImport(IssueResolutionAcceptor issueResolutionAcceptor, Issue issue, EObject target,
