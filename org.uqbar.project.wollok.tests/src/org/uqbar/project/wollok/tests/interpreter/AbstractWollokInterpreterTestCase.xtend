@@ -19,6 +19,9 @@ import org.uqbar.project.wollok.tests.injectors.WollokTestInjectorProvider
 import wollok.lang.WDate
 
 import static wollok.lang.WDate.*
+import org.uqbar.project.wollok.WollokConstants
+import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 
 /**
  * Abstract base class for all interpreter tests cases.
@@ -35,6 +38,7 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	@Inject protected XtextResourceSet resourceSet
 	@Inject	protected extension WollokInterpreter interpreter
 	public static val EXAMPLES_PROJECT_PATH = "../wollok-tests"
+	static val SYNTHETIC_PACKAGE = "p_" + WollokConstants.SYNTHETIC_FILE + "0"
 
 	@Before
 	def void setUp() {
@@ -200,4 +204,23 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 		}
 		
 	}
+	
+	/**
+	 * Find a global reference into interpreter. 
+	 * If failed try to find using synthetic package prefix. 
+	 */
+	def WollokObject asWollokObject(String globalReference) {
+		try {
+			return interpreter.resolve(globalReference)
+		}
+		catch(UnresolvableReference originalException) {
+			try {
+				return interpreter.resolve(SYNTHETIC_PACKAGE + "." + globalReference)
+			}
+			catch(RuntimeException ex) {
+				throw originalException
+			}
+		}
+	}
+	
 }
