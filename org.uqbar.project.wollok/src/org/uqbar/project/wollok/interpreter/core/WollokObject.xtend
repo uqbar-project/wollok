@@ -42,6 +42,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	val EvaluationContext<WollokObject> parentContext
 	List<String> properties = newArrayList
 	List<String> constantsProperties = newArrayList
+	List<String> varProperties = newArrayList
 
 	new(IWollokInterpreter interpreter, WMethodContainer behavior) {
 		super(interpreter, behavior)
@@ -63,6 +64,9 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 			if (!declaration.writeable) {
 				constantsProperties.add(variableName)
 			}
+			else {
+				varProperties.add(variableName)
+			}
 		}
 	}
 
@@ -80,6 +84,12 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	// **
 	// ******************************************
 	override getThisObject() { this }
+
+    def understands(String message, WollokObject... parameters) {
+		behavior.lookupMethod(message, parameters, false) !== null || 
+		     message.hasVarProperty && parameters.length() <= 1 ||
+		     message.hasConstantProperty && parameters.empty
+    }
 
 	override call(String message, WollokObject... parameters) {
 		val method = behavior.lookupMethod(message, parameters, false)
@@ -100,7 +110,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		if (parameters.size > 1) {
 			throwMessageNotUnderstood(message, parameters)
 		}
-		if (constantsProperties.contains(message)) {
+		if (hasConstantProperty(message)) {
 			throw messageNotUnderstood(NLS.bind(Messages.WollokDslValidator_PROPERTY_NOT_WRITABLE, message))
 		}
 		setReference(message, parameters.head)
@@ -110,6 +120,15 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	override hasProperty(String variableName) {
 		properties.contains(variableName)
 	}
+	
+	def hasConstantProperty(String variableName) {
+		constantsProperties.contains(variableName)
+	}
+	
+	def hasVarProperty(String variableName) {
+		varProperties.contains(variableName)
+	}
+	
 
 	def throwMessageNotUnderstood(String methodName, Object... parameters) {
 		try {
