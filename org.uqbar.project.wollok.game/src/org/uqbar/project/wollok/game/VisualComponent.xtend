@@ -39,7 +39,7 @@ class VisualComponent {
 	}
 
 	def Image getImage() {
-		new Image(wObject.image)
+		hasImage ? new Image(wObject.image) : null
 	}
 
 	def Position getPosition() {
