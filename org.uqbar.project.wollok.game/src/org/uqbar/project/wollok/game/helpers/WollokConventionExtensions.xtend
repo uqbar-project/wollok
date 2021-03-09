@@ -18,7 +18,10 @@ class WollokConventionExtensions {
 	public static val DEFAULT_TEXT_COLOR = Color.BLUE
 	
 
-	def static asVisual(WollokObject it) { new VisualComponent(it) }
+	def static asVisual(WollokObject it) {
+		position // Force evaluate position or MDU error
+		new VisualComponent(it)
+	}
 	def static asVisualIn(WollokObject it, WollokObject position) { new VisualComponentWithPosition(it, position) }
 
 

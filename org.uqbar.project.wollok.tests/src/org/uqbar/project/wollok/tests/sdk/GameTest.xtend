@@ -40,6 +40,13 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 		assert.equals(1, game.at(0,1).allElements().size())
 		'''.test
 	}
+	
+	@Test
+	def void noPositionableObjectShouldFailAsVisual() {
+		'''
+		assert.throwsException({ game.addVisual(object {}) })
+		'''.test
+	}
 
 	@Test
 	def void configOnPressKey() {
