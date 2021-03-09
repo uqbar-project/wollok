@@ -20,6 +20,15 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 	def void finish() {
 		Gameboard.resetInstance
 	}
+	
+	@Test
+	def void movingObjectShouldUpdateComponentPosition() {
+		'''
+		game.addVisual(pepita)
+		pepita.move()
+		'''.gameTest
+		assertEquals(1, gameboard.components.head.position.x)
+	}
 
 	@Test
 	def void movingCharacterShouldSetObjectPosition() {
@@ -41,7 +50,7 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 		assertEquals("ArrowLeft", keyListener.keyCode)
 	}
 	
-	// We should publish a cellSize property in game wko to migrate this test to wollok-language
+	//TODO: We should publish a cellSize property in game wko to migrate this test to wollok-language
 	@Test
 	def void cellSize_works_correctly() {
 		'''
@@ -56,6 +65,7 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 		
 		object pepita {
 			var property position = game.origin()
+			method move() { position = position.right(1) }
 		}
 		
 		program a {
