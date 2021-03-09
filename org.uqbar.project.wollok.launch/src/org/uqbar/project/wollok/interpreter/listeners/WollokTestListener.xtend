@@ -31,9 +31,10 @@ class WollokTestListener implements XInterpreterListener {
 		call.memberCallTarget.receiver.equals(WollokSDK.ASSERT_WKO)
 	}
 
-	def dispatch static boolean hasMessageToAssert(WCatch c) {
-		c.expression.hasMessageToAssert
-	}
+//	def dispatch static boolean hasMessageToAssert(WCatch c) {
+//		c.expression.hasMessageToAssert
+//	}
+
 	def dispatch static boolean hasMessageToAssert(WBlockExpression block) {
 		block.expressions.exists [ hasMessageToAssert ]
 	}

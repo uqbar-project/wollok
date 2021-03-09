@@ -28,46 +28,10 @@ class QuickFixTest extends AbstractWollokQuickFixTestCase {
 	}
 
 	@Test
-	def changeDeclarationToVarInConstructor(){
-		val initial = #['''
-			class SomeClass {
-				const x
-				
-				constructor() {
-					x = 23
-				}
-				
-				method someMethod(){
-					x = 25
-				}
-			}
-		''']
-
-		val result = #['''
-			class SomeClass {
-				var x
-				
-				constructor() {
-					x = 23
-				}
-				
-				method someMethod(){
-					x = 25
-				}
-			}
-		''']
-		assertQuickfix(initial, result, Messages.WollokDslQuickfixProvider_changeToVar_name)		
-	}
-
-	@Test
-	def changeDeclarationToVarInFixture(){
+	def changeDeclarationToVarInInitializeMethodOfATest(){
 		val initial = #['''
 			describe "some tests" {
-				const x
-				
-				fixture {
-					x = 23
-				}
+				const x = 23
 				
 				test "x can be 25?" {
 					x = 25
@@ -78,11 +42,7 @@ class QuickFixTest extends AbstractWollokQuickFixTestCase {
 
 		val result = #['''
 			describe "some tests" {
-				var x
-				
-				fixture {
-					x = 23
-				}
+				var x = 23
 				
 				test "x can be 25?" {
 					x = 25

@@ -2,9 +2,6 @@
 
 describe "group of tests" {
 	
-	// XPECT warnings ---> "Fixture should not be empty" at "fixture {}"
-	fixture {}
-	
 	// XPECT warnings ---> "Tests should not be empty " at "test "a test" { 		 	}"
 	test "a test" {
 		

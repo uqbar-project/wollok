@@ -14,7 +14,7 @@
 		var Carlota
 		
 		// XPECT warnings --> "Parameter name should start with lowercase" at "Car"
-		constructor(Car) {
+		method setCarlota(Car) {
 			Carlota = Car	
 		}
 	}

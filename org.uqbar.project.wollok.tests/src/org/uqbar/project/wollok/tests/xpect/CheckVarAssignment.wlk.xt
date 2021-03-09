@@ -1,19 +1,14 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 	
-	class RangeIterator {
-		var range
-		var current
-		// XPECT warnings --> "Variable could be never assigned" at "unassigned"
-		var unassigned
-		constructor(rang) {
-			range = rang
-			current = rang.getStart()
-		}
-		
-		method hasNext() { return current < range.getEnd() }
-		method next() {
-			current = current + range.getStep()
-			return current
-		} 
-		method getUnassigned() { return unassigned }
-	}
+class RangeIterator {
+	var range
+	var current
+	var unassigned
+	
+	method hasNext() { return current < range.getEnd() }
+	method next() {
+		current = current + range.getStep()
+		return current
+	} 
+	method getUnassigned() { return unassigned }
+}

@@ -25,11 +25,6 @@ class Ave {
 	var property color = "azul"
 	const alas = []
 
-	constructor() {
-		// XPECT errors --> "Property are only allowed in objects, classes and mixins" at "property"
-		var property localVariable = 1
-	}
-		
 	method volar() {
 		energia -= 10
 		// XPECT errors --> "Cannot modify constant property peso" at "peso"

@@ -14,8 +14,6 @@ import org.eclipse.xtext.documentation.impl.MultiLineCommentDocumentationProvide
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.launch.WollokChecker
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
-import org.uqbar.project.wollok.wollokDsl.WClass
-import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -186,11 +184,6 @@ class WollokDocParser extends WollokChecker {
 	def dispatch void generateWollokDoc(EObject o) {
 	}
 
-	def dispatch void generateWollokDoc(WConstructor c) {
-		writeFile(BOLD_ON + WollokConstants.CONSTRUCTOR + BOLD_OFF + "(" + c.parameters.map[name].join(", ") + ")")
-		c.showComment
-	}
-	
 	def dispatch void generateWollokDoc(WMethodDeclaration m) {
 		val comment = m.comment
 		if (m.originalComment.contains(PRIVATE)) {
@@ -215,21 +208,10 @@ class WollokDocParser extends WollokChecker {
 		writeFile(TABLE_ROW_OFF)
 	}
 	
-	def dispatch getDefinedConstructors(WMethodContainer mc) { newArrayList }
-	def dispatch getDefinedConstructors(WClass c) { c.constructors }
-	
 	def dispatch void generateWollokDoc(WMethodContainer mc) {
 		header(mc.imageName + SPACE + mc.name, mc.name)
 		writeFile(showHierarchy(mc))
 		mc.showComment
-		val constructors = mc.definedConstructors
-		if (!constructors.isEmpty) {
-			header2("Constructors")
-			writeFile(TABLE_ON)
-			constructors.forEach [ generateWollokDoc ]
-			writeFile(TABLE_OFF)
-			writeFile(HORIZONTAL_LINE)
-		}
 		val attributes = mc.variableDeclarations
 		if (!attributes.isEmpty) {
 			header2("Attributes")
@@ -251,7 +233,7 @@ class WollokDocParser extends WollokChecker {
 			writeInheritedMethods(mc)
 			writeFile(HORIZONTAL_LINE)
 		}
-		if (constructors.isEmpty && mc.methods.isEmpty) {
+		if (mc.methods.isEmpty) {
 			writeFile(HORIZONTAL_LINE)
 		}
 	}

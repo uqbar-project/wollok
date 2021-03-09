@@ -148,12 +148,6 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 		assertEquals("Unmatched type for '" + token + "'", expectedType, program.findByText(token).type.name)
 	}
 
-	def assertConstructorType(EObject program, String className, String paramsSignature) {
-		val nrOfParams = paramsSignature.split(',').length;
-		assertEquals(paramsSignature, findConstructor(className, nrOfParams).constructorType(tsystem))
-			
-	}
-
 	def assertMethodSignature(EObject program, String expectedSignature, String methodFQN) {
 		assertEquals(expectedSignature, findMethod(methodFQN).functionType(tsystem))
 	}
@@ -241,10 +235,6 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 			nodeText.substring(1).escapeNodeTextToCompare
 		else
 			nodeText
-	}
-
-	def findConstructor(String className, int nrOfParams) {
-		WClass.find(className).getOwnConstructor(nrOfParams)
 	}
 
 	def findMethod(String methodFQN) {

@@ -22,11 +22,9 @@ import org.uqbar.project.wollok.tests.typesystem.AbstractWollokTypeSystemTestCas
 import org.uqbar.project.wollok.tests.typesystem.WollokTypeSystemTestModule
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.TypeSystem
-import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
 
@@ -67,18 +65,6 @@ class TypeSystemXpectTestCase extends AbstractWollokTypeSystemTestCase {
 		expectation.assertEquals(method.functionType(typeSystem))
 	}
 
-	@Xpect(liveExecution=LiveExecutionType.FAST)
-	@ParameterParser(syntax="'at' arg1=OFFSET")
-	@ConsumedIssues(#[Severity.INFO, Severity.ERROR, Severity.WARNING])
-	def void constructorType( //
-		@StringExpectation IStringExpectation expectation,
-		IEStructuralFeatureAndEObject target,
-		@ThisResource XtextResource resource,
-		@ThisModel EObject file
-	) {
-		expectation.assertEquals(target.EObject.constructor.constructorType(typeSystem))
-	}
-
 	def dispatch method(EObject object) {
 		throw new IllegalArgumentException(object.debugInfo)
 	}
@@ -92,13 +78,5 @@ class TypeSystemXpectTestCase extends AbstractWollokTypeSystemTestCase {
 		method
 	}
 	
-	def dispatch constructor(EObject target) {
-		throw new IllegalArgumentException(target.debugInfo)
-	}
-	
-	def dispatch constructor(WConstructorCall it) {
-		// TODO Tal vez acá uno quisiera contemplar la posibilidad de heredar constructores
-		classRef.getOwnConstructor(arguments.size)
-	}
 }
 

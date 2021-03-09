@@ -35,13 +35,13 @@ describe "asserts unificados" {
 		self.bajoEnergia()
 	}
 
+	// XPECT warnings --> "Tests must send at least one message to assert object" at ""al planear sin asserts""
 	test "al planear sin asserts" {
-		// XPECT warnings --> "Tests must send at least one message to assert object" at "ave.planear()"
 		ave.planear()
 	}
 
+	// XPECT warnings --> "Tests must send at least one message to assert object" at ""al planear sin asserts llamando a métodos que no usan assert""
 	test "al planear sin asserts llamando a métodos que no usan assert" {
-		// XPECT warnings --> "Tests must send at least one message to assert object" at "ave.planear()"
 		ave.planear()
 		self.preguntarSiBajoEnergia()
 	}
