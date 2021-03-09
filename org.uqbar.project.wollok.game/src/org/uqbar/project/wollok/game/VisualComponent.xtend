@@ -25,15 +25,10 @@ class VisualComponent {
 	boolean hasImage = false
 
 	WollokObject wObject
-	WollokObject wPosition
 
 	new(WollokObject object) {
-		this(object, object.position)
-	}
-
-	new(WollokObject object, WollokObject position) {
 		wObject = object
-		wPosition = position
+//		object.position
 		hasText = wObject.understands(TEXT_CONVENTION)
 		hasTextColor = wObject.understands(TEXT_COLOR_CONVENTION)
 		hasImage = wObject.understands(IMAGE_CONVENTION)
@@ -52,14 +47,11 @@ class VisualComponent {
 	}
 
 	def void setPosition(Position position) {
-		if (wPosition === null)
-			wObject.position = objectPosition.copyFrom(position)
-		else
-			wPosition = objectPosition.copyFrom(position)
+		wObject.position = objectPosition.copyFrom(position)
 	}
 
 	def getObjectPosition() {
-		new WPosition(wPosition ?: wObject.position)
+		new WPosition(wObject.position)
 	}
 
 	def void draw(Window window) {
@@ -164,5 +156,23 @@ class VisualComponent {
 	def void right() {
 		if (position.x < Gameboard.instance.width - 1)
 			setPosition(getPosition.right())
+	}
+}
+
+class VisualComponentWithPosition extends VisualComponent {
+	WollokObject wPosition
+	
+
+	new(WollokObject object, WollokObject position) {
+		super(object)
+		wPosition = position
+	}
+	
+	override void setPosition(Position position) {
+		wPosition = objectPosition.copyFrom(position)
+	}
+	
+	override getObjectPosition() {
+		new WPosition(wPosition)
 	}
 }

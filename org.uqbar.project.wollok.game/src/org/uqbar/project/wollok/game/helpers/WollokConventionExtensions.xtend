@@ -2,11 +2,11 @@ package org.uqbar.project.wollok.game.helpers
 
 import com.badlogic.gdx.graphics.Color
 import org.uqbar.project.wollok.game.VisualComponent
+import org.uqbar.project.wollok.game.VisualComponentWithPosition
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
-
 
 class WollokConventionExtensions {
 		
@@ -19,7 +19,7 @@ class WollokConventionExtensions {
 	
 
 	def static asVisual(WollokObject it) { new VisualComponent(it) }
-	def static asVisualIn(WollokObject it, WollokObject position) { new VisualComponent(it, position) }
+	def static asVisualIn(WollokObject it, WollokObject position) { new VisualComponentWithPosition(it, position) }
 
 
 
