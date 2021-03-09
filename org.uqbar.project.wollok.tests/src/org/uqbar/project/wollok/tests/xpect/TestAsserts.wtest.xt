@@ -20,7 +20,7 @@ test "testForBinaryOperationForAssert" {
 	assert + 1
 }
 
-test "testOkTryWithAssert" {
+test "testOkTryAndCatchWithAssert" {
 	try {
 		assert.equals(1, 1)
 	} catch e : Exception {
@@ -28,25 +28,7 @@ test "testOkTryWithAssert" {
 	}
 }
 
-test "testOkCatchWithAssert" {
-	try {
-		assert.equals(2, 2)
-	} catch e : Exception {
-		assert.equals(1, 1)
-	}
-}
-
-test "testOkTryThenAlwaysWithAssert" {
-	var a
-	try {
-		a = 0
-		assert.equals(2, 2)
-	} then always {
-		assert.equals(0, a)
-	}
-}
-
-test "testOkTryCatchThenAlwaysWithAssert" {
+test "testOkThenAlwaysWithAssert" {
 	var a = 0
 	try {
 		a = 1
@@ -57,7 +39,7 @@ test "testOkTryCatchThenAlwaysWithAssert" {
 	}
 }
 
-test "testOkTryCatchThenAlwaysWithAssert2" {
+test "testOkTryCatchWithAssertAndThenAlwaysWithoutAssert" {
 	try {
 		assert.equals(2, 2)
 	} catch e : Exception {
@@ -79,8 +61,8 @@ test "testNotOkIfWithAssertOnlyInElse" {
 	if (a > 0) { a = a + 1 } else assert.equals(a, 1)
 }
 
-// XPECT warnings --> "Tests must send at least one message to assert object" at ""testBadTryCatchWithAssert""
-test "testBadTryCatchWithAssert" {
+// XPECT warnings --> "Tests must send at least one message to assert object" at ""testTryCatchWithoutAssert""
+test "testTryCatchWithoutAssert" {
 	try {
 		1 / 0
 	} catch e : Exception {
@@ -88,8 +70,28 @@ test "testBadTryCatchWithAssert" {
 	}
 }
 
-// XPECT warnings --> "Tests must send at least one message to assert object" at ""testBadTryCatchThenAlwaysWithAssert""
-test "testBadTryCatchThenAlwaysWithAssert" {
+// XPECT warnings --> "Tests must send at least one message to assert object" at ""testCatchWithoutAssert""
+test "testCatchWithoutAssert" {
+	try {
+		1 / 0
+	} catch e : Exception {
+		assert.equals(1, 1)
+		1 + 1
+	}
+}
+
+// XPECT warnings --> "Tests must send at least one message to assert object" at ""testTryWithoutAssert""
+test "testTryWithoutAssert" {
+	try {
+		assert.equals(1, 1)
+		1 / 0
+	} catch e : Exception {
+		1 + 1
+	}
+}
+
+// XPECT warnings --> "Tests must send at least one message to assert object" at ""testTryCatchThenAlwaysWithoutAssert""
+test "testTryCatchThenAlwaysWithoutAssert" {
 	var a = 0
 	try {
 		a = 1
@@ -105,14 +107,14 @@ test "testOkIfWithAssert" {
 	if (a > 0) assert.equals(a, 1) else assert.equals(2, 2)
 }
 
-// XPECT warnings --> "Tests must send at least one message to assert object" at ""testBadIfWithAssert""
-test "testBadIfWithAssert" {
+// XPECT warnings --> "Tests must send at least one message to assert object" at ""testElseWithoutAssert""
+test "testElseWithoutAssert" {
 	const a = 1
 	if (a > 0) assert.equals(a, 1)
 }
 
-// XPECT warnings --> "Tests must send at least one message to assert object" at ""testBadIfElseWithAssert""
-test "testBadIfElseWithAssert" {
+// XPECT warnings --> "Tests must send at least one message to assert object" at ""testIfWithoutAssert""
+test "testIfWithoutAssert" {
 	var a = 1
 	if (a > 0) a = 2 else assert.equals(a, 1)
 }
