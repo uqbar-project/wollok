@@ -4,7 +4,6 @@ import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.interpreter.api.XInterpreterListener
 import org.uqbar.project.wollok.sdk.WollokSDK
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
-import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
@@ -30,10 +29,6 @@ class WollokTestListener implements XInterpreterListener {
 	def dispatch static boolean hasMessageToAssert(WMemberFeatureCall call) {
 		call.memberCallTarget.receiver.equals(WollokSDK.ASSERT_WKO)
 	}
-
-//	def dispatch static boolean hasMessageToAssert(WCatch c) {
-//		c.expression.hasMessageToAssert
-//	}
 
 	def dispatch static boolean hasMessageToAssert(WBlockExpression block) {
 		block.expressions.exists [ hasMessageToAssert ]
