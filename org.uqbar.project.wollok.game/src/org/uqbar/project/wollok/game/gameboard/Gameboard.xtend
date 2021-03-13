@@ -106,7 +106,7 @@ class Gameboard {
 
 	def pixelWidth() { width * cellsize }
 	
-	def clear() {
+	def void clear() {
 		components.clear()
 		listeners.clear()
 		character = null
