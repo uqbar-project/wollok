@@ -7,7 +7,7 @@ class Levadura {
 }
 
 class Ale inherits Levadura {
-	// XPECT errors --> "There is already an instance variable with this name in the hierarchy" at "biomasa"
+	// XPECT errors --> "There is already an attribute with this name in the hierarchy" at "biomasa"
 	const biomasa = 200
 	
 	method algoConBiomasaParaEvitarWarning() {
@@ -23,7 +23,7 @@ class B inherits Levadura {
  * self one duplicates a var that is two levels up
  */
 class C inherits B {
-	// XPECT errors --> "There is already an instance variable with this name in the hierarchy" at "biomasa"
+	// XPECT errors --> "There is already an attribute with this name in the hierarchy" at "biomasa"
 	const biomasa = 200
 	
 		method algoConBiomasaParaEvitarWarning() {
@@ -33,7 +33,7 @@ class C inherits B {
 
 // same for objects
 object anObject inherits Levadura {
-	// XPECT errors --> "There is already an instance variable with this name in the hierarchy" at "biomasa"
+	// XPECT errors --> "There is already an attribute with this name in the hierarchy" at "biomasa"
 	const biomasa = 200
 	
 		method algoConBiomasaParaEvitarWarning() {
