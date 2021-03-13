@@ -234,6 +234,8 @@ abstract class TypeDeclarations {
 	def U() { Collection.methodParam("game", "U") }
 
 	def RETURN() { Closure.param(GenericTypeInfo.RETURN) }
+	
+	def THROW_EXCEPTION() { T } // TODO: Make throw exception expressions generic type?	
 
 	def Comparable() { unionType(Number, String, Date) } // TODO: Define as structural
 
