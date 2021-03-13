@@ -294,7 +294,9 @@ class ConstraintGenerator {
 
 	def dispatch void generate(WThrow it) {
 		exception.generateVariables
-		newTypeVariable.beVoid
+		// Now only generate ANY variable. 
+		// Maybe we'll want another kind of variable for throwable types.
+		newTypeVariable
 	}
 
 	def dispatch void generate(WTry it) {

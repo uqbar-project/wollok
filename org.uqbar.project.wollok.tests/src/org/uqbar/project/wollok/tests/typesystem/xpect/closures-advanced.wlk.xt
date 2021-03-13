@@ -6,13 +6,13 @@ object advancedClosures {
 		return { a => a + 1 }.apply(n)
 	}
 	
-	// XPECT! methodType at throws_error_closure --> ((Collection<Number>|Range)) => Number
-//	method throws_error_closure(numbers) {
-//		return numbers.findOrElse(
-//					{ n => n.even()  }, 
-//					{ throw new Exception(message = "MESSAGE") }
-//				)
-//	}
+	// XPECT methodType at throws_error_closure --> ((Collection<Number>|Range)) => Number
+	method throws_error_closure(numbers) {
+		return numbers.findOrElse(
+					{ n => n.even()  }, 
+					{ throw new Exception(message = "MESSAGE") }
+				)
+	}
 	
 	// XPECT methodType at throws_error_closure_by_message --> ((Collection<Number>|Range)) => Number
 	method throws_error_closure_by_message(numbers) {
