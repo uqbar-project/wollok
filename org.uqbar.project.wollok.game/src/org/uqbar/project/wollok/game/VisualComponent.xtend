@@ -28,7 +28,6 @@ class VisualComponent {
 
 	new(WollokObject object) {
 		wObject = object
-//		object.position
 		hasText = wObject.understands(TEXT_CONVENTION)
 		hasTextColor = wObject.understands(TEXT_COLOR_CONVENTION)
 		hasImage = wObject.understands(IMAGE_CONVENTION)
