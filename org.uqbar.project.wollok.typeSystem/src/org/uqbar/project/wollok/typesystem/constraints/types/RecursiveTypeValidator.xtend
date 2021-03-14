@@ -13,6 +13,7 @@ class RecursiveTypeValidator {
 	def static dispatch void validateRecursiveType(TypeInfo typeInfo, List<TypeVariable> users) {}
 	def static dispatch void validateRecursiveType(GenericTypeInfo typeInfo, List<TypeVariable> users) {
 		typeInfo.maximalConcreteTypes?.forEach[it.doValidateRecursiveType(users)]
+		typeInfo.validMinTypes.forEach[it.doValidateRecursiveType(users)]
 	}
 
 	def static dispatch void doValidateRecursiveType(WollokType it, List<TypeVariable> users) {}
