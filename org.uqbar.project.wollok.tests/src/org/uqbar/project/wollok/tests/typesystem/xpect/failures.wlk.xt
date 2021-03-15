@@ -3,6 +3,7 @@
 object pepita {
 	const hola = "hola"
 	const dos = "2"
+	const golondrinas = []
 
 	// XPECT warnings --> "Type system: expected <<Number>> but found <<String>>" at "hola"
 	method multiplicacion() = 2 * hola
@@ -28,7 +29,7 @@ object pepita {
 	// FIXME: ADD ERROR ONLY TO MESSAGE, NOT TO VARIABLE
 	// FIXME: DISCARD MAX TYPES FROM MESSAGES CHAIN
 	method infinity_list_type_by_message_inference() {
-		// XPECT warnings --> "Type system: Infinite recursive type" at "l"
+		// XPECT! warnings --> "Type system: Infinite recursive type" at "l"
 		var l = [] 
 		
 		// XPECT warnings --> "Type system: Infinite recursive type" at "l.flatten()"
@@ -37,4 +38,7 @@ object pepita {
 		// XPECT warnings --> "Range does not understand flatten()" at "l.flatten()"
 		return l.flatten().sum()
 	}
+	
+	// XPECT warnings --> "Type system: Infinite recursive type" at "golondrinas.map{g => g.infinity_list_type_by_mapping()}"
+	method infinity_list_type_by_mapping() = golondrinas.map{g => g.infinity_list_type_by_mapping()} 
 }
