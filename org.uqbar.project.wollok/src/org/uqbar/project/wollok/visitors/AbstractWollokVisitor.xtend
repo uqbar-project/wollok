@@ -12,6 +12,7 @@ import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
@@ -154,6 +155,7 @@ abstract class AbstractWollokVisitor {
 
 	def dispatch void visitChildren(WMixin it) { eContents.visitAll }
 	def dispatch void visitChildren(WSuite it) { eContents.visitAll }
+	def dispatch void visitChildren(WFixture it) { /* DEPRECATED */ }
 	def dispatch void visitChildren(WClass it) { eContents.visitAll }
 	def dispatch void visitChildren(WObjectLiteral it) { eContents.visitAll }
 	def dispatch void visitChildren(WNamedObject it) { eContents.visitAll }
