@@ -9,6 +9,10 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.exceptions.InfiniteRecursiveTypeException
 
 class RecursiveTypeValidator {
+	def static dispatch void validateRecursiveType(TypeInfo t1, TypeInfo t2) {
+		t1.validateRecursiveType(t2.users)
+		t2.validateRecursiveType(t1.users)		
+	}
 
 	def static dispatch void validateRecursiveType(TypeInfo typeInfo, List<TypeVariable> users) {}
 	def static dispatch void validateRecursiveType(GenericTypeInfo typeInfo, List<TypeVariable> users) {
