@@ -23,18 +23,17 @@ object pepita {
 		var l = [] 
 		// XPECT warnings --> "Type system: Infinite recursive type" at "l.flatten()"
 		l = l.flatten()
-		// return l.flatten().sum()
 	}
 	
+	// FIXME: ADD ERROR ONLY TO MESSAGE, NOT TO VARIABLE
+	// FIXME: DISCARD MAX TYPES FROM MESSAGES CHAIN
 	method infinity_list_type_by_message_inference() {
+		// XPECT warnings --> "Type system: Infinite recursive type" at "l"
 		var l = [] 
-		// FIXME: ADD ERROR ONLY TO MESSAGE, NOT TO VARIABLE
-		/* XPECT warnings ---
-		"Type system: Infinite recursive type" at "l" 
-		"Type system: Infinite recursive type" at "l.flatten()"
-		---*/
+		
+		// XPECT warnings --> "Type system: Infinite recursive type" at "l.flatten()"
 		l = l.flatten()
-		// FIXME: DISCARD MAX TYPES FROM MESSAGES CHAIN
+		
 		// XPECT warnings --> "Range does not understand flatten()" at "l.flatten()"
 		return l.flatten().sum()
 	}
