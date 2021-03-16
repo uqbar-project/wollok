@@ -833,7 +833,7 @@ class WollokModelExtensions {
 	}
 
 	def static dispatch boolean sendsMessageToAssert(WTry t, WollokClassFinder finder) {
-		(t.expression.sendsMessageToAssert(finder) && t.catchBlocks.exists[sendsMessageToAssert(finder)]) ||
+		(t.expression.sendsMessageToAssert(finder) || t.catchBlocks.exists[sendsMessageToAssert(finder)]) ||
 			t.alwaysExpression.sendsMessageToAssert(finder)
 	}
 

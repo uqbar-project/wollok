@@ -70,7 +70,6 @@ test "testTryCatchWithoutAssert" {
 	}
 }
 
-// XPECT warnings --> "Tests must send at least one message to assert object" at ""testCatchWithoutAssert""
 test "testCatchWithoutAssert" {
 	try {
 		1 / 0
@@ -80,7 +79,6 @@ test "testCatchWithoutAssert" {
 	}
 }
 
-// XPECT warnings --> "Tests must send at least one message to assert object" at ""testTryWithoutAssert""
 test "testTryWithoutAssert" {
 	try {
 		assert.equals(1, 1)
