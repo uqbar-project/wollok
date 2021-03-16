@@ -82,7 +82,7 @@ class ImageTest extends AbstractWollokParameterizedInterpreterTest {
 			new Position(x = 0, y = 0).drawElement(visual)
 		}'''.interpretPropagatingErrors
 		
-		validateDefaultImage
+		validateNoImage
 	}
 
 	@Test
@@ -96,20 +96,20 @@ class ImageTest extends AbstractWollokParameterizedInterpreterTest {
 			new Position(x = 0, y = 0).drawElement(visual)
 		}'''.interpretPropagatingErrors
 		
-		validateDefaultImage
+		validateNoImage
 	}
 	
 	def validateImage() {
-		validateImage("image.png")
+		validateImage(new Image("image.png"))
 	}
 	
-	def validateDefaultImage() {
-		validateImage("wko.png")
+	def validateNoImage() {
+		validateImage(null)
 	}
 	
-	def validateImage(String path) {
+	def validateImage(Image expected) {
 		components.forEach[
-			assertEquals(new Image(path), it.image)
+			assertEquals(expected, it.image)
 		]
 	}
 	
