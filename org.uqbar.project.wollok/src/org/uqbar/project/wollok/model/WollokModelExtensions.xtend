@@ -110,8 +110,12 @@ class WollokModelExtensions {
 
 
 	def static WMethodDeclaration getInitMethod(WMethodContainer it) {
+		getMethod(INITIALIZE_METHOD)
+	}
+	
+	def static WMethodDeclaration getMethod(WMethodContainer it, String methodName) {
 		methods.findFirst [ m |
-			m.isInitializer && m.arguments.isEmpty
+			m.name.equals(methodName) && m.arguments.isEmpty
 		]
 	}
 
@@ -298,14 +302,24 @@ class WollokModelExtensions {
 
 	def static isCallOnThis(WMemberFeatureCall c) { c.memberCallTarget instanceof WSelf }
 
+	def static dispatch receiver(WVariableReference variable) {
+		variable.ref.name ?: ""
+	}
+	
+	def static dispatch receiver(WSelf variable) { "self" }
+	
+	def static dispatch receiver(WExpression expression) { "" }
+	
 	def static WMethodDeclaration resolveMethod(WMemberFeatureCall it, WollokClassFinder finder) {
-		if(isCallOnThis)
-			method.declaringContext.findMethod(it)
-		else if(isCallToWellKnownObject)
-			resolveWKO(finder).findMethod(it)
-		else
-			// TODO: call to super (?)
-			null
+		if (isCallOnThis && declaringContext !== null) {
+			return declaringContext.findMethod(it)
+		}
+		if (isCallToWellKnownObject) {
+			val wko = resolveWKO(finder)
+			return if (wko === null) null else wko.findMethod(it)
+		}
+		// TODO: call to super / variable reference
+		return null
 	}
 
 	def static isCallToWellKnownObject(WMemberFeatureCall c) { c.memberCallTarget.isWellKnownObject }
@@ -408,10 +422,11 @@ class WollokModelExtensions {
 	def static declaredVariables(WMethodContainer obj) { obj.members.filter(WVariableDeclaration).map[variable] }
 	
 	def static dispatch WMethodDeclaration method(Void it) { null }
-	def static dispatch WMethodDeclaration method(EObject it) { null }
 	def static dispatch WMethodDeclaration method(WMethodDeclaration it) { it }
 	def static dispatch WMethodDeclaration method(WExpression it) { eContainer.method }
 	def static dispatch WMethodDeclaration method(WParameter it) { eContainer.method }
+	def static dispatch WMethodDeclaration method(WTest it) { eContainer.method }
+	def static dispatch WMethodDeclaration method(EObject it) { null }
 
 	def static isInMixin(EObject e) { e.declaringContext instanceof WMixin }
 
@@ -810,28 +825,37 @@ class WollokModelExtensions {
 		tests.empty && !suites.empty
 	}
 
-	def static dispatch boolean sendsMessageToAssert(Void e) { false }
-	def static dispatch boolean sendsMessageToAssert(EObject e) { false }
+	def static dispatch boolean sendsMessageToAssert(Void e, WollokClassFinder finder) { false }
+	def static dispatch boolean sendsMessageToAssert(EObject e, WollokClassFinder finder) { false }
 
-	def static dispatch boolean sendsMessageToAssert(WMemberFeatureCall c) {
-		c.memberCallTarget.isAssertWKO
+	def static dispatch boolean sendsMessageToAssert(WMemberFeatureCall call, WollokClassFinder finder) {
+		call.memberCallTarget.isAssertWKO || call.sendsMessageToAssertInMethod(finder)
 	}
 
-	def static dispatch boolean sendsMessageToAssert(WTry t) {
-		t.expression.sendsMessageToAssert || t.catchBlocks.exists[sendsMessageToAssert] ||
-			t.alwaysExpression.sendsMessageToAssert
+	def static dispatch boolean sendsMessageToAssert(WTry t, WollokClassFinder finder) {
+		(t.expression.sendsMessageToAssert(finder) || t.catchBlocks.exists[sendsMessageToAssert(finder)]) ||
+			t.alwaysExpression.sendsMessageToAssert(finder)
 	}
 
-	def static dispatch boolean sendsMessageToAssert(WClosure c) {
-		c.expression.sendsMessageToAssert
+	def static dispatch boolean sendsMessageToAssert(WClosure c, WollokClassFinder finder) {
+		c.expression.sendsMessageToAssert(finder)
 	}
 
-	def static dispatch boolean sendsMessageToAssert(WBlockExpression b) {
-		b.expressions.exists[sendsMessageToAssert]
+	def static dispatch boolean sendsMessageToAssert(WBlockExpression b, WollokClassFinder finder) {
+		b.expressions.exists[sendsMessageToAssert(finder)]
 	}
 
-	def static dispatch boolean sendsMessageToAssert(WCatch c) {
-		c.expression.sendsMessageToAssert
+	def static dispatch boolean sendsMessageToAssert(WCatch c, WollokClassFinder finder) {
+		c.expression.sendsMessageToAssert(finder)
+	}
+
+	def static dispatch boolean sendsMessageToAssert(WIfExpression it, WollokClassFinder finder) {
+		then !== null && then.sendsMessageToAssert(finder) && ^else !== null && ^else.sendsMessageToAssert(finder) 
+	}
+	
+	def static sendsMessageToAssertInMethod(WMemberFeatureCall call, WollokClassFinder finder) {
+		val method = call.resolveMethod(finder)
+		method !== null && method.expression.sendsMessageToAssert(finder)
 	}
 
 	def static dispatch boolean isAssertWKO(EObject e) { false }

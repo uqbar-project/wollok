@@ -63,7 +63,8 @@ class WollokSDK {
 	// ** SDK Objects
 	// ************************************************************************
 	public static val CONSOLE = "wollok.lib.console"
-	public static val ASSERT = "wollok.lib.assert"
+	public static val ASSERT_WKO = "assert"
+	public static val ASSERT = "wollok.lib." + ASSERT_WKO
 	public static val ERROR = "wollok.lib.error"
 	public static val GAME = "wollok.game.game"
 	public static val KEYBOARD = "wollok.game.keyboard"
