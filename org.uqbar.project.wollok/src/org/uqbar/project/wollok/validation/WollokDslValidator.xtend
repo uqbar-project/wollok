@@ -969,8 +969,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(WARN)
 	@CheckGroup(WollokCheckGroup.POTENTIAL_DESIGN_PROBLEM)
 	def testShouldSendOneAssertMessage(WTest test) {
-		if (!test.elements.empty && !test.elements.exists [ sendsMessageToAssert ])
-			report(WollokDslValidator_TEST_SHOULD_HAVE_AT_LEAST_ONE_ASSERT, test, WTEST__ELEMENTS)
+		if (!test.elements.empty && !test.elements.exists [ sendsMessageToAssert(classFinder) ])
+			report(WollokDslValidator_TEST_SHOULD_HAVE_AT_LEAST_ONE_ASSERT, test, WTEST__NAME)
 	}
 	
 	@Check

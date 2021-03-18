@@ -3,9 +3,11 @@
 test "solitary number" {
 	// XPECT type at x --> Number
 	var x = 1
+	assert.that(true)
 }
 
 test "solitary string" {
 	// XPECT type at x --> String
 	var x = ""
+	assert.that(true)
 }
