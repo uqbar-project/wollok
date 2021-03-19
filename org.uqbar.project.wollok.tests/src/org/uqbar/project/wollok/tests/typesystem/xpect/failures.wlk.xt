@@ -1,0 +1,44 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+object pepita {
+	const hola = "hola"
+	const dos = "2"
+	const golondrinas = []
+
+	// XPECT warnings --> "Type system: expected <<Number>> but found <<String>>" at "hola"
+	method multiplicacion() = 2 * hola
+	
+	// XPECT warnings --> "Type system: expected <<Number>> but found <<Boolean>>" at "true"
+	method otraMultiplicacion() = 2 * true
+	
+	// XPECT warnings --> "String does not understand *( 2)" at "dos * 2"
+	method multiplicacion3() = dos * 2
+
+	// XPECT warnings --> "Type system: Infinite recursive type" at "c"
+	method infinite_closure_type(c) = [c].filter(c)
+
+	// XPECT warnings --> "Type system: Infinite recursive type" at "c"
+	method infinite_list_type_by_parameter(c) = c.contains(c)
+	
+	method infinity_list_type_by_assignment() {
+		var l = [] 
+		// XPECT warnings --> "Type system: Infinite recursive type" at "l.flatten()"
+		l = l.flatten()
+	}
+	
+	// FIXME: ADD ERROR ONLY TO MESSAGE, NOT TO VARIABLE
+	// FIXME: DISCARD MAX TYPES FROM MESSAGES CHAIN
+	method infinity_list_type_by_message_inference() {
+		// XPECT! warnings --> "Type system: Infinite recursive type" at "l"
+		var l = [] 
+		
+		// XPECT warnings --> "Type system: Infinite recursive type" at "l.flatten()"
+		l = l.flatten()
+		
+		// XPECT warnings --> "Range does not understand flatten()" at "l.flatten()"
+		return l.flatten().sum()
+	}
+	
+	// XPECT warnings --> "Type system: Infinite recursive type" at "golondrinas.map{g => g.infinity_list_type_by_mapping()}"
+	method infinity_list_type_by_mapping() = golondrinas.map{g => g.infinity_list_type_by_mapping()} 
+}

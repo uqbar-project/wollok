@@ -121,7 +121,8 @@ class UnifyVariables extends AbstractInferenceStrategy {
 		}
 	}
 	
-	def dispatch doUnifyWith(GenericTypeInfo t1, GenericTypeInfo t2) {		
+	def dispatch doUnifyWith(GenericTypeInfo t1, GenericTypeInfo t2) {
+		t1.validateRecursiveType(t2)
 		t1.minTypes = minTypesUnion(t1, t2)
 		t1.joinMaxTypes(t2.maximalConcreteTypes)
 		t1.messages.addAll(t2.messages)

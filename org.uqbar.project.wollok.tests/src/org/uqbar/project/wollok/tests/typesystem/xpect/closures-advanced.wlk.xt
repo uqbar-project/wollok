@@ -1,9 +1,25 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
 
 object advancedClosures {
-	// XPECT methodType at next --> (Number) => Number
-	method next(n) {
+	// XPECT methodType at param_type --> (Number) => Number
+	method param_type(n) {
 		return { a => a + 1 }.apply(n)
+	}
+	
+	// XPECT methodType at throws_error_closure --> () => Number
+	method throws_error_closure() {
+		return [1,2,3].findOrElse(
+					{ n => n.even()  }, 
+					{ throw new Exception(message = "MESSAGE") }
+				)
+	}
+	
+	// XPECT methodType at throws_error_closure_by_message --> () => Number
+	method throws_error_closure_by_message() {
+		return [1,2,3].findOrElse(
+					{ n => n.even()  }, 
+					{ self.error("MESSAGE") }
+				)
 	}
 }
 

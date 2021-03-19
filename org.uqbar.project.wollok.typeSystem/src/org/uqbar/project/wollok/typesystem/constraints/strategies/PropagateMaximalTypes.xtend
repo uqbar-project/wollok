@@ -25,6 +25,7 @@ class PropagateMaximalTypes extends SimpleTypeInferenceStrategy {
 	def void propagateMaxTypes(GenericTypeInfo it, TypeVariable user) {
 		users.map[subtypes].flatten.reject[hasErrors].forEach [ subtype |
 			log.debug('''  Propagating maxTypes «maximalConcreteTypes» from: «user» to «subtype»''')
+			//TODO: Use handlingOffensesDo, maybe there is no offender to select
 			subtype.setMaximalConcreteTypes(maximalConcreteTypes, selectOffenderVariable(subtype, user))
 			changed = true
 		]

@@ -151,6 +151,7 @@ class GenericTypeInfo extends TypeInfo {
 			validateCompatibleMinType(type, offender)
 		}
 		validateMessages(type)
+		type.doValidateRecursiveType(users)
 
 		minTypes.put(type, Pending)
 		Pending

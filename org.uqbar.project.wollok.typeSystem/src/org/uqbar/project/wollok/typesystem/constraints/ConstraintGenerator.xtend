@@ -93,6 +93,13 @@ class ConstraintGenerator {
 		typeSystem.allTypes.add(classType)
 	}
 
+	def dispatch void addGlobals(WVariableDeclaration it) {
+		if (global) {
+			variable.newTypeVariable.beNonVoid
+			newTypeVariable.beVoid
+		}
+	}
+
 	// ************************************************************************
 	// ** Second pass / whole constraint generation
 	// ************************************************************************
@@ -121,7 +128,7 @@ class ConstraintGenerator {
 		// TODO Process supertype information: mixins
 		parentParameters?.arguments?.forEach[generateVariables]
 		members.forEach[generateVariables]
-		if (parentParameters !== null) objectParentConstraintsGenerator.add(it)
+		if(parentParameters !== null) objectParentConstraintsGenerator.add(it)
 	}
 
 	def dispatch void generate(WClass it) {
@@ -135,9 +142,9 @@ class ConstraintGenerator {
 		members.forEach[generateVariables]
 		typeSystem.allTypes.add(objectLiteralType)
 		newTypeVariable.beSealed(objectLiteralType)
-		if (parentParameters !== null) objectParentConstraintsGenerator.add(it)
+		if(parentParameters !== null) objectParentConstraintsGenerator.add(it)
 	}
-	
+
 	def dispatch void generate(WSuite it) {
 		members.forEach[generateVariables]
 		tests.forEach[generateVariables]
@@ -192,7 +199,7 @@ class ConstraintGenerator {
 	def dispatch void generate(WParameter it) {
 		newTypeVariable.beNonVoid
 	}
-	
+
 	def dispatch void generate(WTest it) {
 		elements.forEach[generateVariables]
 	}
@@ -246,19 +253,21 @@ class ConstraintGenerator {
 		initialValue.generateVariables
 		initializerConstraintsGenerator.add(it)
 	}
-	
+
 	// ************************************************************************
 	// ** Variables
 	// ************************************************************************
 	def dispatch void generate(WVariableDeclaration it) {
-		variable.newTypeVariable.beNonVoid
+		if (!global) {			
+			variable.newTypeVariable.beNonVoid
+			newTypeVariable.beVoid
+		}
 
 		if (right !== null) {
 			right.generateVariables
 			variable.beSupertypeOf(right)
 		}
 
-		newTypeVariable.beVoid
 	}
 
 	def dispatch void generate(WAssignment it) {
@@ -294,7 +303,9 @@ class ConstraintGenerator {
 
 	def dispatch void generate(WThrow it) {
 		exception.generateVariables
-		newTypeVariable.beVoid
+		// Now only generate ANY variable. 
+		// Maybe we'll want another kind of variable for throwable types.
+		newTypeVariable
 	}
 
 	def dispatch void generate(WTry it) {
@@ -376,7 +387,7 @@ class ConstraintGenerator {
 		memberCallArguments.forEach[generateVariables]
 		superInvocationConstraintsGenerator.add(it)
 	}
-	
+
 	// ************************************************************************
 	// ** Method overriding
 	// ************************************************************************
@@ -402,7 +413,7 @@ class ConstraintGenerator {
 	def dispatch WollokType asWollokType(WClass wClass) {
 		classType(wClass)
 	}
-	
+
 	def dispatch WollokType asWollokType(WSuite suite) {
 		suiteType(suite)
 	}
