@@ -357,6 +357,15 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		]
 	}
 
+	def newInstanceWithMixins(WConstructorCall call) {
+		val container = new MixedMethodContainer(call.classRef, call.mixins)
+		new WollokObject(interpreter, container) => [ wo |
+			// mixins first
+			call.mixins.forEach[addMembersTo(wo)]
+			call.classRef.addInheritsMembers(wo)
+		]		
+	}
+
 	def newInstance(String classFQN, WollokObject... arguments) {
 		newInstance(classFinder.searchClass(classFQN, interpreter.rootContext), arguments)
 	}
