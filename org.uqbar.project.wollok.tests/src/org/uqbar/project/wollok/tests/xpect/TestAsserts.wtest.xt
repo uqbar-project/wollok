@@ -1,0 +1,118 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+import wollok.lib.assert
+
+// XPECT warnings --> "Tests must send at least one message to assert object" at ""testWithBinaryOperation""
+test "testWithBinaryOperation" {
+	1 + 1
+}
+
+test "okTest" {
+	assert.equals(1, 1.0)
+}
+
+// XPECT warnings --> "Tests must send at least one message to assert object" at ""testForVariable""
+test "testForVariable" {
+	assert
+}
+
+// XPECT warnings --> "Tests must send at least one message to assert object" at ""testForBinaryOperationForAssert""
+test "testForBinaryOperationForAssert" {
+	assert + 1
+}
+
+test "testOkTryAndCatchWithAssert" {
+	try {
+		assert.equals(1, 1)
+	} catch e : Exception {
+		assert.equals(2, 2)
+	}
+}
+
+test "testOkThenAlwaysWithAssert" {
+	var a = 0
+	try {
+		a = 1
+	} catch e : Exception {
+		a = 2
+	} then always {
+		assert.equals(1, a)
+	}
+}
+
+test "testOkTryCatchWithAssertAndThenAlwaysWithoutAssert" {
+	try {
+		assert.equals(2, 2)
+	} catch e : Exception {
+		assert.equals(1, 1)
+	} then always {
+		
+	}
+}
+
+// XPECT warnings --> "Tests must send at least one message to assert object" at ""testNotOkIfWithAssertOnlyInThen""
+test "testNotOkIfWithAssertOnlyInThen" {
+	const a = 1
+	if (a > 0) assert.equals(a, 1)
+}
+
+// XPECT warnings --> "Tests must send at least one message to assert object" at ""testNotOkIfWithAssertOnlyInElse""
+test "testNotOkIfWithAssertOnlyInElse" {
+	var a = 1
+	if (a > 0) { a = a + 1 } else assert.equals(a, 1)
+}
+
+// XPECT warnings --> "Tests must send at least one message to assert object" at ""testTryCatchWithoutAssert""
+test "testTryCatchWithoutAssert" {
+	try {
+		1 / 0
+	} catch e : Exception {
+		1 + 1
+	}
+}
+
+test "testCatchWithoutAssert" {
+	try {
+		1 / 0
+	} catch e : Exception {
+		assert.equals(1, 1)
+		1 + 1
+	}
+}
+
+test "testTryWithoutAssert" {
+	try {
+		assert.equals(1, 1)
+		1 / 0
+	} catch e : Exception {
+		1 + 1
+	}
+}
+
+// XPECT warnings --> "Tests must send at least one message to assert object" at ""testTryCatchThenAlwaysWithoutAssert""
+test "testTryCatchThenAlwaysWithoutAssert" {
+	var a = 0
+	try {
+		a = 1
+	} catch e : Exception {
+		a = 2
+	} then always {
+		a = 3
+	}
+}
+
+test "testOkIfWithAssert" {
+	const a = 1
+	if (a > 0) assert.equals(a, 1) else assert.equals(2, 2)
+}
+
+// XPECT warnings --> "Tests must send at least one message to assert object" at ""testElseWithoutAssert""
+test "testElseWithoutAssert" {
+	const a = 1
+	if (a > 0) assert.equals(a, 1)
+}
+
+// XPECT warnings --> "Tests must send at least one message to assert object" at ""testIfWithoutAssert""
+test "testIfWithoutAssert" {
+	var a = 1
+	if (a > 0) a = 2 else assert.equals(a, 1)
+}

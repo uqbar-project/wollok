@@ -4,8 +4,6 @@ import com.google.inject.Singleton
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.naming.DefaultDeclarativeQualifiedNameProvider
 import org.eclipse.xtext.naming.QualifiedName
-import org.uqbar.project.wollok.WollokConstants
-import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 
@@ -35,11 +33,6 @@ class WollokQualifiedNameProvider extends DefaultDeclarativeQualifiedNameProvide
 	
 	def qualifiedName(WFile ele) {
 		QualifiedName.create(ele.eResource.implicitPackageForImport.split("\\."))		
-	}
-	
-	def qualifiedName(WConstructor c) {
-		val size = if (c.parameters !== null) c.parameters.size else 0
-		QualifiedName.create(WollokConstants.CONSTRUCTOR + size)
 	}
 	
 }

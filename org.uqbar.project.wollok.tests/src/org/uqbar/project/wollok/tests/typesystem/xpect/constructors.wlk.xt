@@ -1,18 +1,21 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
 
 object constructorTests {
-	// XPECT methodType at m3 --> (Number, Dog) => C
-	method m3(n, dog) = new C(n, dog)
+	// XPECT! methodType at m3 --> (Number, Dog) => C
+	// Failing
+	method m3(n, dog) = new C(n = n, dog = dog)
 
-	// XPECT methodType at m4 --> (Dog) => D
-	method m4(dog) = new D(2, dog)
+	// XPECT! methodType at m4 --> (Dog) => D
+	// Failing
+	method m4(dog) = new D(n = 2, dog = dog)
 }
 
 class C {
-	const number
+	var number
+	const dog
 
-	constructor(n, dog) {
-		number = n * 2
+	method jugar() {
+		number = number * 2
 		dog.bark()
 	}
 }

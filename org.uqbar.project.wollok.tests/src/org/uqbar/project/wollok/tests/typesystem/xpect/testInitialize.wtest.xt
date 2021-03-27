@@ -1,12 +1,12 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
 
-describe "with fixture" {	
+describe "with initialize method" {	
 	// XPECT type at n --> Number
 	var n
 	// XPECT type at b --> Boolean
 	var b
 	
-	fixture {
+	method initialize() {
 		b = true
 	}
 	

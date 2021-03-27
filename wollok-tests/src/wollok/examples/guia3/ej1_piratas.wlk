@@ -3,10 +3,6 @@ class Pirata {
 	var dinero
 	var nivelEbriedad
 	
-	constructor(itemsPirata) {
-		items = itemsPirata
-	}
-	
 	method getItems() {
 		return items
 	}

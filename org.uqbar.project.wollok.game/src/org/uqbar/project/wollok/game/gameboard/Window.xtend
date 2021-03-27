@@ -61,6 +61,10 @@ class Window {
 	def doDraw(Texture texture, Position it, ImageSize size) {
 		batch.draw(texture, xinPixels, yinPixels, size.width(texture.width), size.height(texture.height))
 	}
+
+	def writeText(String text, Position position, Color color) {
+		write(text, color, position.xinPixels - 80, position.yinPixels + TEXT_SIZE)
+	}
 	
 	def writeAttributes(String text, Position position, Color color) {
 		val lines = text.split("[\n|\r]").length

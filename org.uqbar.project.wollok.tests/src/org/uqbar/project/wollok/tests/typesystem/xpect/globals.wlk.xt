@@ -1,0 +1,9 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+object o {
+	// XPECT type at xs --> List<Number>
+	const property xs = numbers
+}
+
+// XPECT type at numbers --> List<Number>
+const numbers = [1,2,3]

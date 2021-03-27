@@ -35,7 +35,7 @@ object objectTests {
 	// XPECT methodType at classNameObject --> (Object) => String
 	method classNameObject(o) = o.className()
 	
-	// XPECT methodType at errorObject --> (Object, String) => Void
+	// XPECT methodType at errorObject --> (Object, String) => Any
 	method errorObject(o, message) = o.error(message)
 	
 	// XPECT methodType at messageNotUnderstood --> (Object, String, List<Object>) => Void

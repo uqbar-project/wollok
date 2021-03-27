@@ -61,10 +61,10 @@ const pepita = object      {var energia             =
 	def void testInheritingPositionalUnnamedObjectDefinition() {
 		assertFormatting(
 		'''
-		class A { var _n = 0 constructor(_n) { n = _n } }
+		class A { var _n = 0              }
         program prueba {    
         	
-const pepita = object     inherits A( 
+const pepita = object     inherits A(n= 
 
 
 
@@ -83,14 +83,10 @@ const pepita = object     inherits A(
 		
 			var _n = 0
 		
-			constructor(_n) {
-				n = _n
-			}
-		
 		}
 		
 		program prueba {
-			const pepita = object inherits A(5) {
+			const pepita = object inherits A(n = 5) {
 				var energia = 0
 				method volar() {
 					energia++
@@ -413,30 +409,7 @@ inherits
 	}
 
 	@Test
-	def void testClassDefinitionWithConstructorOnly() {
-		assertFormatting(
-			'''
-          class          Ave {  
-          
-          
-          
-
-              constructor(param1) {}}   
-		''',
-			'''
-			class Ave {
-			
-				constructor(param1) {
-				}
-			
-			}
-			
-			'''
-		)
-	}
-	
-	@Test
-	def void testClassDefinitionWithConstructorAndVar() {
+	def void testClassDefinitionWithVar() {
 		assertFormatting(
 			'''
           class          Ave {  
@@ -444,16 +417,12 @@ inherits
           
           var energia
 
-              constructor(param1) {energia             = 0 }}   
+                                                                     }   
 		''',
 			'''
 			class Ave {
 			
 				var energia
-			
-				constructor(param1) {
-					energia = 0
-				}
 			
 			}
 			
@@ -535,29 +504,6 @@ inherits
 		)
 	}
 
-	@Test
-	def void testVariableInitializedBeforeConstructor() {
-		assertFormatting(
-		'''
-		class Ave {
-			var amigas = new Set()
-			constructor() {}
-		}
-		''',
-		'''
-		class Ave {
-		
-			var amigas = new Set()
-		
-			constructor() {
-			}
-
-		}
-		
-		'''
-		)
-	}
-			
 	@Test
 	def testObjectInheritingPosicionalParametersForWKO() {
 		assertFormatting('''
@@ -718,11 +664,6 @@ class Presentacion {
 	const locacion
 	var participantes = []
 
-	constructor(_fecha, _locacion) {
-		fecha = _fecha
-		locacion = _locacion
-	}
-
 	method fecha() = fecha
 
 	method locacion() = locacion
@@ -768,11 +709,6 @@ class Presentacion {
 				const fecha
 				const locacion
 				var participantes = []
-			
-				constructor(_fecha, _locacion) {
-					fecha = _fecha
-					locacion = _locacion
-				}
 			
 				method fecha() = fecha
 			

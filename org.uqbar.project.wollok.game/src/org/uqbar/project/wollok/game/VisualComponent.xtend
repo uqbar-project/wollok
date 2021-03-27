@@ -10,6 +10,7 @@ import org.uqbar.project.wollok.game.gameboard.Window
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 import static extension org.uqbar.project.wollok.game.helpers.WollokConventionExtensions.*
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 @Accessors
 class VisualComponent {
@@ -18,26 +19,26 @@ class VisualComponent {
 
 	List<BalloonMessage> balloonMessages = newArrayList
 	boolean showAttributes = false
+	
+	boolean hasText = false
+	boolean hasTextColor = false
+	boolean hasImage = false
 
 	WollokObject wObject
-	WollokObject wPosition
 
 	new(WollokObject object) {
 		wObject = object
-		wObject?.position // Force evaluate position when is added
+		hasText = wObject.understands(TEXT_CONVENTION)
+		hasTextColor = wObject.understands(TEXT_COLOR_CONVENTION)
+		hasImage = wObject.understands(IMAGE_CONVENTION)
 	}
-
-	new(WollokObject object, WollokObject position) {
-		wObject = object
-		wPosition = position
-	}
-
+	
 	def getAttributes() {
 		wObject.printableVariables.filter[value !== null].map[key + ":" + value.toString].toList
 	}
 
 	def Image getImage() {
-		new Image(wObject.image)
+		hasImage ? new Image(wObject.image) : null
 	}
 
 	def Position getPosition() {
@@ -45,26 +46,34 @@ class VisualComponent {
 	}
 
 	def void setPosition(Position position) {
-		if (wPosition === null)
-			wObject.position = objectPosition.copyFrom(position)
-		else
-			wPosition = objectPosition.copyFrom(position)
+		wObject.position = objectPosition.copyFrom(position)
 	}
 
 	def getObjectPosition() {
-		new WPosition(wPosition ?: wObject.position)
+		new WPosition(wObject.position)
 	}
 
 	def void draw(Window window) {
 		window => [
 			drawMe
+			drawText
 			drawAttributesIfNecesary
 			drawBalloonIfNecesary
 		]
 	}
 
 	def drawMe(Window window) {
-		window.draw(image, position)
+		if(hasImage) {
+			window.draw(image, position)
+		}
+	}
+	
+	def drawText(Window window) {
+		if(hasText) {
+			val text = wObject.call(TEXT_CONVENTION).wollokToJava(String) as String
+			val color = hasTextColor ? Color.valueOf(wObject.call(TEXT_COLOR_CONVENTION).wollokToJava(String) as String) : DEFAULT_TEXT_COLOR  
+		    window.writeText(text,  getPosition(), color)	  
+		}	
 	}
 
 	def drawAttributesIfNecesary(Window window) {
@@ -146,5 +155,23 @@ class VisualComponent {
 	def void right() {
 		if (position.x < Gameboard.instance.width - 1)
 			setPosition(getPosition.right())
+	}
+}
+
+class VisualComponentWithPosition extends VisualComponent {
+	WollokObject wPosition
+	
+
+	new(WollokObject object, WollokObject position) {
+		super(object)
+		wPosition = position
+	}
+	
+	override void setPosition(Position position) {
+		wPosition = objectPosition.copyFrom(position)
+	}
+	
+	override getObjectPosition() {
+		new WPosition(wPosition)
 	}
 }

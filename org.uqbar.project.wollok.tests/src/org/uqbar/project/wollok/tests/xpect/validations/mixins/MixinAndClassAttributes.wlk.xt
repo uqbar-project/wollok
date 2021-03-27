@@ -16,5 +16,31 @@ class MundoFeliz inherits Mundo {
 	var property c = true
 }
 
-// XPECT errors --> "There are instance variables with the same name in the hierarchy: [a]" at "new MundoFeliz() with MundoCerrado"
-const alf = new MundoFeliz() with MundoCerrado
+// XPECT errors --> "There are attributes with the same name in the hierarchy: [a]" at "new MundoFeliz() with MundoCerrado"
+const mundoHippie = new MundoFeliz() with MundoCerrado
+
+class C {
+  const w     // OK
+  const x = 5 // OK
+  var y       // OK
+  var z = 9   // OK
+  
+  method calculate() {
+  	y = 1
+  	z = z + 10
+  }
+  method result() = w + x + y + z
+}
+
+mixin M {
+  const w     // OK
+  const x = 5 // OK
+  var y       // OK
+  var z = 9   // OK
+
+  method calculate() {
+  	y = 1
+  	z = z + 10
+  }
+  method result() = w + x + y + z
+}

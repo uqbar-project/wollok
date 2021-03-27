@@ -228,7 +228,6 @@ class ShowOutdatedAction extends ControlContribution {
 	WollokReplConsoleActionsParticipant parent
 	String projectName
 	boolean stopped = false
-	int initialX = 0
 
 	static int WIDTH = 200
 
@@ -242,7 +241,6 @@ class ShowOutdatedAction extends ControlContribution {
 		label = new CLabel(parent, SWT.LEFT) => [
 			background = new Color(Display.current, 240, 241, 240)
 		]
-		this.initialX = this.label.bounds.x
 		configureLabel
 		label
 	}
