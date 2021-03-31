@@ -1,0 +1,18 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+class A {
+	var property a = 1
+	var property b = 2
+	
+	// XPECT warnings --> "This method is returning a block, consider removing the '=' before curly braces." at "method1"
+	method method1() = { return 4 }
+
+	// XPECT warnings --> "This method is returning a block, consider removing the '=' before curly braces." at "method2"
+	method method2() = { 
+		return a + b
+	}
+
+	method method3() = { c => 
+		return a + b + c
+	}
+}

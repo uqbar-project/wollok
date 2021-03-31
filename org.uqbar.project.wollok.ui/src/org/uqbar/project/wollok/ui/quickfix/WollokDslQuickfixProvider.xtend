@@ -136,6 +136,16 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 
+	@Fix(WollokDslValidator.METHOD_RETURNING_BLOCK)
+	def methodReturningBlock(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_remove_equals_before_method_name,
+			Messages.WollokDslQuickFixProvider_remove_equals_before_method_description, null) [ e, it |
+			val expressionBlock = (e as WMethodDeclaration).expression
+			val position = expressionBlock.node?.previousSibling.offset
+			xtextDocument.replace(position, expressionBlock.before - position, "")
+		]
+	}
+
 	@Fix(WollokDslValidator.MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR_CALL)
 	def addMissingAttributesInConstructorCall(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_add_missing_initializations_name,

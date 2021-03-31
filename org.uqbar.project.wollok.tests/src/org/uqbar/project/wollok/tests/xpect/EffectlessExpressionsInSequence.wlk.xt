@@ -18,8 +18,13 @@ object testObject {
 		return v
 	}
 	
-	// XPECT warnings --> "This expression does not make sense in a sequence, as it does not produce any effects." at "helper" 
+	/* XPECT warnings ---
+		"This expression does not make sense in a sequence, as it does not produce any effects." at "helper"
+		"This method is returning a block, consider removing the '=' before curly braces." at "invalidBlock"
+	--- */ 
 	method invalidBlock() = { helper(100) }
 
-	method validBlock() = { const a = helper; [a] }
+	method validBlock() { 
+		return { const a = helper; [a] }
+	}
 }
