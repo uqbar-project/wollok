@@ -106,7 +106,7 @@ class QuickFixUtils {
 	def static nextSiblingCode(EObject element) {
 		element.node?.nextSibling?.text?.trim	
 	}
-	
+
 	def static previousSiblingCode(EObject element) {
 		element.node?.previousSibling?.text?.trim	
 	}

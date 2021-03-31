@@ -149,6 +149,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val WARNING_UNUSED_PARAMETER = "WARNING_UNUSED_PARAMETER"
 	public static val WARNING_VARIABLE_SHOULD_BE_CONST = "WARNING_VARIABLE_SHOULD_BE_CONST"
 	public static val GLOBAL_VARIABLE_NOT_ALLOWED = "GLOBAL_VARIABLE_NOT_ALLOWED"
+	public static val METHOD_RETURNING_BLOCK = "METHOD_RETURNING_BLOCK"
 
 	def validatorExtensions() {
 		if (wollokValidatorExtensions !== null)
@@ -457,6 +458,15 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		}
 	}
 
+	@Check
+	@DefaultSeverity(WARN)
+	@NotConfigurable
+	def possiblyReturningBlock(WMethodDeclaration m) {
+		if (m.expressionReturns && m.expression.returnExpressionInMethodIsBlock) {
+			m.report(WollokDslValidator_METHOD_IS_RETURNING_BLOCK, METHOD_RETURNING_BLOCK)
+		}
+	}
+	
 	@Check
 	@DefaultSeverity(WARN)
 	@CheckGroup(WollokCheckGroup.EXPLICIT_INTENTION)

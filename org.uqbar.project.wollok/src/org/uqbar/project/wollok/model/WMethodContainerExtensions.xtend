@@ -853,4 +853,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch shouldCheckInitialization(WMixin it) { false }
 
 	def static isInitializer(WMethodDeclaration m) { m.name.equals(INITIALIZE_METHOD) }
+
+	def static dispatch boolean returnExpressionInMethodIsBlock(WExpression e) { false	}
+	def static dispatch boolean returnExpressionInMethodIsBlock(WClosure block) { block.parameters.isEmpty } 
 }
