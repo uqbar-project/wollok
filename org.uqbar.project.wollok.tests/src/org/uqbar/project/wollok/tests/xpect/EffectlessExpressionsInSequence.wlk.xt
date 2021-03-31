@@ -24,4 +24,7 @@ object testObject {
 	--- */ 
 	method invalidBlock() = { helper(100) }
 
+	method validBlock() { 
+		return { const a = helper; [a] }
+	}
 }

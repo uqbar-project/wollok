@@ -462,7 +462,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(WARN)
 	@NotConfigurable
 	def possiblyReturningBlock(WMethodDeclaration m) {
-		if (m.expressionReturns && m.expression.returnExpressionInMethodIsBlock) {
+		if (m.expressionReturns && m.expression.isClosureWithoutParams) {
 			m.report(WollokDslValidator_METHOD_IS_RETURNING_BLOCK, METHOD_RETURNING_BLOCK)
 		}
 	}
