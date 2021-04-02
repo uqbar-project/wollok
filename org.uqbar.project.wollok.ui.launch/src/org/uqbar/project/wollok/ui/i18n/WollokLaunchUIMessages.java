@@ -53,7 +53,8 @@ public class WollokLaunchUIMessages extends NLS {
 	public static String WollokRepl_OUTDATED_TOOLTIP;
 	public static String WollokRepl_STOPPED_TOOLTIP;
 	public static String WollokRepl_OUTDATED_WARNING_MESSAGE_IN_REPL;
-
+	public static String WollokRepl_REPL_RUNNING_WITHOUT_FILE;
+	
 	// ****************************
 	// ** REPL Console
 	// ****************************
