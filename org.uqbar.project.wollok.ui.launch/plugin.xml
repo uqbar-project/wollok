@@ -405,7 +405,7 @@
                id="org.eclipse.debug.ui.launchActionSet">
             <command
                   commandId="org.uqbar.project.wollok.ui.launch.launchReplWithoutFile"
-                  icon="platform:/plugin/org.eclipse.jdt.debug.ui/icons/full/elcl16/resume_co.gif"
+                  icon="icons/replConsoleWithoutFile.png"
                   label="%wollok.launch.replWithoutFile"
                   style="push"
                   tooltip="%wollok.launch.replWithoutFile.desc">
