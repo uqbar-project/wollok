@@ -84,9 +84,8 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		c.regionFor.keyword(WollokConstants.CLASS).prepend [ noSpace ]
 		c.regionFor.keyword(WollokConstants.CLASS).append [ oneSpace ]
 		c.regionFor.keyword(WollokConstants.INHERITS).surround [ oneSpace ]
-		c.regionFor.feature(WCLASS__PARENT).surround [ oneSpace ]
-		c.regionFor.keyword(WollokConstants.MIXED_WITH).surround [ oneSpace ]
-		c.regionFor.feature(WCLASS__MIXINS).surround [ oneSpace ]
+		c.regionFor.keyword(WollokConstants.MIXED_AND).surround [ oneSpace ]
+		c.regionFor.feature(WCLASS__PARENTS).surround [ oneSpace ]
 		c.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ setNewLines(2) ].prepend [ oneSpace ]
 		c.interior [ 
 			indent
@@ -127,7 +126,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		o.regionFor.keyword(WollokConstants.WKO).append [ oneSpace ]
 		o.regionFor.keyword(WollokConstants.INHERITS).surround [ oneSpace ]
 		o.parentParameters.format
-		o.regionFor.feature(WCLASS__PARENT).surround [ oneSpace ]
+		o.regionFor.feature(WCLASS__PARENTS).surround [ oneSpace ]
 		o.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ setNewLines(2) ].prepend [ oneSpace ]
 		o.interior [ 
 			indent

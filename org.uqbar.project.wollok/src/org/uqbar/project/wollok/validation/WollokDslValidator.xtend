@@ -37,6 +37,7 @@ import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WMixin
 import org.uqbar.project.wollok.wollokDsl.WNamed
+import org.uqbar.project.wollok.wollokDsl.WNamedArgumentsList
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
@@ -69,6 +70,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WAncestorReference
 
 /**
  * Custom validation rules.
@@ -252,19 +254,19 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	@NotConfigurable
 	def checkUnexistentNamedParametersInheritingConstructor(WNamedObject it) {
-		if (parent === null || parentParameters === null || !parentParameters.hasNamedParameters) return;
-		parent.validateNamedParameters(parentParameters)
+		if (!hasParentParameters) return;
+		parent.validateNamedParameters((parent as WAncestorReference).parentParameters)
 	}
 
 	@Check
 	@DefaultSeverity(ERROR)
 	@NotConfigurable
 	def checkUnexistentNamedParametersInheritingConstructor(WObjectLiteral it) {
-		if (parent === null || parentParameters === null || !parentParameters.hasNamedParameters) return;
-		parent.validateNamedParameters(parentParameters)
+		if (parentParameters === null) return;
+		parent.validateNamedParameters((parent as WAncestorReference).parentParameters)
 	}
 
-	def void validateNamedParameters(WClass clazz, WArgumentList parameterList) {
+	def void validateNamedParameters(WClass clazz, WNamedArgumentsList parameterList) {
 		validateNamedParameters(clazz, parameterList, #[])
 	}
 
@@ -439,7 +441,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@NotConfigurable	
 	def cyclicHierarchy(WMethodContainer it) {
 		if (declaringContext.hasCyclicHierarchy) {
-			report(WollokDslValidator_CYCLIC_HIERARCHY, it, WCLASS__PARENT)
+			report(WollokDslValidator_CYCLIC_HIERARCHY, it, WCLASS__PARENTS)
 		}
 	}
 

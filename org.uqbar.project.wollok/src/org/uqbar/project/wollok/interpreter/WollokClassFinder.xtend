@@ -86,7 +86,7 @@ class WollokClassFinder {
 	// ** Utilities
 	// ************************************************************************
 	protected def getClassScope(Resource resource, Predicate<IEObjectDescription> predicate) {
-		scopeProvider.getScope(resource, WollokDslPackage.Literals.WCLASS__PARENT, predicate)
+		scopeProvider.getScope(resource, WollokDslPackage.Literals.WCLASS__PARENTS, predicate)
 	}
 
 	protected def getObjectScope(Resource resource, Predicate<IEObjectDescription> predicate) {

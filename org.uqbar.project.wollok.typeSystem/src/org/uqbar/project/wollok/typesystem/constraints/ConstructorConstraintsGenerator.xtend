@@ -5,7 +5,7 @@ import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
-import org.uqbar.project.wollok.wollokDsl.WExpression
+import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
@@ -20,7 +20,7 @@ abstract class ConstructorConstraintsGenerator<T extends EObject> extends CrossR
 		super(registry)
 	}
 	
-	def generate(EObject it, WClass clazz, EList<WExpression> values) {
+	def generate(EObject it, WClass clazz, EList<WInitializer> initializers) {
 		// Wollok 3.0.0 removed constructor idea, so constructor is null
 		// TODO: We should consider also argumentList.initializers
 	}
@@ -33,7 +33,7 @@ class ConstructorCallConstraintsGenerator extends ConstructorConstraintsGenerato
 	}
 	
 	override generate(WConstructorCall it) {
-		generate(classRef, values)
+		generate(classRef, initializers)
 	}
 }
 
@@ -44,7 +44,10 @@ class ObjectParentConstraintsGenerator extends ConstructorConstraintsGenerator<W
 	}
 	
 	override generate(WMethodContainer it) {
-		generate(parent, parentParameters)
+		if (parent.hasParentParameters)
+			generate(parent, parent?.parentParameters)
+		else
+			generate(parent)
 	}
 	
 }

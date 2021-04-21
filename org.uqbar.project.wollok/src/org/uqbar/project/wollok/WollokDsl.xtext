@@ -56,10 +56,8 @@ WReferenciable: WParameter | {WVariable} | WNamedObject ;
 WObjectLiteral returns WExpression:
 	{WObjectLiteral}
 	=>'object'
-	('inherits' parent=[WClass|QualifiedName] 
-		(=> ( '(' parentParameters = WArgumentList ')'))?
-	)?
-	('mixed with' mixins+=[WMixin|QualifiedName] (('and'|',') mixins+=[WMixin|QualifiedName])*)?
+		('inherits' parents+=WAncestorReference)? 
+		('and' parents+=WAncestorReference)*
 	'{'
 		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*
@@ -330,27 +328,32 @@ WSetLiteral:
 	{WSetLiteral} '#{' (elements+=WExpression (',' elements+=WExpression )*)? '}';
 	
 WNamedObject:
+	{WNamedObject}
 	'object' name=ID 
-		('inherits' parent=[WClass|QualifiedName] 
-			(=> ( '(' parentParameters = WArgumentList ')'))?
-		)?
-		('mixed with' mixins+=[WMixin|QualifiedName] (('and'|',') mixins+=[WMixin|QualifiedName])*)?
+		('inherits' parents+=WAncestorReference)? 
+		('and' parents+=WAncestorReference)*
 	'{'
 		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*
 	'}'
 ;
 
-WCanExtendClass:
-	WClass | WNamedObject
+WAncestorReference:
+	{WAncestorReference}
+	ref=[WAncestor|QualifiedName] 
+		(=> ( '(' parentParameters = WNamedArgumentsList ')'))?
 ;
 
+WAncestor: 
+	WClass|WMixin
+;
 // CLASSES
 
 WClass:
-	'class' name=ID 
-		('inherits' parent=[WClass|QualifiedName])? 
-		('mixed with' mixins+=[WMixin|QualifiedName] (('and'|',') mixins+=[WMixin|QualifiedName])*)? 
+	{WClass}
+	'class' name=ID
+		('inherits' parents+=WAncestorReference)? 
+		('and' parents+=WAncestorReference)*
 	'{'
 		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*

@@ -19,6 +19,7 @@ import org.uqbar.project.wollok.wollokDsl.WSuite
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static org.uqbar.project.wollok.WollokConstants.*
 
 /**
  * Customizes the xtext linker in order to set
@@ -37,19 +38,20 @@ class WollokLinker extends LazyLinker {
 		super.installProxies(obj, producer, settingsToLink)
 
 		if (obj.shouldSetParent) {
-			syntheticLinkingSupport.createAndSetProxy(obj, obj.parentRef, 'Object')
+			syntheticLinkingSupport.createAndSetProxy(obj, obj.parentRef, ROOT_CLASS)
 		}
 	}
 	
-	
-	def dispatch shouldSetParent(WClass it) { parent === null && name != 'Object' } // this should check the FQN name !
+	def dispatch shouldSetParent(WClass it) { 
+		parent === null && !name.equals(ROOT_CLASS)
+	} // this should check the FQN name !
 	def dispatch shouldSetParent(WMixin obj) { false }
 	def dispatch shouldSetParent(WMethodContainer it) { parent === null }
 	def dispatch shouldSetParent(WSuite it) { false } 
 	def dispatch shouldSetParent(EObject obj) { false }
 
-	def dispatch EReference getParentRef(WClass wClass) { WollokDslPackage.Literals.WCLASS__PARENT }
-	def dispatch EReference getParentRef(WNamedObject wObject) { WollokDslPackage.Literals.WNAMED_OBJECT__PARENT }
-	def dispatch EReference getParentRef(WObjectLiteral wObject) { WollokDslPackage.Literals.WOBJECT_LITERAL__PARENT }
+	def dispatch EReference getParentRef(WClass wClass) { WollokDslPackage.Literals.WCLASS__PARENTS }
+	def dispatch EReference getParentRef(WNamedObject wObject) { WollokDslPackage.Literals.WNAMED_OBJECT__PARENTS }
+	def dispatch EReference getParentRef(WObjectLiteral wObject) { WollokDslPackage.Literals.WOBJECT_LITERAL__PARENTS }
 	def dispatch EReference getParentRef(EObject wObject) { null }
 }

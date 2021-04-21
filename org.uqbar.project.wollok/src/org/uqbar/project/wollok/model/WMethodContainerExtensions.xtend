@@ -54,6 +54,7 @@ import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.notNullAnd
+import org.uqbar.project.wollok.wollokDsl.WAncestorReference
 
 /**
  * Extension methods for WMethodContainers.
@@ -439,14 +440,16 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		}
 		if (l.contains(c)) {
 			return l
-			//throw new WollokRuntimeException('''Class «c.name» is in a cyclic hiearchy''');
+			//throw new WollokRuntimeException('''Class «c.name» is in a cyclic hierarchy''');
 		}
 		//
 		l.add(c)
 		return _parents(c.parent, l)
 	}
 
-	def dispatch static hasCyclicHierarchy(WClass c) { _hasCyclicHierarchy(c, newArrayList) }
+	def dispatch static hasCyclicHierarchy(WClass c) { 
+		_hasCyclicHierarchy(c, newArrayList)
+	}
 	def dispatch static hasCyclicHierarchy(EObject e) { false }
 	
 	def static boolean _hasCyclicHierarchy(WClass c, List<WClass> l) {
@@ -468,18 +471,35 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean inheritsFromObject(WObjectLiteral o) { o.parent.fqn.equals(OBJECT) }
 
 	def static dispatch WClass parent(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
-	def static dispatch WClass parent(WClass it) { parent }
-	def static dispatch WClass parent(WObjectLiteral it) { parent } // can we just reply with wollok.lang.Object class ?
-	def static dispatch WClass parent(WNamedObject it) { parent }
+	def static dispatch WClass parent(WClass it) {
+		if (parents.empty) return null
+		parents.last.ref as WClass
+	}
+	def static dispatch WClass parent(WObjectLiteral it) {
+		if (parents.empty) return null
+		parents.last.ref as WClass
+	} // can we just reply with wollok.lang.Object class ?
+	def static dispatch WClass parent(WNamedObject it) {
+		if (parents.empty) return null
+		parents.last.ref as WClass
+	}
 	def static dispatch WClass parent(MixedMethodContainer it) { clazz }
 	// not supported yet !
 	def static dispatch WClass parent(WMixin it) { null }
 	def static dispatch WClass parent(WSuite it) { null }
 
 	def static dispatch List<WMixin> mixins(WMethodContainer it) { throw new UnsupportedOperationException("shouldn't happen")  }
-	def static dispatch List<WMixin> mixins(WClass it) { mixins }
-	def static dispatch List<WMixin> mixins(WObjectLiteral it) { mixins } // can we just reply with wollok.lang.Object class ?
-	def static dispatch List<WMixin> mixins(WNamedObject it) { mixins }
+	def static dispatch List<WMixin> mixins(WClass it) {
+		parents.filter(WMixin).toList
+	}
+	
+	def static dispatch List<WMixin> mixins(WObjectLiteral it) {
+		parents.filter(WMixin).toList
+	}
+	
+	def static dispatch List<WMixin> mixins(WNamedObject it) {
+		parents.filter(WMixin).toList
+	}
 	def static dispatch List<WMixin> mixins(MixedMethodContainer it) { mixins }
 	def static dispatch List<WMixin> mixins(WMixin it) { Collections.EMPTY_LIST }
 	def static dispatch List<WMixin> mixins(WSuite it) { Collections.EMPTY_LIST }
@@ -809,40 +829,17 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		parent !== null && parent.isPropertyAllowed
 	}
 
-	def static dispatch hasParentParameterValues(WObjectLiteral l) {
-		l.parentParameters !== null && !l.parentParameters.values.empty
+	def static dispatch hasParentParameters(WObjectLiteral l) {
+		l.parentParameters !== null
 	}
 
-	def static dispatch hasParentParameterValues(WNamedObject wko) {
-		wko.parentParameters !== null && !wko.parentParameters.values.empty
-	}
-
-	def static dispatch hasParentParameterInitializers(WObjectLiteral l) {
-		l.parentParameters !== null && !l.parentParameters.initializers.empty
-	}
-
-	def static dispatch hasParentParameterInitializers(WNamedObject wko) {
-		wko.parentParameters !== null && !wko.parentParameters.initializers.empty
+	def static dispatch hasParentParameters(WNamedObject wko) {
+		wko.parentParameters !== null
 	}
 	
-	def static dispatch parentParameters(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen") }
-		
-	def static dispatch parentParameters(WNamedObject o) {
-		o.parentParameters.values
-	}
-
-	def static dispatch parentParameters(WObjectLiteral o) {
-		o.parentParameters.values
-	}
-	
-	def static parentParametersValues(WNamedObject o) {
-		if (o.parentParameters === null) return 0
-		o.parentParameters.values.size
-	}
-
-	def static parentParametersValues(WObjectLiteral o) {
-		if (o.parentParameters === null) return 0
-		o.parentParameters.values.size
+	def static parentParameters(WMethodContainer c) {
+		if (c.parent === null) return null
+		(c.parent as WAncestorReference).parentParameters.initializers
 	}
 
 	def static dispatch isCustom(WMethodContainer o) { !o.fqn.startsWith("wollok.") }

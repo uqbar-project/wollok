@@ -364,11 +364,11 @@ class WollokModelExtensions {
 	}
 
 	def static dispatch List<WVariableDeclaration> uninitializedNamedParameters(WNamedObject it) {
-		internalUninitializedNamedParameters(uninitializedReferences, parentParameters?.initializers?.argumentsNames ?: #[])
+		internalUninitializedNamedParameters(uninitializedReferences, parentParameters?.argumentsNames ?: #[])
 	}
 
 	def static dispatch List<WVariableDeclaration> uninitializedNamedParameters(WObjectLiteral it) {
-		internalUninitializedNamedParameters(uninitializedReferences, parentParameters?.initializers?.argumentsNames ?: #[])
+		internalUninitializedNamedParameters(uninitializedReferences, parentParameters?.argumentsNames ?: #[])
 	}
 
 	def static internalUninitializedNamedParameters(List<WVariableDeclaration> uninitializedReferences, List<String> namedParameters) {
@@ -600,7 +600,8 @@ class WollokModelExtensions {
 
 	// hack uses another grammar ereference to any
 	def static getScope(Import it, WollokGlobalScopeProvider scopeProvider) {
-		scopeProvider.getScope(eResource, WollokDslPackage.Literals.WCLASS__PARENT)
+		// FIXME: Ver si el getScope corresponde al último padre
+		scopeProvider.getScope(eResource, WollokDslPackage.Literals.WCLASS__PARENTS)
 	}
 
 	def static upTo(Import it, String segment) {
