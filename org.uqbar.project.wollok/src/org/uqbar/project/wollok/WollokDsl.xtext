@@ -317,21 +317,21 @@ WSetLiteral:
 	{WSetLiteral} '#{' (elements+=WExpression (',' elements+=WExpression )*)? '}';
 	
 WAncestorRef:
-	{WAncestorRef}
-	ref=(WClass|WMixin)
-		('(' parentParameters = WNamedArgumentsList ')')
+	(WClass|WMixin)
 ;
 
 WAncestor:
-	(WAncestorRef|WClass|WMixin)
+	{WAncestor}
+	ref=[WAncestorRef|QualifiedName]
+		('(' parentParameters = WNamedArgumentsList ')')
 ;
 
 // Named object
 WNamedObject:
 	{WNamedObject}
 	'object' name=ID 
-		('inherits' parents+=[WAncestor|QualifiedName])?
-		('and' parents+=[WAncestor|QualifiedName])*
+		('inherits' parents+=WAncestor)?
+		('and' parents+=WAncestor)*
 	'{'
 		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*
@@ -342,8 +342,8 @@ WNamedObject:
 WObjectLiteral returns WExpression:
 	{WObjectLiteral}
 	=>'object'
-		('inherits' parents+=[WAncestor|QualifiedName])?
-		('and' parents+=[WAncestor|QualifiedName])*
+		('inherits' parents+=WAncestor)?
+		('and' parents+=WAncestor)*
 	'{'
 		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*
@@ -354,8 +354,8 @@ WObjectLiteral returns WExpression:
 WClass:
 	{WClass}
 	'class' name=ID
-		('inherits' parents+=[WAncestor|QualifiedName])?
-		('and' parents+=[WAncestor|QualifiedName])*
+		('inherits' parents+=WAncestor)?
+		('and' parents+=WAncestor)*
 	'{'
 		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*
