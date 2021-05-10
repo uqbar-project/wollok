@@ -14,6 +14,8 @@ import org.eclipse.xtext.resource.XtextResourceSet
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.wollokDsl.WAncestor
+import org.uqbar.project.wollok.wollokDsl.WAncestorRef
 import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -54,7 +56,6 @@ import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.notNullAnd
-import org.uqbar.project.wollok.wollokDsl.WAncestorReference
 
 /**
  * Extension methods for WMethodContainers.
@@ -473,21 +474,31 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch WClass parent(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
 	def static dispatch WClass parent(WClass it) {
 		if (parents.empty) return null
-		parents.last.ref as WClass
+		val parentsClass = parents.map [ ref ].filter(WClass)
+		if (parentsClass.isEmpty) null else parentsClass.last
 	}
 	def static dispatch WClass parent(WObjectLiteral it) {
 		if (parents.empty) return null
-		parents.last.ref as WClass
+		// FIXME: Puede ser un mixin
+		val parentsClass = parents.map [ ref ].filter(WClass)
+		if (parentsClass.isEmpty) null else parentsClass.last
 	} // can we just reply with wollok.lang.Object class ?
 	def static dispatch WClass parent(WNamedObject it) {
 		if (parents.empty) return null
-		parents.last.ref as WClass
+		// FIXME: Puede ser un mixin
+		val parentsClass = parents.map [ ref ].filter(WClass)
+		if (parentsClass.isEmpty) null else parentsClass.last
 	}
 	def static dispatch WClass parent(MixedMethodContainer it) { clazz }
 	// not supported yet !
 	def static dispatch WClass parent(WMixin it) { null }
 	def static dispatch WClass parent(WSuite it) { null }
 
+	def static dispatch EObject ref(WAncestorRef ancestor) { ancestor.ref }
+	def static dispatch EObject ref(WClass clazz) { clazz }
+	def static dispatch EObject ref(WMixin mixin) { mixin }
+	def static dispatch EObject ref(WAncestor ancestor) { ancestor }
+	
 	def static dispatch List<WMixin> mixins(WMethodContainer it) { throw new UnsupportedOperationException("shouldn't happen")  }
 	def static dispatch List<WMixin> mixins(WClass it) {
 		parents.filter(WMixin).toList
@@ -839,7 +850,8 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	
 	def static parentParameters(WMethodContainer c) {
 		if (c.parent === null) return null
-		(c.parent as WAncestorReference).parentParameters.initializers
+		// FIXME : fold de todos los initializers
+		newArrayList
 	}
 
 	def static dispatch isCustom(WMethodContainer o) { !o.fqn.startsWith("wollok.") }

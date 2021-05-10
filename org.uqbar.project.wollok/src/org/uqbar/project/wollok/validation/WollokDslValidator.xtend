@@ -70,7 +70,6 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WAncestorReference
 
 /**
  * Custom validation rules.
@@ -255,7 +254,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@NotConfigurable
 	def checkUnexistentNamedParametersInheritingConstructor(WNamedObject it) {
 		if (!hasParentParameters) return;
-		parent.validateNamedParameters((parent as WAncestorReference).parentParameters)
+		// FIXME: Arreglar los initializers de todos los parámetros
+		// parent.validateNamedParameters((parent as WAncestorReference).parentParameters)
 	}
 
 	@Check
@@ -263,7 +263,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@NotConfigurable
 	def checkUnexistentNamedParametersInheritingConstructor(WObjectLiteral it) {
 		if (parentParameters === null) return;
-		parent.validateNamedParameters((parent as WAncestorReference).parentParameters)
+		// FIXME: Arreglar los initializers de todos los parámetros
+		// parent.validateNamedParameters((parent as WAncestor).parentParameters)
 	}
 
 	def void validateNamedParameters(WClass clazz, WNamedArgumentsList parameterList) {

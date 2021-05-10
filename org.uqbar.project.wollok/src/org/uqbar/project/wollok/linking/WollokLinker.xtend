@@ -10,6 +10,8 @@ import org.eclipse.xtext.diagnostics.IDiagnosticProducer
 import org.eclipse.xtext.linking.lazy.LazyLinker
 import org.eclipse.xtext.linking.lazy.SyntheticLinkingSupport
 import org.eclipse.xtext.nodemodel.INode
+import org.uqbar.project.wollok.wollokDsl.WAncestor
+import org.uqbar.project.wollok.wollokDsl.WAncestorRef
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMixin
@@ -18,8 +20,9 @@ import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuite
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static org.uqbar.project.wollok.WollokConstants.*
+
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 /**
  * Customizes the xtext linker in order to set
@@ -50,8 +53,14 @@ class WollokLinker extends LazyLinker {
 	def dispatch shouldSetParent(WSuite it) { false } 
 	def dispatch shouldSetParent(EObject obj) { false }
 
+	def dispatch addParent(WClass it, WAncestor ancestor) { parents.add(ancestor) }
+	def dispatch addParent(WNamedObject it, WAncestor ancestor) { parents.add(ancestor) }
+	def dispatch addParent(WObjectLiteral it, WAncestor ancestor) { parents.add(ancestor) }
+	def dispatch addParent(EObject it, WAncestor ancestor) { }
+	
 	def dispatch EReference getParentRef(WClass wClass) { WollokDslPackage.Literals.WCLASS__PARENTS }
 	def dispatch EReference getParentRef(WNamedObject wObject) { WollokDslPackage.Literals.WNAMED_OBJECT__PARENTS }
 	def dispatch EReference getParentRef(WObjectLiteral wObject) { WollokDslPackage.Literals.WOBJECT_LITERAL__PARENTS }
+	def dispatch EReference getParentRef(WAncestorRef wAncestorRef) { WollokDslPackage.Literals.WANCESTOR_REF__REF }
 	def dispatch EReference getParentRef(EObject wObject) { null }
 }

@@ -53,17 +53,6 @@ WNamed: WMethodDeclaration | WReferenciable | WPackage | WClass | WMixin;
 WMethodContainer: WClass | {WObjectLiteral} | WNamedObject | WMixin | WSuite;
 WReferenciable: WParameter | {WVariable} | WNamedObject ;
 
-WObjectLiteral returns WExpression:
-	{WObjectLiteral}
-	=>'object'
-		('inherits' parents+=WAncestorReference)? 
-		('and' parents+=WAncestorReference)*
-	'{'
-		(members+=WVariableDeclaration ';'?)*
-		(members+=WMethodDeclaration ';'?)*
-	'}'
-;
-
 WVariableDeclaration returns WExpression:
 	{WVariableDeclaration}
 	(writeable?='var'|'const') (property?='property')? variable=WVariable ('=' right=WExpression)?
@@ -327,41 +316,53 @@ WListLiteral:
 WSetLiteral:
 	{WSetLiteral} '#{' (elements+=WExpression (',' elements+=WExpression )*)? '}';
 	
+WAncestorRef:
+	{WAncestorRef}
+	ref=(WClass|WMixin)
+		('(' parentParameters = WNamedArgumentsList ')')
+;
+
+WAncestor:
+	(WAncestorRef|WClass|WMixin)
+;
+
+// Named object
 WNamedObject:
 	{WNamedObject}
 	'object' name=ID 
-		('inherits' parents+=WAncestorReference)? 
-		('and' parents+=WAncestorReference)*
+		('inherits' parents+=[WAncestor|QualifiedName])?
+		('and' parents+=[WAncestor|QualifiedName])*
 	'{'
 		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*
 	'}'
 ;
 
-WAncestorReference:
-	{WAncestorReference}
-	ref=[WAncestor|QualifiedName] 
-		(=> ( '(' parentParameters = WNamedArgumentsList ')'))?
+// Object Literal
+WObjectLiteral returns WExpression:
+	{WObjectLiteral}
+	=>'object'
+		('inherits' parents+=[WAncestor|QualifiedName])?
+		('and' parents+=[WAncestor|QualifiedName])*
+	'{'
+		(members+=WVariableDeclaration ';'?)*
+		(members+=WMethodDeclaration ';'?)*
+	'}'
 ;
 
-WAncestor: 
-	WClass|WMixin
-;
-// CLASSES
-
+// Class
 WClass:
 	{WClass}
 	'class' name=ID
-		('inherits' parents+=WAncestorReference)? 
-		('and' parents+=WAncestorReference)*
+		('inherits' parents+=[WAncestor|QualifiedName])?
+		('and' parents+=[WAncestor|QualifiedName])*
 	'{'
 		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*
 	'}'
 ;
 
-// MIXINS
-
+// Mixin
 WMixin:
 	'mixin' name=ID '{'
 		(members+=WVariableDeclaration ';'?)*

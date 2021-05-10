@@ -290,9 +290,10 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			l.parent.addInheritsMembers(wo)
 			l.addMixinsMembers(wo)
 			// 2. initialized named parameters
-			if (l.hasParentParameters) {
-				wo.initializeObject(l.parentParameters)
-			}
+			// FIXME
+//			if (l.hasParentParameters) {
+//				wo.initializeObject(l.parentParameters)
+//			}
 			// 3. initialize pending attributes (not passed in named parameters)
 			l.allVariableDeclarations(wo).forEach [ wo.initializeAttribute(it) ]
 			// 4. last initialization opportunity - initialize method
@@ -563,8 +564,9 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 						namedObject.createNativeObject(wollokObject, interpreter))
 
 				// 2. initialized named parameters over the parent (if it has)
-				if (namedObject.hasParentParameters)
-					wollokObject.initializeObject(namedObject.parentParameters)
+//				FIXME
+//				if (namedObject.hasParentParameters)
+//					wollokObject.initializeObject(namedObject.parentParameters)
 
 				// 3. initialize pending attributes (not passed in named parameters)
 				namedObject.initializeMembers(wollokObject)			
