@@ -396,7 +396,9 @@ const                  kmRecorridos= 0 method comer(gr) { energia = energia + gr
 	def void methodReturningValuesFromIfExpression() {
 		assertFormatting(
 			'''
-			object luisAlberto inherits Musico (8) {
+			object luisAlberto inherits Musico (       valor
+			
+			 =    8) {
 			
 				var guitarra
 			
@@ -421,7 +423,7 @@ const                  kmRecorridos= 0 method comer(gr) { energia = energia + gr
 			}
 			''',
 			'''
-			object luisAlberto inherits Musico (8) {
+			object luisAlberto inherits Musico (valor = 8) {
 			
 				var guitarra
 			

@@ -9,6 +9,7 @@ import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.IFormattableDocument
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.wollokDsl.Import
+import org.uqbar.project.wollok.wollokDsl.WAncestor
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -84,8 +85,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		c.regionFor.keyword(WollokConstants.CLASS).prepend [ noSpace ]
 		c.regionFor.keyword(WollokConstants.CLASS).append [ oneSpace ]
 		c.regionFor.keyword(WollokConstants.INHERITS).surround [ oneSpace ]
-		c.regionFor.keyword(WollokConstants.MIXED_AND).surround [ oneSpace ]
-		c.regionFor.feature(WCLASS__PARENTS).surround [ oneSpace ]
+		c.parents.forEach [ format ]
 		c.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ setNewLines(2) ].prepend [ oneSpace ]
 		c.interior [ 
 			indent
@@ -98,6 +98,11 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		]
 		
 		c.regionFor.keyword(WollokConstants.END_EXPRESSION).append[ setNewLines(2) ]
+	}
+	
+	def dispatch void format(WAncestor a, extension IFormattableDocument document) {
+		a.ref.surround [ noSpace ]
+		a.parentParameters.format
 	}
 
 	def dispatch void format(WNamedArgumentsList l, extension IFormattableDocument document) {
@@ -125,8 +130,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		o.regionFor.keyword(WollokConstants.WKO).prepend [ noSpace ]
 		o.regionFor.keyword(WollokConstants.WKO).append [ oneSpace ]
 		o.regionFor.keyword(WollokConstants.INHERITS).surround [ oneSpace ]
-		o.parentParameters.format
-		o.regionFor.feature(WCLASS__PARENTS).surround [ oneSpace ]
+		o.parents.forEach [ format ]
 		o.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ setNewLines(2) ].prepend [ oneSpace ]
 		o.interior [ 
 			indent
@@ -403,7 +407,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	def dispatch void format(WObjectLiteral o, extension IFormattableDocument document) {
 		o.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ newLine ].prepend [ oneSpace ]
 		o.regionFor.keyword(WollokConstants.INHERITS).surround [ oneSpace ]
-		o.parentParameters.format
+		o.parents.forEach [ format ]
 		o.members.forEach [
 			surround [ indent ]
 			format

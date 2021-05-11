@@ -471,29 +471,21 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean inheritsFromObject(WObjectLiteral o) { o.parent.fqn.equals(OBJECT) }
 
 	def static dispatch WClass parent(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
-	def static dispatch WClass parent(WClass it) {
-		if (parents.empty) return null
-		val parentsClass = parents.map [ ref ].filter(WClass)
-		if (parentsClass.isEmpty) null else parentsClass.last
-	}
-	def static dispatch WClass parent(WObjectLiteral it) {
-		if (parents.empty) return null
-		// FIXME: Puede ser un mixin
-		val parentsClass = parents.map [ ref ].filter(WClass)
-		if (parentsClass.isEmpty) null else parentsClass.last
-	} // can we just reply with wollok.lang.Object class ?
-	def static dispatch WClass parent(WNamedObject it) {
-		if (parents.empty) return null
-		// FIXME: Puede ser un mixin
-		val parentsClass = parents.map [ ref ].filter(WClass)
-		if (parentsClass.isEmpty) null else parentsClass.last
-	}
+	def static dispatch WClass parent(WClass it) { parents.getClassParent(root) }
+	def static dispatch WClass parent(WObjectLiteral it) { parents.getClassParent(root) }
+	def static dispatch WClass parent(WNamedObject it) { parents.getClassParent(root) }
 	def static dispatch WClass parent(MixedMethodContainer it) { clazz }
 	// not supported yet !
 	def static dispatch WClass parent(WMixin it) { null }
 	def static dispatch WClass parent(WSuite it) { null }
 
-	def static dispatch EObject ref(WAncestor ancestor) { ancestor.ref }
+	def static getClassParent(List<WAncestor> parents, WClass root) {
+		if (parents.empty) return root
+		val parentsClass = parents.map [ ref ].filter(WClass)
+		if (parentsClass.isEmpty) root else parentsClass.last
+	}
+
+	def static EObject ref(WAncestor ancestor) { ancestor.ref }
 	
 	def static dispatch List<WMixin> mixins(WMethodContainer it) { throw new UnsupportedOperationException("shouldn't happen")  }
 	def static dispatch List<WMixin> mixins(WClass it) {
@@ -836,18 +828,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		parent !== null && parent.isPropertyAllowed
 	}
 
-	def static dispatch hasParentParameters(WObjectLiteral l) {
-		l.parentParameters !== null
+	def static hasParentParameters(WMethodContainer mc) {
+		mc.parentParameters !== null
 	}
 
-	def static dispatch hasParentParameters(WNamedObject wko) {
-		wko.parentParameters !== null
-	}
-	
 	def static parentParameters(WMethodContainer c) {
 		if (c.parent === null) return null
-		// FIXME : fold de todos los initializers
-		newArrayList
+		c.parents.flatMap [ parameters ]
 	}
 
 	def static dispatch isCustom(WMethodContainer o) { !o.fqn.startsWith("wollok.") }

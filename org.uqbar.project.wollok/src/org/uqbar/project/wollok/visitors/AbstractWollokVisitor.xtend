@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.visitors
 
 import org.eclipse.emf.ecore.EObject
+import org.uqbar.project.wollok.wollokDsl.WAncestor
 import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
@@ -188,6 +189,11 @@ abstract class AbstractWollokVisitor {
 	def dispatch void visitChildren(WInitializer i) {
 		i.initializer.visit
 		i.initialValue.visit
+	}
+	
+	def dispatch void visitChildren(WAncestor it) {
+		ref.visit
+		parentParameters.visit
 	}
 
 	// terminals

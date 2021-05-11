@@ -323,15 +323,15 @@ WAncestorRef:
 WAncestor:
 	{WAncestor}
 	ref=[WAncestorRef|QualifiedName]
-		('(' parentParameters = WNamedArgumentsList ')')
+		('(' parentParameters = WNamedArgumentsList ')')?
 ;
 
 // Named object
 WNamedObject:
 	{WNamedObject}
 	'object' name=ID 
-		('inherits' parents+=WAncestor)?
-		('and' parents+=WAncestor)*
+		(('inherits' parents+=WAncestor ('and' parents+=WAncestor)*)?
+			| 'derived' root=[WClass|QualifiedName])	
 	'{'
 		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*
@@ -342,8 +342,8 @@ WNamedObject:
 WObjectLiteral returns WExpression:
 	{WObjectLiteral}
 	=>'object'
-		('inherits' parents+=WAncestor)?
-		('and' parents+=WAncestor)*
+		(('inherits' parents+=WAncestor ('and' parents+=WAncestor)*)?
+			| 'derived' root=[WClass|QualifiedName])	
 	'{'
 		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*
@@ -354,8 +354,8 @@ WObjectLiteral returns WExpression:
 WClass:
 	{WClass}
 	'class' name=ID
-		('inherits' parents+=WAncestor)?
-		('and' parents+=WAncestor)*
+		(('inherits' parents+=WAncestor ('and' parents+=WAncestor)*)?
+			| 'derived' root=[WClass|QualifiedName])	
 	'{'
 		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*
@@ -364,7 +364,9 @@ WClass:
 
 // Mixin
 WMixin:
-	'mixin' name=ID '{'
+	'mixin' name=ID 
+		('inherits' parents+=WAncestor ('and' parents+=WAncestor)*)?
+	'{'
 		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*
 	'}'

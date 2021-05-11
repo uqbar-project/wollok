@@ -47,7 +47,7 @@ class ObjectParentConstraintsGenerator extends ConstructorConstraintsGenerator<W
 //		if (parent.hasParentParameters)
 //			generate(parent, parent?.parentParameters)
 //		else
-		if (!parent.hasParentParameters)
+		if (parent !== null && !parent.hasParentParameters)
 			generate(parent)
 	}
 	

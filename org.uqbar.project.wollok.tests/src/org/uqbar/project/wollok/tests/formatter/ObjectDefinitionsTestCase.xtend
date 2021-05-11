@@ -183,7 +183,7 @@ inherits
  Ave
 
 
-              { var energia = 0  method volar() { energia    +=
+              { var energia = 0  method volar() { energia    = energia +
 10 }          
 		''',
 			'''
@@ -192,7 +192,7 @@ inherits
 				var energia = 0
 			
 				method volar() {
-					energia += 10
+					energia = energia + 10
 				}
 			
 			}
@@ -229,14 +229,14 @@ method comer(gr){energia=energia+gr} method jugar(){     return true      }}''',
 	def void testObjectDefinitionWithOneVariableOnly() {
 		assertFormatting(
 			'''
-          object        pepita  
+          object        pepita  {
           
           
           
 
               var        
               
-              z   
+              z   }
 		''',
 			'''
 			object pepita {
@@ -473,7 +473,7 @@ inherits
 
               method volar(lugar) {energia             = 0 }} class Ave 
               
-              mixed with  
+              inherits  
               
                Volador {
               	
@@ -492,7 +492,7 @@ inherits
 			
 			}
 			
-			class Ave mixed with Volador {
+			class Ave inherits Volador {
 
 				method comer() {
 					energia = 100
@@ -502,50 +502,6 @@ inherits
 			
 			'''
 		)
-	}
-
-	@Test
-	def testObjectInheritingPosicionalParametersForWKO() {
-		assertFormatting('''
-object luisAlberto inherits Musico (
-	
-	8
-) {
-
-	var guitarra
-}		
-		''',
-		'''
-		object luisAlberto inherits Musico (8) {
-
-			var guitarra
-		
-		}
-		
-		''')
-	}
-
-	@Test
-	def testObjectInheritingPosicionalParametersForWKO2() {
-		assertFormatting('''
-object luisAlberto inherits Musico (
-	
-	8
-	
-	, "estrelicia"
-) {
-
-	var guitarra
-}		
-		''',
-		'''
-		object luisAlberto inherits Musico (8, "estrelicia") {
-
-			var guitarra
-		
-		}
-		
-		''')
 	}
 
 	@Test
@@ -761,7 +717,7 @@ object luisAlberto inherits Musico {
 	const valorFechaTope = 1200
 	const valorFechaNoTope = 1000
 	var guitarra = fender
-	var fechaTope = new Date(01, 09, 2017)
+	var fechaTope = new Date(day = 01, month = 09, year = 2017)
 
 	override method habilidad() = (8 * guitarra.valor()).min(100)
 
@@ -782,7 +738,7 @@ object luisAlberto inherits Musico {
 				const valorFechaTope = 1200
 				const valorFechaNoTope = 1000
 				var guitarra = fender
-				var fechaTope = new Date(01, 09, 2017)
+				var fechaTope = new Date(day = 01, month = 09, year = 2017)
 			
 				override method habilidad() = (8 * guitarra.valor()).min(100)
 			
