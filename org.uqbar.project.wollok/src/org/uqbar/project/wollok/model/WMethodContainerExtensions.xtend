@@ -26,11 +26,13 @@ import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WMixin
 import org.uqbar.project.wollok.wollokDsl.WNamed
+import org.uqbar.project.wollok.wollokDsl.WNamedArgumentsList
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
@@ -829,12 +831,24 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static hasParentParameters(WMethodContainer mc) {
-		mc.parentParameters !== null
+		!mc.parentParameters.isEmpty
 	}
 
-	def static parentParameters(WMethodContainer c) {
-		if (c.parent === null) return null
-		c.parents.flatMap [ parameters ]
+	def static dispatch List<WInitializer> parentParameters(WMethodContainer mc) { newArrayList }
+	def static dispatch List<WInitializer> parentParameters(WClass c) {
+		if (c.parent === null) return #[]
+		// c.parents.flatMap [ it.parentParameters.map [ it.initializers ] ]
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		newArrayList
 	}
 
 	def static dispatch isCustom(WMethodContainer o) { !o.fqn.startsWith("wollok.") }

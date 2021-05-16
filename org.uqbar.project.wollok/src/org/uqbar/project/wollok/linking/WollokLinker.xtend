@@ -41,7 +41,7 @@ class WollokLinker extends LazyLinker {
 	}
 	
 	def dispatch shouldSetParent(WClass it) {
-		parents === null || parents.isEmpty && !name.equals(ROOT_CLASS)
+		parents === null || parents.isEmpty && name !== null && !name.equals(ROOT_CLASS)
 	} // this should check the FQN name !
 	def dispatch shouldSetParent(WMixin obj) { false }
 	def dispatch shouldSetParent(WNamedObject it) {

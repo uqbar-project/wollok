@@ -255,7 +255,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def checkUnexistentNamedParametersInheritingConstructor(WNamedObject it) {
 		if (!hasParentParameters) return;
 		// FIXME: Arreglar los initializers de todos los parámetros
-		// parent.validateNamedParameters((parent as WAncestorReference).parentParameters)
+		// parent.validateNamedParameters(parentParameters, mixins)
 	}
 
 	@Check

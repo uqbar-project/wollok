@@ -721,7 +721,7 @@ class WollokModelExtensions {
 		#["WNamedObject", "WVariableReference"]
 	}
 
-	def static dispatch List<String> semanticElementsAllowedToRefactor(WClass e) { #["WClass", "WVariableReference"] }
+	def static dispatch List<String> semanticElementsAllowedToRefactor(WClass e) { #["WClass", "WVariableReference", "WAncestor"] }
 
 	def static dispatch List<String> semanticElementsAllowedToRefactor(WVariable v) {
 		#["WVariable", "WVariableReference", "WVariableDeclaration"]

@@ -192,7 +192,7 @@ abstract class AbstractWollokVisitor {
 	}
 	
 	def dispatch void visitChildren(WAncestor it) {
-		ref.visit
+//		ref.visit
 		parentParameters.visit
 	}
 

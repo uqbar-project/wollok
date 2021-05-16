@@ -492,13 +492,13 @@ class AlbumBuilder {
 	@Test
 	def void unaryWordExpression() {
 		assertFormatting('''
-object pdpalooza inherits Presentacion(new Date(15, 12, 2017), lunaPark, []){
+object pdpalooza inherits Presentacion(fecha = new Date(day = 15, month = 12, year = 2017), lugar = lunaPark, musicos = []){
 	const restriccionHabilidad = { musico => if (musico.habilidad() < 70) throw new Exception("La habilidad del músico debe ser mayor a 70")}
 	const restriccionCompusoAlgunaCancion = {musico => if (not musico.compusoAlgunaCancion()) throw new Exception("El músico debe haber compuesto al menos una canción")}
 }		
 		''',
 		'''
-		object pdpalooza inherits Presentacion(new Date(15, 12, 2017), lunaPark, []) {
+		object pdpalooza inherits Presentacion(fecha = new Date(day = 15, month = 12, year = 2017), lugar = lunaPark, musicos = []) {
 		
 			const restriccionHabilidad = { musico =>
 				if (musico.habilidad() < 70) throw new Exception("La habilidad del músico debe ser mayor a 70")

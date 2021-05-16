@@ -174,7 +174,7 @@ object { var energia
 	@Test
 	def void testInheritingPositionalParametersObjectDefinition() {
 		assertFormatting(
-			'''
+			'''class Ave{}
           object        pepita  
           
           
@@ -187,6 +187,10 @@ inherits
 10 }          
 		''',
 			'''
+			class Ave {
+			
+			}
+			
 			object pepita inherits Ave {
 
 				var energia = 0
@@ -506,7 +510,7 @@ inherits
 
 	@Test
 	def testObjectInheritingNamedParametersForWKO() {
-		assertFormatting('''
+		assertFormatting('''class Musico{var calidad}
 object luisAlberto inherits Musico (calidad
 	
 	
@@ -525,6 +529,12 @@ object luisAlberto inherits Musico (calidad
 }		
 		''',
 		'''
+		class Musico {
+		
+			var calidad
+		
+		}
+		
 		object luisAlberto inherits Musico (calidad = 8, cancionPreferida = "estrelicia") {
 
 			var guitarra
@@ -710,14 +720,16 @@ class Presentacion {
 
 	@Test
 	def void testObjectVarsInitialized() {
+		// EL PROBLEMA ESTA EN inherits Musico + if (presentacion.fecha() < fechaTope) valorFechaNoTope else valorFechaTope
 		assertFormatting(
 			'''
+			class Musico{}
 object luisAlberto inherits Musico {
 
 	const valorFechaTope = 1200
 	const valorFechaNoTope = 1000
 	var guitarra = fender
-	var fechaTope = new Date(day = 01, month = 09, year = 2017)
+	const fechaTope = new Date(day = 01, month = 09, year = 2017)
 
 	override method habilidad() = (8 * guitarra.valor()).min(100)
 
@@ -733,12 +745,16 @@ object luisAlberto inherits Musico {
 			
 			''',
 			'''
+			class Musico {
+			
+			}
+			
 			object luisAlberto inherits Musico {
 			
 				const valorFechaTope = 1200
 				const valorFechaNoTope = 1000
 				var guitarra = fender
-				var fechaTope = new Date(day = 01, month = 09, year = 2017)
+				const fechaTope = new Date(day = 01, month = 09, year = 2017)
 			
 				override method habilidad() = (8 * guitarra.valor()).min(100)
 			

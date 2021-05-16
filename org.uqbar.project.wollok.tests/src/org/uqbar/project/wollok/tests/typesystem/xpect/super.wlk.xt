@@ -81,7 +81,7 @@ class EntrenadorDeAves {
 	const ave
 	
 	// XPECT methodType at alimentar --> (Golondrina) => Void
-	method alimentar(ave) { ave.come(10) }
+	method alimentar() { ave.come(10) }
 	
 	// XPECT methodType at pajaro --> () => Ave
 	method pajaro() = new Ave(nombre = "Pedro")
