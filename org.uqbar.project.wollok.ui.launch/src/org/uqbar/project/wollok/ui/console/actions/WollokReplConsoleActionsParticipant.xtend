@@ -64,6 +64,10 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 		this.bars = site.actionBars
 		val _self = this
 
+		if (!hasAssociatedFile) {
+			WollokRepl_REPL_RUNNING_WITHOUT_FILE.warnInConsole(false)
+		}
+
 		this.resourceListener = new IResourceChangeListener() {
 
 			override resourceChanged(IResourceChangeEvent evt) {
@@ -76,12 +80,7 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 					return
 				}
 				outdated.markOutdated
-				runInUI [
-					val PREFIX_RED = if (_self.console.noAnsiFormat) "" else "\u001b[38;5;79m" 
-					val SUFFIX_ESC = if (_self.console.noAnsiFormat) "" else "\u001b[0m"
-					val text = System.lineSeparator + PREFIX_RED + WollokRepl_OUTDATED_WARNING_MESSAGE_IN_REPL + SUFFIX_ESC + System.lineSeparator
-					_self.console.processInput(text)
-				]
+				WollokRepl_OUTDATED_WARNING_MESSAGE_IN_REPL.warnInConsole
 			}
 
 		}
@@ -112,6 +111,20 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 			updateActionBars
 		]
 		outdated.update(_self.console.project)
+	}
+
+	def warnInConsole(String message) {
+		message.warnInConsole(true)
+	}
+
+	def warnInConsole(String message, boolean addNewLineBefore) {
+		runInUI [
+			val PREFIX_RED = if (console.noAnsiFormat) "" else "\u001b[38;5;79m" 
+			val SUFFIX_ESC = if (console.noAnsiFormat) "" else "\u001b[0m"
+			val preffixEnter = if (addNewLineBefore) System.lineSeparator else ""
+			val text = preffixEnter + PREFIX_RED + message + SUFFIX_ESC + System.lineSeparator
+			console.processInput(text)
+		]
 	}
 
 	def createTerminateAllButton() {
