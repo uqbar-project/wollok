@@ -32,7 +32,6 @@ import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WMixin
 import org.uqbar.project.wollok.wollokDsl.WNamed
-import org.uqbar.project.wollok.wollokDsl.WNamedArgumentsList
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
@@ -468,9 +467,9 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static boolean inheritsFromLibClass(WMethodContainer it) { parent.isCoreObject }
 
 	def static dispatch boolean inheritsFromObject(EObject e) { false }
-	def static dispatch boolean inheritsFromObject(WClass c) { c.parent.fqn.equals(OBJECT) }
-	def static dispatch boolean inheritsFromObject(WNamedObject o) { o.parent.fqn.equals(OBJECT) }
-	def static dispatch boolean inheritsFromObject(WObjectLiteral o) { o.parent.fqn.equals(OBJECT) }
+	def static dispatch boolean inheritsFromObject(WClass c) { c.parent === null || c.parent.fqn.equals(OBJECT) }
+	def static dispatch boolean inheritsFromObject(WNamedObject o) { o.parent === null || o.parent.fqn.equals(OBJECT) }
+	def static dispatch boolean inheritsFromObject(WObjectLiteral o) { o.parent === null || o.parent.fqn.equals(OBJECT) }
 
 	def static dispatch WClass parent(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
 	def static dispatch WClass parent(WClass it) { parents.getClassParent(root) }
@@ -489,18 +488,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static EObject ref(WAncestor ancestor) { ancestor.ref }
 	
+	def static dispatch List<WMixin> mixins(EList<WAncestor> it) {
+		map [ ref ].filter(WMixin).toList
+	}
 	def static dispatch List<WMixin> mixins(WMethodContainer it) { throw new UnsupportedOperationException("shouldn't happen")  }
-	def static dispatch List<WMixin> mixins(WClass it) {
-		parents.filter(WMixin).toList
-	}
-	
-	def static dispatch List<WMixin> mixins(WObjectLiteral it) {
-		parents.filter(WMixin).toList
-	}
-	
-	def static dispatch List<WMixin> mixins(WNamedObject it) {
-		parents.filter(WMixin).toList
-	}
+	def static dispatch List<WMixin> mixins(WClass it) { parents.mixins	}
+	def static dispatch List<WMixin> mixins(WObjectLiteral it) { parents.mixins	}
+	def static dispatch List<WMixin> mixins(WNamedObject it) { parents.mixins }
 	def static dispatch List<WMixin> mixins(MixedMethodContainer it) { mixins }
 	def static dispatch List<WMixin> mixins(WMixin it) { Collections.EMPTY_LIST }
 	def static dispatch List<WMixin> mixins(WSuite it) { Collections.EMPTY_LIST }
@@ -831,26 +825,23 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static hasParentParameters(WMethodContainer mc) {
-		!mc.parentParameters.isEmpty
+		!mc.parentParameterValues.isEmpty
 	}
 
-	def static dispatch List<WInitializer> parentParameters(WMethodContainer mc) { newArrayList }
-	def static dispatch List<WInitializer> parentParameters(WClass c) {
-		if (c.parent === null) return #[]
-		// c.parents.flatMap [ it.parentParameters.map [ it.initializers ] ]
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		newArrayList
+	def static dispatch List<WInitializer> parentParameterValues(WMethodContainer mc) { newArrayList }
+	def static dispatch List<WInitializer> parentParameterValues(WClass c) {
+		c.parents.parentParameterValues
 	}
-
+	def static dispatch List<WInitializer> parentParameterValues(WNamedObject o) {
+		o.parents.parentParameterValues
+	}
+	def static dispatch List<WInitializer> parentParameterValues(WObjectLiteral o) {
+		o.parents.parentParameterValues
+	}
+	def static dispatch parentParameterValues(EList<WAncestor> parents) {
+		parents.flatMap [ parentParameters?.initializers ?: newArrayList ].toList
+	}
+	
 	def static dispatch isCustom(WMethodContainer o) { !o.fqn.startsWith("wollok.") }
 	def static dispatch isCustom(EObject o) { false }
 

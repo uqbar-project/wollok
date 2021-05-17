@@ -77,4 +77,5 @@ class GuessMinTypeVisitor extends AbstractWollokVisitor {
 		// initializer.visit
 		initialValue.visit
 	}
+	
 }

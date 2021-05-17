@@ -21,7 +21,6 @@ import org.uqbar.project.wollok.scoping.WollokResourceCache
 import org.uqbar.project.wollok.scoping.root.WollokRootLocator
 import org.uqbar.project.wollok.validation.rules.DontCompareEqualityOfWKORule
 import org.uqbar.project.wollok.wollokDsl.Import
-import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -32,6 +31,7 @@ import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
+import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -246,7 +246,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@NotConfigurable
 	def checkUnexistentNamedParametersInConstructor(WConstructorCall it) {
 		if (!hasNamedParameters) return;
-		classRef.validateNamedParameters(argumentList, mixins)
+		classRef.validateNamedParameters(argumentList.initializers, mixins)
 	}
 
 	@Check
@@ -254,27 +254,25 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@NotConfigurable
 	def checkUnexistentNamedParametersInheritingConstructor(WNamedObject it) {
 		if (!hasParentParameters) return;
-		// FIXME: Arreglar los initializers de todos los parámetros
-		// parent.validateNamedParameters(parentParameters, mixins)
+		parent.validateNamedParameters(parentParameterValues, mixins)
 	}
 
 	@Check
 	@DefaultSeverity(ERROR)
 	@NotConfigurable
 	def checkUnexistentNamedParametersInheritingConstructor(WObjectLiteral it) {
-		if (parentParameters === null) return;
-		// FIXME: Arreglar los initializers de todos los parámetros
-		// parent.validateNamedParameters((parent as WAncestor).parentParameters)
+		if (!hasParentParameters) return;
+		parent.validateNamedParameters(parentParameterValues, mixins)
 	}
 
 	def void validateNamedParameters(WClass clazz, WNamedArgumentsList parameterList) {
-		validateNamedParameters(clazz, parameterList, #[])
+		validateNamedParameters(clazz, parameterList.initializers, #[])
 	}
 
-	def void validateNamedParameters(WClass clazz, WArgumentList parameterList, List<WMixin> additionalMixins) {
+	def void validateNamedParameters(WClass clazz, List<WInitializer> initializers, List<WMixin> additionalMixins) {
 		if (clazz.name === null) return;  // avoid validation for non-existent classes
 		val validAttributes = clazz.allVariableNames + (clazz.mixins + additionalMixins).flatMap [ allVariableNames ]
-		val invalidInitializers = parameterList.initializers.filter [ !validAttributes.contains(initializer.name) ]
+		val invalidInitializers = initializers.filter [ !validAttributes.contains(initializer.name) ]
 		invalidInitializers.forEach [ 
 			reportEObject(NLS.bind(WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR_CALL, initializer.name, clazz.name), initializer.eContainer, WollokDslValidator.ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR_CALL)
 		]
@@ -297,7 +295,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	@CheckGroup(WollokCheckGroup.INITIALIZATION)
 	def checkUninitializedAttributesInNamedObject(WNamedObject it) {
-		if (!inheritsFromObject) {
+		if (!parents.isEmpty) {
 			val unusedVarDeclarations = uninitializedNamedParameters
 			if (!unusedVarDeclarations.isEmpty) {
 				val variableNames = unusedVarDeclarations.map [ variable.name ].join(", ")
@@ -310,7 +308,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	@CheckGroup(WollokCheckGroup.INITIALIZATION)
 	def checkUninitializedAttributesInObjectLiteral(WObjectLiteral it) {
-		if (!inheritsFromObject) {
+		if (!parents.isEmpty) {
 			val unusedVarDeclarations = uninitializedNamedParameters
 			if (!unusedVarDeclarations.isEmpty) {
 				val variableNames = unusedVarDeclarations.map [ variable.name ].join(", ")

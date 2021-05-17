@@ -364,15 +364,11 @@ class WollokModelExtensions {
 	}
 
 	def static dispatch List<WVariableDeclaration> uninitializedNamedParameters(WNamedObject it) {
-		newArrayList
-		// FIXME
-		// internalUninitializedNamedParameters(uninitializedReferences, parentParameters?.argumentsNames ?: #[])
+		internalUninitializedNamedParameters(uninitializedReferences, parentParameterValues.map [ getInitializer.name ].toList)
 	}
 
 	def static dispatch List<WVariableDeclaration> uninitializedNamedParameters(WObjectLiteral it) {
-		newArrayList
-		// FIXME
-		// internalUninitializedNamedParameters(uninitializedReferences, parentParameters?.argumentsNames ?: #[])
+		internalUninitializedNamedParameters(uninitializedReferences, parentParameterValues.map [ getInitializer.name ].toList)
 	}
 
 	def static internalUninitializedNamedParameters(List<WVariableDeclaration> uninitializedReferences, List<String> namedParameters) {

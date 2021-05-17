@@ -7,35 +7,35 @@ mixin M1 {
    method doIt()
 }
 
-class C mixed with M1 {} // should be considered abstract
+class C inherits M1 {} // should be considered abstract
 
 class D inherits C {}
 
 
 mixin M2 {}
 
-class E inherits D mixed with M2 {}
+class E inherits M2 and D {}
 
 mixin M3 {
 	method blah() { self.sarasa() }
 	method sarasa()
 }
 
-class F inherits E mixed with M3 {}
+class F inherits M3 and E {}
 
 mixin DoIt {
 	method doIt() {}
 }
 
-class G inherits E mixed with DoIt {}
+class G inherits DoIt and E {}
 
 class DoItClass {
 	method doIt() {}
 }
 
-class H inherits DoItClass mixed with M2 {}
+class H inherits M2 and DoItClass {}
 
-class I mixed with M2 {
+class I inherits M2 {
 	method doIt() {}
 }
 
@@ -75,15 +75,15 @@ mixin M3 {
 }
 
 // XPECT errors --> "You must implement all inherited abstract methods: M1.doIt()" at "a"
-object a mixed with M1 {
+object a inherits M1 {
 }
 
 // XPECT errors --> "You must implement all inherited abstract methods: M1.doIt()" at "b"
-object b mixed with M1, M2 {
+object b inherits M2 and M1 {
 }
 
 // positive case: object does implement the abstract methods from the mixins
-object c mixed with M1, M2 {
+object c inherits M2 and M1 {
 	override method doIt() { 
 		// blah
 	}
@@ -102,10 +102,10 @@ mixin Doctor {
 }
 
 // XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "Tomato"
-class Tomato mixed with Doctor {}
+class Tomato inherits Doctor {}
 
 // XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "TomatoWithNameBelowSuper"
-class TomatoWithNameBelowSuper mixed with Doctor {
+class TomatoWithNameBelowSuper inherits Doctor {
 	override method name() = "23"
 }
 
@@ -114,33 +114,33 @@ mixin Named {
 }
 
 // OK !
-class Person mixed with Named and Doctor {}
+class Person inherits Named and Doctor {}
 
 // NOT OK ! order matters !
 // XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "PersonBad"
-class PersonBad mixed with Doctor and Named {}
+class PersonBad inherits Doctor and Named {}
 
 // OK: super method comes from super class
 
 class WithName {
 	method name() = "name on a class"
 }
-class ANamed inherits WithName mixed with Doctor {
+class ANamed inherits Doctor and WithName {
 }
 
 // XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "o1"
-object o1 mixed with Doctor {
+object o1 inherits Doctor {
 }
 
 // OK
-object o2 inherits WithName mixed with Doctor {
+object o2 inherits Doctor and WithName {
 }
 
 // OK
-object o3 mixed with Named and Doctor {}
+object o3 inherits Named and Doctor {}
 
 // XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "o4"
-object o4 mixed with Doctor and Named {}
+object o4 inherits Doctor and Named {}
 
 
 //

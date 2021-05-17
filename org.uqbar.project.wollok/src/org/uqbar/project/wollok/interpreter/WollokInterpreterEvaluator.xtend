@@ -290,10 +290,9 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			l.parent.addInheritsMembers(wo)
 			l.addMixinsMembers(wo)
 			// 2. initialized named parameters
-			// FIXME
-//			if (l.hasParentParameters) {
-//				wo.initializeObject(l.parentParameters)
-//			}
+			if (l.hasParentParameters) {
+				wo.initializeObject(l.parentParameterValues)
+			}
 			// 3. initialize pending attributes (not passed in named parameters)
 			l.allVariableDeclarations(wo).forEach [ wo.initializeAttribute(it) ]
 			// 4. last initialization opportunity - initialize method
@@ -349,6 +348,9 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			wollokClass.addMixinsMembers(wo)
 			wollokClass.addInheritsMembers(wo)
 			// 2. initialized named parameters
+			if (wollokClass.hasParentParameters) {
+				wo.initializeObject(wollokClass.parentParameterValues)
+			}
 			wo.initializeObject(call.initializers)
 			// 3. initialize pending attributes (not passed in named parameters)
 			wollokClass.initializeMembers(wo)
@@ -524,7 +526,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	// ********************************************************************************************
 	// ** Initialization of objects and references
 	// ********************************************************************************************
-	def initializeObject(WollokObject wollokObject, EList<WInitializer> namedParameters) {
+	def initializeObject(WollokObject wollokObject, List<WInitializer> namedParameters) {
 		namedParameters.forEach([ namedParameter |
 			val value = 
 				if (namedParameter.initialValue.shouldBeLazilyInitialized)
@@ -564,9 +566,8 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 						namedObject.createNativeObject(wollokObject, interpreter))
 
 				// 2. initialized named parameters over the parent (if it has)
-//				FIXME
-//				if (namedObject.hasParentParameters)
-//					wollokObject.initializeObject(namedObject.parentParameters)
+				if (namedObject.hasParentParameters)
+					wollokObject.initializeObject(namedObject.parentParameterValues)
 
 				// 3. initialize pending attributes (not passed in named parameters)
 				namedObject.initializeMembers(wollokObject)			

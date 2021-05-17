@@ -45,6 +45,9 @@ class WollokLinker extends LazyLinker {
 	} // this should check the FQN name !
 	def dispatch shouldSetParent(WMixin obj) { false }
 	def dispatch shouldSetParent(WNamedObject it) {
+		// quizás debería ser true, porque si tenés mixines no los podés detectar
+		// true
+		// println("  object " + name + " parents " + parents.map [ it.class.name ])
 		parents === null || parents.isEmpty
 	}
 	def dispatch shouldSetParent(WObjectLiteral it) {

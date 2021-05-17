@@ -9,7 +9,7 @@ mixin Flying {
 	method reduceEnergy(meters)  // REQUIRED
 }
 
-class Superman mixed with Flying {}
+class Superman inherits Flying {}
 
 mixin WithEnergy {
 	var property energy = 100
