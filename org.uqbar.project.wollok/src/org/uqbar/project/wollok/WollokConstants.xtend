@@ -71,6 +71,7 @@ class WollokConstants {
 	public static val MIXIN = "mixin"
 	public static val CLASS = "class"
 	public static val INHERITS = "inherits"
+	public static val DERIVED = "derived"
 	public static val MIXED_AND = "and"
 	public static val WKO = "object"
 	public static val FIXTURE = "fixture"
