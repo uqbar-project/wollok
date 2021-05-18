@@ -13,6 +13,7 @@ import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.wollokDsl.WAncestor
 import org.uqbar.project.wollok.wollokDsl.WArgumentList
@@ -448,6 +449,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		return _parents(c.parent, l)
 	}
 
+	def dispatch static usesDerivedKeyword(WMethodContainer it) { false }
+	def dispatch static usesDerivedKeyword(WClass it) {
+		root !== null && !root.fqn.equals(OBJECT)
+	}
+	def dispatch static usesDerivedKeyword(WNamedObject it) { root !== null && !root.fqn.equals(OBJECT) }
+	def dispatch static usesDerivedKeyword(WObjectLiteral it) { root !== null && !root.fqn.equals(OBJECT) }
+	
 	def dispatch static hasCyclicHierarchy(WClass c) { 
 		_hasCyclicHierarchy(c, newArrayList)
 	}
@@ -546,15 +554,21 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	/**
 	 * The full hierarchy chain top->down
 	 */
-	def static List<WMethodContainer> linearizeHierarchy(WMethodContainer it) {
-		var chain = newLinkedList
-		chain.add(it)
-		if (mixins !== null) {
-			chain.addAll(mixins.clone.reverse)
-		}
-		if (parent !== null && !parent.hasCyclicHierarchy)
-			chain.addAll(parent.linearizeHierarchy)
-		chain
+	def static List<WMethodContainer> linearizeHierarchy(WMethodContainer c) {
+		if (c.parent !== null && c.parent.hasCyclicHierarchy) return newLinkedList
+		newLinkedList => [
+			add(c)
+			addAll(c.mixinsForLinearization)
+			addAll(c.parentClassesForLinearization)
+		]
+	}
+	
+	def static mixinsForLinearization(WMethodContainer it) {
+		(mixins ?: newArrayList).clone.reverse
+	}
+	
+	def static parentClassesForLinearization(WMethodContainer it) {
+		if (parent === null) #[WollokClassFinder.instance.getObjectClass(it)] else parent.linearizeHierarchy
 	}
 	
 	def static matches(WMethodDeclaration m1, WMethodDeclaration m2) {

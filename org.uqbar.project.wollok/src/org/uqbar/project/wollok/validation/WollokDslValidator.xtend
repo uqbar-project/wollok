@@ -446,6 +446,20 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	@Check
 	@DefaultSeverity(ERROR)
+	@NotConfigurable	
+	def usingDerived(WMethodContainer it) {
+		if (declaringContext.usesDerivedKeyword) {
+			report(WollokDslValidator_CANNOT_USE_DERIVED_KEYWORD, it, containingFeatureRoot)
+		}
+	}
+
+	def dispatch static containingFeatureRoot(WMethodContainer mc) { WNAMED__NAME }
+	def dispatch static containingFeatureRoot(WClass c) { WCLASS__ROOT }
+	def dispatch static containingFeatureRoot(WObjectLiteral o) { WOBJECT_LITERAL__ROOT }
+	def dispatch static containingFeatureRoot(WNamedObject o) { WNAMED_OBJECT__ROOT }
+
+	@Check
+	@DefaultSeverity(ERROR)
 	@NotConfigurable
 	def methodDoesntOverride(WMethodDeclaration m) {
 		val overrides = m.actuallyOverrides
