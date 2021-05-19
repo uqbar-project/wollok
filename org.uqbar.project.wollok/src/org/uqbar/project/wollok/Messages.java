@@ -59,6 +59,8 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_CANNOT_ASSIGN_TO_ITSELF;
 	public static String WollokDslValidator_CYCLIC_HIERARCHY;
 	public static String WollokDslValidator_CANNOT_USE_DERIVED_KEYWORD;
+	public static String WollokDslValidator_CANNOT_DEFINE_MULTIPLE_PARENT_CLASSES;
+	public static String WollokDslValidator_BAD_LINEARIZATION_DEFINITION;
 	public static String WollokDslValidator_DUPLICATED_METHOD;
 	public static String WollokDslValidator_DUPLICATED_VARIABLE_IN_HIERARCHY;
 	public static String WollokDslValidator_DUPLICATED_VARIABLE_IN_CONSTRUCTOR_CALL;

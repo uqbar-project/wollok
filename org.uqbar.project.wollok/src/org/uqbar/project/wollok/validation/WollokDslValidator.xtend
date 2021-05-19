@@ -4,8 +4,10 @@ import com.google.inject.Inject
 import java.io.File
 import java.util.List
 import org.eclipse.core.runtime.Platform
+import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.EReference
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.osgi.util.NLS
@@ -21,6 +23,7 @@ import org.uqbar.project.wollok.scoping.WollokResourceCache
 import org.uqbar.project.wollok.scoping.root.WollokRootLocator
 import org.uqbar.project.wollok.validation.rules.DontCompareEqualityOfWKORule
 import org.uqbar.project.wollok.wollokDsl.Import
+import org.uqbar.project.wollok.wollokDsl.WAncestor
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -458,6 +461,47 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def dispatch static containingFeatureRoot(WObjectLiteral o) { WOBJECT_LITERAL__ROOT }
 	def dispatch static containingFeatureRoot(WNamedObject o) { WNAMED_OBJECT__ROOT }
 
+	@Check
+	@DefaultSeverity(ERROR)
+	@NotConfigurable	
+	def badLinearizationForClass(WClass it) {
+		parents.badLinearizationValidation(it, WCLASS__PARENTS)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	@NotConfigurable	
+	def badLinearizationForNamedObject(WNamedObject it) {
+		parents.badLinearizationValidation(it, WNAMED_OBJECT__PARENTS)
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	@NotConfigurable	
+	def badLinearizationForObjectLiteral(WObjectLiteral it) {
+		parents.badLinearizationValidation(it, WOBJECT_LITERAL__PARENTS)
+	}
+		
+	def void badLinearizationValidation(EList<WAncestor> parents, WMethodContainer it, EReference parentFeature) {
+		if (parents === null || parents.isEmpty) return;
+		val parentsRef = parents.map [ ref ]
+		val parentClasses = parentsRef.filter(WClass)
+		if (parentClasses.size > 1) {
+			report(WollokDslValidator_CANNOT_DEFINE_MULTIPLE_PARENT_CLASSES, it, parentFeature)
+			return
+		}
+		val parentClass = parentClasses.head
+		if (parentsRef.lastIndexOf(parentClass) !== parentsRef.size - 1) {
+			report(WollokDslValidator_BAD_LINEARIZATION_DEFINITION, it, parentFeature)
+		}
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	@NotConfigurable	
+	def badLinearization(WNamedObject it) {
+	}
+	
 	@Check
 	@DefaultSeverity(ERROR)
 	@NotConfigurable
