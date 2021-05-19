@@ -486,6 +486,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (parents === null || parents.isEmpty) return;
 		val parentsRef = parents.map [ ref ]
 		val parentClasses = parentsRef.filter(WClass)
+		if (parentClasses.isEmpty) return;
 		if (parentClasses.size > 1) {
 			report(WollokDslValidator_CANNOT_DEFINE_MULTIPLE_PARENT_CLASSES, it, parentFeature)
 			return
