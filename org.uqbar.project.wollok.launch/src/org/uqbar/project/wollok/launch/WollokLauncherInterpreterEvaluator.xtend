@@ -159,9 +159,7 @@ class SuiteBuilder {
 			suiteObject.addMember(attribute)
 			suiteObject.initializeAttribute(attribute)
 		]
-		if (suite.initializeMethod !== null) {
-			interpreter.performOnStack(test, suiteObject, [| interpreter.eval(suite.initializeMethod.expression) ])			
-		}
+		WollokInterpreterEvaluator.callInitIfDefined(suiteObject)
 		if (test !== null) {
 			// Now, declaring test local variables as suite wko instance variables
 			test.variableDeclarations.forEach[ attribute |
