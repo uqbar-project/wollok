@@ -42,7 +42,6 @@ class WollokCodingPerspectiveFactory implements IPerspectiveFactory {
 			addView(IConsoleConstants.ID_CONSOLE_VIEW)
 			addView("org.uqbar.project.wollok.ui.diagrams.class")
 			addView("org.eclipse.team.ui.GenericHistoryView")
-			addView("code.satyagraha.gfm.viewer.views.GfmView")
 		]
 
 		createFolder("topLeft", IPageLayout.LEFT, 0.25f, factory.editorArea) => [

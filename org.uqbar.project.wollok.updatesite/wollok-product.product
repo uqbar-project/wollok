@@ -610,12 +610,10 @@ Library.
       <feature id="org.eclipse.babel.nls_eclipse_es"/>
       <feature id="org.eclipse.jdt"/>
       <feature id="org.eclipse.egit"/>
-      <feature id="code.satyagraha.gfm.viewer.feature"/>
       <feature id="org.eclipse.jgit"/>
       <feature id="org.eclipse.ecf.core.feature"/>
       <feature id="org.eclipse.ecf.filetransfer.httpclient45.feature"/>
       <feature id="org.eclipse.ecf.filetransfer.feature"/>
-      <feature id="SGit"/>
    </features>
 
    <configurations>
