@@ -33,7 +33,7 @@
 	<properties>
 		<tycho-version>1.5.1</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<xtext.version>2.20.0</xtext.version>
+		<xtext.version>2.21.0</xtext.version>
 		<upload.p2.url>https://update.uqbar.org/upload/</upload.p2.url>
 		<upload.download.url>https://download.uqbar.org/upload/</upload.download.url>
 		<upload.server>updateWollok</upload.server>
