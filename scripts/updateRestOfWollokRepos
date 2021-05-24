@@ -23,18 +23,22 @@ rm  ./wollok-site/documentacion/wollokdoc/*.html
 rm  ./wollok-site/documentacion/wollokDoc.md
 mkdir -p ./wollok-site/documentacion/wollokdoc
 
-echo "Updating WollokDoc files"
-java -cp "./wollok-cli/jars/*" org.uqbar.project.wollok.wollokDoc.WollokDocParser "./libs" -folder "./wollok-site/documentacion/wollokdoc"
+echo "Updating spanish WollokDoc files"
+java -cp "./wollok-cli/jars/*" org.uqbar.project.wollok.wollokDoc.WollokDocParser "./libs" -folder "./wollok-site/documentacion/wollokdoc" -locale "es"
 
 echo
 echo "List of files generated"
 ls   ./wollok-site/documentacion/wollokdoc
 
-# copiamos la documentación también al inglés
+# generamos la documentación en inglés
 # no copiamos el wollokDoc.md, si hay nuevos archivos o se elimina alguno hay que 
 # ajustarlo manualmente
-echo "Copying WollokDoc files to english version"
-cp   ./wollok-site/documentacion/wollokdoc/*.html ./wollok-site/en/documentation/wollokdoc
+echo "Updating english WollokDoc files"
+java -cp "./wollok-cli/jars/*" org.uqbar.project.wollok.wollokDoc.WollokDocParser "./libs" -folder "./wollok-site/en/documentation/wollokdoc" -locale "en"
+
+echo
+echo "List of files generated"
+ls   ./wollok-site/en/documentation/wollokdoc
 echo "****************************************************************************"
 
 echo "List of wollok-cli files updated"

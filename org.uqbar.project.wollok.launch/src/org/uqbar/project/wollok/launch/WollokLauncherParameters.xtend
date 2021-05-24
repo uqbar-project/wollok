@@ -12,6 +12,7 @@ import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.parser.OptionalGnuParser
+import java.util.Optional
 
 /**
  * @author jfernandes
@@ -37,6 +38,7 @@ class WollokLauncherParameters {
 	boolean saveFile = false
 	boolean colored = true
 	boolean darkMode = false
+	Optional<String> locale = Optional.empty
 
 	Integer numberOfDecimals = null
 	String printingStrategy = null
@@ -109,6 +111,8 @@ class WollokLauncherParameters {
 		severalFiles = cmdLine.hasOption("severalFiles")
 		folder = parseParameterString(cmdLine, "folder")
 		jsonOutput = cmdLine.hasOption("jsonOutput")
+		
+		locale = Optional.ofNullable(parseParameterString(cmdLine, "locale"))
 
 		noAnsiFormat = cmdLine.hasOption("noAnsiFormat")
 
@@ -218,6 +222,7 @@ class WollokLauncherParameters {
 			add("requestsPort", Messages.WollokLauncherOptions_REQUEST_PORT, "port", 1)
 			add("eventsPort", Messages.WollokLauncherOptions_EVENTS_PORT, "port", 1)
 			add("folder", Messages.WollokLauncherOptions_SPECIFIC_FOLDER, "folder", 1)
+			add("locale", Messages.WollokLauncherOptions_LOCALE, "locale", 1)
 
 			add("numberOfDecimals", Messages.WollokLauncherOptions_NUMBER_DECIMALS, "decimals", 1)
 			add("printingStrategy", Messages.WollokLauncherOptions_DECIMAL_PRINTING_STRATEGY, "name", 1)

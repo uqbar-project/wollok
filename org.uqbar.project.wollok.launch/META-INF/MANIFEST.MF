@@ -37,5 +37,6 @@ Export-Package: org.uqbar.project.wollok.contextState.server,
  org.uqbar.project.wollok.launch,
  org.uqbar.project.wollok.launch.io,
  org.uqbar.project.wollok.launch.setup,
- org.uqbar.project.wollok.launch.tests
+ org.uqbar.project.wollok.launch.tests,
+ org.uqbar.project.wollok.wollokDoc
 Automatic-Module-Name: org.uqbar.project.wollok.launch
