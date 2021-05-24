@@ -235,14 +235,14 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean isValidReturnExpression(WBlockExpression expr) { true }
 	def static dispatch boolean isValidReturnExpression(WMethodDeclaration method) { true }
 
-	def static allVariableDeclarations(WMethodContainer it) {
+	def static List<WVariableDeclaration> allVariableDeclarations(WMethodContainer it) {
 		linearizeHierarchy.fold(newArrayList) [variableDeclarations, type |
 			variableDeclarations.addAll(type.variableDeclarations)
 			variableDeclarations
 		]
 	}
 
-	def static allVariableDeclarations(WMethodContainer it, WollokObject wo) {
+	def static List<WVariableDeclaration> allVariableDeclarations(WMethodContainer it, WollokObject wo) {
 		// Step 1 - Obtaining all variable declarations 
 		val variableDeclarations = allVariableDeclarations
 		// Step 2 - Detecting dependencies among variable declarations

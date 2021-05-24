@@ -319,16 +319,15 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		]
 	}
 
-	def initializeMembers(WClass clazz, WollokObject wo) {
-		clazz.allVariableDeclarations(wo)
-			.forEach [ wo.initializeAttribute(it) ]
+	def void initializeMembers(WClass clazz, WollokObject wo) {
+		clazz.allVariableDeclarations(wo).forEach [ wo.initializeAttribute(it) ]
 	}
 
 	def addMixinsMembers(WMethodContainer it, WollokObject wo) {
 		mixins.forEach[addMembersTo(wo)]
 	}
 
-	def initializeMembers(WMethodContainer it, WollokObject wo) {
+	def void initializeMembers(WMethodContainer it, WollokObject wo) {
 		allVariableDeclarations(wo).forEach[wo.initializeAttribute(it)]
 	}
 
