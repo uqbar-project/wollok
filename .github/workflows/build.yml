@@ -21,8 +21,6 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Build with Maven
         run: | 
-          openssl aes-256-cbc -K $encrypted_1cc7b892dc78_key -iv $encrypted_1cc7b892dc78_iv -in settings.xml.enc -out settings.xml -d
-          mv settings.xml ~/.m2/settings.xml
           ./wollokInstall.sh
           cd org.uqbar.project.wollok.releng/
           export PROFILES=normalProfile
