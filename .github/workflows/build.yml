@@ -21,8 +21,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Build with Maven
         run: | 
-          openssl aes-256-cbc -K $encrypted_1cc7b892dc78_key -iv $encrypted_1cc7b892dc78_iv
-  -in settings.xml.enc -out settings.xml -d
+          openssl aes-256-cbc -K $encrypted_1cc7b892dc78_key -iv $encrypted_1cc7b892dc78_iv -in settings.xml.enc -out settings.xml -d
           mv settings.xml ~/.m2/settings.xml
           ./wollokInstall.sh
           cd org.uqbar.project.wollok.releng/
@@ -32,4 +31,3 @@ jobs:
           echo "Running with UPDATE_SITE $UPDATE_SITE"
           export MAVEN_OPTS=-Xmx2048m
           mvn -e -Darguments='-Dtycho.disableP2Mirrors=false' -Dtycho.disableP2Mirrors=false -U -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean install jacoco:report coveralls:report -P $PROFILES -X
-
