@@ -23,7 +23,7 @@ jobs:
         run: | 
           export DISPLAY=:99.0
           sudo apt-get install -y xvfb
-          Xvfb start
+          ./xvfb start
           ./wollokInstall.sh
           cd org.uqbar.project.wollok.releng/
           export PROFILES=normalProfile
