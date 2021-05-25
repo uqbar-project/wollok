@@ -292,7 +292,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	def isInitialized(String variableName) {
 		instanceVariables.get(variableName) !== null
 	}
-	
+		
 }
 
 /**

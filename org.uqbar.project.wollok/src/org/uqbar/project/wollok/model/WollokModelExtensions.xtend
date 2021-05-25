@@ -166,6 +166,7 @@ class WollokModelExtensions {
 	def static dispatch boolean isAnInitializer(WMethodDeclaration it) { isInitializer }
 
 	/** A variable is global if its declaration (i.e. its eContainer) is direct child of a WFile element */
+	def static dispatch boolean isGlobal(EObject it) { false }
 	def static dispatch boolean isGlobal(WVariableDeclaration it) {
 		eContainer instanceof WFile
 	}
@@ -350,7 +351,13 @@ class WollokModelExtensions {
 	def static dispatch EList<WExpression> values(EObject o) { ECollections.emptyEList }
 
 	def static List<WVariableDeclaration> uninitializedReferences(WMethodContainer it) {
-		allVariableDeclarations.filter[right === null].toList
+		allVariableDeclarations.filter[ variableDeclaration | variableDeclaration.right === null && !isInitializedAsNamedParameter(variableDeclaration) ].toList
+	}
+	
+	def static isInitializedAsNamedParameter(WMethodContainer mc, WVariableDeclaration v) {
+		mc.parentParameterValues.exists [ initializer |
+			initializer.initializer.name.equals(v.variable.name)
+		]	
 	}
 
 	def static List<String> argumentsNames(EList<WInitializer> initializers) {
@@ -374,6 +381,7 @@ class WollokModelExtensions {
 	def static internalUninitializedNamedParameters(List<WVariableDeclaration> uninitializedReferences, List<String> namedParameters) {
 		uninitializedReferences.filter[arg|!namedParameters.contains(arg.variable.name)].toList
 	}
+
 	def static dispatch EList<WInitializer> initializers(WConstructorCall c) {
 		if(c.argumentList === null) return ECollections.emptyEList
 		c.argumentList.initializers
@@ -386,7 +394,7 @@ class WollokModelExtensions {
 	def static dispatch EList<WInitializer> initializers(EObject o) {
 		ECollections.emptyEList
 	}
-
+	
 	def static dispatch EList<? extends EObject> arguments(WConstructorCall c) {
 		if(c.argumentList === null) return ECollections.emptyEList
 		c.argumentList.arguments

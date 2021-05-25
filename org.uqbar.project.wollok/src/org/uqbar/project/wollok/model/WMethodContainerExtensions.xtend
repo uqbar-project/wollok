@@ -480,20 +480,20 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean inheritsFromObject(WObjectLiteral o) { o.parent === null || o.parent.fqn.equals(OBJECT) }
 
 	def static dispatch WClass parent(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
-	def static dispatch WClass parent(WClass it) { parents.getClassParent(root) }
-	def static dispatch WClass parent(WObjectLiteral it) { parents.getClassParent(root) }
-	def static dispatch WClass parent(WNamedObject it) { parents.getClassParent(root) }
+	def static dispatch WClass parent(WClass it) { getClassParent(parents, root) }
+	def static dispatch WClass parent(WObjectLiteral it) { getClassParent(parents, root) }
+	def static dispatch WClass parent(WNamedObject it) { getClassParent(parents, root) }
 	def static dispatch WClass parent(MixedMethodContainer it) { clazz }
 	// not supported yet !
 	def static dispatch WClass parent(WMixin it) { null }
 	def static dispatch WClass parent(WSuite it) { null }
 
-	def static getClassParent(List<WAncestor> parents, WClass root) {
+	def static getClassParent(WMethodContainer it, List<WAncestor> parents, WClass root) {
 		if (parents.empty) return root
 		val parentsClass = parents.map [ ref ].filter(WClass)
-		if (parentsClass.isEmpty) root else parentsClass.last
+		if (parentsClass.isEmpty) root ?: WollokClassFinder.instance.getObjectClass(it) else parentsClass.last
 	}
-
+	
 	def static EObject ref(WAncestor ancestor) { ancestor.ref }
 	
 	def static dispatch List<WMixin> mixins(EList<WAncestor> it) {

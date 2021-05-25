@@ -170,8 +170,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		if (ref.name === null) {
 			throw new UnresolvableReference(Messages.LINKING_COULD_NOT_RESOLVE_REFERENCE.trim + " " + astNode.text.trim)
 		}
-
-		if(ref.isGlobal) ref.ensureInitialization
+		if (ref.isGlobal) ref.ensureInitialization
 		interpreter.currentContext.resolve(ref.variableName)
 	}
 

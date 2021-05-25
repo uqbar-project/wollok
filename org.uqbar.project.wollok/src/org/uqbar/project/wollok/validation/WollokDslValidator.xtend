@@ -288,7 +288,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (hasNamedParameters || (!classRef.hasInitializeMethod())) {
 			val unusedVarDeclarations = uninitializedNamedParameters
 			if (!unusedVarDeclarations.isEmpty) {
-				val variableNames = unusedVarDeclarations.map [ variable.name ].join(", ")
+				val variableNames = unusedVarDeclarations.map [ variable.name ].sort.join(", ")
 				reportEObject(NLS.bind(WollokDslValidator_MISSING_ASSIGNMENTS_IN_CONSTRUCTOR_CALL, variableNames), it, MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR_CALL)
 			}
 		}
