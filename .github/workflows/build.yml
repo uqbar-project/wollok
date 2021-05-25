@@ -19,15 +19,17 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: Run Maven build headless
-        uses: GabrielBB/xvfb-action@v1
-        with:
-          run: |
-            ./wollokInstall.sh
-            cd org.uqbar.project.wollok.releng/
-            export PROFILES=normalProfile
-            export UPDATE_SITE=none
-            echo "Running with profiles $PROFILES"
-            echo "Running with UPDATE_SITE $UPDATE_SITE"
-            export MAVEN_OPTS=-Xmx2048m
-            mvn -e -Darguments='-Dtycho.disableP2Mirrors=false' -Dtycho.disableP2Mirrors=false -U -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean install jacoco:report coveralls:report -P $PROFILES -X
+      - name: Run Maven Build
+        run: | 
+          export DISPLAY=:99.0
+          sudo apt-get install xvfb
+          xvfb start
+          ./wollokInstall.sh
+          cd org.uqbar.project.wollok.releng/
+          export PROFILES=normalProfile
+          export UPDATE_SITE=none
+          echo "Running with profiles $PROFILES"
+          echo "Running with UPDATE_SITE $UPDATE_SITE"
+          export MAVEN_OPTS=-Xmx2048m
+          mvn -e -Darguments='-Dtycho.disableP2Mirrors=false' -Dtycho.disableP2Mirrors=false -U -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean install jacoco:report coveralls:report -P $PROFILES -X
+      
