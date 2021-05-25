@@ -22,8 +22,8 @@ jobs:
       - name: Run Maven Build
         run: | 
           export DISPLAY=:99.0
-          sudo apt-get install xvfb
-          xvfb start
+          sudo apt-get install xvfb -y
+          /usr/bin/xvfb start
           ./wollokInstall.sh
           cd org.uqbar.project.wollok.releng/
           export PROFILES=normalProfile
