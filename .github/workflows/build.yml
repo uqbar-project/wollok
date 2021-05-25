@@ -21,6 +21,8 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Build with Maven
         run: | 
+          export DISPLAY=:99.0
+          sh -e /etc/init.d/xvfb start
           ./wollokInstall.sh
           cd org.uqbar.project.wollok.releng/
           export PROFILES=normalProfile
