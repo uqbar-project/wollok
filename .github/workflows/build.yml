@@ -36,7 +36,7 @@ jobs:
            clean install jacoco:report \
            coveralls:report \
            --no-transfer-progress \
-           -D repoToken=${{ secrets.COVERALLS_TOKEN }} \
+           -DrepoToken=${{ secrets.COVERALLS_TOKEN }} \
            -P $PROFILES
 
 
