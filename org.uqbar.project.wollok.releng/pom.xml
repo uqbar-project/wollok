@@ -353,20 +353,9 @@
 					</coberturaReports>
 					<sourceEncoding>UTF-8</sourceEncoding>
 					<serviceName>travis-ci</serviceName>
+					<repoToken>${env.repoToken} </repoToken>
 					<serviceJobId>${env.TRAVIS_JOB_ID} </serviceJobId>
 				</configuration>
-
-				<configuration>
-					<coberturaReports>
-						<coberturaReport>
-							${basedir}/target/coverage.xml
-						</coberturaReport>
-					</coberturaReports>
-					<sourceEncoding>UTF-8</sourceEncoding>
-					<serviceName>github</serviceName>
-					<repoToken>${env.repoToken} </repoToken>
-				</configuration>
-
 			</plugin>
 			<!-- code coverage -->
 
