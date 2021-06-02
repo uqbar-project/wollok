@@ -34,6 +34,7 @@ jobs:
            -Dtycho.disableP2Mirrors=false -U \
            -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID \
            clean install jacoco:report \
+           coveralls:report \
            --no-transfer-progress \
            -D repoToken=${{ secrets.COVERALLS_TOKEN }} \
            -P $PROFILES
