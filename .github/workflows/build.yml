@@ -38,6 +38,10 @@ jobs:
            --no-transfer-progress \
            -DrepoToken=${{ secrets.COVERALLS_TOKEN }} \
            -P $PROFILES
-
+        env:
+          CI_NAME: github
+          BRANCH_NAME_OR_REF: ${{ github.head_ref || github.ref }}
+          CI_BUILD_NUMBER: ${{ github.run_id }}
+          CI_BUILD_URL: https://github.com/${{ github.repository }}/commit/${{ github.event.after }}/checks
 
       

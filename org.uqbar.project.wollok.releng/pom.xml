@@ -352,8 +352,7 @@
 						</coberturaReport>
 					</coberturaReports>
 					<sourceEncoding>UTF-8</sourceEncoding>
-					<serviceName>github</serviceName>
-					<repoToken>${env.repoToken} </repoToken>
+					<serviceName>travis-ci</serviceName>
 					<serviceJobId>${env.TRAVIS_JOB_ID} </serviceJobId>
 				</configuration>
 			</plugin>
