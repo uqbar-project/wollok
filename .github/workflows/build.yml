@@ -32,6 +32,7 @@ jobs:
           export MAVEN_OPTS=-Xmx2048m
           xvfb-run mvn -e -Darguments='-Dtycho.disableP2Mirrors=false' \
            -D tycho.disableP2Mirrors=false -U \
+           -D service=github \
            -D repoToken=${{ secrets.GITHUB_TOKEN }} \
            clean install jacoco:report \
            coveralls:report \
@@ -48,6 +49,7 @@ jobs:
             *.zip
         env:
           COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CI_NAME: github
           BRANCH_NAME_OR_REF: ${{ github.head_ref || github.ref }}
           CI_BUILD_NUMBER: ${{ github.run_id }}
