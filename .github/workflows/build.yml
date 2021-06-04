@@ -33,7 +33,6 @@ jobs:
           export MAVEN_OPTS=-Xmx2048m
           xvfb-run mvn -e -Darguments='-Dtycho.disableP2Mirrors=false' \
            -D tycho.disableP2Mirrors=false -U \
-           -D TRAVIS_JOB_ID=$TRAVIS_JOB_ID \
            -D repoToken=${{ secrets.COVERALLS_TOKEN }} \
            -D serviceName=github \
            -D serviceBuildUrl=https://github.com/${{ github.repository }}/commit/${{ github.sha }}/checks \
@@ -42,6 +41,3 @@ jobs:
            coveralls:report \
            --no-transfer-progress \
            -P $PROFILES
-
-
-      
