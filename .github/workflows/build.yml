@@ -34,6 +34,8 @@ jobs:
            -D tycho.disableP2Mirrors=false -U \
            -D service=github \
            -D repoToken=${{ secrets.GITHUB_TOKEN }} \
+           -D serviceBuildUrl=https://github.com/${{ github.repository }}/commit/${{ github.sha }}/checks \
+           -D branch=$BRANCH_NAME \           
            clean install jacoco:report \
            coveralls:report \
            --no-transfer-progress \
