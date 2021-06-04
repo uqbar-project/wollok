@@ -353,7 +353,7 @@
 					</coberturaReports>
 					<sourceEncoding>UTF-8</sourceEncoding>
 					<serviceName>github</serviceName>
-					<repoToken>${env.repoToken} </repoToken>
+					<repoToken>${env.COVERALLS_TOKEN}</repoToken>
 				</configuration>
 			</plugin>
 			<!-- code coverage -->

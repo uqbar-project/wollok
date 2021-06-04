@@ -41,3 +41,5 @@ jobs:
            coveralls:report \
            --no-transfer-progress \
            -P $PROFILES
+        env:
+          COVERALLS_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
