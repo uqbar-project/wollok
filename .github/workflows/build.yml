@@ -22,10 +22,6 @@ jobs:
       - name: Run Maven Build
         run: | 
           export DISPLAY=:99.0
-          # if [ -z "${{ secrets.COVERALLS_TOKEN }}" ];
-          #   echo "COVERALLS_TOKEN repository secret not set"
-          #   exit 1
-          # fi 
           sudo apt-get install -y xvfb
           ./wollokInstall.sh
           cd org.uqbar.project.wollok.releng/
@@ -41,6 +37,15 @@ jobs:
            coveralls:report \
            --no-transfer-progress \
            -P $PROFILES
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "Development Build"
+          files: |
+            LICENSE.txt
+            *.zip
         env:
           COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CI_NAME: github
