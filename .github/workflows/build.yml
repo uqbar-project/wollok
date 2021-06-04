@@ -22,7 +22,10 @@ jobs:
       - name: Run Maven Build
         run: | 
           export DISPLAY=:99.0
-          echo COVERALLS_TOKEN ${{ secrets.COVERALLS_TOKEN }}
+          # if [ -z "${{ secrets.COVERALLS_TOKEN }}" ];
+          #   echo "COVERALLS_TOKEN repository secret not set"
+          #   exit 1
+          # fi 
           sudo apt-get install -y xvfb
           ./wollokInstall.sh
           cd org.uqbar.project.wollok.releng/
@@ -33,13 +36,15 @@ jobs:
           export MAVEN_OPTS=-Xmx2048m
           xvfb-run mvn -e -Darguments='-Dtycho.disableP2Mirrors=false' \
            -D tycho.disableP2Mirrors=false -U \
-           -D repoToken=${{ secrets.COVERALLS_TOKEN }} \
-           -D serviceName=github \
-           -D serviceBuildUrl=https://github.com/${{ github.repository }}/commit/${{ github.sha }}/checks \
-           -D branch=$BRANCH_NAME \
+           -D repoToken=${{ secrets.GITHUB_TOKEN }} \
            clean install jacoco:report \
            coveralls:report \
            --no-transfer-progress \
            -P $PROFILES
         env:
-          COVERALLS_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
+          COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CI_NAME: github
+          BRANCH_NAME_OR_REF: ${{ github.head_ref || github.ref }}
+          CI_BUILD_NUMBER: ${{ github.run_id }}
+          CI_BUILD_URL: https://github.com/${{ github.repository }}/commit/${{ github.event.after }}/checks
+          CI_PULL_REQUEST: ${{ steps.refs.outputs.pr_number }}

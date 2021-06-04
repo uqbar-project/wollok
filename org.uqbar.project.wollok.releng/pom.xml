@@ -345,7 +345,7 @@
 				<artifactId>coveralls-maven-plugin</artifactId>
 				<version>4.3.0</version>
 
-				<configuration>
+				<!-- <configuration>
 					<coberturaReports>
 						<coberturaReport>
 							${basedir}/target/coverage.xml
@@ -354,7 +354,7 @@
 					<sourceEncoding>UTF-8</sourceEncoding>
 					<serviceName>github</serviceName>
 					<repoToken>${env.COVERALLS_TOKEN}</repoToken>
-				</configuration>
+				</configuration> -->
 			</plugin>
 			<!-- code coverage -->
 
