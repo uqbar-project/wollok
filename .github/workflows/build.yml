@@ -52,5 +52,8 @@ jobs:
           prerelease: true
           title: "Development Build"
           files: |
-            **.zip
+            **/wollok-linux*64.zip
+            **/wollok-macosx*64.zip
+            **/wollok-win32*64.zip
+
 
