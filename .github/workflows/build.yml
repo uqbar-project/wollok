@@ -21,7 +21,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Run Maven Build
         run: | 
-          gpg -d --batch --passphrase {{ secrets.SETTINGS_GPG_TOKEN }} settings.xml.gpg > ./settings.xml
+          gpg --passphrase {{ secrets.SETTINGS_GPG_TOKEN }} --decrypt settings.xml.gpg > ./settings.xml
           mv ./settings.xml ~/.m2/settings.xml
           export DISPLAY=:99.0
           sudo apt-get install -y xvfb
