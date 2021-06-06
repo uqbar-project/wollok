@@ -21,6 +21,8 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Run Maven Build
         run: | 
+          gpg --decrypt --batch --yes --passphrase {{ secrets.SETTINGS_GPG_TOKEN }} --output /tmp/settings.xml settings.xml.gpg
+          mv /tmp/settings.xml ~/.m2/settings.xml
           export DISPLAY=:99.0
           sudo apt-get install -y xvfb
           ./wollokInstall.sh
@@ -45,7 +47,8 @@ jobs:
           CI_BUILD_NUMBER: ${{ github.run_id }}
           CI_BUILD_URL: https://github.com/${{ github.repository }}/commit/${{ github.event.after }}/checks
           CI_PULL_REQUEST: ${{ steps.refs.outputs.pr_number }}
-      - uses: "marvinpinto/action-automatic-releases@latest"
+      - name: Releasing Latest Development Version
+        uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "latest"
@@ -55,7 +58,8 @@ jobs:
             **/wollok-linux*64.zip
             **/wollok-macosx*64.zip
             **/wollok-win32*64.zip
-      - uses: "marvinpinto/action-automatic-releases@latest"
+      - name: Product Release
+        uses: "marvinpinto/action-automatic-releases@latest"
         if: startsWith(github.ref, 'refs/tags/')
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"

@@ -33,3 +33,6 @@ scripts/wollok-cli
 
 # Ignoring wollok-language files
 org.uqbar.project.wollok.lib/src/wollok/*.wlk
+
+# Ignoring settings.xml just because it should be decrypted
+settings.xml
