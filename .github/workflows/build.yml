@@ -22,7 +22,7 @@ jobs:
       - name: Run Maven Build
         run: | 
           gpg --version
-          gpg -d --passphrase {{ secrets.SETTINGS_GPG_TOKEN }} --batch --yes settings.xml.gpg > ./settings.xml
+          gpg -d --passphrase {{ secrets.SETTINGS_GPG_TOKEN }} settings.xml.gpg > ./settings.xml
           mv ./settings.xml ~/.m2/settings.xml
           export DISPLAY=:99.0
           sudo apt-get install -y xvfb
