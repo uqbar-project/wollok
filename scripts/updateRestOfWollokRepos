@@ -1,9 +1,5 @@
 # openssl aes-256-cbc -k "$travis_key_password" -d -md sha256 -a -in wolloksite_key.enc -out /tmp/wolloksite_key
-openssl aes-256-cbc -k $WOLLOK_CLI_TOKEN -d -md sha256 -a -in wollokcli_key.enc -out ~/.ssh/wollokcli_key
 # chmod 600 /tmp/wolloksite_key
-chmod 600 ~/.ssh/wollokcli_key
-echo Copying config to .ssh
-cp ssh_config ~/.ssh/config
 eval `ssh-agent -s`
 
 echo "Cloning wollok-cli repo..."
