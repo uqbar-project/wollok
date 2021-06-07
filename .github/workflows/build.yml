@@ -51,6 +51,7 @@ jobs:
           CI_BUILD_NUMBER: ${{ github.run_id }}
           CI_BUILD_URL: https://github.com/${{ github.repository }}/commit/${{ github.event.after }}/checks
           CI_PULL_REQUEST: ${{ steps.refs.outputs.pr_number }}
+          WOLLOK_CLI_TOKEN: ${{ secrets.WOLLOK_CLI_TOKEN }}
       - name: Releasing Latest Development Version
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
