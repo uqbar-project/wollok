@@ -24,12 +24,13 @@ jobs:
           mkdir ~/.ssh
           chmod 755 ~/.ssh
           openssl aes-256-cbc -pass pass:${{ secrets.WOLLOK_CLI_TOKEN }} -pbkdf2 -in ./scripts/wollokcli_key.enc -out ~/.ssh/wollokcli_key -d
-          chmod 644 ~/.ssh/wollokcli_key
+          chmod 600 ~/.ssh/wollokcli_key
           cd ./scripts
           cp ./ssh_config ~/.ssh/config
           chmod 777 ./updateRestOfWollokRepos.sh
           "./updateRestOfWollokRepos.sh"
           cd ..
+          exit 1
       - name: Run Maven Build
         run: | 
           openssl aes-256-cbc -pass pass:${{ secrets.SETTINGS_GPG_TOKEN }} -pbkdf2 -in ./settings.xml.enc -out ./settings.xml -d
