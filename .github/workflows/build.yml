@@ -21,9 +21,9 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Updating wollok-cli
         run: | 
-          cp ./scripts/ssh_config ~/.ssh/config
           openssl aes-256-cbc -pass pass:${{ secrets.WOLLOK_CLI_TOKEN }} -pbkdf2 -in ./scripts/wollokcli_key.enc -out ~/.ssh/wollokcli_key -d
           chmod 600 ~/.ssh/wollokcli_key
+          cp ./scripts/ssh_config ~/.ssh/config
       - name: Run Maven Build
         run: | 
           openssl aes-256-cbc -pass pass:${{ secrets.SETTINGS_GPG_TOKEN }} -pbkdf2 -in ./settings.xml.enc -out ./settings.xml -d
