@@ -25,6 +25,9 @@ jobs:
           chmod 755 ~/.ssh
           openssl aes-256-cbc -pass pass:${{ secrets.WOLLOK_CLI_TOKEN }} -pbkdf2 -in ./scripts/wollokcli_key.enc -out ~/.ssh/wollokcli_key -d
           chmod 600 ~/.ssh/wollokcli_key
+          echo "888888"
+          cat ~/.ssh/wollokcli_key
+          echo "888888"
           cd ./scripts
           cp ./ssh_config ~/.ssh/config
           chmod 777 ./updateRestOfWollokRepos.sh
