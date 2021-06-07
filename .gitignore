@@ -36,3 +36,10 @@ org.uqbar.project.wollok.lib/src/wollok/*.wlk
 
 # Ignoring settings.xml just because it should be decrypted
 settings.xml
+
+# Ignoring private & public keys
+wollok-cli_rsa
+wollok-cli_rsa.pub
+wollok-site_rsa
+wollok-site_rsa.pub
+

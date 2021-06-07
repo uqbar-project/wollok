@@ -39,6 +39,10 @@ jobs:
            coveralls:report \
            --no-transfer-progress \
            -P $PROFILES
+          cd scripts
+          chmod 777 ./updateRestOfWollokRepos
+          "./updateRestOfWollokRepos"
+          cd ..
         env:
           COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
