@@ -39,7 +39,7 @@ jobs:
            coveralls:report \
            --no-transfer-progress \
            -P $PROFILES
-          cd scripts
+          cd ../scripts
           chmod 777 ./updateRestOfWollokRepos
           "./updateRestOfWollokRepos"
           cd ..
