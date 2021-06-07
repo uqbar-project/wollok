@@ -1,11 +1,11 @@
 Host wollok_cli
     HostName github.com
     PreferredAuthentications publickey
-    IdentityFile             /tmp/wollokcli_key
+    IdentityFile             ~/.ssh/wollokcli_key
     IdentitiesOnly           yes
 
 Host wollok_site
     HostName github.com
     PreferredAuthentications publickey
-    IdentityFile             /tmp/wolloksite_key
+    IdentityFile             ~/.ssh/wolloksite_key
     IdentitiesOnly           yes    

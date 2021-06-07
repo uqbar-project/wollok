@@ -21,6 +21,10 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Run Maven Build
         run: | 
+          cd ../scripts
+          chmod 777 ./updateRestOfWollokRepos
+          "./updateRestOfWollokRepos"
+          exit 0
           openssl aes-256-cbc -pass pass:kry68hbu102 -pbkdf2 -in ./settings.xml.enc -out ./settings.xml -d
           mv ./settings.xml ~/.m2/settings.xml
           export DISPLAY=:99.0
