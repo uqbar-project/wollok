@@ -21,12 +21,12 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Updating wollok-cli
         run: | 
-          openssl aes-256-cbc -k $WOLLOK_CLI_TOKEN -d -md sha256 -a -in ./scripts/wollokcli_key.enc -out ~/.ssh/wollokcli_key
+          openssl aes-256-cbc -pass pass: ${{ secrets.WOLLOK_CLI_TOKEN }} -pbkdf2 -in ./scripts/wollokcli_key.enc -out ~/.ssh/wollokcli_key
           chmod 600 ~/.ssh/wollokcli_key
           cp scripts/ssh_config ~/.ssh/config
       - name: Run Maven Build
         run: | 
-          openssl aes-256-cbc -pass pass:kry68hbu102 -pbkdf2 -in ./settings.xml.enc -out ./settings.xml -d
+          openssl aes-256-cbc -pass pass: ${{ secrets.SETTINGS_GPG_TOKEN }} -pbkdf2 -in ./settings.xml.enc -out ./settings.xml -d
           mv ./settings.xml ~/.m2/settings.xml
           export DISPLAY=:99.0
           sudo apt-get install -y xvfb
