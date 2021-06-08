@@ -74,7 +74,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_RUN_ID: $GITHUB_RUN_ID
       - name: Releasing Latest Development Version
-        if: {{ github.ref == 'ref/head/dev' }}
+        # if: {{ github.ref == 'ref/head/dev' }}
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
