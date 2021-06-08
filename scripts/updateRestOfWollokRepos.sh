@@ -32,6 +32,7 @@ git checkout -b $BRANCH_ID
 git add .
 git commit -m "Updating Wollok JARs library from Github Action => $GITHUB_RUN_ID"
 git push --set-upstream -v origin $BRANCH_ID
+gh pr create --base master --title "New Wollok Version" --body "Updating Wollok Version - Github Action $GITHUB_RUN_ID"
 cd ..
 
 # **************************************************************************************
@@ -79,6 +80,7 @@ git checkout -b $BRANCH_ID
 git add .
 git commit -m "Updating Wollokdoc files from Github Action $GITHUB_RUN_ID"
 git push --set-upstream -v origin $BRANCH_ID
+gh pr create --base master --title "New Wollok Version" --body "Updating Wollok Version - Github Action $GITHUB_RUN_ID"
 cd ..
 echo "****************************************************************************"
 
