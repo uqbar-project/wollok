@@ -20,6 +20,7 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: Decrypting keys
+        # if: {{ github.ref == 'ref/head/master' }}
         run: | 
           echo "Creating ssh"
           mkdir ~/.ssh
@@ -28,6 +29,7 @@ jobs:
           openssl aes-128-ctr -d -K ${{ secrets.WOLLOK_CLI_KEY }} -iv ${{ secrets.WOLLOK_CLI_IV }} -in ./scripts/wollokcli_key.enc -out ~/.ssh/wollokcli_key
           echo "Decrypting wollok-site"
           openssl aes-128-ctr -d -K ${{ secrets.WOLLOK_SITE_KEY }} -iv ${{ secrets.WOLLOK_SITE_IV }} -in ./scripts/wolloksite_key.enc -out ~/.ssh/wolloksite_key
+          chmod 600 ~/.ssh/wollokcli_key ~/.ssh/wolloksite_key
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_JOB: $GITHUB_JOB
@@ -61,6 +63,7 @@ jobs:
           CI_BUILD_URL: https://github.com/${{ github.repository }}/commit/${{ github.event.after }}/checks
           CI_PULL_REQUEST: ${{ steps.refs.outputs.pr_number }}
       - name: Updating wollok-cli & wollok-site
+        # if: {{ github.ref == 'ref/head/master' }}
         run: | 
           cd ./scripts
           cp ./ssh_config ~/.ssh/config
