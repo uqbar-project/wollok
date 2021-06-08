@@ -22,16 +22,17 @@ cp ../org.uqbar.project.wollok.lib/src/wollok/*.wlk ./libs
 
 echo "List of wollok-cli files updated"
 cd wollok-cli
-echo $GITHUB_JOB > wollok-cli.lastUpdated
+echo $GITHUB_RUN_ID > wollok-cli.lastUpdated
 git status
 echo ""
 echo "============================================================================"
 echo "Pushing wollok-cli files"
-BRANCH_ID=next-version-$GITHUB_JOB
+BRANCH_ID=next-version-$GITHUB_RUN_ID
 git checkout -b $BRANCH_ID
 git add .
-git commit -m "Updating Wollok JARs library from Github Action => $GITHUB_JOB"
+git commit -m "Updating Wollok JARs library from Github Action => $GITHUB_RUN_ID"
 git push --set-upstream -v origin $BRANCH_ID
+cd ..
 
 # **************************************************************************************
 #                                         WOLLOK-SITE
@@ -67,8 +68,8 @@ ls   ./wollok-site/en/documentation/wollokdoc
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 
 alias ssh='ssh -F <(cat .ssh/config ~/.ssh/wolloksite_key)'
-cd ../wollok-site
-echo $GITHUB_JOB > wollok-site.lastUpdated
+cd ./wollok-site
+echo $GITHUB_RUN_ID > wollok-site.lastUpdated
 echo "List of wollok-site files updated"
 git status
 echo ""
@@ -76,8 +77,9 @@ echo "==========================================================================
 echo "Pushing wollok-site files"
 git checkout -b $BRANCH_ID
 git add .
-git commit -m "Updating Wollokdoc files from Github Action $GITHUB_JOB"
+git commit -m "Updating Wollokdoc files from Github Action $GITHUB_RUN_ID"
 git push --set-upstream -v origin $BRANCH_ID
+cd ..
 echo "****************************************************************************"
 
 echo "...done"
