@@ -40,6 +40,14 @@ jobs:
            --no-transfer-progress \
            -P $PROFILES
           cd ..
+        env:
+          COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CI_NAME: github
+          BRANCH_NAME_OR_REF: ${{ github.head_ref || github.ref }}
+          CI_BUILD_NUMBER: ${{ github.run_id }}
+          CI_BUILD_URL: https://github.com/${{ github.repository }}/commit/${{ github.event.after }}/checks
+          CI_PULL_REQUEST: ${{ steps.refs.outputs.pr_number }}
       - name: Updating wollok-cli & wollok-site
         run: | 
           mkdir ~/.ssh
@@ -52,14 +60,7 @@ jobs:
           "./updateRestOfWollokRepos.sh"
           cd ..
         env:
-          COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CI_NAME: github
-          BRANCH_NAME_OR_REF: ${{ github.head_ref || github.ref }}
-          CI_BUILD_NUMBER: ${{ github.run_id }}
-          CI_BUILD_URL: https://github.com/${{ github.repository }}/commit/${{ github.event.after }}/checks
-          CI_PULL_REQUEST: ${{ steps.refs.outputs.pr_number }}
-          WOLLOK_CLI_TOKEN: ${{ secrets.WOLLOK_CLI_TOKEN }}
           GITHUB_JOB: $GITHUB_JOB
       - name: Releasing Latest Development Version
         uses: "marvinpinto/action-automatic-releases@latest"
