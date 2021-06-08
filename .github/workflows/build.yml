@@ -19,21 +19,6 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: Updating wollok-cli
-        run: | 
-          mkdir ~/.ssh
-          chmod 755 ~/.ssh
-          openssl aes-256-cbc -pass pass:iuhaser7832ruheris32 -pbkdf2 -in ./scripts/wollokcli_key.enc -out ~/.ssh/wollokcli_key -d
-          chmod 600 ~/.ssh/wollokcli_key
-          echo "888888"
-          cat ~/.ssh/wollokcli_key
-          echo "888888"
-          cd ./scripts
-          cp ./ssh_config ~/.ssh/config
-          chmod 777 ./updateRestOfWollokRepos.sh
-          "./updateRestOfWollokRepos.sh"
-          cd ..
-          exit 1
       - name: Run Maven Build
         run: | 
           openssl aes-256-cbc -pass pass:${{ secrets.SETTINGS_GPG_TOKEN }} -pbkdf2 -in ./settings.xml.enc -out ./settings.xml -d
@@ -55,6 +40,17 @@ jobs:
            --no-transfer-progress \
            -P $PROFILES
           cd ..
+      - name: Updating wollok-cli & wollok-site
+        run: | 
+          mkdir ~/.ssh
+          chmod 755 ~/.ssh
+          openssl aes-128-ctr -d -K {{ secrets.WOLLOK_CLI_KEY }} -iv {{ secrets.WOLLOK_CLI_IV }} -in wollokcli_key.enc -out ~/.ssh/wollokcli_key
+          openssl aes-128-ctr -d -K {{ secrets.WOLLOK_SITE_KEY }} -iv {{ secrets.WOLLOK_SITE_IV }} -in wolloksite_key.enc -out ~/.ssh/wolloksite_key
+          cd ./scripts
+          cp ./ssh_config ~/.ssh/config
+          chmod 777 ./updateRestOfWollokRepos.sh
+          "./updateRestOfWollokRepos.sh"
+          cd ..
         env:
           COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -64,6 +60,7 @@ jobs:
           CI_BUILD_URL: https://github.com/${{ github.repository }}/commit/${{ github.event.after }}/checks
           CI_PULL_REQUEST: ${{ steps.refs.outputs.pr_number }}
           WOLLOK_CLI_TOKEN: ${{ secrets.WOLLOK_CLI_TOKEN }}
+          GITHUB_JOB: $GITHUB_JOB
       - name: Releasing Latest Development Version
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
