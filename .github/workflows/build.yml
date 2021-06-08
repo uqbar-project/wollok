@@ -19,6 +19,18 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+      - name: Decrypting keys
+        run: | 
+          echo "Creating ssh"
+          mkdir ~/.ssh
+          chmod 755 ~/.ssh
+          echo "Decripting wollok-cli"
+          openssl aes-128-ctr -d -K {{ secrets.WOLLOK_CLI_KEY }} -iv {{ secrets.WOLLOK_CLI_IV }} -in wollokcli_key.enc -out ~/.ssh/wollokcli_key
+          echo "Decripting wollok-site"
+          openssl aes-128-ctr -d -K {{ secrets.WOLLOK_SITE_KEY }} -iv {{ secrets.WOLLOK_SITE_IV }} -in wolloksite_key.enc -out ~/.ssh/wolloksite_key
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_JOB: $GITHUB_JOB
       - name: Run Maven Build
         run: | 
           openssl aes-256-cbc -pass pass:${{ secrets.SETTINGS_GPG_TOKEN }} -pbkdf2 -in ./settings.xml.enc -out ./settings.xml -d
@@ -50,10 +62,6 @@ jobs:
           CI_PULL_REQUEST: ${{ steps.refs.outputs.pr_number }}
       - name: Updating wollok-cli & wollok-site
         run: | 
-          mkdir ~/.ssh
-          chmod 755 ~/.ssh
-          openssl aes-128-ctr -d -K {{ secrets.WOLLOK_CLI_KEY }} -iv {{ secrets.WOLLOK_CLI_IV }} -in wollokcli_key.enc -out ~/.ssh/wollokcli_key
-          openssl aes-128-ctr -d -K {{ secrets.WOLLOK_SITE_KEY }} -iv {{ secrets.WOLLOK_SITE_IV }} -in wolloksite_key.enc -out ~/.ssh/wolloksite_key
           cd ./scripts
           cp ./ssh_config ~/.ssh/config
           chmod 777 ./updateRestOfWollokRepos.sh
