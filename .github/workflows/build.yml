@@ -25,9 +25,9 @@ jobs:
           mkdir ~/.ssh
           chmod 755 ~/.ssh
           echo "Decrypting wollok-cli"
-          openssl aes-128-ctr -d -K {{ secrets.WOLLOK_CLI_KEY }} -iv {{ secrets.WOLLOK_CLI_IV }} -in ./scripts/wollokcli_key.enc -out ~/.ssh/wollokcli_key
+          openssl aes-128-ctr -d -K ${{ secrets.WOLLOK_CLI_KEY }} -iv ${{ secrets.WOLLOK_CLI_IV }} -in ./scripts/wollokcli_key.enc -out ~/.ssh/wollokcli_key
           echo "Decrypting wollok-site"
-          openssl aes-128-ctr -d -K {{ secrets.WOLLOK_SITE_KEY }} -iv {{ secrets.WOLLOK_SITE_IV }} -in ./scripts/wolloksite_key.enc -out ~/.ssh/wolloksite_key
+          openssl aes-128-ctr -d -K ${{ secrets.WOLLOK_SITE_KEY }} -iv ${{ secrets.WOLLOK_SITE_IV }} -in ./scripts/wolloksite_key.enc -out ~/.ssh/wolloksite_key
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_JOB: $GITHUB_JOB
