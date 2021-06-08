@@ -20,7 +20,7 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: Decrypting keys
-        if: {{ github.ref == 'ref/head/master' }}
+        # if: {{ github.ref == 'ref/head/master' }}
         run: | 
           echo "Creating ssh"
           mkdir ~/.ssh
@@ -63,7 +63,7 @@ jobs:
           CI_BUILD_URL: https://github.com/${{ github.repository }}/commit/${{ github.event.after }}/checks
           CI_PULL_REQUEST: ${{ steps.refs.outputs.pr_number }}
       - name: Updating wollok-cli & wollok-site
-        if: {{ github.ref == 'ref/head/master' }}
+        # if: {{ github.ref == 'ref/head/master' }}
         run: | 
           cd ./scripts
           cp ./ssh_config ~/.ssh/config
