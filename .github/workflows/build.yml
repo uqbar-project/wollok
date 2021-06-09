@@ -63,7 +63,7 @@ jobs:
           CI_BUILD_URL: https://github.com/${{ github.repository }}/commit/${{ github.event.after }}/checks
           CI_PULL_REQUEST: ${{ steps.refs.outputs.pr_number }}
       - name: Updating wollok-cli & wollok-site
-        # if: {{ github.ref == 'ref/head/master' }}
+        if: github.ref == 'ref/head/master'
         run: | 
           cd ./scripts
           cp ./ssh_config ~/.ssh/config
@@ -74,7 +74,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_RUN_ID: $GITHUB_RUN_ID
       - name: Releasing Latest Development Version
-        # if: {{ github.ref == 'ref/head/dev' }}
+        if: github.ref == 'ref/head/dev'
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"

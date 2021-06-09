@@ -32,7 +32,9 @@ git checkout -b $BRANCH_ID
 git add .
 git commit -m "Updating Wollok JARs library from Github Action => $GITHUB_RUN_ID"
 git push --set-upstream -v origin $BRANCH_ID
-git request-pull "Updating Wollok Version - Github Action $GITHUB_RUN_ID" origin/master $BRANCH_ID
+gh auth login --hostname wollok_cli
+# por el momento no podemos crear PRs porque `gh` no soporta conexión vía SSH
+# gh pr create --base master --title "New Wollok Version" --body "Updating Wollok Version - Github Action $GITHUB_RUN_ID"
 cd ..
 
 # **************************************************************************************
@@ -80,7 +82,9 @@ git checkout -b $BRANCH_ID
 git add .
 git commit -m "Updating Wollokdoc files from Github Action $GITHUB_RUN_ID"
 git push --set-upstream -v origin $BRANCH_ID
-git request-pull "Updating Wollok Version - Github Action $GITHUB_RUN_ID" origin/master $BRANCH_ID
+
+# por el momento no podemos crear PRs porque `gh` no soporta conexión vía SSH
+# gh pr create --base master --title "New Wollok Version" --body "Updating Wollok Version - Github Action $GITHUB_RUN_ID"
 cd ..
 echo "****************************************************************************"
 
