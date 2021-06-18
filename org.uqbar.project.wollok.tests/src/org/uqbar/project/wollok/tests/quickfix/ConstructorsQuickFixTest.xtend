@@ -226,8 +226,8 @@ class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 			}
 		}
 		''']
-		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_add_missing_initializations_name, 4, "You must provide initial value to the following references: saludo, color")
-	}	
+		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_add_missing_initializations_name, 4, "You must provide initial value to the following references: color, saludo")
+	}
 
 	@Test
 	def addInitializationsInConstructorCall2(){

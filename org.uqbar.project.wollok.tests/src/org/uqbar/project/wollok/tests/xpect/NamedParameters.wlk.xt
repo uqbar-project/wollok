@@ -31,7 +31,7 @@ class Entrenador {
 		pepita = new Ave(energia = 50)
 	}
 	method crearOtraAve() {
-		// XPECT errors --> "You must provide initial value to the following references: peso, energia" at "new Golondrina(edad = 2)"
+		// XPECT errors --> "You must provide initial value to the following references: energia, peso" at "new Golondrina(edad = 2)"
 		otraPepita = new Golondrina(edad = 2)
 		// XPECT errors --> "You must provide initial value to the following references: energia" at "new Golondrina(edad = 10, peso = 5)"
 		otraPepita = new Golondrina(edad = 10, peso = 5)

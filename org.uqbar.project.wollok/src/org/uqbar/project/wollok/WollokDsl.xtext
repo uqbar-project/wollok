@@ -355,7 +355,7 @@ WClass:
 	{WClass}
 	'class' name=ID
 		(('inherits' parents+=WAncestor ('and' parents+=WAncestor)*)?
-			| 'derived' root=[WClass|QualifiedName])	
+			| 'derived' root=[WClass|QualifiedName])
 	'{'
 		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*

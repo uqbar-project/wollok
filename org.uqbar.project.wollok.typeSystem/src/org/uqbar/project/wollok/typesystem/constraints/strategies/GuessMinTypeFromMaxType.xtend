@@ -6,6 +6,7 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.visitors.AbstractWollokVisitor
 import org.uqbar.project.wollok.wollokDsl.Import
+import org.uqbar.project.wollok.wollokDsl.WAncestor
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
@@ -53,7 +54,7 @@ class GuessMinTypeVisitor extends AbstractWollokVisitor {
 
 	/** Execute actions after visiting child nodes */
 	override dispatch afterVisit(EObject it) {
-		if(shouldVisit) analiseVariable(tvar)
+		if (shouldVisit) analiseVariable(tvar)
 	}
 
 	// Avoid visiting objects that do not have associated type variables 
@@ -65,6 +66,7 @@ class GuessMinTypeVisitor extends AbstractWollokVisitor {
 	def dispatch afterVisit(Import it) {}
 	def dispatch afterVisit(WPositionalArgumentsList it) {}
 	def dispatch afterVisit(WNamedArgumentsList it) {}
+	def dispatch afterVisit(WAncestor it) {}
 
 	override dispatch void visitChildren(WAssignment it) {
 		// We are not generating type variables for the reference in an assignment.

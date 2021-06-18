@@ -13,7 +13,6 @@ class ExceptionTypeDeclarations extends TypeDeclarations {
 		ExceptionType >> "printStackTraceWithPrefix" === #[String, unionType(console, StringPrinter)] => Void
 		ExceptionType >> "createStackTraceElement" === #[String, String] => StackTraceElement
 		
-		
 		StackTraceElement.variable("contextDescription", String)
 		StackTraceElement.variable("location", String)
 	}

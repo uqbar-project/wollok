@@ -196,7 +196,7 @@ abstract class TypeDeclarations {
 	def Sound() { classTypeAnnotation(SOUND) }
 
 	def ExceptionType() { classTypeAnnotation(EXCEPTION) }
-
+	
 	def StackTraceElement() { classTypeAnnotation(STACK_TRACE_ELEMENT) }
 
 	def InstanceVariableMirror() { classTypeAnnotation(INSTANCE_VARIABLE_MIRROR) }

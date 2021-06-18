@@ -22,7 +22,6 @@ abstract class ConstructorConstraintsGenerator<T extends EObject> extends CrossR
 	
 	def generate(EObject it, WClass clazz, EList<WInitializer> initializers) {
 		// Wollok 3.0.0 removed constructor idea, so constructor is null
-		// TODO: We should consider also argumentList.initializers
 	}
 }
 
@@ -44,11 +43,13 @@ class ObjectParentConstraintsGenerator extends ConstructorConstraintsGenerator<W
 	}
 	
 	override generate(WMethodContainer it) {
+//		parentParameterValues
 //		if (parent.hasParentParameters)
-//			generate(parent, parent?.parentParameters)
+//			generate(parent, parentParametersValues)
 //		else
-		if (parent !== null && !parent.hasParentParameters)
+		if (parent !== null && !parent.hasParentParameters) {
 			generate(parent)
+		}
 	}
 	
 }
