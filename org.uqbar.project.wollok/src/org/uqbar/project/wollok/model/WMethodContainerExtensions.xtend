@@ -566,8 +566,8 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		]
 	}
 	
-	def static mixinsForLinearization(WMethodContainer it) {
-		(mixins ?: newArrayList).clone.reverse
+	def static List<WMethodContainer> mixinsForLinearization(WMethodContainer it) {
+		(mixins ?: newArrayList).clone.toList
 	}
 	
 	def static parentClassesForLinearization(WMethodContainer it) {
