@@ -27,7 +27,6 @@ import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WFile
-import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -241,7 +240,20 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			variableDeclarations
 		]
 	}
-
+	
+	def static variablesMap(WMethodContainer it) {
+		linearizeHierarchy.fold(newHashMap) [variableDeclarations, type |
+			val key = type.keyForVariablesMap
+			val newVariableDeclarations = variableDeclarations.getOrDefault(key, newArrayList)
+			newVariableDeclarations.addAll(type.variableDeclarations)
+			variableDeclarations.put(key, newVariableDeclarations)
+			variableDeclarations
+		]
+	}
+	
+	def static dispatch keyForVariablesMap(EObject it) { "*" }
+	def static dispatch keyForVariablesMap(WMixin it) { name	}
+	
 	def static List<WVariableDeclaration> allVariableDeclarations(WMethodContainer it, WollokObject wo) {
 		// Step 1 - Obtaining all variable declarations 
 		val variableDeclarations = allVariableDeclarations
@@ -838,24 +850,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		parent !== null && parent.isPropertyAllowed
 	}
 
-	def static hasParentParameters(WMethodContainer mc) {
-		!mc.parentParameterValues.isEmpty
-	}
-
-	def static dispatch List<WInitializer> parentParameterValues(WMethodContainer mc) { newArrayList }
-	def static dispatch List<WInitializer> parentParameterValues(WClass c) {
-		c.parents.parentParameterValues
-	}
-	def static dispatch List<WInitializer> parentParameterValues(WNamedObject o) {
-		o.parents.parentParameterValues
-	}
-	def static dispatch List<WInitializer> parentParameterValues(WObjectLiteral o) {
-		o.parents.parentParameterValues
-	}
-	def static dispatch parentParameterValues(EList<WAncestor> parents) {
-		parents.flatMap [ parentParameters?.initializers ?: newArrayList ].toList
-	}
-	
 	def static dispatch isCustom(WMethodContainer o) { !o.fqn.startsWith("wollok.") }
 	def static dispatch isCustom(EObject o) { false }
 

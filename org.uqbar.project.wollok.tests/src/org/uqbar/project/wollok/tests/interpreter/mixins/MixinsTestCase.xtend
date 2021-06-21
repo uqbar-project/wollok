@@ -76,7 +76,7 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 		}
 		
 		test "la clase se inicializa correctamente con los parámetros nombrados" {
-			const yo = new MundoFeliz(a = 1, b = 2) with MundoCerrado
+			const yo = object inherits MundoCerrado(a = 1) and MundoFeliz(b = 2) {}
 			assert.equals(yo.a(), 1)
 			assert.equals(yo.b(), 2)
 			assert.that(yo.c())

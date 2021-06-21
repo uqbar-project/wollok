@@ -77,6 +77,8 @@ import static extension org.uqbar.project.wollok.model.ResourceUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
 
+import static extension org.uqbar.project.wollok.model.WNamedParametersExtensions.*
+
 /**
  * Extension methods to Wollok semantic model.
  * 
@@ -351,13 +353,13 @@ class WollokModelExtensions {
 	def static dispatch EList<WExpression> values(EObject o) { ECollections.emptyEList }
 
 	def static List<WVariableDeclaration> uninitializedReferences(WMethodContainer it) {
-		allVariableDeclarations.filter[ variableDeclaration | variableDeclaration.right === null && !isInitializedAsNamedParameter(variableDeclaration) ].toList
+		allVariableDeclarations.filter[ variableDeclaration | variableDeclaration.right === null && !isInitializedAsNamedParameter(variableDeclaration.variable) ].toList
 	}
 	
-	def static isInitializedAsNamedParameter(WMethodContainer mc, WVariableDeclaration v) {
-		mc.parentParameterValues.exists [ initializer |
-			initializer.initializer.name.equals(v.variable.name)
-		]	
+	def static isInitializedAsNamedParameter(WMethodContainer it, WVariable variable) {
+		allInitializers.exists [ initializer |
+			initializer.initializer.name.equals(variable.name)
+		]
 	}
 
 	def static List<String> argumentsNames(EList<WInitializer> initializers) {
@@ -371,11 +373,11 @@ class WollokModelExtensions {
 	}
 
 	def static dispatch List<WVariableDeclaration> uninitializedNamedParameters(WNamedObject it) {
-		internalUninitializedNamedParameters(uninitializedReferences, parentParameterValues.map [ getInitializer.name ].toList)
+		internalUninitializedNamedParameters(uninitializedReferences, allInitializers.map [ getInitializer.name ].toList)
 	}
 
 	def static dispatch List<WVariableDeclaration> uninitializedNamedParameters(WObjectLiteral it) {
-		internalUninitializedNamedParameters(uninitializedReferences, parentParameterValues.map [ getInitializer.name ].toList)
+		internalUninitializedNamedParameters(uninitializedReferences, allInitializers.map [ getInitializer.name ].toList)
 	}
 
 	def static internalUninitializedNamedParameters(List<WVariableDeclaration> uninitializedReferences, List<String> namedParameters) {

@@ -10,6 +10,7 @@ import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.model.WNamedParametersExtensions.*
 
 /**
  * @author npasserini

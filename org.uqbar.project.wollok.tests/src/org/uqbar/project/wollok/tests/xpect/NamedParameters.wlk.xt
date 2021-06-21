@@ -25,7 +25,7 @@ class Entrenador {
 	method crearUnAve() {
 		// XPECT errors --> "You must provide initial value to the following references: energia" at "new Ave(edad = 2)"
 		pepita = new Ave(edad = 2)
-		// XPECT errors --> "Reference inexistente not found in class Ave" at "inexistente = true"
+		// XPECT errors --> "Reference inexistente not found in Ave" at "inexistente = true"
 		pepita = new Ave(energia = 12, inexistente = true)
 		pepita = new Ave(edad = 2, energia = 50)
 		pepita = new Ave(energia = 50)
@@ -58,12 +58,12 @@ class Heroe {
 object superman inherits Heroe(nombre = "Clark Kent", traje = "rojo y azul") {
 	
 }
-// XPECT errors --> "Reference apellido not found in class Heroe" at "apellido = \"Wilson\""
+// XPECT errors --> "Reference apellido not found in Heroe" at "apellido = \"Wilson\""
 object deadpool inherits Heroe(apellido = "Wilson") {
 	
 }
 object charlie {
-	// XPECT errors --> "Reference apellido not found in class Heroe" at "apellido = \"Fawcett\""
+	// XPECT errors --> "Reference apellido not found in Heroe" at "apellido = \"Fawcett\""
 	const angel1 = object inherits Heroe(apellido = "Fawcett") {}
 	const angel2 = object inherits Heroe(nombre = "") {}
 	

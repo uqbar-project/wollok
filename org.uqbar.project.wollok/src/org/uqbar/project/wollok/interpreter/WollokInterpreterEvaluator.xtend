@@ -75,6 +75,7 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import static extension org.uqbar.project.wollok.model.WNamedParametersExtensions.*
 
 /**
  * It's the real "interpreter".
@@ -290,7 +291,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			l.addMixinsMembers(wo)
 			// 2. initialized named parameters
 			if (l.hasParentParameters) {
-				wo.initializeObject(l.parentParameterValues)
+				wo.initializeObject(l.allInitializers)
 			}
 			// 3. initialize pending attributes (not passed in named parameters)
 			l.allVariableDeclarations(wo).forEach [ wo.initializeAttribute(it) ]
@@ -347,7 +348,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			wollokClass.addInheritsMembers(wo)
 			// 2. initialized named parameters
 			if (wollokClass.hasParentParameters) {
-				wo.initializeObject(wollokClass.parentParameterValues)
+				wo.initializeObject(wollokClass.allInitializers)
 			}
 			wo.initializeObject(call.initializers)
 			// 3. initialize pending attributes (not passed in named parameters)
@@ -565,7 +566,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 				// 2. initialized named parameters over the parent (if it has)
 				if (namedObject.hasParentParameters)
-					wollokObject.initializeObject(namedObject.parentParameterValues)
+					wollokObject.initializeObject(namedObject.allInitializers)
 
 				// 3. initialize pending attributes (not passed in named parameters)
 				namedObject.initializeMembers(wollokObject)			

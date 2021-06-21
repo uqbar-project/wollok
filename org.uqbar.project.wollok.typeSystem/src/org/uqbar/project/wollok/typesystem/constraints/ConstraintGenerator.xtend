@@ -43,6 +43,7 @@ import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.model.WNamedParametersExtensions.*
 
 /**
  * @author npasserini
@@ -126,25 +127,25 @@ class ConstraintGenerator {
 
 	def dispatch void generate(WNamedObject it) {
 		// TODO Process supertype information: mixins
-		parentParameterValues?.forEach[generateVariables]
+		allInitializers?.forEach[generateVariables]
 		members.forEach[generateVariables]
-		if(parentParameterValues !== null) objectParentConstraintsGenerator.add(it)
+		if(allInitializers !== null) objectParentConstraintsGenerator.add(it)
 	}
 
 	def dispatch void generate(WClass it) {
 		// TODO Process supertype information: mixins
-		parentParameterValues?.forEach[generateVariables]
+		allInitializers?.forEach[generateVariables]
 		
 		members.forEach[generateVariables]
 	}
 
 	def dispatch void generate(WObjectLiteral it) {
 		// TODO Process supertype information: mixins
-		parentParameterValues?.forEach[generateVariables]
+		allInitializers?.forEach[generateVariables]
 		members.forEach[generateVariables]
 		typeSystem.allTypes.add(objectLiteralType)
 		newTypeVariable.beSealed(objectLiteralType)
-		if(parentParameterValues !== null) objectParentConstraintsGenerator.add(it)
+		if(allInitializers !== null) objectParentConstraintsGenerator.add(it)
 	}
 
 	def dispatch void generate(WSuite it) {
