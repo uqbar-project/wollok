@@ -114,11 +114,11 @@ mixin Named {
 }
 
 // OK !
-class Person inherits Named and Doctor {}
+class Person inherits Doctor and Named {}
 
 // NOT OK ! order matters !
 // XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "PersonBad"
-class PersonBad inherits Doctor and Named {}
+class PersonBad inherits Named and Doctor {}
 
 // OK: super method comes from super class
 
@@ -137,10 +137,10 @@ object o2 inherits Doctor and WithName {
 }
 
 // OK
-object o3 inherits Named and Doctor {}
+object o3 inherits Doctor and Named {}
 
 // XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "o4"
-object o4 inherits Doctor and Named {}
+object o4 inherits Named and Doctor {}
 
 
 //
@@ -159,9 +159,9 @@ object mixingAtInstantiation {
 			object inherits Doctor {},
 			
 			// OK 
-			object inherits Named and Doctor and Pepin {},
-			// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "object inherits Doctor and Named and Pepin {}"
-			object inherits Doctor and Named and Pepin {}
+			object inherits Doctor and Named and Pepin {},
+			// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "object inherits Named and Doctor and Pepin {}"
+			object inherits Named and Doctor and Pepin {}
 		]
 	}
 }
