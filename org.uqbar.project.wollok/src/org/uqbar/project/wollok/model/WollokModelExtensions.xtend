@@ -15,7 +15,6 @@ import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.impl.ImportNormalizer
 import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.WollokConstants
-import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
@@ -51,7 +50,6 @@ import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WParameter
-import org.uqbar.project.wollok.wollokDsl.WPositionalArgumentsList
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
@@ -75,9 +73,8 @@ import static org.uqbar.project.wollok.sdk.WollokSDK.*
 import static extension org.uqbar.project.wollok.libraries.WollokLibExtensions.*
 import static extension org.uqbar.project.wollok.model.ResourceUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
-
 import static extension org.uqbar.project.wollok.model.WNamedParametersExtensions.*
+import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
 
 /**
  * Extension methods to Wollok semantic model.
@@ -108,7 +105,6 @@ class WollokModelExtensions {
 	def static dispatch String fqn(WNamedObject it) { nameWithPackage }
 	def static dispatch String fqn(WMixin it) { nameWithPackage }
 	def static dispatch String fqn(WSuite it) { nameWithPackage }
-	def static dispatch String fqn(MixedMethodContainer it) { nameWithPackage }
 
 
 	def static WMethodDeclaration getInitMethod(WMethodContainer it) {
@@ -349,7 +345,6 @@ class WollokModelExtensions {
 		c.argumentList.values
 	}
 
-	def static dispatch EList<WExpression> values(WPositionalArgumentsList l) { l.values }
 	def static dispatch EList<WExpression> values(EObject o) { ECollections.emptyEList }
 
 	def static List<WVariableDeclaration> uninitializedReferences(WMethodContainer it) {
@@ -368,7 +363,6 @@ class WollokModelExtensions {
 
 	def static dispatch List<WVariableDeclaration> uninitializedNamedParameters(WConstructorCall it) {
 		val uninitializedAttributes = classRef.uninitializedReferences
-		uninitializedAttributes.addAll(mixins.flatMap[allVariableDeclarations].filter[right === null])
 		internalUninitializedNamedParameters(uninitializedAttributes, initializers.argumentsNames ?: #[])
 	}
 
@@ -882,7 +876,6 @@ class WollokModelExtensions {
 		c.argumentList !== null
 	}
 
-	def static dispatch boolean hasNamedParameters(WPositionalArgumentsList l) { false }
 	def static dispatch boolean hasNamedParameters(WNamedArgumentsList l) { true }
 
 	def static dispatch boolean shouldBeLazilyInitialized(EObject e) { false }

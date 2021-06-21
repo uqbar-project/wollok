@@ -340,10 +340,11 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			throw newWollokExceptionAsJava(Messages.LINKING_COULD_NOT_RESOLVE_REFERENCE + call.classNameWhenInvalid)
 		}
 		val wollokClass = call.classRef
-		val container = if (call.mixins.isEmpty) wollokClass else new MixedMethodContainer(call.classRef, call.mixins) 
+		// 
+		val container = wollokClass
 		new WollokObject(interpreter, container) => [ wo |
-			// 1. adding attributes: mixins call - mixin linearization - class hierarchy
-			call.mixins.forEach[ addMembersTo(wo) ]
+			// 1. adding attributes: mixin linearization - class hierarchy
+			// call.mixins.forEach[ addMembersTo(wo) ]
 			wollokClass.addMixinsMembers(wo)
 			wollokClass.addInheritsMembers(wo)
 			// 2. initialized named parameters
@@ -353,19 +354,10 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			wo.initializeObject(call.initializers)
 			// 3. initialize pending attributes (not passed in named parameters)
 			wollokClass.initializeMembers(wo)
-			call.mixins.forEach[ initializeMembers(wo) ]
+			// call.mixins.forEach[ initializeMembers(wo) ]
 			// 4. last initialization opportunity - initialize method
 			wo.callInitIfDefined
 		]
-	}
-
-	def newInstanceWithMixins(WConstructorCall call) {
-		val container = new MixedMethodContainer(call.classRef, call.mixins)
-		new WollokObject(interpreter, container) => [ wo |
-			// mixins first
-			call.mixins.forEach[addMembersTo(wo)]
-			call.classRef.addInheritsMembers(wo)
-		]		
 	}
 
 	def newInstance(String classFQN, WollokObject... arguments) {

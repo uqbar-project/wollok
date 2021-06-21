@@ -103,8 +103,8 @@ class A {
   method calculate() = a + 5
 }
 
-// XPECT errors --> "You must provide initial value to the following references: a, w, y" at "new A() with M"
-const a = new A() with M
+// XPECT errors --> "You must provide initial value to the following references: w, y, a" at "object inherits M and A {}"
+const a = object inherits M and A {}
 
 class C {
   const w

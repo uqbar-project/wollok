@@ -219,7 +219,14 @@ program abc {
 method attack(target) {
                            var attackers = self.standingMembers()
              if (attackers.isEmpty()) throw
-                                new CannotAttackException("No attackers available") attackers.forEach({
+                                new CannotAttackException(
+                                
+                                
+                                
+                                message
+                                
+                                
+                                ="No attackers available") attackers.forEach({
                                         aMember          =>   
                                         
                                         
@@ -233,7 +240,7 @@ method attack(target) {
 		
 			method attack(target) {
 				var attackers = self.standingMembers()
-				if (attackers.isEmpty()) throw new CannotAttackException("No attackers available")
+				if (attackers.isEmpty()) throw new CannotAttackException(message = "No attackers available")
 				attackers.forEach({ aMember => aMember.attack(target)})
 			}
 		
@@ -469,7 +476,7 @@ class AlbumBuilder {
 	var fechaLanzamiento
 
 	method fechaLanzamiento(dia, mes, anio) {
-		fechaLanzamiento = new Date(dia, mes, anio)
+		fechaLanzamiento = new Date(day = dia, month = mes, year = anio)
 		return self
 	}
 
@@ -480,7 +487,7 @@ class AlbumBuilder {
 			var fechaLanzamiento
 		
 			method fechaLanzamiento(dia, mes, anio) {
-				fechaLanzamiento = new Date(dia, mes, anio)
+				fechaLanzamiento = new Date(day = dia, month = mes, year = anio)
 				return self
 			}
 
@@ -534,7 +541,7 @@ object restriccionCompositor {
 
 	method verificarMusico(musico) {
 		if (!musico.cancionesPublicadas().any{ unaCancion => musico.esSuCancion(unaCancion)}) {
-			throw new UserException("No se puede agregar al musico ya que no compuso ninguna cancion")
+			throw new UserException(message = "No se puede agregar al musico ya que no compuso ninguna cancion")
 		}
 	}
 
@@ -546,7 +553,7 @@ object restriccionCompositor {
 			
 				method verificarMusico(musico) {
 					if (!musico.cancionesPublicadas().any({ unaCancion => musico.esSuCancion(unaCancion)})) {
-						throw new UserException("No se puede agregar al musico ya que no compuso ninguna cancion")
+						throw new UserException(message = "No se puede agregar al musico ya que no compuso ninguna cancion")
 					}
 				}
 			

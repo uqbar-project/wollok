@@ -71,7 +71,6 @@ class WEvaluationExtension {
 		// collections literals
 		|| it == WCOLLECTION_LITERAL__ELEMENTS
 		|| it == WSUPER_INVOCATION__MEMBER_CALL_ARGUMENTS
-		|| it == WPOSITIONAL_ARGUMENTS_LIST__VALUES
 		|| it == WNAMED_ARGUMENTS_LIST__INITIALIZERS
 		|| it == WTHROW__EXCEPTION
 	}

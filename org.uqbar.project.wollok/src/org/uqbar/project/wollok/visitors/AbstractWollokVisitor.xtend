@@ -26,7 +26,6 @@ import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WParameter
-import org.uqbar.project.wollok.wollokDsl.WPositionalArgumentsList
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
@@ -161,7 +160,6 @@ abstract class AbstractWollokVisitor {
 	def dispatch void visitChildren(WPackage it) { elements.visitAll }
 	def dispatch void visitChildren(WUnaryOperation it) { operand.visit }
 	def dispatch void visitChildren(WClosure it) { expression.visit }
-	def dispatch void visitChildren(WPositionalArgumentsList it) { values.visitAll }
 	def dispatch void visitChildren(WMethodDeclaration it) { expression.visit }
 
 	def dispatch void visitChildren(WProgram it) { elements.visitAll }

@@ -23,9 +23,9 @@ mixin Journalist {
 }
 
 class SomeClass {
-	const superman = new Superman() with WithEnergy
-	// XPECT errors --> "Class Superman cannot be instantiated because it has abstract methods: reduceEnergy(meters) (required by Flying)" at "Superman"
-	const clarkKent = new Superman() with Journalist
+	const superman = object inherits WithEnergy and Superman {}
+	// XPECT errors --> "You must implement all inherited abstract methods: Flying.reduceEnergy(meters)" at "object inherits Journalist and Superman {}"
+	const clarkKent = object inherits Journalist and Superman {}
 	
 	method getSuperman() = superman
 	method clarkKent() = clarkKent

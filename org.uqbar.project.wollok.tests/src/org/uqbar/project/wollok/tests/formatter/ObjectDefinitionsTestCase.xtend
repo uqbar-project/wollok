@@ -571,7 +571,7 @@ class Cancion {
 	def void objectDefinition() {
 		assertFormatting(
 			'''
-object luisAlberto inherits Musico {
+class Musico{} object luisAlberto inherits Musico {
 
 	var guitarra = null
 
@@ -582,7 +582,7 @@ object luisAlberto inherits Musico {
 	override method habilidad() = return 100.min(8 * guitarra.unidadesDeGuitarra())
 	override method remuneracion(presentacion) = if (presentacion.participo(self)) self.costoPresentacion(presentacion) else 0
 
-	method costoPresentacion(presentacion) = if (presentacion.fecha() < new Date(01, 09, 2017)) {
+	method costoPresentacion(presentacion) = if (presentacion.fecha() < new Date(day = 01, month = 09, year = 2017)) {
 		return 1000
 	} else {
 		return 1200
@@ -594,6 +594,10 @@ object luisAlberto inherits Musico {
 			
 			''',
 			'''
+			class Musico {
+			
+			}
+			
 			object luisAlberto inherits Musico {
 			
 				var guitarra = null
@@ -606,7 +610,7 @@ object luisAlberto inherits Musico {
 
 				override method remuneracion(presentacion) = if (presentacion.participo(self)) self.costoPresentacion(presentacion) else 0
 			
-				method costoPresentacion(presentacion) = if (presentacion.fecha() < new Date(01, 09, 2017)) {
+				method costoPresentacion(presentacion) = if (presentacion.fecha() < new Date(day = 01, month = 09, year = 2017)) {
 					return 1000
 				} else {
 					return 1200

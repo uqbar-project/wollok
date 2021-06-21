@@ -154,14 +154,14 @@ object mixingAtInstantiation {
 		
 		return [
 			// OK
-			new WithName() with Doctor,
-			// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "Object"
-			new Object() with Doctor,
+			object inherits Doctor and WithName {},
+			// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "object inherits Doctor {}"
+			object inherits Doctor {},
 			
 			// OK 
-			new Pepin() with Named with Doctor,
-			// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "Pepin"
-			new Pepin() with Doctor with Named
+			object inherits Named and Doctor and Pepin {},
+			// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "object inherits Doctor and Named and Pepin {}"
+			object inherits Doctor and Named and Pepin {}
 		]
 	}
 }

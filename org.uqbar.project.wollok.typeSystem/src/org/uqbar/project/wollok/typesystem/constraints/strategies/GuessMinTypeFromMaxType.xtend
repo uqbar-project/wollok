@@ -13,7 +13,6 @@ import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WNamedArgumentsList
-import org.uqbar.project.wollok.wollokDsl.WPositionalArgumentsList
 import org.uqbar.project.wollok.wollokDsl.WProgram
 
 import static org.uqbar.project.wollok.typesystem.constraints.types.OffenderSelector.*
@@ -64,7 +63,6 @@ class GuessMinTypeVisitor extends AbstractWollokVisitor {
 	def dispatch afterVisit(WInitializer it) {}
 	def dispatch afterVisit(WCatch it) {}
 	def dispatch afterVisit(Import it) {}
-	def dispatch afterVisit(WPositionalArgumentsList it) {}
 	def dispatch afterVisit(WNamedArgumentsList it) {}
 	def dispatch afterVisit(WAncestor it) {}
 

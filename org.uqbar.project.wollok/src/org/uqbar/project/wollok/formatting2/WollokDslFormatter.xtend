@@ -30,7 +30,6 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WParameter
-import org.uqbar.project.wollok.wollokDsl.WPositionalArgumentsList
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
@@ -113,19 +112,6 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		l.append [ noSpace ]
 	}
 
-	def dispatch void format(WPositionalArgumentsList l, extension IFormattableDocument document) {
-		l.surround [ noSpace ]
-		l.values.forEach [ value, i |
-			if (i == 0) {
-				value.prepend [ noSpace ]
-			} else {
-				value.prepend [ oneSpace ]
-			}
-			value.format
-			value.append [ noSpace ]
-		]
-	}
-	
 	def dispatch void format(WNamedObject o, extension IFormattableDocument document) {
 		o.regionFor.keyword(WollokConstants.WKO).prepend [ noSpace ]
 		o.regionFor.keyword(WollokConstants.WKO).append [ oneSpace ]
@@ -432,6 +418,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	def dispatch void format(WThrow t, extension IFormattableDocument document) {
 		t.prepend [ oneSpace ]
 		t.exception.prepend [ oneSpace ]
+		t.exception.format
 	}
 
 	def dispatch void format(WMixin m, extension IFormattableDocument document) {

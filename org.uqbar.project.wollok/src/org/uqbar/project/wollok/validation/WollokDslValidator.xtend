@@ -15,7 +15,6 @@ import org.eclipse.xtext.naming.IQualifiedNameConverter
 import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.validation.Check
 import org.uqbar.project.wollok.WollokConstants
-import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
 import org.uqbar.project.wollok.scoping.WollokImportedNamespaceAwareLocalScopeProvider
@@ -70,10 +69,10 @@ import static extension org.uqbar.project.wollok.model.FlowControlExtensions.*
 import static extension org.uqbar.project.wollok.model.WBlockExtensions.*
 import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WNamedParametersExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
-import static extension org.uqbar.project.wollok.model.WNamedParametersExtensions.*
 
 /**
  * Custom validation rules.
@@ -250,7 +249,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@NotConfigurable
 	def checkUnexistentNamedParametersInConstructor(WConstructorCall it) {
 		if (!hasNamedParameters) return;
-		classRef.validateNamedParameters(argumentList.initializers, mixins)
+		classRef.validateNamedParameters(argumentList.initializers)
 	}
 
 	@Check
@@ -336,15 +335,6 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		}
 	}
 	
-	@Check
-	@DefaultSeverity(ERROR)
-	@NotConfigurable
-	def noSuperMethodRequiredByMixinAtInstantiationTime(WConstructorCall it) {
-		if (!mixins.empty)
-			checkUnboundedSuperCallingMethodsOnMixins(new MixedMethodContainer(classRef, mixins), it,
-				WCONSTRUCTOR_CALL__CLASS_REF)
-	}
-
 	// **************************************
 	// ** method container validations
 	// **************************************
@@ -363,7 +353,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	@NotConfigurable	
 	def noSuperMethodRequiredByMixin(WMethodContainer it) {
-		checkUnboundedSuperCallingMethodsOnMixins(it, WNAMED__NAME)
+		checkUnboundedSuperCallingMethodsOnMixins(it, feature)
 	}
 
 	def checkUnboundedSuperCallingMethodsOnMixins(WMethodContainer it, EObject target, EStructuralFeature attribute) {
@@ -476,6 +466,9 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def dispatch static containingFeatureRoot(WClass c) { WCLASS__ROOT }
 	def dispatch static containingFeatureRoot(WObjectLiteral o) { WOBJECT_LITERAL__ROOT }
 	def dispatch static containingFeatureRoot(WNamedObject o) { WNAMED_OBJECT__ROOT }
+
+	def dispatch static feature(WMethodContainer mc) { WNAMED__NAME }
+	def dispatch static feature(WObjectLiteral o) { WOBJECT_LITERAL__ROOT }
 
 	@Check
 	@DefaultSeverity(ERROR)
@@ -602,12 +595,15 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	@NotConfigurable
-	def duplicatedVariableInLinearization(WConstructorCall call) {
-		if (call.mixins.isEmpty) return;
-		val inheritedVariables = call.mixins.map[variables].flatten
-		val duplicatedVariables = call.classRef.allVariables.filter[v|inheritedVariables.exists[name == v.name]]
+	def duplicatedVariableInLinearization(WObjectLiteral it) {
+		if (mixins.isEmpty) return;
+		val variablesWithDuplicates = allVariables.map [ name ]
+		val variablesWithoutDuplicates = allVariables.map [ name ].toSet
+		val duplicatedVariables = variablesWithoutDuplicates.filter [ 
+			variablesWithDuplicates.filter [ possibleDuplicate | possibleDuplicate.equals(it) ].length > 1
+		]
 		if (!duplicatedVariables.isEmpty) {
-			report(NLS.bind(WollokDslValidator_DUPLICATED_VARIABLE_IN_CONSTRUCTOR_CALL, duplicatedVariables.map [ name ].join(", ")), call)
+			report(NLS.bind(WollokDslValidator_DUPLICATED_VARIABLE_IN_CONSTRUCTOR_CALL, duplicatedVariables.join(", ")), it)
 		}
 	}
 	

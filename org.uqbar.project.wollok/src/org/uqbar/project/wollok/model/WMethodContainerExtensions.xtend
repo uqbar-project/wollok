@@ -12,7 +12,6 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.uqbar.project.wollok.WollokConstants
-import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.wollokDsl.WAncestor
@@ -111,10 +110,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static boolean isAbstract(WMethodContainer it) { !unimplementedAbstractMethods.empty }
 
 	def static dispatch List<WMethodDeclaration> unimplementedAbstractMethods(WConstructorCall it) {
-		if (mixins === null || mixins.isEmpty)
-			classRef.unimplementedAbstractMethods
-		else
-			new MixedMethodContainer(classRef, mixins).unimplementedAbstractMethods
+		classRef.unimplementedAbstractMethods
 	}
 	def static dispatch List<WMethodDeclaration> unimplementedAbstractMethods(WMethodContainer it) { allAbstractMethods }
 
@@ -408,7 +404,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WMixin it) { methods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WNamedObject it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WObjectLiteral it) { inheritedMethods }
-	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(MixedMethodContainer it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WClass it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WSuite it) { methods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WProgram it) { newArrayList }
@@ -495,7 +490,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch WClass parent(WClass it) { getClassParent(parents, root) }
 	def static dispatch WClass parent(WObjectLiteral it) { getClassParent(parents, root) }
 	def static dispatch WClass parent(WNamedObject it) { getClassParent(parents, root) }
-	def static dispatch WClass parent(MixedMethodContainer it) { clazz }
 	// not supported yet !
 	def static dispatch WClass parent(WMixin it) { null }
 	def static dispatch WClass parent(WSuite it) { null }
@@ -515,7 +509,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch List<WMixin> mixins(WClass it) { parents.mixins	}
 	def static dispatch List<WMixin> mixins(WObjectLiteral it) { parents.mixins	}
 	def static dispatch List<WMixin> mixins(WNamedObject it) { parents.mixins }
-	def static dispatch List<WMixin> mixins(MixedMethodContainer it) { mixins }
 	def static dispatch List<WMixin> mixins(WMixin it) { Collections.EMPTY_LIST }
 	def static dispatch List<WMixin> mixins(WSuite it) { Collections.EMPTY_LIST }
 
@@ -523,7 +516,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch members(WClass c) { c.members }
 	def static dispatch members(WObjectLiteral c) { c.members }
 	def static dispatch members(WNamedObject c) { c.members }
-	def static dispatch members(MixedMethodContainer c) { #[] }
 	def static dispatch members(WMixin c) { c.members }
 	def static dispatch members(WSuite c) { c.members }
 
@@ -531,7 +523,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch contextName(WClass c) { c.fqn }
 	def static dispatch contextName(WObjectLiteral c) { "<anonymousObject>" }
 	def static dispatch contextName(WNamedObject c) { c.fqn }
-	def static dispatch contextName(MixedMethodContainer c) { "<mixedObject>" }
 	def static dispatch contextName(WMixin c) { c.fqn }
 	def static dispatch contextName(WSuite s) { s.name }
 

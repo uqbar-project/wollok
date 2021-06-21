@@ -380,19 +380,13 @@ WConstructorCall:
 	'new' classRef=[WClass|QualifiedName] '('
 	(=> argumentList=WArgumentList)?
 	')'
-	('with' mixins+=[WMixin])*
 ;
 
-WArgumentList: (=> WNamedArgumentsList | WPositionalArgumentsList);
+WArgumentList: (=> WNamedArgumentsList);
 
 WNamedArgumentsList:
 	{WNamedArgumentsList}
 	(=> initializers+=WInitializer (',' initializers+=WInitializer)*)
-;
-
-WPositionalArgumentsList:
-	{WPositionalArgumentsList}
-	(=> values += WExpression (',' values += WExpression)*)
 ;
 
 WInitializer:
