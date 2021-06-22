@@ -249,7 +249,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@NotConfigurable
 	def checkUnexistentNamedParametersInConstructor(WConstructorCall it) {
 		if (!hasNamedParameters) return;
-		classRef.validateNamedParameters(argumentList.initializers)
+		classRef.validateUndefinedNamedParameters(argumentList.initializers)
 	}
 
 	@Check
@@ -257,7 +257,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@NotConfigurable
 	def checkUnexistentNamedParametersInheritingConstructor(WClass it) {
 		if (!hasParentParameters) return;
-		validateNamedParameters(allInitializers)
+		validateUndefinedNamedParameters(allInitializers)
 	}
 
 	@Check
@@ -265,34 +265,66 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@NotConfigurable
 	def checkUnexistentNamedParametersInheritingConstructor(WNamedObject it) {
 		if (!hasParentParameters) return;
-		validateNamedParameters(allInitializers)
+		validateUndefinedNamedParameters(allInitializers)
 	}
 
 	@Check
 	@DefaultSeverity(ERROR)
 	@NotConfigurable
+	def checkRepeatedNamedParameters(WClass it) {
+		checkRepeatedNamedParameters(parents)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	@NotConfigurable
+	def checkRepeatedNamedParameters(WNamedObject it) {
+		checkRepeatedNamedParameters(parents)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	@NotConfigurable
+	def checkRepeatedNamedParameters(WObjectLiteral it) {
+		checkRepeatedNamedParameters(parents)
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def checkRepeatedNamedParameters(EList<WAncestor> parents) {
+		val initializers = parents.flatMap [ parentParameters.initializers ]
+		if (initializers.nullOrEmpty) return;
+		initializers.forEach [ initializer |
+			val otherInitializers = initializers.filter [ it !== initializer ].map [ init | init.initializer.name ]
+			if (otherInitializers.contains(initializer.initializer.name)) {
+				report(NLS.bind(WollokDslValidator_DUPLICATE_ATTRIBUTE_IN_LINEARIZATION, initializer.initializer.name), initializer, WINITIALIZER__INITIALIZER)
+			}
+		]
+	}
+		
+	@Check
+	@DefaultSeverity(ERROR)
+	@NotConfigurable
 	def checkUnexistentNamedParametersInheritingConstructor(WObjectLiteral it) {
 		if (!hasParentParameters) return;
-		validateNamedParameters(allInitializers)
+		validateUndefinedNamedParameters(allInitializers)
 	}
 
-	def void validateNamedParameters(WClass clazz, WNamedArgumentsList parameterList) {
-		validateNamedParameters(clazz, parameterList.initializers)
+	def void validateUndefinedNamedParameters(WClass clazz, WNamedArgumentsList parameterList) {
+		validateUndefinedNamedParameters(clazz, parameterList.initializers)
 	}
 
-	def void validateNamedParameters(WMethodContainer it, List<WInitializer> initializers) {
-		validateNamedParameters(initializers, #[])
+	def void validateUndefinedNamedParameters(WMethodContainer it, List<WInitializer> initializers) {
+		validateUndefinedNamedParameters(initializers, #[])
 	}
 
-	def void validateNamedParameters(WMethodContainer container, List<WInitializer> initializers, List<WMixin> mixins) {
+	def void validateUndefinedNamedParameters(WMethodContainer container, List<WInitializer> initializers, List<WMixin> mixins) {
 		if (container.name === null) return;  // avoid validation for non-existent classes
-		val attributesMap = container.variablesMap
 		initializers.forEach [
 			val ancestor = eContainer.eContainer.getAncestor
-			val ancestorName = ancestor?.name
-			val variables = attributesMap.get(ancestor.keyForVariablesMap).map [ variable.name ]
+			val variables = ancestor.allVariableDeclarations.map [ variable.name ]
 			if (!variables.contains(initializer.name)) {
-				reportEObject(NLS.bind(WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_LINEARIZATION, initializer.name, ancestorName), initializer.eContainer, WollokDslValidator.ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR_CALL)					
+				reportEObject(NLS.bind(WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_LINEARIZATION, initializer.name, ancestor.name), initializer.eContainer, WollokDslValidator.ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR_CALL)					
 			}
 		]
 	}

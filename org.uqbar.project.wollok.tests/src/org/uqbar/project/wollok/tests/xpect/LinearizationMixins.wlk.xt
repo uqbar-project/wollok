@@ -1,0 +1,32 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+mixin M0 {
+  const property x
+}
+
+mixin M1 inherits M0 { }
+
+mixin M2 inherits M0 { }
+
+/* XPECT errors ---
+"Reference x is initialized more than once" at "x"
+"Reference x is initialized more than once" at "x"
+--- */
+class C1 inherits M1(x = 1) and M2(x = 1) { }
+class C2 inherits M1(x = 1) and M2 { }
+class C3 inherits M1 and M2(x = 1) { }
+ 
+/* XPECT errors ---
+"Reference x is initialized more than once" at "x"
+"Reference x is initialized more than once" at "x"
+--- */
+object c1 inherits M1(x = 1) and M2(x = 1) { }
+object c2 inherits M1(x = 1) and M2 { }
+object c3 inherits M1 and M2(x = 1) { }
+
+/* XPECT errors ---
+"Reference x is initialized more than once" at "x"
+"Reference x is initialized more than once" at "x"
+--- */
+const o1 = object inherits M1(x = 1) and M2(x = 1) { }
+const o2 = object inherits M1(x = 1) and M2 { }
+const o3 = object inherits M1 and M2(x = 1) { }

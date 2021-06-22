@@ -215,12 +215,12 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static hasVariable(WMethodContainer it, String name) { variableNames.contains(name) }
 	
-	def dispatch static isReturnWithValue(EObject it) { false }
+	def static dispatch isReturnWithValue(EObject it) { false }
 	// REVIEW: this is a hack solution. We don't want to compute "return" statements that are
 	//  within a closure as a return on the containing method.
-	def dispatch static isReturnWithValue(WReturnExpression it) { validReturnExpression && expression !== null && allContainers.forall[!(it instanceof WClosure)] }
-	def dispatch static hasReturnWithValue(WReturnExpression r) { r.returnWithValue }
-	def dispatch static hasReturnWithValue(EObject e) { e.eAllContents.exists[isReturnWithValue] }
+	def static dispatch isReturnWithValue(WReturnExpression it) { validReturnExpression && expression !== null && allContainers.forall[!(it instanceof WClosure)] }
+	def static dispatch hasReturnWithValue(WReturnExpression r) { r.returnWithValue }
+	def static dispatch hasReturnWithValue(EObject e) { e.eAllContents.exists[isReturnWithValue] }
 
 	def static dispatch boolean isValidReturnExpression(EObject o) { 
 		val container = o.eContainer
@@ -231,25 +231,16 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean isValidReturnExpression(WMethodDeclaration method) { true }
 
 	def static List<WVariableDeclaration> allVariableDeclarations(WMethodContainer it) {
-		linearizeHierarchy.fold(newArrayList) [variableDeclarations, type |
+		allVariableDeclarations(it, linearizeHierarchy)
+	}
+
+	def static List<WVariableDeclaration> allVariableDeclarations(WMethodContainer it, List<WMethodContainer> hierarchy) {
+		hierarchy.fold(newArrayList) [variableDeclarations, type |
 			variableDeclarations.addAll(type.variableDeclarations)
 			variableDeclarations
 		]
 	}
-	
-	def static variablesMap(WMethodContainer it) {
-		linearizeHierarchy.fold(newHashMap) [variableDeclarations, type |
-			val key = type.keyForVariablesMap
-			val newVariableDeclarations = variableDeclarations.getOrDefault(key, newArrayList)
-			newVariableDeclarations.addAll(type.variableDeclarations)
-			variableDeclarations.put(key, newVariableDeclarations)
-			variableDeclarations
-		]
-	}
-	
-	def static dispatch keyForVariablesMap(EObject it) { "*" }
-	def static dispatch keyForVariablesMap(WMixin it) { name	}
-	
+
 	def static List<WVariableDeclaration> allVariableDeclarations(WMethodContainer it, WollokObject wo) {
 		// Step 1 - Obtaining all variable declarations 
 		val variableDeclarations = allVariableDeclarations
@@ -449,36 +440,49 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		}
 		if (l.contains(c)) {
 			return l
-			//throw new WollokRuntimeException('''Class «c.name» is in a cyclic hierarchy''');
 		}
 		//
 		l.add(c)
 		return _parents(c.parent, l)
 	}
 
-	def dispatch static usesDerivedKeyword(WMethodContainer it) { false }
-	def dispatch static usesDerivedKeyword(WClass it) {
+	def static dispatch usesDerivedKeyword(WMethodContainer it) { false }
+	def static dispatch usesDerivedKeyword(WClass it) {
 		root !== null && !root.fqn.equals(OBJECT)
 	}
-	def dispatch static usesDerivedKeyword(WNamedObject it) { root !== null && !root.fqn.equals(OBJECT) }
-	def dispatch static usesDerivedKeyword(WObjectLiteral it) { root !== null && !root.fqn.equals(OBJECT) }
+	def static dispatch usesDerivedKeyword(WNamedObject it) { root !== null && !root.fqn.equals(OBJECT) }
+	def static dispatch usesDerivedKeyword(WObjectLiteral it) { root !== null && !root.fqn.equals(OBJECT) }
 	
-	def dispatch static hasCyclicHierarchy(WClass c) { 
+	def static dispatch hasCyclicHierarchy(WClass c) { 
 		_hasCyclicHierarchy(c, newArrayList)
 	}
-	def dispatch static hasCyclicHierarchy(EObject e) { false }
-	
-	def static boolean _hasCyclicHierarchy(WClass c, List<WClass> l) {
+	def static dispatch hasCyclicHierarchy(EObject e) { false }
+
+	def static boolean _hasCyclicHierarchy(WClass c, List<WClass> allParents) {
 		if (c === null) {
 			return false
 		}
-		if (l.contains(c)) {
+		if (allParents.contains(c)) {
 			return true
 		}
-		l.add(c)
-		return _hasCyclicHierarchy(c.parent, l)
+		allParents.add(c)
+		return _hasCyclicHierarchy(c.parent, allParents)
 	}
 
+	def static hasACyclicHierarchy(List<WMixin> mixins) { 
+		_hasCyclicHierarchy(mixins, newArrayList)
+	}
+	
+	def static boolean _hasCyclicHierarchy(List<WMixin> mixins, List<WMixin> allMixins) {
+		if (mixins.isNullOrEmpty) {
+			return false
+		}
+		if (mixins.exists [ allMixins.contains(it) ] ) {
+			return true
+		}
+		allMixins.addAll(mixins)
+		return _hasCyclicHierarchy(mixins.flatMap [ allParents ].toList, allMixins)
+	}
 	def static boolean inheritsFromLibClass(WMethodContainer it) { parent.isCoreObject }
 
 	def static dispatch boolean inheritsFromObject(EObject e) { false }
@@ -509,7 +513,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch List<WMixin> mixins(WClass it) { parents.mixins	}
 	def static dispatch List<WMixin> mixins(WObjectLiteral it) { parents.mixins	}
 	def static dispatch List<WMixin> mixins(WNamedObject it) { parents.mixins }
-	def static dispatch List<WMixin> mixins(WMixin it) { Collections.EMPTY_LIST }
+	def static dispatch List<WMixin> mixins(WMixin it) { parents.mixins	}
 	def static dispatch List<WMixin> mixins(WSuite it) { Collections.EMPTY_LIST }
 
 	def static dispatch members(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
@@ -559,15 +563,29 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	 */
 	def static List<WMethodContainer> linearizeHierarchy(WMethodContainer c) {
 		if (c.parent !== null && c.parent.hasCyclicHierarchy) return newLinkedList
-		newLinkedList => [
+		if (c.mixins.hasACyclicHierarchy) return newLinkedList
+		val result = newLinkedList => [
 			add(c)
 			addAll(c.mixinsForLinearization)
 			addAll(c.parentClassesForLinearization)
 		]
+		result
 	}
 	
 	def static List<WMethodContainer> mixinsForLinearization(WMethodContainer it) {
-		(mixins ?: newArrayList).clone.toList
+		linearizeMixinHierarchy(mixins, newArrayList).toSet.toList
+	}
+	
+	def static List<WMethodContainer> linearizeMixinHierarchy(List<WMixin> mixins, List<WMethodContainer> allMixins) {
+		if (mixins.nullOrEmpty) return allMixins
+		allMixins.addAll(mixins)
+		val newMixins = mixins.flatMap [ allParents ].toList
+		linearizeMixinHierarchy(newMixins, allMixins)
+		allMixins
+	}
+	
+	def static allParents(WMixin mixin) {
+		mixin.parents.map [ ref ].filter(WMixin).toList
 	}
 	
 	def static parentClassesForLinearization(WMethodContainer it) {
@@ -715,10 +733,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		ele.declaringContext !== null
 	}
 	
-	def dispatch static boolean canCreateLocalVariable(WTest it) { true }
-	def dispatch static boolean canCreateLocalVariable(WMethodContainer it) { true }
-	def dispatch static boolean canCreateLocalVariable(WProgram it) { true }
-	def dispatch static boolean canCreateLocalVariable(EObject ele) {
+	def static dispatch boolean canCreateLocalVariable(WTest it) { true }
+	def static dispatch boolean canCreateLocalVariable(WMethodContainer it) { true }
+	def static dispatch boolean canCreateLocalVariable(WProgram it) { true }
+	def static dispatch boolean canCreateLocalVariable(EObject ele) {
 		if (ele.eContainer === null) return false
 		ele.eContainer.canCreateLocalVariable
 	}

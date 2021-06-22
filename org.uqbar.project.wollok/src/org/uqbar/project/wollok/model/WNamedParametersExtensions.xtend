@@ -6,6 +6,7 @@ import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
+import org.uqbar.project.wollok.wollokDsl.WMixin
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 
@@ -39,6 +40,7 @@ class WNamedParametersExtensions {
 	def static dispatch List<WAncestor> plainParents(WObjectLiteral it) { parents }
 	def static dispatch List<WAncestor> plainParents(WNamedObject it) { parents }
 	def static dispatch List<WAncestor> plainParents(WClass it) { parents }
+	def static dispatch List<WAncestor> plainParents(WMixin it) { parents }
 
 	def static dispatch getAncestor(WAncestor it) { ref as WMethodContainer }
 	def static dispatch getAncestor(WConstructorCall it) { classRef }	
