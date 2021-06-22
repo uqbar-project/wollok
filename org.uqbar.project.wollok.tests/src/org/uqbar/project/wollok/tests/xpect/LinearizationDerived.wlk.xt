@@ -1,0 +1,18 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+class ParentClass {}
+
+// XPECT errors --> "Must use 'inherits' keyword" at "ParentClass"
+class SomeClass derived ParentClass {
+	method do() {}
+}
+
+// XPECT errors --> "Must use 'inherits' keyword" at "ParentClass"
+object someObject derived ParentClass {
+	method do() {}
+}
+
+// XPECT errors --> "Must use 'inherits' keyword" at "ParentClass"
+const someObjectLiteral = object derived ParentClass {
+	method do() {}
+}

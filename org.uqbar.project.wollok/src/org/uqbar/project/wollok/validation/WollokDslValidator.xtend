@@ -255,7 +255,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	@NotConfigurable
-	def checkUnexistentNamedParametersInheritingConstructor(WClass it) {
+	def checkUnexistentNamedParametersInheritingConstructorInClasses(WClass it) {
 		if (!hasParentParameters) return;
 		validateUndefinedNamedParameters(allInitializers)
 	}
@@ -263,7 +263,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	@NotConfigurable
-	def checkUnexistentNamedParametersInheritingConstructor(WNamedObject it) {
+	def checkUnexistentNamedParametersInheritingConstructorInNamedObjects(WNamedObject it) {
 		if (!hasParentParameters) return;
 		validateUndefinedNamedParameters(allInitializers)
 	}
@@ -271,41 +271,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	@NotConfigurable
-	def checkRepeatedNamedParameters(WClass it) {
-		checkRepeatedNamedParameters(parents)
-	}
-
-	@Check
-	@DefaultSeverity(ERROR)
-	@NotConfigurable
-	def checkRepeatedNamedParameters(WNamedObject it) {
-		checkRepeatedNamedParameters(parents)
-	}
-
-	@Check
-	@DefaultSeverity(ERROR)
-	@NotConfigurable
-	def checkRepeatedNamedParameters(WObjectLiteral it) {
-		checkRepeatedNamedParameters(parents)
-	}
-	
-	@Check
-	@DefaultSeverity(ERROR)
-	def checkRepeatedNamedParameters(EList<WAncestor> parents) {
-		val initializers = parents.flatMap [ parentParameters.initializers ]
-		if (initializers.nullOrEmpty) return;
-		initializers.forEach [ initializer |
-			val otherInitializers = initializers.filter [ it !== initializer ].map [ init | init.initializer.name ]
-			if (otherInitializers.contains(initializer.initializer.name)) {
-				report(NLS.bind(WollokDslValidator_DUPLICATE_ATTRIBUTE_IN_LINEARIZATION, initializer.initializer.name), initializer, WINITIALIZER__INITIALIZER)
-			}
-		]
-	}
-		
-	@Check
-	@DefaultSeverity(ERROR)
-	@NotConfigurable
-	def checkUnexistentNamedParametersInheritingConstructor(WObjectLiteral it) {
+	def checkUnexistentNamedParametersInheritingConstructorInObjectLiterals(WObjectLiteral it) {
 		if (!hasParentParameters) return;
 		validateUndefinedNamedParameters(allInitializers)
 	}
@@ -329,6 +295,40 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		]
 	}
 
+	@Check
+	@DefaultSeverity(WARN)
+	@CheckGroup(WollokCheckGroup.INITIALIZATION)
+	def checkRepeatedNamedParametersInClasses(WClass it) {
+		checkRepeatedNamedParameters(parents)
+	}
+
+	@Check
+	@DefaultSeverity(WARN)
+	@CheckGroup(WollokCheckGroup.INITIALIZATION)
+	def checkRepeatedNamedParametersInNamedObject(WNamedObject it) {
+		checkRepeatedNamedParameters(parents)
+	}
+
+	@Check
+	@DefaultSeverity(WARN)
+	@CheckGroup(WollokCheckGroup.INITIALIZATION)
+	def checkRepeatedNamedParametersInObjectLiterals(WObjectLiteral it) {
+		checkRepeatedNamedParameters(parents)
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def checkRepeatedNamedParameters(EList<WAncestor> parents) {
+		val initializers = parents.flatMap [ parentParameters.initializers ]
+		if (initializers.nullOrEmpty) return;
+		initializers.forEach [ initializer |
+			val otherInitializers = initializers.filter [ it !== initializer ].map [ init | init.initializer.name ]
+			if (otherInitializers.contains(initializer.initializer.name)) {
+				report(NLS.bind(WollokDslValidator_DUPLICATE_ATTRIBUTE_IN_LINEARIZATION, initializer.initializer.name), initializer, WINITIALIZER__INITIALIZER)
+			}
+		]
+	}
+		
 	@Check
 	@DefaultSeverity(ERROR)
 	@CheckGroup(WollokCheckGroup.INITIALIZATION)
@@ -479,9 +479,28 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	@NotConfigurable	
-	def cyclicHierarchy(WMethodContainer it) {
+	def cyclicHierarchyForClasses(WMethodContainer it) {
 		if (declaringContext.hasCyclicHierarchy) {
 			report(WollokDslValidator_CYCLIC_HIERARCHY, it, WCLASS__PARENTS)
+		}
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	@NotConfigurable	
+	def cyclicHierarchyForMixins(WMixin it) {
+		if (#[it].hasACyclicHierarchy) {
+			report(WollokDslValidator_CYCLIC_HIERARCHY, it, WMIXIN__PARENTS)
+		}
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	@NotConfigurable	
+	def mixinShouldOnlyInheritFromAnotherMixin(WMixin it) {
+		val unwantedParents = parents.map [ ref ].reject(WMixin)
+		if (!unwantedParents.isEmpty) {
+			report(NLS.bind(WollokDslValidator_INVALID_MIXIN_HIERARCHY, unwantedParents.map [ name ].join(", ")), it, WMIXIN__PARENTS)
 		}
 	}
 
