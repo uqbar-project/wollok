@@ -343,18 +343,18 @@
 			<plugin>
 				<groupId>org.eluder.coveralls</groupId>
 				<artifactId>coveralls-maven-plugin</artifactId>
-				<version>3.0.1</version>
+				<version>4.3.0</version>
 
-				<configuration>
+				<!-- <configuration>
 					<coberturaReports>
 						<coberturaReport>
 							${basedir}/target/coverage.xml
 						</coberturaReport>
 					</coberturaReports>
 					<sourceEncoding>UTF-8</sourceEncoding>
-					<serviceName>travis-ci</serviceName>
-					<serviceJobId>${env.TRAVIS_JOB_ID} </serviceJobId>
-				</configuration>
+					<serviceName>github</serviceName>
+					<repoToken>${env.COVERALLS_TOKEN}</repoToken>
+				</configuration> -->
 			</plugin>
 			<!-- code coverage -->
 
