@@ -29,7 +29,9 @@ class WNamedParametersExtensions {
 	def static dispatch List<WInitializer> allInitializers(WMethodContainer mc) { newArrayList }
 	
 	def static List<WInitializer> initializers(List<WAncestor> it) {
-		flatMap [ parentParameters?.initializers ?: newArrayList ].toList
+		// We must reverse the initializers in order to accept override of initializers
+		// from subclasses
+		reverse.flatMap [ parentParameters?.initializers ?: newArrayList ].toList
 	}
 	
 	def static List<WAncestor> allParents(WMethodContainer it) {

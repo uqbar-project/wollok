@@ -17,7 +17,7 @@ class B inherits A(x = 1) {
 // XPECT errors --> "You must provide initial value to the following references: y" at "object inherits B(z = 3) { }"
 const mal1 = object inherits B(z = 3) { }
 // XPECT errors --> "You must provide initial value to the following references: z" at "object inherits B(y = 2) { }"
-const mal2 = object inherits B(y = 2) { }               // ERROR! Falta z!
+const mal2 = object inherits B(y = 2) { }
 const bien1 = object inherits B(y = 2, z = 3) { }        // OK! x = 1, y = 2, z = 3
 const bien2 = object inherits B(x = 0, y = 2, z = 3) { } // OK! x = 0, y = 2, z = 3
 

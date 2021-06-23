@@ -324,7 +324,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	def addMixinsMembers(WMethodContainer it, WollokObject wo) {
-		mixins.forEach[addMembersTo(wo)]
+		mixins.linearizeMixinHierarchy(newArrayList).forEach[addMembersTo(wo)]
 	}
 
 	def void initializeMembers(WMethodContainer it, WollokObject wo) {
