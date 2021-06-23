@@ -40,6 +40,7 @@ public class Messages extends NLS {
 	public static String WollokLauncherOptions_REQUEST_PORT;
 	public static String WollokLauncherOptions_EVENTS_PORT;
 	public static String WollokLauncherOptions_SPECIFIC_FOLDER;
+	public static String WollokLauncherOptions_LOCALE;
 	public static String WollokLauncherOptions_NUMBER_DECIMALS;
 	public static String WollokLauncherOptions_DECIMAL_PRINTING_STRATEGY;
 	public static String WollokLauncherOptions_DECIMAL_CONVERSION_STRATEGY;

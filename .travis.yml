@@ -37,8 +37,10 @@ script:
 - echo "Running with UPDATE_SITE $UPDATE_SITE"
 - export MAVEN_OPTS=-Xmx2048m
 - mvn -e -Darguments='-Dtycho.disableP2Mirrors=false' -Dtycho.disableP2Mirrors=false
-  -U -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean install jacoco:report coveralls:report -P
-  $PROFILES
+  -U -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean install 
+  # primera versión: Travis ya no manda reportes de cobertura a Coveralls
+  # jacoco:report coveralls:report 
+  -P $PROFILES
 - rm -rf /home/travis/.m2/repository/org/uqbar-project
 - df -h
 - du -h -d 2 ..
