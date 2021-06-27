@@ -16,7 +16,11 @@ class WollokConsoleConfigurationBlock extends WollokAbstractConfigurationBlock {
 	
 	new(IProject project, IPreferenceStore store, IWorkbenchPreferenceContainer container) {
 		super(project, store, container)
-		store.setDefault(OUTPUT_FORMATTER, ANSI_COLORED_FORMATTER)
+		store.setDefault(OUTPUT_FORMATTER, defaultFormatter)
+	}
+
+	def defaultFormatter() {
+		ANSI_COLORED_FORMATTER
 	}
 
 	def formattersNames() {
