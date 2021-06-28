@@ -498,7 +498,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	@NotConfigurable	
 	def mixinShouldOnlyInheritFromAnotherMixin(WMixin it) {
-		val unwantedParents = parents.map [ ref ].reject(WMixin)
+		val unwantedParents = parents.map [ ref ].reject(WMixin).filter [ name !== null ]
 		if (!unwantedParents.isEmpty) {
 			report(NLS.bind(WollokDslValidator_INVALID_MIXIN_HIERARCHY, unwantedParents.map [ name ].join(", ")), it, WMIXIN__PARENTS)
 		}
