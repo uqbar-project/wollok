@@ -13,6 +13,7 @@ import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
 import static extension org.uqbar.project.wollok.utils.WollokObjectUtils.*
+import java.math.RoundingMode
 
 /**
  * Native part of the wollok.lang.List class
@@ -27,8 +28,9 @@ class WList extends WCollection<List<WollokObject>> implements JavaWrapper<List<
 	
 	def get(BigDecimal index) {
 		index.checkNotNull("get")
-		val convertedIndex = index.coerceToPositiveInteger
-		wrapped.get(convertedIndex)
+		index.coerceToPositiveInteger
+		val convertedIndex = index.setScale(0, RoundingMode.HALF_UP)
+		wrapped.get(convertedIndex.intValue)
 	}
 
 	def sortBy(WollokObject predicate) {

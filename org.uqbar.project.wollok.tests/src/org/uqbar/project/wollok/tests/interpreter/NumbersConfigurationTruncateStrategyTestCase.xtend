@@ -58,7 +58,7 @@ class NumbersConfigurationTruncateStrategyTestCase extends AbstractWollokInterpr
 	@Test
 	def void listGet() {
 		'''
-		assert.equals("hola", ["saludo", "hola", "jua"].get(1.99999))
+		assert.equals("jua", ["saludo", "hola", "jua"].get(1.99999))
 		'''.test
 	}
 	
