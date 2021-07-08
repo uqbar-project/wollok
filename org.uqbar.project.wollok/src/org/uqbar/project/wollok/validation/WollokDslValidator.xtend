@@ -336,7 +336,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (hasNamedParameters || (!classRef.hasInitializeMethod())) {
 			val unusedVarDeclarations = uninitializedNamedParameters
 			if (!unusedVarDeclarations.isEmpty) {
-				val variableNames = unusedVarDeclarations.map [ variable.name ].sort.join(", ")
+				val variableNames = unusedVarDeclarations.showVariables
 				reportEObject(NLS.bind(WollokDslValidator_MISSING_ASSIGNMENTS_IN_CONSTRUCTOR_CALL, variableNames, classRef.name), it, MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR_CALL)
 			}
 		}
@@ -349,7 +349,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (!parents.isEmpty) {
 			val unusedVarDeclarations = uninitializedNamedParameters
 			if (!unusedVarDeclarations.isEmpty) {
-				val variableNames = unusedVarDeclarations.map [ variable.name ].join(", ")
+				val variableNames = unusedVarDeclarations.showVariables
 				reportEObject(NLS.bind(WollokDslValidator_MISSING_ASSIGNMENTS_IN_CONSTRUCTOR_CALL, variableNames), it, MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR_CALL)
 			}			
 		}
@@ -360,7 +360,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@CheckGroup(WollokCheckGroup.INITIALIZATION)
 	def checkUninitializedAttributesInObjectLiteral(WObjectLiteral it) {
 		if (!parents.isEmpty) {
-			val uninitializedAttributes = uninitializedReferences.map [ variable.name ].join(", ")
+			val uninitializedAttributes = uninitializedReferences.showVariables
 			if (!uninitializedAttributes.isEmpty) {
 				reportEObject(NLS.bind(WollokDslValidator_MISSING_ASSIGNMENTS_IN_CONSTRUCTOR_CALL, uninitializedAttributes), it, MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR_CALL)
 			}			
@@ -508,7 +508,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	@NotConfigurable	
 	def usingDerived(WMethodContainer it) {
-		if (declaringContext.usesDerivedKeyword) {
+		if (declaringContext.badUseOfDerivedKeyword) {
 			report(WollokDslValidator_CANNOT_USE_DERIVED_KEYWORD, it, containingFeatureRoot)
 		}
 	}
@@ -654,7 +654,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			variablesWithDuplicates.filter [ possibleDuplicate | possibleDuplicate.equals(it) ].length > 1
 		]
 		if (!duplicatedVariables.isEmpty) {
-			report(NLS.bind(WollokDslValidator_DUPLICATED_VARIABLE_IN_CONSTRUCTOR_CALL, duplicatedVariables.join(", ")), it)
+			report(NLS.bind(WollokDslValidator_DUPLICATED_VARIABLE_IN_CONSTRUCTOR_CALL, duplicatedVariables.sort.join(", ")), it)
 		}
 	}
 	

@@ -129,7 +129,7 @@ class ConstraintGenerator {
 		// TODO Process supertype information: mixins
 		allInitializers?.forEach[generateVariables]
 		members.forEach[generateVariables]
-		if(allInitializers !== null) objectParentConstraintsGenerator.add(it)
+		if(hasParentParameters) objectParentConstraintsGenerator.add(it)
 	}
 
 	def dispatch void generate(WClass it) {

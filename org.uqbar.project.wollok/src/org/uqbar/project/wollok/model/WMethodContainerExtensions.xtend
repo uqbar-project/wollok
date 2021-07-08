@@ -446,12 +446,12 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		return _parents(c.parent, l)
 	}
 
-	def static dispatch usesDerivedKeyword(WMethodContainer it) { false }
-	def static dispatch usesDerivedKeyword(WClass it) {
+	def static dispatch badUseOfDerivedKeyword(WMethodContainer it) { false }
+	def static dispatch badUseOfDerivedKeyword(WClass it) {
 		root !== null && !root.fqn.equals(OBJECT)
 	}
-	def static dispatch usesDerivedKeyword(WNamedObject it) { root !== null && !root.fqn.equals(OBJECT) }
-	def static dispatch usesDerivedKeyword(WObjectLiteral it) { root !== null && !root.fqn.equals(OBJECT) }
+	def static dispatch badUseOfDerivedKeyword(WNamedObject it) { root !== null && !root.fqn.equals(OBJECT) }
+	def static dispatch badUseOfDerivedKeyword(WObjectLiteral it) { root !== null && !root.fqn.equals(OBJECT) }
 	
 	def static dispatch hasCyclicHierarchy(WClass c) { 
 		_hasCyclicHierarchy(c, newArrayList)
@@ -869,5 +869,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static isInitializer(WMethodDeclaration m) { m.name.equals(INITIALIZE_METHOD) }
 
 	def static dispatch boolean isClosureWithoutParams(WExpression e) { false }
-	def static dispatch boolean isClosureWithoutParams(WClosure block) { block.parameters.isEmpty } 
+	def static dispatch boolean isClosureWithoutParams(WClosure block) { block.parameters.isEmpty }
+	
+	def static showVariables(List<WVariableDeclaration> it) { map [ variable.name ].sort.join(", ") } 
 }
