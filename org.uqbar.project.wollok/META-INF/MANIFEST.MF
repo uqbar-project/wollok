@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-Version: 2.0.2
+Bundle-Version: 3.0.0
 Bundle-ClassPath: .
 Bundle-SymbolicName: org.uqbar.project.wollok;singleton:=true
 Bundle-ActivationPolicy: lazy

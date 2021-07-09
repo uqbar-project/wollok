@@ -22,7 +22,7 @@ Require-Bundle: org.eclipse.ui,
  org.uqbar.project.wollok.ui.launch,
  org.uqbar.project.wollok.ui
 Bundle-Activator: org.uqbar.project.wollok.ui.diagrams.classes.WollokDiagramsPlugin
-Bundle-Version: 2.0.2
+Bundle-Version: 3.0.0
 Build-Jdk: 1.6.0_21
 Bundle-Vendor: %Plugin.providerName
 Bundle-ActivationPolicy: lazy
