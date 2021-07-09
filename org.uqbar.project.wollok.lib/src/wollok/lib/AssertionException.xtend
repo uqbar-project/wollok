@@ -18,7 +18,7 @@ class AssertionException extends Exception {
 	int lineNumber
 	
 	new(String message, WollokProgramExceptionWrapper exceptionWrapper) {
-		this.message = message
+		this.message = message.replace("<", "|").replace(">", "|")
 		this.wollokException = exceptionWrapper.wollokException
 		this.URI = exceptionWrapper.URI
 		this.lineNumber = exceptionWrapper.lineNumber
