@@ -4,6 +4,7 @@ import org.eclipse.core.runtime.Platform
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.Assignment
 import org.eclipse.xtext.CrossReference
+import org.eclipse.xtext.Keyword
 import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.naming.QualifiedName
 import org.eclipse.xtext.ui.editor.contentassist.ConfigurableCompletionProposal
@@ -30,6 +31,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static org.uqbar.project.wollok.sdk.WollokSDK.*
+import static org.uqbar.project.wollok.WollokConstants.*
 
 import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
@@ -67,6 +69,12 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 		super.complete_WConstructorCall(model, ruleCall, context, acceptor)
 	}
 
+	override completeKeyword(Keyword keyword, ContentAssistContext contentAssistContext, ICompletionProposalAcceptor acceptor) {
+		if (!keyword.value.equals(DERIVED)) {
+			super.completeKeyword(keyword, contentAssistContext, acceptor)
+		}
+	}
+	
 	/**
 	 *
 	 ****************************************************************************************** 

@@ -16,8 +16,8 @@ class MundoFeliz inherits Mundo {
 	var property c = true
 }
 
-// XPECT errors --> "There are attributes with the same name in the hierarchy: [a]" at "new MundoFeliz() with MundoCerrado"
-const mundoHippie = new MundoFeliz() with MundoCerrado
+// XPECT errors --> "There are attributes with the same name in the hierarchy: [a]" at "object inherits MundoCerrado and MundoFeliz {}"
+const mundoHippie = object inherits MundoCerrado and MundoFeliz {}
 
 class C {
   const w     // OK

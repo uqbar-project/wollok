@@ -1,0 +1,19 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+class A {}
+class B {}
+mixin M1 {}
+mixin M2 {}
+
+// XPECT errors --> "Bad Linearization: mixins should be defined before optional parent class" at "A"
+class BadClass1 inherits A and M1 {}
+
+class GoodClass1 inherits M1 and A {}
+
+// XPECT errors --> "Bad Linearization: mixins should be defined before optional parent class" at "A"
+class BadClass2 inherits A and M1 and M2 {}
+
+// XPECT errors --> "Bad Linearization: mixins should be defined before optional parent class" at "M1"
+class BadClass3 inherits M1 and A and M2 {}
+
+class GoodClass3 inherits M1 and M2 and A {}

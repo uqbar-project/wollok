@@ -67,6 +67,10 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 		
 		val testedIssue = if (issueDescription === null) issues.get(0) else issues.findFirst [ issueDescription.equalsIgnoreCase(message) ]
 		
+		if (testedIssue === null) {
+			fail("No issue with [" + issueDescription + "] message found. " + issues.map [ message ].join(", "))	
+		}
+		
 		val Answer<XtextDocument> answerXtextDocument = [ call |
 			val uri = if(call.arguments.size == 0) testedIssue.uriToProblem else (call.arguments.get(0) as URI)
 			val value = uri.trimFragment.toString

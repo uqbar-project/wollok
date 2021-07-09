@@ -39,8 +39,8 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		«toStringFixture»
 		test "toString de un mixed method container con 1 mixin" {
-			const pm = new Persona() with EnvejeceDoble
-			assert.equals(pm.toString(), "Persona with EnvejeceDoble")
+			const pm = object inherits EnvejeceDoble and Persona {}
+			assert.equals(pm.toString(), "an Object")
 		}
 		'''.interpretPropagatingErrors
 	}
@@ -50,8 +50,9 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		«toStringFixture»
 		test "toString de un mixed method container con 2 mixins" {
-			const pm = new Persona() with EnvejeceDoble with EnvejeceTriple
-			assert.equals(pm.toString(), "Persona with EnvejeceDoble with EnvejeceTriple")
+			const pm = object inherits EnvejeceDoble and EnvejeceTriple and Persona {}
+			assert.equals(pm.toString(), "an Object")
+			// assert.equals(pm.toString(), "Persona with EnvejeceDoble with EnvejeceTriple")
 		}
 		'''.interpretPropagatingErrors
 	}
@@ -76,7 +77,7 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 		}
 		
 		test "la clase se inicializa correctamente con los parámetros nombrados" {
-			const yo = new MundoFeliz(a = 1, b = 2) with MundoCerrado
+			const yo = object inherits MundoCerrado(a = 1) and MundoFeliz(b = 2) {}
 			assert.equals(yo.a(), 1)
 			assert.equals(yo.b(), 2)
 			assert.that(yo.c())

@@ -51,7 +51,7 @@ class CamionReutilizable inherits Camion {
 		if(self.puedeCargar(unCoso)) {
 			var destino = destinos.detect{destino => destino.getLugar() == unLugar}
 			if (destino == null) {
-				var nuevoDestino = new Destino(unLugar)
+				var nuevoDestino = new Destino(lugar = unLugar)
 				nuevoDestino.getCosos().add(unCoso)
 				destino.add(nuevoDestino)
 			} else {
@@ -125,9 +125,9 @@ object deViaje {
 }
 
 object main {
-	var caja1 = new Caja(5, "mochilas")
-	var caja2 = new Caja(10, "pares de zapatos")
-	var camion1 = new Camion(500)
+	var caja1 = new Caja(pesoCaja = 5, contenido = "mochilas")
+	var caja2 = new Caja(pesoCaja = 10, contenido = "pares de zapatos")
+	var camion1 = new Camion(cargaMaxima = 500)
 	
 	method cargarCamion(camion) {
 		camion.cargar(caja1)

@@ -174,7 +174,7 @@ object { var energia
 	@Test
 	def void testInheritingPositionalParametersObjectDefinition() {
 		assertFormatting(
-			'''
+			'''class Ave{}
           object        pepita  
           
           
@@ -183,16 +183,20 @@ inherits
  Ave
 
 
-              { var energia = 0  method volar() { energia    +=
+              { var energia = 0  method volar() { energia    = energia +
 10 }          
 		''',
 			'''
+			class Ave {
+			
+			}
+			
 			object pepita inherits Ave {
 
 				var energia = 0
 			
 				method volar() {
-					energia += 10
+					energia = energia + 10
 				}
 			
 			}
@@ -229,14 +233,14 @@ method comer(gr){energia=energia+gr} method jugar(){     return true      }}''',
 	def void testObjectDefinitionWithOneVariableOnly() {
 		assertFormatting(
 			'''
-          object        pepita  
+          object        pepita  {
           
           
           
 
               var        
               
-              z   
+              z   }
 		''',
 			'''
 			object pepita {
@@ -473,7 +477,7 @@ inherits
 
               method volar(lugar) {energia             = 0 }} class Ave 
               
-              mixed with  
+              inherits  
               
                Volador {
               	
@@ -492,7 +496,7 @@ inherits
 			
 			}
 			
-			class Ave mixed with Volador {
+			class Ave inherits Volador {
 
 				method comer() {
 					energia = 100
@@ -505,52 +509,8 @@ inherits
 	}
 
 	@Test
-	def testObjectInheritingPosicionalParametersForWKO() {
-		assertFormatting('''
-object luisAlberto inherits Musico (
-	
-	8
-) {
-
-	var guitarra
-}		
-		''',
-		'''
-		object luisAlberto inherits Musico (8) {
-
-			var guitarra
-		
-		}
-		
-		''')
-	}
-
-	@Test
-	def testObjectInheritingPosicionalParametersForWKO2() {
-		assertFormatting('''
-object luisAlberto inherits Musico (
-	
-	8
-	
-	, "estrelicia"
-) {
-
-	var guitarra
-}		
-		''',
-		'''
-		object luisAlberto inherits Musico (8, "estrelicia") {
-
-			var guitarra
-		
-		}
-		
-		''')
-	}
-
-	@Test
 	def testObjectInheritingNamedParametersForWKO() {
-		assertFormatting('''
+		assertFormatting('''class Musico{var calidad}
 object luisAlberto inherits Musico (calidad
 	
 	
@@ -569,6 +529,12 @@ object luisAlberto inherits Musico (calidad
 }		
 		''',
 		'''
+		class Musico {
+		
+			var calidad
+		
+		}
+		
 		object luisAlberto inherits Musico (calidad = 8, cancionPreferida = "estrelicia") {
 
 			var guitarra
@@ -605,7 +571,7 @@ class Cancion {
 	def void objectDefinition() {
 		assertFormatting(
 			'''
-object luisAlberto inherits Musico {
+class Musico{} object luisAlberto inherits Musico {
 
 	var guitarra = null
 
@@ -616,7 +582,7 @@ object luisAlberto inherits Musico {
 	override method habilidad() = return 100.min(8 * guitarra.unidadesDeGuitarra())
 	override method remuneracion(presentacion) = if (presentacion.participo(self)) self.costoPresentacion(presentacion) else 0
 
-	method costoPresentacion(presentacion) = if (presentacion.fecha() < new Date(01, 09, 2017)) {
+	method costoPresentacion(presentacion) = if (presentacion.fecha() < new Date(day = 01, month = 09, year = 2017)) {
 		return 1000
 	} else {
 		return 1200
@@ -628,6 +594,10 @@ object luisAlberto inherits Musico {
 			
 			''',
 			'''
+			class Musico {
+			
+			}
+			
 			object luisAlberto inherits Musico {
 			
 				var guitarra = null
@@ -640,7 +610,7 @@ object luisAlberto inherits Musico {
 
 				override method remuneracion(presentacion) = if (presentacion.participo(self)) self.costoPresentacion(presentacion) else 0
 			
-				method costoPresentacion(presentacion) = if (presentacion.fecha() < new Date(01, 09, 2017)) {
+				method costoPresentacion(presentacion) = if (presentacion.fecha() < new Date(day = 01, month = 09, year = 2017)) {
 					return 1000
 				} else {
 					return 1200
@@ -754,14 +724,16 @@ class Presentacion {
 
 	@Test
 	def void testObjectVarsInitialized() {
+		// EL PROBLEMA ESTA EN inherits Musico + if (presentacion.fecha() < fechaTope) valorFechaNoTope else valorFechaTope
 		assertFormatting(
 			'''
+			class Musico{}
 object luisAlberto inherits Musico {
 
 	const valorFechaTope = 1200
 	const valorFechaNoTope = 1000
 	var guitarra = fender
-	var fechaTope = new Date(01, 09, 2017)
+	const fechaTope = new Date(day = 01, month = 09, year = 2017)
 
 	override method habilidad() = (8 * guitarra.valor()).min(100)
 
@@ -777,12 +749,16 @@ object luisAlberto inherits Musico {
 			
 			''',
 			'''
+			class Musico {
+			
+			}
+			
 			object luisAlberto inherits Musico {
 			
 				const valorFechaTope = 1200
 				const valorFechaNoTope = 1000
 				var guitarra = fender
-				var fechaTope = new Date(01, 09, 2017)
+				const fechaTope = new Date(day = 01, month = 09, year = 2017)
 			
 				override method habilidad() = (8 * guitarra.valor()).min(100)
 			
