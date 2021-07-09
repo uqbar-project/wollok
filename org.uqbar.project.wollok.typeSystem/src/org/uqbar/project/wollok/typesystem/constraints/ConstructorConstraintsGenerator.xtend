@@ -44,10 +44,6 @@ class ObjectParentConstraintsGenerator extends ConstructorConstraintsGenerator<W
 	}
 	
 	override generate(WMethodContainer it) {
-//		parentParameterValues
-//		if (parent.hasParentParameters)
-//			generate(parent, parentParametersValues)
-//		else
 		if (parent !== null && !parent.hasParentParameters) {
 			generate(parent)
 		}
