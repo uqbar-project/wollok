@@ -152,7 +152,7 @@ class WollokJavaConversions {
 			throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_CONVERSION, o.call(TO_STRING_PRINTABLE), "Number"))
 		}
 		result
-	} 
+	}
 	
 	def static dispatch int coerceToInteger(BigDecimal value) {
 		coercingStrategy.coerceToInteger(value)

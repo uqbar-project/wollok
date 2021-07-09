@@ -219,7 +219,14 @@ program abc {
 method attack(target) {
                            var attackers = self.standingMembers()
              if (attackers.isEmpty()) throw
-                                new CannotAttackException("No attackers available") attackers.forEach({
+                                new CannotAttackException(
+                                
+                                
+                                
+                                message
+                                
+                                
+                                ="No attackers available") attackers.forEach({
                                         aMember          =>   
                                         
                                         
@@ -233,7 +240,7 @@ method attack(target) {
 		
 			method attack(target) {
 				var attackers = self.standingMembers()
-				if (attackers.isEmpty()) throw new CannotAttackException("No attackers available")
+				if (attackers.isEmpty()) throw new CannotAttackException(message = "No attackers available")
 				attackers.forEach({ aMember => aMember.attack(target)})
 			}
 		
@@ -469,7 +476,7 @@ class AlbumBuilder {
 	var fechaLanzamiento
 
 	method fechaLanzamiento(dia, mes, anio) {
-		fechaLanzamiento = new Date(dia, mes, anio)
+		fechaLanzamiento = new Date(day = dia, month = mes, year = anio)
 		return self
 	}
 
@@ -480,7 +487,7 @@ class AlbumBuilder {
 			var fechaLanzamiento
 		
 			method fechaLanzamiento(dia, mes, anio) {
-				fechaLanzamiento = new Date(dia, mes, anio)
+				fechaLanzamiento = new Date(day = dia, month = mes, year = anio)
 				return self
 			}
 
@@ -492,19 +499,33 @@ class AlbumBuilder {
 	@Test
 	def void unaryWordExpression() {
 		assertFormatting('''
-object pdpalooza inherits Presentacion(new Date(15, 12, 2017), lunaPark, []){
-	const restriccionHabilidad = { musico => if (musico.habilidad() < 70) throw new Exception("La habilidad del músico debe ser mayor a 70")}
-	const restriccionCompusoAlgunaCancion = {musico => if (not musico.compusoAlgunaCancion()) throw new Exception("El músico debe haber compuesto al menos una canción")}
+		object lunaPark {}
+		class Presentacion { var fecha var lugar var musicos }
+object pdpalooza inherits Presentacion(fecha = new Date(day = 15, month = 12, year = 2017), lugar = lunaPark, musicos = []){
+	const restriccionHabilidad = { musico => if (musico.habilidad() < 70) throw new Exception(message = "La habilidad del músico debe ser mayor a 70")}
+	const restriccionCompusoAlgunaCancion = {musico => if (not musico.compusoAlgunaCancion()) throw new Exception(message = "El músico debe haber compuesto al menos una canción")}
 }		
 		''',
 		'''
-		object pdpalooza inherits Presentacion(new Date(15, 12, 2017), lunaPark, []) {
+		object lunaPark {
+		
+		}
+
+		class Presentacion {
+		
+			var fecha
+			var lugar
+			var musicos
+		
+		}
+		
+		object pdpalooza inherits Presentacion(fecha = new Date(day = 15, month = 12, year = 2017), lugar = lunaPark, musicos = []) {
 		
 			const restriccionHabilidad = { musico =>
-				if (musico.habilidad() < 70) throw new Exception("La habilidad del músico debe ser mayor a 70")
+				if (musico.habilidad() < 70) throw new Exception(message = "La habilidad del músico debe ser mayor a 70")
 			}
 			const restriccionCompusoAlgunaCancion = { musico =>
-				if (not musico.compusoAlgunaCancion()) throw new Exception("El músico debe haber compuesto al menos una canción")
+				if (not musico.compusoAlgunaCancion()) throw new Exception(message = "El músico debe haber compuesto al menos una canción")
 			}
 		
 		}
@@ -520,7 +541,7 @@ object restriccionCompositor {
 
 	method verificarMusico(musico) {
 		if (!musico.cancionesPublicadas().any{ unaCancion => musico.esSuCancion(unaCancion)}) {
-			throw new UserException("No se puede agregar al musico ya que no compuso ninguna cancion")
+			throw new UserException(message = "No se puede agregar al musico ya que no compuso ninguna cancion")
 		}
 	}
 
@@ -532,7 +553,7 @@ object restriccionCompositor {
 			
 				method verificarMusico(musico) {
 					if (!musico.cancionesPublicadas().any({ unaCancion => musico.esSuCancion(unaCancion)})) {
-						throw new UserException("No se puede agregar al musico ya que no compuso ninguna cancion")
+						throw new UserException(message = "No se puede agregar al musico ya que no compuso ninguna cancion")
 					}
 				}
 			

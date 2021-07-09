@@ -14,7 +14,7 @@ class Excursion {
 describe "properties initialization in constructor call" {
 	
 	test "calling a constructor with no arguments should throw an error if there are constant references" {
-		// XPECT errors ---> "You must provide initial value to the following references: origen, medioDeTransporte" at "new Viaje()"
+		// XPECT errors ---> "You must provide initial value to the following references: medioDeTransporte, origen" at "new Viaje()"
 		new Viaje()
 		assert.that(true)
 	}

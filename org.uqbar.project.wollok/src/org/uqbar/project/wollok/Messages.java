@@ -32,7 +32,7 @@ public class Messages extends NLS {
 	public static String WollokInterpreter_illegalOperationEmptyCollection;
 	public static String WollokDslInterpreter_native_class_not_found;
 	public static String WollokInterpreter_referenceAlreadyDefined;
-
+	
 	public static String WollokScopeProvider_unresolvedImport;
 	
 	public static String WollokDslValidator_CLASS_NAME_MUST_START_UPPERCASE;
@@ -58,6 +58,10 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_CANNOT_MODIFY_REFERENCE;
 	public static String WollokDslValidator_CANNOT_ASSIGN_TO_ITSELF;
 	public static String WollokDslValidator_CYCLIC_HIERARCHY;
+	public static String WollokDslValidator_INVALID_MIXIN_HIERARCHY;
+	public static String WollokDslValidator_CANNOT_USE_DERIVED_KEYWORD;
+	public static String WollokDslValidator_CANNOT_DEFINE_MULTIPLE_PARENT_CLASSES;
+	public static String WollokDslValidator_BAD_LINEARIZATION_DEFINITION;
 	public static String WollokDslValidator_DUPLICATED_METHOD;
 	public static String WollokDslValidator_DUPLICATED_VARIABLE_IN_HIERARCHY;
 	public static String WollokDslValidator_DUPLICATED_VARIABLE_IN_CONSTRUCTOR_CALL;
@@ -67,6 +71,8 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_METHOD_DOESNT_EXIST;
 	public static String WollokDslValidator_METHOD_DOESNT_EXIST_BUT_SIMILAR_FOUND;
 	public static String WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR_CALL;
+	public static String WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_LINEARIZATION;
+	public static String WollokDslValidator_DUPLICATE_ATTRIBUTE_IN_LINEARIZATION;
 	public static String WollokDslValidator_METHOD_DOESNT_EXIST_CASE_SENSITIVE;
 	public static String WollokDslValidator_VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES;
 	public static String WollokDslValidator_INITIALIZATION_VALUE_FOR_VARIABLE_NEVER_USED;

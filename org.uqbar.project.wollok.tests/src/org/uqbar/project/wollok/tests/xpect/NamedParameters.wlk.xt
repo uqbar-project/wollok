@@ -25,13 +25,13 @@ class Entrenador {
 	method crearUnAve() {
 		// XPECT errors --> "You must provide initial value to the following references: energia" at "new Ave(edad = 2)"
 		pepita = new Ave(edad = 2)
-		// XPECT errors --> "Reference inexistente not found in class Ave" at "inexistente = true"
+		// XPECT errors --> "Reference inexistente not found in Ave" at "inexistente = true"
 		pepita = new Ave(energia = 12, inexistente = true)
 		pepita = new Ave(edad = 2, energia = 50)
 		pepita = new Ave(energia = 50)
 	}
 	method crearOtraAve() {
-		// XPECT errors --> "You must provide initial value to the following references: peso, energia" at "new Golondrina(edad = 2)"
+		// XPECT errors --> "You must provide initial value to the following references: energia, peso" at "new Golondrina(edad = 2)"
 		otraPepita = new Golondrina(edad = 2)
 		// XPECT errors --> "You must provide initial value to the following references: energia" at "new Golondrina(edad = 10, peso = 5)"
 		otraPepita = new Golondrina(edad = 10, peso = 5)
@@ -58,12 +58,12 @@ class Heroe {
 object superman inherits Heroe(nombre = "Clark Kent", traje = "rojo y azul") {
 	
 }
-// XPECT errors --> "Reference apellido not found in class Heroe" at "apellido = \"Wilson\""
+// XPECT errors --> "Reference apellido not found in Heroe" at "apellido = \"Wilson\""
 object deadpool inherits Heroe(apellido = "Wilson") {
 	
 }
 object charlie {
-	// XPECT errors --> "Reference apellido not found in class Heroe" at "apellido = \"Fawcett\""
+	// XPECT errors --> "Reference apellido not found in Heroe" at "apellido = \"Fawcett\""
 	const angel1 = object inherits Heroe(apellido = "Fawcett") {}
 	const angel2 = object inherits Heroe(nombre = "") {}
 	
@@ -103,8 +103,8 @@ class A {
   method calculate() = a + 5
 }
 
-// XPECT errors --> "You must provide initial value to the following references: a, w, y" at "new A() with M"
-const a = new A() with M
+// XPECT errors --> "You must provide initial value to the following references: a, w, y" at "object inherits M and A {}"
+const a = object inherits M and A {}
 
 class C {
   const w
@@ -153,9 +153,9 @@ class ParentB inherits ParentA {
 	method b() = b
 }
 
-// XPECT errors --> "You must provide initial value to the following references: b, a" at "object c inherits ParentB {}"
+// XPECT errors --> "You must provide initial value to the following references: a, b" at "object c inherits ParentB {}"
 object c inherits ParentB {}
 
-// XPECT errors --> "You must provide initial value to the following references: b, a" at "object inherits ParentB {}"
+// XPECT errors --> "You must provide initial value to the following references: a, b" at "object inherits ParentB {}"
 const d = object inherits ParentB {}
 

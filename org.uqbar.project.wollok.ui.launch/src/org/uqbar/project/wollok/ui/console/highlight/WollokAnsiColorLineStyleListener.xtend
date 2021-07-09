@@ -11,7 +11,6 @@ import org.eclipse.swt.graphics.Font
 import org.eclipse.swt.graphics.GlyphMetrics
 
 import static org.uqbar.project.wollok.ui.console.highlight.AnsiCommands.*
-import static org.uqbar.project.wollok.utils.OperatingSystemUtils.*
 
 /**
  * A LineStyleListener that interprets ansi codes
@@ -88,7 +87,7 @@ class WollokAnsiColorLineStyleListener implements LineStyleListener {
         WollokConsoleAttributes.updateRangeStyle(range, lastAttributes)
         if (isCode) {
             val showEscapeCodes = WollokConsolePreferenceUtils.getBoolean(WollokConsolePreferenceConstants.PREF_SHOW_ESCAPES)
-            if (showEscapeCodes || isOsMac)
+            if (showEscapeCodes)
                 range.font = new Font(null, "Monospaced", 6, SWT.NORMAL)
             else
                 range.metrics = new GlyphMetrics(0, 0, 0)

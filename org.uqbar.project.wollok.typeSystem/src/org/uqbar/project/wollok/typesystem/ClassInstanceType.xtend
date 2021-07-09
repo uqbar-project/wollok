@@ -6,6 +6,7 @@ import org.uqbar.project.wollok.wollokDsl.WClass
 import static org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 /**
  * 
