@@ -32,6 +32,8 @@ class Exception {
 			.reverse
 	}
 	
+	def initialize() {}
+	
 	def getStackTrace() {
 		stackTrace.map[ 
 			exceptionObject.call("createStackTraceElement", contextDescription.javaToWollok, location.toString.javaToWollok)
