@@ -1,0 +1,28 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+class A {
+  const x
+  const y
+  method suma() = x + y
+}
+
+class B inherits A(x = 1) {
+  const z
+  method z() = z
+}
+
+mixin M {
+  const w
+  method w() = w
+}
+
+// XPECT errors --> "Reference q not found in B" at "q = 3"
+class C1 inherits M and B(q = 3) { }
+// XPECT errors --> "Reference w not found in B" at "w = 3"
+class C2 inherits M and B(w = 3) { }
+// XPECT errors --> "Reference z not found in M" at "z = 3"
+class C3 inherits M(z = 3) and B { }
+class C4 inherits M and B(x = 0) { }        // OK! x = 0
+class C5 inherits M and B(y = 0) { }        // OK! x = 1, y = 0
+class C6 inherits M and B(z = 0) { }        // OK! x = 1, z = 0
+class C7 inherits M(w = 0) and B(z = 0) { } // OK! w = 0, x = 1, z = 0
+ 

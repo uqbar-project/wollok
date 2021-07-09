@@ -4,8 +4,10 @@ import com.google.inject.Inject
 import java.io.File
 import java.util.List
 import org.eclipse.core.runtime.Platform
+import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.EReference
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.osgi.util.NLS
@@ -13,7 +15,6 @@ import org.eclipse.xtext.naming.IQualifiedNameConverter
 import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.validation.Check
 import org.uqbar.project.wollok.WollokConstants
-import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
 import org.uqbar.project.wollok.scoping.WollokImportedNamespaceAwareLocalScopeProvider
@@ -21,7 +22,7 @@ import org.uqbar.project.wollok.scoping.WollokResourceCache
 import org.uqbar.project.wollok.scoping.root.WollokRootLocator
 import org.uqbar.project.wollok.validation.rules.DontCompareEqualityOfWKORule
 import org.uqbar.project.wollok.wollokDsl.Import
-import org.uqbar.project.wollok.wollokDsl.WArgumentList
+import org.uqbar.project.wollok.wollokDsl.WAncestor
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -32,11 +33,13 @@ import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
+import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WMixin
 import org.uqbar.project.wollok.wollokDsl.WNamed
+import org.uqbar.project.wollok.wollokDsl.WNamedArgumentsList
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
@@ -66,6 +69,7 @@ import static extension org.uqbar.project.wollok.model.FlowControlExtensions.*
 import static extension org.uqbar.project.wollok.model.WBlockExtensions.*
 import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WNamedParametersExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
@@ -245,38 +249,86 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@NotConfigurable
 	def checkUnexistentNamedParametersInConstructor(WConstructorCall it) {
 		if (!hasNamedParameters) return;
-		classRef.validateNamedParameters(argumentList, mixins)
+		classRef.validateUndefinedNamedParameters(argumentList.initializers)
 	}
 
 	@Check
 	@DefaultSeverity(ERROR)
 	@NotConfigurable
-	def checkUnexistentNamedParametersInheritingConstructor(WNamedObject it) {
-		if (parent === null || parentParameters === null || !parentParameters.hasNamedParameters) return;
-		parent.validateNamedParameters(parentParameters)
+	def checkUnexistentNamedParametersInheritingConstructorInClasses(WClass it) {
+		if (!hasParentParameters) return;
+		validateUndefinedNamedParameters(allInitializers)
 	}
 
 	@Check
 	@DefaultSeverity(ERROR)
 	@NotConfigurable
-	def checkUnexistentNamedParametersInheritingConstructor(WObjectLiteral it) {
-		if (parent === null || parentParameters === null || !parentParameters.hasNamedParameters) return;
-		parent.validateNamedParameters(parentParameters)
+	def checkUnexistentNamedParametersInheritingConstructorInNamedObjects(WNamedObject it) {
+		if (!hasParentParameters) return;
+		validateUndefinedNamedParameters(allInitializers)
 	}
 
-	def void validateNamedParameters(WClass clazz, WArgumentList parameterList) {
-		validateNamedParameters(clazz, parameterList, #[])
+	@Check
+	@DefaultSeverity(ERROR)
+	@NotConfigurable
+	def checkUnexistentNamedParametersInheritingConstructorInObjectLiterals(WObjectLiteral it) {
+		if (!hasParentParameters) return;
+		validateUndefinedNamedParameters(allInitializers)
 	}
 
-	def void validateNamedParameters(WClass clazz, WArgumentList parameterList, List<WMixin> additionalMixins) {
-		if (clazz.name === null) return;  // avoid validation for non-existent classes
-		val validAttributes = clazz.allVariableNames + (clazz.mixins + additionalMixins).flatMap [ allVariableNames ]
-		val invalidInitializers = parameterList.initializers.filter [ !validAttributes.contains(initializer.name) ]
-		invalidInitializers.forEach [ 
-			reportEObject(NLS.bind(WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR_CALL, initializer.name, clazz.name), initializer.eContainer, WollokDslValidator.ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR_CALL)
+	def void validateUndefinedNamedParameters(WClass clazz, WNamedArgumentsList parameterList) {
+		validateUndefinedNamedParameters(clazz, parameterList.initializers)
+	}
+
+	def void validateUndefinedNamedParameters(WMethodContainer it, List<WInitializer> initializers) {
+		validateUndefinedNamedParameters(initializers, #[])
+	}
+
+	def void validateUndefinedNamedParameters(WMethodContainer container, List<WInitializer> initializers, List<WMixin> mixins) {
+		if (container.name === null) return;  // avoid validation for non-existent classes
+		initializers.forEach [
+			val ancestor = eContainer.eContainer.getAncestor
+			val variables = ancestor.allVariableDeclarations.map [ variable.name ]
+			if (!variables.contains(initializer.name)) {
+				reportEObject(NLS.bind(WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_LINEARIZATION, initializer.name, ancestor.name), initializer.eContainer, WollokDslValidator.ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR_CALL)					
+			}
 		]
 	}
 
+	@Check
+	@DefaultSeverity(WARN)
+	@CheckGroup(WollokCheckGroup.INITIALIZATION)
+	def checkRepeatedNamedParametersInClasses(WClass it) {
+		checkRepeatedNamedParameters(parents)
+	}
+
+	@Check
+	@DefaultSeverity(WARN)
+	@CheckGroup(WollokCheckGroup.INITIALIZATION)
+	def checkRepeatedNamedParametersInNamedObject(WNamedObject it) {
+		checkRepeatedNamedParameters(parents)
+	}
+
+	@Check
+	@DefaultSeverity(WARN)
+	@CheckGroup(WollokCheckGroup.INITIALIZATION)
+	def checkRepeatedNamedParametersInObjectLiterals(WObjectLiteral it) {
+		checkRepeatedNamedParameters(parents)
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def checkRepeatedNamedParameters(EList<WAncestor> parents) {
+		val initializers = parents.flatMap [ parentParameters.initializers ]
+		if (initializers.nullOrEmpty) return;
+		initializers.forEach [ initializer |
+			val otherInitializers = initializers.filter [ it !== initializer ].map [ init | init.initializer.name ]
+			if (otherInitializers.contains(initializer.initializer.name)) {
+				report(NLS.bind(WollokDslValidator_DUPLICATE_ATTRIBUTE_IN_LINEARIZATION, initializer.initializer.name), initializer, WINITIALIZER__INITIALIZER)
+			}
+		]
+	}
+		
 	@Check
 	@DefaultSeverity(ERROR)
 	@CheckGroup(WollokCheckGroup.INITIALIZATION)
@@ -284,8 +336,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (hasNamedParameters || (!classRef.hasInitializeMethod())) {
 			val unusedVarDeclarations = uninitializedNamedParameters
 			if (!unusedVarDeclarations.isEmpty) {
-				val variableNames = unusedVarDeclarations.map [ variable.name ].join(", ")
-				reportEObject(NLS.bind(WollokDslValidator_MISSING_ASSIGNMENTS_IN_CONSTRUCTOR_CALL, variableNames), it, MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR_CALL)
+				val variableNames = unusedVarDeclarations.showVariables
+				reportEObject(NLS.bind(WollokDslValidator_MISSING_ASSIGNMENTS_IN_CONSTRUCTOR_CALL, variableNames, classRef.name), it, MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR_CALL)
 			}
 		}
 	}
@@ -294,10 +346,10 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	@CheckGroup(WollokCheckGroup.INITIALIZATION)
 	def checkUninitializedAttributesInNamedObject(WNamedObject it) {
-		if (!inheritsFromObject) {
+		if (!parents.isEmpty) {
 			val unusedVarDeclarations = uninitializedNamedParameters
 			if (!unusedVarDeclarations.isEmpty) {
-				val variableNames = unusedVarDeclarations.map [ variable.name ].join(", ")
+				val variableNames = unusedVarDeclarations.showVariables
 				reportEObject(NLS.bind(WollokDslValidator_MISSING_ASSIGNMENTS_IN_CONSTRUCTOR_CALL, variableNames), it, MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR_CALL)
 			}			
 		}
@@ -307,24 +359,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	@CheckGroup(WollokCheckGroup.INITIALIZATION)
 	def checkUninitializedAttributesInObjectLiteral(WObjectLiteral it) {
-		if (!inheritsFromObject) {
-			val unusedVarDeclarations = uninitializedNamedParameters
-			if (!unusedVarDeclarations.isEmpty) {
-				val variableNames = unusedVarDeclarations.map [ variable.name ].join(", ")
-				reportEObject(NLS.bind(WollokDslValidator_MISSING_ASSIGNMENTS_IN_CONSTRUCTOR_CALL, variableNames), it, MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR_CALL)
+		if (!parents.isEmpty) {
+			val uninitializedAttributes = uninitializedReferences.showVariables
+			if (!uninitializedAttributes.isEmpty) {
+				reportEObject(NLS.bind(WollokDslValidator_MISSING_ASSIGNMENTS_IN_CONSTRUCTOR_CALL, uninitializedAttributes), it, MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR_CALL)
 			}			
 		}
 	}
 	
-	@Check
-	@DefaultSeverity(ERROR)
-	@NotConfigurable
-	def noSuperMethodRequiredByMixinAtInstantiationTime(WConstructorCall it) {
-		if (!mixins.empty)
-			checkUnboundedSuperCallingMethodsOnMixins(new MixedMethodContainer(classRef, mixins), it,
-				WCONSTRUCTOR_CALL__CLASS_REF)
-	}
-
 	// **************************************
 	// ** method container validations
 	// **************************************
@@ -343,7 +385,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	@NotConfigurable	
 	def noSuperMethodRequiredByMixin(WMethodContainer it) {
-		checkUnboundedSuperCallingMethodsOnMixins(it, WNAMED__NAME)
+		checkUnboundedSuperCallingMethodsOnMixins(it, feature)
 	}
 
 	def checkUnboundedSuperCallingMethodsOnMixins(WMethodContainer it, EObject target, EStructuralFeature attribute) {
@@ -437,9 +479,81 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	@NotConfigurable	
-	def cyclicHierarchy(WMethodContainer it) {
+	def cyclicHierarchyForClasses(WMethodContainer it) {
 		if (declaringContext.hasCyclicHierarchy) {
-			report(WollokDslValidator_CYCLIC_HIERARCHY, it, WCLASS__PARENT)
+			report(WollokDslValidator_CYCLIC_HIERARCHY, it, WCLASS__PARENTS)
+		}
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	@NotConfigurable	
+	def cyclicHierarchyForMixins(WMixin it) {
+		if (#[it].hasACyclicHierarchy) {
+			report(WollokDslValidator_CYCLIC_HIERARCHY, it, WMIXIN__PARENTS)
+		}
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	@NotConfigurable	
+	def mixinShouldOnlyInheritFromAnotherMixin(WMixin it) {
+		val unwantedParents = parents.map [ ref ].reject(WMixin).filter [ name !== null ]
+		if (!unwantedParents.isEmpty) {
+			report(NLS.bind(WollokDslValidator_INVALID_MIXIN_HIERARCHY, unwantedParents.map [ name ].join(", ")), it, WMIXIN__PARENTS)
+		}
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	@NotConfigurable	
+	def usingDerived(WMethodContainer it) {
+		if (declaringContext.badUseOfDerivedKeyword) {
+			report(WollokDslValidator_CANNOT_USE_DERIVED_KEYWORD, it, containingFeatureRoot)
+		}
+	}
+
+	def dispatch static containingFeatureRoot(WMethodContainer mc) { WNAMED__NAME }
+	def dispatch static containingFeatureRoot(WClass c) { WCLASS__ROOT }
+	def dispatch static containingFeatureRoot(WObjectLiteral o) { WOBJECT_LITERAL__ROOT }
+	def dispatch static containingFeatureRoot(WNamedObject o) { WNAMED_OBJECT__ROOT }
+
+	def dispatch static feature(WMethodContainer mc) { WNAMED__NAME }
+	def dispatch static feature(WObjectLiteral o) { WOBJECT_LITERAL__ROOT }
+
+	@Check
+	@DefaultSeverity(ERROR)
+	@NotConfigurable	
+	def badLinearizationForClass(WClass it) {
+		parents.badLinearizationValidation(it, WCLASS__PARENTS)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	@NotConfigurable	
+	def badLinearizationForNamedObject(WNamedObject it) {
+		parents.badLinearizationValidation(it, WNAMED_OBJECT__PARENTS)
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	@NotConfigurable	
+	def badLinearizationForObjectLiteral(WObjectLiteral it) {
+		parents.badLinearizationValidation(it, WOBJECT_LITERAL__PARENTS)
+	}
+		
+	def void badLinearizationValidation(EList<WAncestor> parents, WMethodContainer it, EReference parentFeature) {
+		if (parents === null || parents.isEmpty) return;
+		val parentsRef = parents.map [ ref ]
+		val parentClasses = parentsRef.filter(WClass)
+		if (parentClasses.isEmpty) return;
+		if (parentClasses.size > 1) {
+			report(WollokDslValidator_CANNOT_DEFINE_MULTIPLE_PARENT_CLASSES, it, parentFeature)
+			return
+		}
+		val parentClass = parentClasses.head
+		if (parentsRef.lastIndexOf(parentClass) !== parentsRef.size - 1) {
+			report(WollokDslValidator_BAD_LINEARIZATION_DEFINITION, it, parentFeature)
 		}
 	}
 
@@ -532,12 +646,15 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	@NotConfigurable
-	def duplicatedVariableInLinearization(WConstructorCall call) {
-		if (call.mixins.isEmpty) return;
-		val inheritedVariables = call.mixins.map[variables].flatten
-		val duplicatedVariables = call.classRef.allVariables.filter[v|inheritedVariables.exists[name == v.name]]
+	def duplicatedVariableInLinearization(WObjectLiteral it) {
+		if (mixins.isEmpty) return;
+		val variablesWithDuplicates = allVariables.map [ name ]
+		val variablesWithoutDuplicates = allVariables.map [ name ].toSet
+		val duplicatedVariables = variablesWithoutDuplicates.filter [ 
+			variablesWithDuplicates.filter [ possibleDuplicate | possibleDuplicate.equals(it) ].length > 1
+		]
 		if (!duplicatedVariables.isEmpty) {
-			report(NLS.bind(WollokDslValidator_DUPLICATED_VARIABLE_IN_CONSTRUCTOR_CALL, duplicatedVariables.map [ name ].join(", ")), call)
+			report(NLS.bind(WollokDslValidator_DUPLICATED_VARIABLE_IN_CONSTRUCTOR_CALL, duplicatedVariables.sort.join(", ")), it)
 		}
 	}
 	

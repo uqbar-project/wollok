@@ -22,7 +22,7 @@ abstract class AbstractWollokFormatterTestCase {
 	def assertFormatting(String program, String expected) {
 		// program.parse.eContents.show(1)
 		Assert.assertEquals(expected,
-        program.parse.serialize(SaveOptions.newBuilder.format().getOptions()))		
+        program.parse.serialize(SaveOptions.newBuilder.format().getOptions()))
 	}
 	
 	def void show(EList<EObject> list, int tabs) {

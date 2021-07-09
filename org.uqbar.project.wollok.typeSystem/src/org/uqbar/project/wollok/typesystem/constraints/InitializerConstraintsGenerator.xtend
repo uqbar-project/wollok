@@ -11,7 +11,7 @@ class InitializerConstraintsGenerator extends CrossReferenceConstraintsGenerator
 		super(registry)
 	}
 
-	override generate(WInitializer it) {	
+	override generate(WInitializer it) {
 		initializedVariable.variable.tvarOrParam.instanceFor(context.tvar).beSupertypeOf(initialValue.tvar)
 	}
 	

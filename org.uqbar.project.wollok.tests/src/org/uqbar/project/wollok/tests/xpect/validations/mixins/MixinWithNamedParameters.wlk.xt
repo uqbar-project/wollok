@@ -14,5 +14,5 @@ class MundoFeliz inherits Mundo {
 	var property c = true
 }
 
-const yo = new MundoFeliz(a = 1, b = 2) with MundoCerrado
-const otro = new MundoFeliz(c = 1, b = 2) with MundoCerrado
+const yo = object inherits MundoCerrado(a = 1) and MundoFeliz(b = 2) {}
+const otro = object inherits MundoCerrado and MundoFeliz(b = 2, c = 1) {}

@@ -15,7 +15,6 @@ import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.impl.ImportNormalizer
 import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.WollokConstants
-import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
@@ -51,7 +50,6 @@ import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WParameter
-import org.uqbar.project.wollok.wollokDsl.WPositionalArgumentsList
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
@@ -75,6 +73,7 @@ import static org.uqbar.project.wollok.sdk.WollokSDK.*
 import static extension org.uqbar.project.wollok.libraries.WollokLibExtensions.*
 import static extension org.uqbar.project.wollok.model.ResourceUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WNamedParametersExtensions.*
 import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
 
 /**
@@ -106,7 +105,6 @@ class WollokModelExtensions {
 	def static dispatch String fqn(WNamedObject it) { nameWithPackage }
 	def static dispatch String fqn(WMixin it) { nameWithPackage }
 	def static dispatch String fqn(WSuite it) { nameWithPackage }
-	def static dispatch String fqn(MixedMethodContainer it) { nameWithPackage }
 
 
 	def static WMethodDeclaration getInitMethod(WMethodContainer it) {
@@ -166,6 +164,7 @@ class WollokModelExtensions {
 	def static dispatch boolean isAnInitializer(WMethodDeclaration it) { isInitializer }
 
 	/** A variable is global if its declaration (i.e. its eContainer) is direct child of a WFile element */
+	def static dispatch boolean isGlobal(EObject it) { false }
 	def static dispatch boolean isGlobal(WVariableDeclaration it) {
 		eContainer instanceof WFile
 	}
@@ -346,11 +345,16 @@ class WollokModelExtensions {
 		c.argumentList.values
 	}
 
-	def static dispatch EList<WExpression> values(WPositionalArgumentsList l) { l.values }
 	def static dispatch EList<WExpression> values(EObject o) { ECollections.emptyEList }
 
 	def static List<WVariableDeclaration> uninitializedReferences(WMethodContainer it) {
-		allVariableDeclarations.filter[right === null].toList
+		allVariableDeclarations.filter[ variableDeclaration | variableDeclaration.right === null && !isInitializedAsNamedParameter(variableDeclaration.variable) ].toList
+	}
+	
+	def static isInitializedAsNamedParameter(WMethodContainer it, WVariable variable) {
+		allInitializers.exists [ initializer |
+			initializer.initializer.name.equals(variable.name)
+		]
 	}
 
 	def static List<String> argumentsNames(EList<WInitializer> initializers) {
@@ -359,21 +363,21 @@ class WollokModelExtensions {
 
 	def static dispatch List<WVariableDeclaration> uninitializedNamedParameters(WConstructorCall it) {
 		val uninitializedAttributes = classRef.uninitializedReferences
-		uninitializedAttributes.addAll(mixins.flatMap[allVariableDeclarations].filter[right === null])
 		internalUninitializedNamedParameters(uninitializedAttributes, initializers.argumentsNames ?: #[])
 	}
 
 	def static dispatch List<WVariableDeclaration> uninitializedNamedParameters(WNamedObject it) {
-		internalUninitializedNamedParameters(uninitializedReferences, parentParameters?.initializers?.argumentsNames ?: #[])
+		internalUninitializedNamedParameters(uninitializedReferences, allInitializers.map [ getInitializer.name ].toList)
 	}
 
 	def static dispatch List<WVariableDeclaration> uninitializedNamedParameters(WObjectLiteral it) {
-		internalUninitializedNamedParameters(uninitializedReferences, parentParameters?.initializers?.argumentsNames ?: #[])
+		internalUninitializedNamedParameters(uninitializedReferences, allInitializers.map [ getInitializer.name ].toList)
 	}
 
 	def static internalUninitializedNamedParameters(List<WVariableDeclaration> uninitializedReferences, List<String> namedParameters) {
 		uninitializedReferences.filter[arg|!namedParameters.contains(arg.variable.name)].toList
 	}
+
 	def static dispatch EList<WInitializer> initializers(WConstructorCall c) {
 		if(c.argumentList === null) return ECollections.emptyEList
 		c.argumentList.initializers
@@ -386,7 +390,7 @@ class WollokModelExtensions {
 	def static dispatch EList<WInitializer> initializers(EObject o) {
 		ECollections.emptyEList
 	}
-
+	
 	def static dispatch EList<? extends EObject> arguments(WConstructorCall c) {
 		if(c.argumentList === null) return ECollections.emptyEList
 		c.argumentList.arguments
@@ -600,7 +604,8 @@ class WollokModelExtensions {
 
 	// hack uses another grammar ereference to any
 	def static getScope(Import it, WollokGlobalScopeProvider scopeProvider) {
-		scopeProvider.getScope(eResource, WollokDslPackage.Literals.WCLASS__PARENT)
+		// FIXME: Ver si el getScope corresponde al último padre
+		scopeProvider.getScope(eResource, WollokDslPackage.Literals.WCLASS__PARENTS)
 	}
 
 	def static upTo(Import it, String segment) {
@@ -716,7 +721,7 @@ class WollokModelExtensions {
 		#["WNamedObject", "WVariableReference"]
 	}
 
-	def static dispatch List<String> semanticElementsAllowedToRefactor(WClass e) { #["WClass", "WVariableReference"] }
+	def static dispatch List<String> semanticElementsAllowedToRefactor(WClass e) { #["WClass", "WVariableReference", "WAncestor"] }
 
 	def static dispatch List<String> semanticElementsAllowedToRefactor(WVariable v) {
 		#["WVariable", "WVariableReference", "WVariableDeclaration"]
@@ -871,7 +876,6 @@ class WollokModelExtensions {
 		c.argumentList !== null
 	}
 
-	def static dispatch boolean hasNamedParameters(WPositionalArgumentsList l) { false }
 	def static dispatch boolean hasNamedParameters(WNamedArgumentsList l) { true }
 
 	def static dispatch boolean shouldBeLazilyInitialized(EObject e) { false }

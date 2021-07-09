@@ -75,6 +75,7 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import static extension org.uqbar.project.wollok.model.WNamedParametersExtensions.*
 
 /**
  * It's the real "interpreter".
@@ -170,8 +171,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		if (ref.name === null) {
 			throw new UnresolvableReference(Messages.LINKING_COULD_NOT_RESOLVE_REFERENCE.trim + " " + astNode.text.trim)
 		}
-
-		if(ref.isGlobal) ref.ensureInitialization
+		if (ref.isGlobal) ref.ensureInitialization
 		interpreter.currentContext.resolve(ref.variableName)
 	}
 
@@ -290,8 +290,8 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			l.parent.addInheritsMembers(wo)
 			l.addMixinsMembers(wo)
 			// 2. initialized named parameters
-			if (l.hasParentParameterInitializers) {
-				wo.initializeObject(l.parentParameters.initializers)
+			if (l.hasParentParameters) {
+				wo.initializeObject(l.allInitializers)
 			}
 			// 3. initialize pending attributes (not passed in named parameters)
 			l.allVariableDeclarations(wo).forEach [ wo.initializeAttribute(it) ]
@@ -324,7 +324,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	def addMixinsMembers(WMethodContainer it, WollokObject wo) {
-		mixins.forEach[addMembersTo(wo)]
+		mixins.linearizeMixinHierarchy(newArrayList).forEach[addMembersTo(wo)]
 	}
 
 	def void initializeMembers(WMethodContainer it, WollokObject wo) {
@@ -340,29 +340,24 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			throw newWollokExceptionAsJava(Messages.LINKING_COULD_NOT_RESOLVE_REFERENCE + call.classNameWhenInvalid)
 		}
 		val wollokClass = call.classRef
-		val container = if (call.mixins.isEmpty) wollokClass else new MixedMethodContainer(call.classRef, call.mixins) 
+		// 
+		val container = wollokClass
 		new WollokObject(interpreter, container) => [ wo |
-			// 1. adding attributes: mixins call - mixin linearization - class hierarchy
-			call.mixins.forEach[ addMembersTo(wo) ]
+			// 1. adding attributes: mixin linearization - class hierarchy
+			// call.mixins.forEach[ addMembersTo(wo) ]
 			wollokClass.addMixinsMembers(wo)
 			wollokClass.addInheritsMembers(wo)
 			// 2. initialized named parameters
+			if (wollokClass.hasParentParameters) {
+				wo.initializeObject(wollokClass.allInitializers)
+			}
 			wo.initializeObject(call.initializers)
 			// 3. initialize pending attributes (not passed in named parameters)
 			wollokClass.initializeMembers(wo)
-			call.mixins.forEach[ initializeMembers(wo) ]
+			// call.mixins.forEach[ initializeMembers(wo) ]
 			// 4. last initialization opportunity - initialize method
 			wo.callInitIfDefined
 		]
-	}
-
-	def newInstanceWithMixins(WConstructorCall call) {
-		val container = new MixedMethodContainer(call.classRef, call.mixins)
-		new WollokObject(interpreter, container) => [ wo |
-			// mixins first
-			call.mixins.forEach[addMembersTo(wo)]
-			call.classRef.addInheritsMembers(wo)
-		]		
 	}
 
 	def newInstance(String classFQN, WollokObject... arguments) {
@@ -522,7 +517,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	// ********************************************************************************************
 	// ** Initialization of objects and references
 	// ********************************************************************************************
-	def initializeObject(WollokObject wollokObject, EList<WInitializer> namedParameters) {
+	def initializeObject(WollokObject wollokObject, List<WInitializer> namedParameters) {
 		namedParameters.forEach([ namedParameter |
 			val value = 
 				if (namedParameter.initialValue.shouldBeLazilyInitialized)
@@ -562,8 +557,8 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 						namedObject.createNativeObject(wollokObject, interpreter))
 
 				// 2. initialized named parameters over the parent (if it has)
-				if (namedObject.hasParentParameterInitializers)
-					wollokObject.initializeObject(namedObject.parentParameters.initializers)
+				if (namedObject.hasParentParameters)
+					wollokObject.initializeObject(namedObject.allInitializers)
 
 				// 3. initialize pending attributes (not passed in named parameters)
 				namedObject.initializeMembers(wollokObject)			

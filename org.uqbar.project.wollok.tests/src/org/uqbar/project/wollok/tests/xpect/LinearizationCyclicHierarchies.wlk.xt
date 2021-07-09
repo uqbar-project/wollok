@@ -1,0 +1,21 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+// XPECT errors --> "Infinite Cycle hierarchy" at "M3"
+mixin M1 inherits M3 { }
+// XPECT errors --> "Infinite Cycle hierarchy" at "M1"
+mixin M2 inherits M1 { }
+
+// XPECT errors --> "Infinite Cycle hierarchy" at "M1"
+mixin M3 inherits M1 { }
+
+// XPECT errors --> "Infinite Cycle hierarchy" at "M4"
+mixin M4 inherits M4 { }
+
+// XPECT errors --> "Infinite Cycle hierarchy" at "M7"
+mixin M5 inherits M7 { }
+
+// XPECT errors --> "Infinite Cycle hierarchy" at "M5"
+mixin M6 inherits M5 { }
+
+// XPECT errors --> "Infinite Cycle hierarchy" at "M6"
+mixin M7 inherits M6 { }

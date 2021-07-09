@@ -45,7 +45,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 		''',
 		'programa' -> '''
 			program zuper {
-			        const pepona = new b.Golondrina()
+			    const pepona = new b.Golondrina()
 			}
 		'''
 		].interpretAsFilesPropagatingErrors

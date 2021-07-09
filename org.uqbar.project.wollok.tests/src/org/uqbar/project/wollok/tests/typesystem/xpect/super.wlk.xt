@@ -33,8 +33,6 @@ class GolondrinaMentirosa inherits Golondrina {
 	override method energia() = super() + 10
 }
 
-
-
 class EntrenadorChanta inherits EntrenadorDeGolondrinas {
 	// XPECT methodType at alimentar --> (Golondrina) => Void
 	override method alimentar(ave) { 
@@ -56,7 +54,6 @@ class EntrenadorChanta inherits EntrenadorDeGolondrinas {
 }
 
 class EntrenadorDeGolondrinas inherits EntrenadorDeAves {
-	
 	// XPECT methodType at alimentar --> (Golondrina) => Void
 	override method alimentar(ave) { 
 		super(new Golondrina(nombre = "Edmundo"))
@@ -81,15 +78,10 @@ class EntrenadorDeAves {
 	const ave
 	
 	// XPECT methodType at alimentar --> (Golondrina) => Void
-	method alimentar(ave) { ave.come(10) }
+	method alimentar(unAve) { unAve.come(10) }
 	
 	// XPECT methodType at pajaro --> () => Ave
 	method pajaro() = new Ave(nombre = "Pedro")
-	
-	method alimentarAve() {
-		// TODO: Fail!
-		// self.alimentar(new Ave(nombre = "Pedro")) 
-	}
 	
 	method alimentarFavorita() { ave.come(1) }
 }
@@ -98,4 +90,3 @@ object wollok {
 	method entrenadorDeAves() = new EntrenadorDeAves(ave = new Ave(nombre = "Pedro"))
 	method entrenadorDeGolondrinas() = new EntrenadorDeGolondrinas(ave = new Golondrina(nombre = "Pedro"))
 }
-
