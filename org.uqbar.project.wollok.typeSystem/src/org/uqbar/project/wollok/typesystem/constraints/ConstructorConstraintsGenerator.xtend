@@ -5,12 +5,12 @@ import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
-import org.uqbar.project.wollok.wollokDsl.WExpression
+import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
+import static extension org.uqbar.project.wollok.model.WNamedParametersExtensions.*
 
 /**
  * @author npasserini
@@ -21,16 +21,8 @@ abstract class ConstructorConstraintsGenerator<T extends EObject> extends CrossR
 		super(registry)
 	}
 	
-	def generate(EObject it, WClass clazz, EList<WExpression> values) {
-		val constructor = clazz.resolveConstructor(values)
-
-		// Constructor might be null when neither the referred class nor any of it superclasses define a constructor,
-		// And wouldn't be an error if the constructor call has no parameters.
-		// TODO Handle and inform error conditions.
-		// TODO 2: We should consider also argumentList.initializers
-		constructor?.parameters?.biForEach(values) [ param, arg |
-			param.tvarOrParam.instanceFor(it.tvar).beSupertypeOf(arg.tvar)
-		]		
+	def generate(EObject it, WClass clazz, EList<WInitializer> initializers) {
+		// Wollok 3.0.0 removed constructor idea, so constructor is null
 	}
 }
 
@@ -41,7 +33,7 @@ class ConstructorCallConstraintsGenerator extends ConstructorConstraintsGenerato
 	}
 	
 	override generate(WConstructorCall it) {
-		generate(classRef, values)
+		generate(classRef, initializers)
 	}
 }
 
@@ -52,7 +44,9 @@ class ObjectParentConstraintsGenerator extends ConstructorConstraintsGenerator<W
 	}
 	
 	override generate(WMethodContainer it) {
-		generate(parent, parentParameters)
+		if (parent !== null && !parent.hasParentParameters) {
+			generate(parent)
+		}
 	}
 	
 }

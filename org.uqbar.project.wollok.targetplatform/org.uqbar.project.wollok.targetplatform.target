@@ -6,9 +6,9 @@
 			<unit id="org.eclipse.xtext.sdk.feature.group" version="0.0.0" />
 			<repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.20.0/" />
 		</location>
-		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-			<unit id="org.eclipse.babel.nls_eclipse_es.feature.group" version="4.16.0.v20200711020001" />
-			<repository location="https://download.eclipse.org/technology/babel/update-site/R0.18.0/2020-06/" />
+				<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+			<unit id="org.eclipse.babel.nls_eclipse_es.feature.group" version="4.20.0.v20210630020001" />
+			<repository location="https://download.eclipse.org/technology/babel/update-site/R0.19.0/2021-06/" />
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 			<unit id="org.eclipse.equinox.sdk.feature.group" version="0.0.0" />
@@ -43,15 +43,6 @@
 			<unit id="org.eclipse.egit.feature.group" version="5.5.1.201910021850-r" />
 			<unit id="org.eclipse.egit.source.feature.group" version="5.5.1.201910021850-r" />
 			<repository location="http://eclipse.c3sl.ufpr.br/egit/updates-5.5.1/" />
-		</location>
-		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-			<unit id="code.satyagraha.gfm.viewer.feature.feature.group" version="2.0.1" />
-			<repository location="http://dl.bintray.com/satyagraha/generic/2.0.1/" />
-		</location>
-		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-			<unit id="SGit.feature.group" version="1.0.0.202008021346" />
-			<unit id="SGit.source.feature.group" version="1.0.0.202008021346" />
-			<repository location="http://dl.bintray.com/wollok/sgit-update-site/" />
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 			<repository location="https://ci.eclipse.org/xpect/job/Xpect/job/release_0.2.0/lastBuild/artifact/org.eclipse.xpect.releng/p2-repository/target/repository/" />

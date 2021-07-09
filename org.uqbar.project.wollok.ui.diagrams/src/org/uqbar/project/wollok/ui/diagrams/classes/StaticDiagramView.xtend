@@ -24,7 +24,6 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart
 import org.eclipse.gef.editparts.ZoomManager
 import org.eclipse.gef.ui.actions.ActionRegistry
-import org.eclipse.gef.ui.actions.ZoomComboContributionItem
 import org.eclipse.gef.ui.properties.UndoablePropertySheetPage
 import org.eclipse.gef.ui.views.palette.PalettePage
 import org.eclipse.jface.action.Separator
@@ -398,7 +397,7 @@ class StaticDiagramView extends AbstractDiagramView implements IDocumentListener
 					val clazz = model.getComponent
 					if (clazz !== null) {
 						this.selection = new StructuredSelection(clazz)
-						val selectionChangedEvent = new SelectionChangedEvent(this, this.selection)
+						val selectionChangedEvent = new SelectionChangedEvent(this, selection)
 						currentListeners.forEach [ listener |
 							listener.selectionChanged(selectionChangedEvent)
 						]

@@ -1,0 +1,46 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+mixin MundoCerrado {
+	var property a = 2
+	
+	method noVaAAndar() = a == self.b()
+	method b()
+}
+
+class Mundo {
+	var property a = ""
+	
+	method b() = 2
+}
+
+class MundoFeliz inherits Mundo {
+	var property c = true
+}
+
+// XPECT errors --> "There are attributes with the same name in the hierarchy: [a]" at "object inherits MundoCerrado and MundoFeliz {}"
+const mundoHippie = object inherits MundoCerrado and MundoFeliz {}
+
+class C {
+  const w     // OK
+  const x = 5 // OK
+  var y       // OK
+  var z = 9   // OK
+  
+  method calculate() {
+  	y = 1
+  	z = z + 10
+  }
+  method result() = w + x + y + z
+}
+
+mixin M {
+  const w     // OK
+  const x = 5 // OK
+  var y       // OK
+  var z = 9   // OK
+
+  method calculate() {
+  	y = 1
+  	z = z + 10
+  }
+  method result() = w + x + y + z
+}

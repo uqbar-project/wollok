@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.launch
+package org.uqbar.project.wollok
 
 /**
  * @author jfernandes

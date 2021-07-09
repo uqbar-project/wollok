@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.visitors
 
 import org.eclipse.emf.ecore.EObject
+import org.uqbar.project.wollok.wollokDsl.WAncestor
 import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
@@ -10,11 +11,8 @@ import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
-import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
-import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WFile
-import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
@@ -28,7 +26,6 @@ import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WParameter
-import org.uqbar.project.wollok.wollokDsl.WPositionalArgumentsList
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
@@ -159,20 +156,10 @@ abstract class AbstractWollokVisitor {
 	def dispatch void visitChildren(WSuite it) { eContents.visitAll }
 	def dispatch void visitChildren(WClass it) { eContents.visitAll }
 	def dispatch void visitChildren(WObjectLiteral it) { eContents.visitAll }
-	def dispatch void visitChildren(WNamedObject it) { 
-		eContents.visitAll
-	}
-	def dispatch void visitChildren(WFixture it) { eContents.visitAll }
-
+	def dispatch void visitChildren(WNamedObject it) { eContents.visitAll }
 	def dispatch void visitChildren(WPackage it) { elements.visitAll }
 	def dispatch void visitChildren(WUnaryOperation it) { operand.visit }
 	def dispatch void visitChildren(WClosure it) { expression.visit }
-	def dispatch void visitChildren(WConstructor it) {
-		delegatingConstructorCall.visit
-		expression.visit
-	}
-	def dispatch void visitChildren(WDelegatingConstructorCall it) { argumentList.visit }
-	def dispatch void visitChildren(WPositionalArgumentsList it) { values.visitAll }
 	def dispatch void visitChildren(WMethodDeclaration it) { expression.visit }
 
 	def dispatch void visitChildren(WProgram it) { elements.visitAll }
@@ -200,6 +187,11 @@ abstract class AbstractWollokVisitor {
 	def dispatch void visitChildren(WInitializer i) {
 		i.initializer.visit
 		i.initialValue.visit
+	}
+	
+	def dispatch void visitChildren(WAncestor it) {
+//		ref.visit
+		parentParameters.visit
 	}
 
 	// terminals

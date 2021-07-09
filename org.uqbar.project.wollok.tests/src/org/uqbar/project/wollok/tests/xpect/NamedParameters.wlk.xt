@@ -6,7 +6,7 @@ class Ave {
 	method cumplirAnios() {
 		edad++
 	}
-	method volar() { energia -= 10 }
+	method volar() { energia = energia - 10 }
 }
 class Golondrina inherits Ave {
 	const peso
@@ -14,12 +14,10 @@ class Golondrina inherits Ave {
 }
 class Torcaza inherits Ave {
 	var color
-	constructor(_color) {
-		color = _color
-		energia = 10
-		edad = 1
-	}
+	
+	method esLinda() = color === "rojo"
 }
+
 class Entrenador {
 	var pepita = null
 	var otraPepita = null
@@ -27,26 +25,25 @@ class Entrenador {
 	method crearUnAve() {
 		// XPECT errors --> "You must provide initial value to the following references: energia" at "new Ave(edad = 2)"
 		pepita = new Ave(edad = 2)
-		// XPECT errors --> "Reference inexistente not found in class Ave" at "inexistente = true"
+		// XPECT errors --> "Reference inexistente not found in Ave" at "inexistente = true"
 		pepita = new Ave(energia = 12, inexistente = true)
 		pepita = new Ave(edad = 2, energia = 50)
 		pepita = new Ave(energia = 50)
 	}
 	method crearOtraAve() {
-		// XPECT errors --> "You must provide initial value to the following references: peso, energia" at "new Golondrina(edad = 2)"
+		// XPECT errors --> "You must provide initial value to the following references: energia, peso" at "new Golondrina(edad = 2)"
 		otraPepita = new Golondrina(edad = 2)
 		// XPECT errors --> "You must provide initial value to the following references: energia" at "new Golondrina(edad = 10, peso = 5)"
 		otraPepita = new Golondrina(edad = 10, peso = 5)
 		otraPepita = new Golondrina(edad = 10, peso = 5, energia = 56)
 	}
 	method crearTorcaza() {
-		torcaza = new Torcaza("azul")
 		torcaza = new Torcaza(color = "rojo", energia = 25, edad = 3)
 		// XPECT errors --> "You must provide initial value to the following references: energia" at "new Torcaza(color = "rojo")"
 		torcaza = new Torcaza(color = "rojo")
 		// XPECT errors --> "You must provide initial value to the following references: color, energia" at "new Torcaza(edad = 5)"
 		torcaza = new Torcaza(edad = 5)
-		// XPECT errors --> "Wrong number of arguments. Should be new Torcaza(_color)" at "new Torcaza()"
+		// XPECT errors --> "You must provide initial value to the following references: color, energia" at "new Torcaza()"
 		torcaza = new Torcaza()
 	}
 }
@@ -61,64 +58,16 @@ class Heroe {
 object superman inherits Heroe(nombre = "Clark Kent", traje = "rojo y azul") {
 	
 }
-// XPECT errors --> "Reference apellido not found in class Heroe" at "apellido = \"Wilson\""
+// XPECT errors --> "Reference apellido not found in Heroe" at "apellido = \"Wilson\""
 object deadpool inherits Heroe(apellido = "Wilson") {
 	
 }
 object charlie {
-	// XPECT errors --> "Reference apellido not found in class Heroe" at "apellido = \"Fawcett\""
+	// XPECT errors --> "Reference apellido not found in Heroe" at "apellido = \"Fawcett\""
 	const angel1 = object inherits Heroe(apellido = "Fawcett") {}
 	const angel2 = object inherits Heroe(nombre = "") {}
 	
 	method quienCumpleMision() = [angel1, angel2]
-}
-class AntiHeroe inherits Heroe {
-	var fraseCabecera
-	constructor(_fraseCabecera) {
-		fraseCabecera = _fraseCabecera
-	}
-}
-class Villano inherits AntiHeroe {
-	var nivelMaldad
-	// XPECT errors --> "Named parameters are not allowed here" at "_fraseCabecera = \"No soy malo, estoy enojado\""
-	constructor(_fraseCabecera) = super(_fraseCabecera = "No soy malo, estoy enojado") {
-		nivelMaldad = 2		
-	}
-}
-class ReVillano inherits AntiHeroe {
-	var nivelMaldad
-	/* XPECT errors ---
-		"Couldn't resolve reference to 'ciudadesQueAma'." at "ciudadesQueAma"
-		"Named parameters are not allowed here" at "ciudadesQueAma = ["New York"]"
-	--- */
-	constructor(_fraseCabecera) = super(ciudadesQueAma = ["New York"]) {
-		nivelMaldad = 2
-	}
-	constructor(_nivelMaldad, _fraseCabecera) = self(_fraseCabecera) {
-		nivelMaldad = _nivelMaldad
-	}
-}
-
-class A {
-	var a
-	var b = 1
-	constructor(_a) {
-		a = _a
-	}
-	/* XPECT errors ---
-		"Couldn't resolve reference to '_a'." at "_a"
-		"Named parameters are not allowed here" at "_a = x"
-	--- */
-	constructor(x, y) = self(_a = x) {
-		b = y
-	}
-	/* XPECT errors ---
-		"Couldn't resolve reference to 'inexistente'." at "inexistente"
-		"Named parameters are not allowed here" at "x = y, inexistente = 3"
-	--- */
-	constructor(x, y, z) = self(x = y, inexistente = 3) {
-		b = y
-	}
 }
 
 class Something {
@@ -135,3 +84,78 @@ object somethingBuilder {
 	
 	method buildCompleteSomething() = new Something(anotherValue = 2, aValue = 3)
 }
+
+mixin M {
+  const w   // OK
+  const x = 5 // OK
+  var y       // OK
+  var z = 9   // OK
+  
+  method reset() {
+  	y = 2
+  	z = z + 4
+  }
+  method calculate() = w + x + y + z
+}
+
+class A {
+  const a
+  method calculate() = a + 5
+}
+
+// XPECT errors --> "You must provide initial value to the following references: a, w, y" at "object inherits M and A {}"
+const a = object inherits M and A {}
+
+class C {
+  const w
+  const x = 5 
+  var y
+  var z = 9
+  
+  method reset() {
+  	y = y + 3
+  	z = z + 1
+  }
+  method calculate() = w + x + y + z
+}
+
+// XPECT errors --> "You must provide initial value to the following references: w, y" at "object o1 inherits C {}"
+object o1 inherits C {}                             // ERROR! no pasa un valor para w
+object o2 inherits C(w = 1, x = 2, y = 3, z = 4) {} // OK
+// XPECT errors --> "You must provide initial value to the following references: w" at "object o3 inherits C(       x = 2, y = 3, z = 4) {}"
+object o3 inherits C(       x = 2, y = 3, z = 4) {} // ERROR! w es una constante sin default
+object o4 inherits C(w = 1,        y = 3, z = 4) {} // OK x es una constante pero tiene default
+// XPECT errors --> "You must provide initial value to the following references: y" at "object o5 inherits C(w = 1, x = 2,        z = 4) {}"
+object o5 inherits C(w = 1, x = 2,        z = 4) {} // ERROR! y es una variable sin default
+// XPECT errors --> "You must provide initial value to the following references: y" at "object o6 inherits C(w = 1, x = 2       , z = 4) {}"
+object o6 inherits C(w = 1, x = 2       , z = 4) {} // OK
+
+// XPECT errors --> "You must provide initial value to the following references: w, y" at "object inherits C {}"
+const p1 = object inherits C {}                             // ERROR! no pasa un valor para w
+const p2 = object inherits C(w = 1, x = 2, y = 3, z = 4) {} // OK
+// XPECT errors --> "You must provide initial value to the following references: w" at "object inherits C(       x = 2, y = 3, z = 4) {}"
+const p3 = object inherits C(       x = 2, y = 3, z = 4) {} // ERROR! w no tiene default
+const p4 = object inherits C(w = 1,        y = 3, z = 4) {} // OK x tiene default
+// XPECT errors --> "You must provide initial value to the following references: y" at "object inherits C(w = 1, x = 2,        z = 4) {}"
+const p5 = object inherits C(w = 1, x = 2,        z = 4) {} // ERROR! y no tiene default
+// XPECT errors --> "You must provide initial value to the following references: y" at "object inherits C(w = 1, x = 2       , z = 4) {}"
+const p6 = object inherits C(w = 1, x = 2       , z = 4) {} // OK
+
+class ParentA {
+	const a
+	
+	method a() = a
+}
+
+class ParentB inherits ParentA {
+	const b
+	
+	method b() = b
+}
+
+// XPECT errors --> "You must provide initial value to the following references: a, b" at "object c inherits ParentB {}"
+object c inherits ParentB {}
+
+// XPECT errors --> "You must provide initial value to the following references: a, b" at "object inherits ParentB {}"
+const d = object inherits ParentB {}
+

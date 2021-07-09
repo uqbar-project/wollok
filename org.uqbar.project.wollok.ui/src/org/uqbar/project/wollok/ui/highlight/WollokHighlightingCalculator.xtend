@@ -59,12 +59,13 @@ class WollokHighlightingCalculator extends DefaultSemanticHighlightingCalculator
 			addHighlight(startKeyword, INHERITS, methodContainer.parent.name, node, acceptor, COMPONENT_STYLE_ID)
 		}
 		if (methodContainer.mixins !== null) {
-			methodContainer.mixins.forEach [ addHighlight(startKeyword, MIXED_WITH, it.name, node, acceptor, COMPONENT_STYLE_ID)]
+			methodContainer.mixins.forEach [ addHighlight(startKeyword, MIXED_AND, it.name, node, acceptor, COMPONENT_STYLE_ID)]
 		}
 		super.highlightElement(methodContainer, acceptor, cancelIndicator)		
 	}
 
 	def void addHighlight(int initialOffset, String keyword, String name, ICompositeNode node, IHighlightedPositionAcceptor acceptor, String style) {
+		if (node === null || node.text === null || name === null) return
 		val startKeyword = node.text.indexOf(keyword)
 		if (startKeyword == -1) return
 		val start = node.text.indexOf(name, startKeyword)

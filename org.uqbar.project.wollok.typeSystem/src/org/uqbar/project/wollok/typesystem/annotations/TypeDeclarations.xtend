@@ -196,7 +196,7 @@ abstract class TypeDeclarations {
 	def Sound() { classTypeAnnotation(SOUND) }
 
 	def ExceptionType() { classTypeAnnotation(EXCEPTION) }
-
+	
 	def StackTraceElement() { classTypeAnnotation(STACK_TRACE_ELEMENT) }
 
 	def InstanceVariableMirror() { classTypeAnnotation(INSTANCE_VARIABLE_MIRROR) }
@@ -234,6 +234,8 @@ abstract class TypeDeclarations {
 	def U() { Collection.methodParam("game", "U") }
 
 	def RETURN() { Closure.param(GenericTypeInfo.RETURN) }
+	
+	def THROW_EXCEPTION() { T } // TODO: Make throw exception expressions generic type?	
 
 	def Comparable() { unionType(Number, String, Date) } // TODO: Define as structural
 

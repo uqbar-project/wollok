@@ -297,7 +297,7 @@ class WollokPerspectiveListener implements IPerspectiveListener {
 		val bindingService = PlatformUI.workbench.getAdapter(typeof(IBindingService)) as IBindingService
 		bindingService.bindings.forEach [  
 			if (unwantedKeyBindings.includesCase(parameterizedCommand?.command?.id)) {
-				parameterizedCommand.command.undefine
+				parameterizedCommand.command.enabled = false
 			}
 		]
 	}

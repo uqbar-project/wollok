@@ -1,20 +1,21 @@
+Automatic-Module-Name: org.uqbar.project.wollok.ui.diagrams
 Manifest-Version: 1.0
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Built-By: hudsonbuild
 Bundle-SymbolicName: org.uqbar.project.wollok.ui.diagrams;singleton:=true
-Require-Bundle: org.eclipse.ui;bundle-version="[3.2.0,4.0.0)",
- org.eclipse.core.runtime;bundle-version="[3.2.0,4.0.0)",
- org.eclipse.core.resources;bundle-version="[3.2.0,4.0.0)",
- org.eclipse.ui.views;bundle-version="[3.2.0,4.0.0)",
- org.eclipse.ui.workbench;bundle-version="[3.2.0,4.0.0)",
- org.eclipse.ui.ide;bundle-version="[3.2.0,4.0.0)",
- org.eclipse.jface;bundle-version="[3.2.0,4.0.0)",
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.ui.views,
+ org.eclipse.ui.workbench,
+ org.eclipse.ui.ide,
+ org.eclipse.jface,
  com.google.guava,
  org.eclipse.xtend.lib,
  org.uqbar.project.wollok,
  org.eclipse.xtext.ui,
- org.eclipse.debug.ui;bundle-version="3.9.0",
+ org.eclipse.debug.ui,
  org.eclipse.gef,
  org.uqbar.project.wollok.launch,
  org.uqbar.project.xinterpreter,
@@ -217,5 +218,4 @@ SHA1-Digest: rsmSqMNg+yT7hNbLxFAgdMm/0XU=
 
 Name: org/eclipse/gef/examples/shapes/parts/DiagramTreeEditPart.class
 SHA1-Digest: Jxk5uRHl2OgLDg5LAh14gohSH8o=
-Automatic-Module-Name: org.uqbar.project.wollok.ui.diagrams
 

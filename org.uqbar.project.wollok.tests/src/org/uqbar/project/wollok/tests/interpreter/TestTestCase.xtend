@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.tests.interpreter
 import org.junit.Assert
 import org.junit.Test
 import org.uqbar.project.wollok.interpreter.WollokInterpreterException
+
 import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 
 /**
@@ -50,5 +51,5 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 			Assert.assertEquals("Couldn't resolve reference to pepa", e.originalCause.message)
 		}
 	}
-	
+
 }

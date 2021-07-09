@@ -13,10 +13,10 @@ import org.uqbar.project.wollok.interpreter.core.WCallable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
-import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * Abstract base class for all native objects that implements
@@ -27,13 +27,12 @@ import static org.uqbar.project.wollok.sdk.WollokSDK.*
  * @author jfernandes
  */
 abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
-	WollokObject obj
+	
 	@Accessors WollokInterpreter interpreter
 	
 	val Logger log = Logger.getLogger(this.class)
 	
 	new (WollokObject obj, WollokInterpreter interpreter) {
-		this.obj = obj
 		this.interpreter = interpreter
 	}
 

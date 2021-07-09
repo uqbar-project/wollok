@@ -11,12 +11,13 @@ public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.uqbar.project.wollok.launch.messages"; //$NON-NLS-1$
 	
 	public static String TEST_RESULTS;
+	public static String TEST_NO_MESSAGE_TO_ASSERT;
 	public static String ALL_TEST_IN_PROJECT;
 	public static String ALL_TEST_IN_FOLDER;
 	public static String LINE;
 	public static String REPL_WELCOME;
 	public static String REPL_END;
-
+	
 	// ****************************
 	// ** Launcher messages
 	// ****************************
@@ -39,6 +40,7 @@ public class Messages extends NLS {
 	public static String WollokLauncherOptions_REQUEST_PORT;
 	public static String WollokLauncherOptions_EVENTS_PORT;
 	public static String WollokLauncherOptions_SPECIFIC_FOLDER;
+	public static String WollokLauncherOptions_LOCALE;
 	public static String WollokLauncherOptions_NUMBER_DECIMALS;
 	public static String WollokLauncherOptions_DECIMAL_PRINTING_STRATEGY;
 	public static String WollokLauncherOptions_DECIMAL_CONVERSION_STRATEGY;

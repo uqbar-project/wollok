@@ -49,7 +49,7 @@ class GameObject {
 		board.addCharacter(asVisualIn(position))
 	}
 
-	def removeVisual(WollokObject it) {
+	def void removeVisual(WollokObject it) {
 		checkNotNull("removeVisual")
 		var visual = board.findVisual(it)
 		board.remove(visual)

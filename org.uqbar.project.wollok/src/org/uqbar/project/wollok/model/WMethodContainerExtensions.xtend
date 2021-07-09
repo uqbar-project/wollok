@@ -11,11 +11,10 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.resource.XtextResourceSet
-import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.WollokConstants
-import org.uqbar.project.wollok.interpreter.MixedMethodContainer
-import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.wollokDsl.WAncestor
 import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -23,13 +22,10 @@ import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
-import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
-import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WFile
-import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -43,9 +39,7 @@ import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
-import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuite
-import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WTry
@@ -81,9 +75,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static WMethodContainer declaringContext(EObject it)	{ EcoreUtil2.getContainerOfType(it, WMethodContainer) }
 	def static WMethodDeclaration declaringMethod(EObject it)	{ EcoreUtil2.getContainerOfType(it, WMethodDeclaration) }
-	def static WConstructor declaringConstructor(EObject it)	{ EcoreUtil2.getContainerOfType(it, WConstructor) }
 	def static WArgumentList declaringArgumentList(EObject it)  { EcoreUtil2.getContainerOfType(it, WArgumentList) }
- 	def static WFixture declaringFixture(EObject it)			{ EcoreUtil2.getContainerOfType(it, WFixture) }
 	def static WClosure declaringClosure(EObject it)			{ EcoreUtil2.getContainerOfType(it, WClosure) }
 	def static WConstructorCall declaringConstructorCall(EObject it){ EcoreUtil2.getContainerOfType(it, WConstructorCall) }
 	
@@ -118,10 +110,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static boolean isAbstract(WMethodContainer it) { !unimplementedAbstractMethods.empty }
 
 	def static dispatch List<WMethodDeclaration> unimplementedAbstractMethods(WConstructorCall it) {
-		if (mixins === null || mixins.isEmpty)
-			classRef.unimplementedAbstractMethods
-		else
-			new MixedMethodContainer(classRef, mixins).unimplementedAbstractMethods
+		classRef.unimplementedAbstractMethods
 	}
 	def static dispatch List<WMethodDeclaration> unimplementedAbstractMethods(WMethodContainer it) { allAbstractMethods }
 
@@ -129,7 +118,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static dispatch parameters(EObject e) { null }
 	def static dispatch parameters(WMethodDeclaration it) { parameters }
-	def static dispatch parameters(WConstructor it) { parameters }
 	
 	def static dispatch parameterNames(EObject o) {
 		val parameters = o.parameters
@@ -190,19 +178,11 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static behaviors(WMethodContainer c) {
 		return <EObject>newArrayList => [
-			addAll(c.constructors())
-			if (c.fixture !== null) {
-				add(c.fixture)
-			}
 			addAll(c.methods)
 			addAll(c.tests)     // we need to add both methods and tests for describe suites
 		] 
 	}
 
-	def static dispatch constructors(WMethodContainer c) { c.members.filter(WConstructor) }
-	def static dispatch constructors(WClass c) { c.constructors }
-	def static dispatch constructors(WTest t) { newArrayList }
-	
 	def static methods(WMethodContainer c) { c.members.filter(WMethodDeclaration) }
 	
 	def static dispatch tests(WMethodContainer c) { newArrayList }
@@ -235,12 +215,12 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static hasVariable(WMethodContainer it, String name) { variableNames.contains(name) }
 	
-	def dispatch static isReturnWithValue(EObject it) { false }
+	def static dispatch isReturnWithValue(EObject it) { false }
 	// REVIEW: this is a hack solution. We don't want to compute "return" statements that are
 	//  within a closure as a return on the containing method.
-	def dispatch static isReturnWithValue(WReturnExpression it) { validReturnExpression && expression !== null && allContainers.forall[!(it instanceof WClosure)] }
-	def dispatch static hasReturnWithValue(WReturnExpression r) { r.returnWithValue }
-	def dispatch static hasReturnWithValue(EObject e) { e.eAllContents.exists[isReturnWithValue] }
+	def static dispatch isReturnWithValue(WReturnExpression it) { validReturnExpression && expression !== null && allContainers.forall[!(it instanceof WClosure)] }
+	def static dispatch hasReturnWithValue(WReturnExpression r) { r.returnWithValue }
+	def static dispatch hasReturnWithValue(EObject e) { e.eAllContents.exists[isReturnWithValue] }
 
 	def static dispatch boolean isValidReturnExpression(EObject o) { 
 		val container = o.eContainer
@@ -250,16 +230,81 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean isValidReturnExpression(WBlockExpression expr) { true }
 	def static dispatch boolean isValidReturnExpression(WMethodDeclaration method) { true }
 
-	def static allVariableDeclarations(WMethodContainer it) { 
-		linearizeHierarchy.fold(newArrayList) [variableDeclarations, type |
+	def static List<WVariableDeclaration> allVariableDeclarations(WMethodContainer it) {
+		allVariableDeclarations(it, linearizeHierarchy)
+	}
+
+	def static List<WVariableDeclaration> allVariableDeclarations(WMethodContainer it, List<WMethodContainer> hierarchy) {
+		hierarchy.fold(newArrayList) [variableDeclarations, type |
 			variableDeclarations.addAll(type.variableDeclarations)
 			variableDeclarations
 		]
 	}
+
+	def static List<WVariableDeclaration> allVariableDeclarations(WMethodContainer it, WollokObject wo) {
+		// Step 1 - Obtaining all variable declarations 
+		val variableDeclarations = allVariableDeclarations
+		// Step 2 - Detecting dependencies among variable declarations
+		// for example:
+		// const a = b + 1
+		// const b = 2
+		// const c = a + b
+		// should finish in the current map:
+		// a -> [b]
+		// b -> []
+		// c -> [a, b]
+		val variableDependenciesGraph = <WVariableDeclaration, List<WVariable>>newHashMap
+		variableDeclarations.forEach [ variableDeclaration |
+			if (variableDeclaration.right !== null && !wo.isInitialized(variableDeclaration.variable.name)) {
+				val dependencies = variableDeclaration.right.dependenciesOnInit(variableDeclaration)
+				variableDependenciesGraph.put(variableDeclaration, dependencies)
+			}
+		]
+		// Ordering variable declarations based on dependencies
+		// based on previous example:
+		// if a depends on b, and c depends on a & b
+		// the order should be: b, then a, then c
+		// We assure each declaration is sorted after all dependencies
+		new ArrayList(variableDeclarations).forEach [ variableDeclaration |
+			val variableDependencies = variableDependenciesGraph.get(variableDeclaration)
+			if (variableDependencies !== null && !variableDependencies.isEmpty) {
+				val variables = variableDeclarations.map [ variable ]
+				val maximumDependencyIndex = variableDependencies.map [ variables.indexOf(it) ].max
+				if (maximumDependencyIndex > 0) {
+					val index = variableDeclarations.indexOf(variableDeclaration)
+					variableDeclarations.add(maximumDependencyIndex + 1, variableDeclaration)
+					variableDeclarations.remove(index)
+				}
+			}
+		]
+		variableDeclarations
+	}
 	
+	def static dispatch List<WVariable> dependenciesOnInit(EObject o, WVariableDeclaration variable) { newArrayList }
+	def static dispatch List<WVariable> dependenciesOnInit(WBinaryOperation operation, WVariableDeclaration variable) {
+		newArrayList => [
+			addIfVariable(operation.leftOperand, it)
+			addIfVariable(operation.rightOperand, it)
+		]
+	}
+	def static dispatch List<WVariable> dependenciesOnInit(WVariableDeclaration declaration, WVariableDeclaration variable) {
+		newArrayList => [
+			add(declaration.variable)
+		]
+	}
+	
+	def static void addIfVariable(EObject o, List<WVariable> variableDeclarations) {
+		if (o instanceof WVariableReference) {
+			val variable = o.ref
+			if (variable instanceof WVariable) {
+				variableDeclarations.add(variable)
+			}
+		}
+	}
+
 	def static dispatch List<WVariableDeclaration> variableDeclarations(EObject o) { newArrayList }
 	def static dispatch List<WVariableDeclaration> variableDeclarations(WBlockExpression b) { b.expressions.filter(WVariableDeclaration).toList }
-	def static dispatch List<WVariableDeclaration> variableDeclarations(WMethodContainer c) { c.members.filter(WVariableDeclaration).toList }
+	def static dispatch List<WVariableDeclaration> variableDeclarations(WMethodContainer c) {c.members.filter(WVariableDeclaration).toList }
 	def static dispatch List<WVariableDeclaration> variableDeclarations(WVariableDeclaration e) {
 		#[e]
 	}
@@ -273,8 +318,17 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		test.elements.flatMap [ variableDeclarations ].toList
 	}
 
-	def static dispatch EObject fixture(WMethodContainer c) { null }
-	def static dispatch EObject fixture(WSuite s) { s.fixture }
+	def static WMethodDeclaration initializeMethod(WMethodContainer it) { methods.findFirst [ isInitializer ] }
+
+	def static List<WMethodDeclaration> initializeMethods(WMethodContainer it) { initializeMethodsRecursive(newArrayList).reverse }
+
+	private def static List<WMethodDeclaration> initializeMethodsRecursive(WMethodContainer it, List<WMethodDeclaration> result) {
+		val initMethod = initializeMethod
+		if (initMethod !== null) {
+			result.add(initMethod)
+		}
+		if (parent === null) result else parent.initializeMethodsRecursive(result) 
+	}
 	
 	def static variables(WMethodContainer c) { c.variableDeclarations.variables }
 	def static variables(WProgram p) { p.elements.filter(WVariableDeclaration).variables }
@@ -341,9 +395,9 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WMixin it) { methods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WNamedObject it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WObjectLiteral it) { inheritedMethods }
-	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(MixedMethodContainer it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WClass it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WSuite it) { methods }
+	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WProgram it) { newArrayList }
 	
 	def static allVariables(WMethodContainer it) {
 		allVariableDeclarations.map [ variable ]
@@ -386,56 +440,86 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		}
 		if (l.contains(c)) {
 			return l
-			//throw new WollokRuntimeException('''Class «c.name» is in a cyclic hiearchy''');
 		}
 		//
 		l.add(c)
 		return _parents(c.parent, l)
 	}
 
-	def dispatch static hasCyclicHierarchy(WClass c) { _hasCyclicHierarchy(c, newArrayList) }
-	def dispatch static hasCyclicHierarchy(EObject e) { false }
+	def static dispatch badUseOfDerivedKeyword(WMethodContainer it) { false }
+	def static dispatch badUseOfDerivedKeyword(WClass it) {
+		root !== null && !root.fqn.equals(OBJECT)
+	}
+	def static dispatch badUseOfDerivedKeyword(WNamedObject it) { root !== null && !root.fqn.equals(OBJECT) }
+	def static dispatch badUseOfDerivedKeyword(WObjectLiteral it) { root !== null && !root.fqn.equals(OBJECT) }
 	
-	def static boolean _hasCyclicHierarchy(WClass c, List<WClass> l) {
+	def static dispatch hasCyclicHierarchy(WClass c) { 
+		_hasCyclicHierarchy(c, newArrayList)
+	}
+	def static dispatch hasCyclicHierarchy(EObject e) { false }
+
+	def static boolean _hasCyclicHierarchy(WClass c, List<WClass> allParents) {
 		if (c === null) {
 			return false
 		}
-		if (l.contains(c)) {
+		if (allParents.contains(c)) {
 			return true
 		}
-		l.add(c)
-		return _hasCyclicHierarchy(c.parent, l)
+		allParents.add(c)
+		return _hasCyclicHierarchy(c.parent, allParents)
 	}
 
+	def static hasACyclicHierarchy(List<WMixin> mixins) { 
+		_hasCyclicHierarchy(mixins, newArrayList)
+	}
+	
+	def static boolean _hasCyclicHierarchy(List<WMixin> mixins, List<WMixin> allMixins) {
+		if (mixins.isNullOrEmpty) {
+			return false
+		}
+		if (mixins.exists [ allMixins.contains(it) ] ) {
+			return true
+		}
+		allMixins.addAll(mixins)
+		return _hasCyclicHierarchy(mixins.flatMap [ allParents ].toList, allMixins)
+	}
 	def static boolean inheritsFromLibClass(WMethodContainer it) { parent.isCoreObject }
 
 	def static dispatch boolean inheritsFromObject(EObject e) { false }
-	def static dispatch boolean inheritsFromObject(WClass c) { c.parent.fqn.equals(OBJECT) }
-	def static dispatch boolean inheritsFromObject(WNamedObject o) { o.parent.fqn.equals(OBJECT) }
-	def static dispatch boolean inheritsFromObject(WObjectLiteral o) { true }
+	def static dispatch boolean inheritsFromObject(WClass c) { c.parent === null || c.parent.fqn.equals(OBJECT) }
+	def static dispatch boolean inheritsFromObject(WNamedObject o) { o.parent === null || o.parent.fqn.equals(OBJECT) }
+	def static dispatch boolean inheritsFromObject(WObjectLiteral o) { o.parent === null || o.parent.fqn.equals(OBJECT) }
 
 	def static dispatch WClass parent(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
-	def static dispatch WClass parent(WClass it) { parent }
-	def static dispatch WClass parent(WObjectLiteral it) { parent } // can we just reply with wollok.lang.Object class ?
-	def static dispatch WClass parent(WNamedObject it) { parent }
-	def static dispatch WClass parent(MixedMethodContainer it) { clazz }
+	def static dispatch WClass parent(WClass it) { getClassParent(parents, root) }
+	def static dispatch WClass parent(WObjectLiteral it) { getClassParent(parents, root) }
+	def static dispatch WClass parent(WNamedObject it) { getClassParent(parents, root) }
 	// not supported yet !
 	def static dispatch WClass parent(WMixin it) { null }
 	def static dispatch WClass parent(WSuite it) { null }
 
+	def static getClassParent(WMethodContainer it, List<WAncestor> parents, WClass root) {
+		if (parents.empty) return root
+		val parentsClass = parents.map [ ref ].filter(WClass)
+		if (parentsClass.isEmpty) root ?: WollokClassFinder.instance.getObjectClass(it) else parentsClass.last
+	}
+	
+	def static EObject ref(WAncestor ancestor) { ancestor.ref }
+	
+	def static dispatch List<WMixin> mixins(EList<WAncestor> it) {
+		map [ ref ].filter(WMixin).toList
+	}
 	def static dispatch List<WMixin> mixins(WMethodContainer it) { throw new UnsupportedOperationException("shouldn't happen")  }
-	def static dispatch List<WMixin> mixins(WClass it) { mixins }
-	def static dispatch List<WMixin> mixins(WObjectLiteral it) { mixins } // can we just reply with wollok.lang.Object class ?
-	def static dispatch List<WMixin> mixins(WNamedObject it) { mixins }
-	def static dispatch List<WMixin> mixins(MixedMethodContainer it) { mixins }
-	def static dispatch List<WMixin> mixins(WMixin it) { Collections.EMPTY_LIST }
+	def static dispatch List<WMixin> mixins(WClass it) { parents.mixins	}
+	def static dispatch List<WMixin> mixins(WObjectLiteral it) { parents.mixins	}
+	def static dispatch List<WMixin> mixins(WNamedObject it) { parents.mixins }
+	def static dispatch List<WMixin> mixins(WMixin it) { parents.mixins	}
 	def static dispatch List<WMixin> mixins(WSuite it) { Collections.EMPTY_LIST }
 
 	def static dispatch members(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
 	def static dispatch members(WClass c) { c.members }
 	def static dispatch members(WObjectLiteral c) { c.members }
 	def static dispatch members(WNamedObject c) { c.members }
-	def static dispatch members(MixedMethodContainer c) { #[] }
 	def static dispatch members(WMixin c) { c.members }
 	def static dispatch members(WSuite c) { c.members }
 
@@ -443,7 +527,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch contextName(WClass c) { c.fqn }
 	def static dispatch contextName(WObjectLiteral c) { "<anonymousObject>" }
 	def static dispatch contextName(WNamedObject c) { c.fqn }
-	def static dispatch contextName(MixedMethodContainer c) { "<mixedObject>" }
 	def static dispatch contextName(WMixin c) { c.fqn }
 	def static dispatch contextName(WSuite s) { s.name }
 
@@ -452,7 +535,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch abstractionName(WNamedObject o) { WollokConstants.WKO }
 	def static dispatch abstractionName(WMixin m) { WollokConstants.MIXIN }
 	def static dispatch abstractionName(WMethodDeclaration m) { WollokConstants.METHOD }
-	def static dispatch abstractionName(WConstructor c) { WollokConstants.CONSTRUCTOR }
 	
 	def static boolean inheritsMethod(WMethodContainer it, String name, int argSize) {
 		(mixins !== null && mixins.exists[m| m.hasOrInheritsMethod(name, argSize)])
@@ -479,15 +561,35 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	/**
 	 * The full hierarchy chain top->down
 	 */
-	def static List<WMethodContainer> linearizeHierarchy(WMethodContainer it) {
-		var chain = newLinkedList
-		chain.add(it)
-		if (mixins !== null) {
-			chain.addAll(mixins.clone.reverse)
-		}
-		if (parent !== null && !parent.hasCyclicHierarchy)
-			chain.addAll(parent.linearizeHierarchy)
-		chain
+	def static List<WMethodContainer> linearizeHierarchy(WMethodContainer c) {
+		if (c.parent !== null && c.parent.hasCyclicHierarchy) return newLinkedList
+		if (c.mixins.hasACyclicHierarchy) return newLinkedList
+		val result = newLinkedList => [
+			add(c)
+			addAll(c.mixinsForLinearization)
+			addAll(c.parentClassesForLinearization)
+		]
+		result
+	}
+	
+	def static List<WMethodContainer> mixinsForLinearization(WMethodContainer it) {
+		linearizeMixinHierarchy(mixins, newArrayList).toSet.toList
+	}
+	
+	def static List<WMethodContainer> linearizeMixinHierarchy(List<WMixin> mixins, List<WMethodContainer> allMixins) {
+		if (mixins.nullOrEmpty) return allMixins
+		allMixins.addAll(mixins)
+		val newMixins = mixins.flatMap [ allParents ].toList
+		linearizeMixinHierarchy(newMixins, allMixins)
+		allMixins
+	}
+	
+	def static allParents(WMixin mixin) {
+		mixin.parents.map [ ref ].filter(WMixin).toList
+	}
+	
+	def static parentClassesForLinearization(WMethodContainer it) {
+		if (parent === null) #[WollokClassFinder.instance.getObjectClass(it)] else parent.linearizeHierarchy
 	}
 	
 	def static matches(WMethodDeclaration m1, WMethodDeclaration m2) {
@@ -532,7 +634,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static void superClassesIncludingYourselfTopDownDo(WClass cl, (WClass)=>void action) {
-		if (cl.equals(cl.parent)) return; // avoid stack overflow
+		if (cl.hasCyclicHierarchy) return;
 		if (cl.parent !== null) cl.parent.superClassesIncludingYourselfTopDownDo(action)
 		action.apply(cl)
 	}
@@ -550,7 +652,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	
 	def static dispatch feature(EObject o) { null }
 	def static dispatch feature(WMemberFeatureCall call) { call.feature }
-	def static dispatch feature(WSuperInvocation call) { call.method.name }
+	def static dispatch feature(WSuperInvocation call) { call.method?.name }
 	def static dispatch feature(WUnaryOperation o) { o.feature }
 	def static dispatch feature(WBinaryOperation o) { o.feature }
 	def static dispatch feature(WPostfixOperation o) { o.feature }
@@ -567,47 +669,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static dispatch isKindOf(WMethodContainer c1, WMethodContainer c2) { c1 == c2 }
 	def static dispatch isKindOf(WClass c1, WClass c2) { WollokModelExtensions.isSuperTypeOf(c2, c1) }
-
-	def static WConstructor resolveConstructor(WClass originalClazz, WClass clazz, Object... arguments) {
-		if (clazz.parent === null) {
-			//default constructor
-			return null
-		}
-		if (clazz.hasConstructorDefinitions) {
-			clazz.constructors.findFirst[ matches(arguments.size) ]
-		} else {
-			originalClazz.resolveConstructor(clazz.parent, arguments)
-		}
-	}
-
-	def static dispatch WConstructor resolveConstructor(WClass clazz, Object... arguments) {
-		clazz.resolveConstructor(clazz, arguments)
-	}
-	def static dispatch WConstructor resolveConstructor(WObjectLiteral obj, Object... arguments) {
-		obj.parent.resolveConstructor(arguments)
-	}
-	def static dispatch WConstructor resolveConstructor(WNamedObject obj, Object... arguments) {
-		obj.parent.resolveConstructor(arguments)
-	}
-	def static dispatch WConstructor resolveConstructor(MixedMethodContainer obj, Object... arguments) {
-		obj.clazz.resolveConstructor(arguments)
-	}
-	
-	def static dispatch WConstructor resolveConstructor(WMethodContainer otherContainer, Object... arguments) {
-		throw new WollokRuntimeException(Messages.WollokInterpreter_constructorCallNotAllowed)
-	}
-
-
-	// ************************************************************************
-	// ** Constructors delegation, etc.
-	// ************************************************************************
-
-	def static dispatch resolveConstructorReference(WMethodContainer behave, WSelfDelegatingConstructorCall call) { behave.resolveConstructor(call.arguments) }
-	def static dispatch resolveConstructorReference(WMethodContainer behave, WSuperDelegatingConstructorCall call) { findConstructorInSuper(behave, call.arguments) }
-
-	def static findConstructorInSuper(WMethodContainer behave, Object[] args) {
-		(behave as WClass).parent?.resolveConstructor(args)
-	}
 
 	// ************************************************************************
 	// ** unorganized
@@ -672,11 +733,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		ele.declaringContext !== null
 	}
 	
-	def dispatch static boolean canCreateLocalVariable(WFixture it) { false }
-	def dispatch static boolean canCreateLocalVariable(WTest it) { true }
-	def dispatch static boolean canCreateLocalVariable(WMethodContainer it) { true }
-	def dispatch static boolean canCreateLocalVariable(WProgram it) { true }
-	def dispatch static boolean canCreateLocalVariable(EObject ele) {
+	def static dispatch boolean canCreateLocalVariable(WTest it) { true }
+	def static dispatch boolean canCreateLocalVariable(WMethodContainer it) { true }
+	def static dispatch boolean canCreateLocalVariable(WProgram it) { true }
+	def static dispatch boolean canCreateLocalVariable(EObject ele) {
 		if (ele.eContainer === null) return false
 		ele.eContainer.canCreateLocalVariable
 	}
@@ -791,62 +851,25 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static dispatch boolean isPropertyAllowed(WSuite s) { false	}
 	def static dispatch boolean isPropertyAllowed(WProgram p) { false }
-	def static dispatch boolean isPropertyAllowed(WConstructor c) { false }
 	def static dispatch boolean isPropertyAllowed(WMethodDeclaration m) { false }
 	def static dispatch boolean isPropertyAllowed(WClosure c) { false }
-	def static dispatch boolean isPropertyAllowed(WFixture f) { false }
 	def static dispatch boolean isPropertyAllowed(WMethodContainer mc) { true }
 	def static dispatch boolean isPropertyAllowed(EObject o) {
 		val parent = o.eContainer
 		parent !== null && parent.isPropertyAllowed
 	}
-	
-	def static hasCyclicDefinition(WConstructor it) {
-		if (delegatingConstructorCall === null) return false
-		if (delegatingConstructorCall.hasNamedParameters) return false
-		delegatingConstructorCall.callsSelf && parameters.size == delegatingConstructorCall.arguments.size
-	}
-	
-	def static dispatch callsSelf(WDelegatingConstructorCall it) { false }
-	def static dispatch callsSelf(WSelfDelegatingConstructorCall it) { true }
-
-	def static dispatch hasParentParameterValues(WObjectLiteral l) {
-		l.parentParameters !== null && !l.parentParameters.values.empty
-	}
-
-	def static dispatch hasParentParameterValues(WNamedObject wko) {
-		wko.parentParameters !== null && !wko.parentParameters.values.empty
-	}
-
-	def static dispatch hasParentParameterInitializers(WObjectLiteral l) {
-		l.parentParameters !== null && !l.parentParameters.initializers.empty
-	}
-
-	def static dispatch hasParentParameterInitializers(WNamedObject wko) {
-		wko.parentParameters !== null && !wko.parentParameters.initializers.empty
-	}
-	
-	def static dispatch parentParameters(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen") }
-		
-	def static dispatch parentParameters(WNamedObject o) {
-		o.parentParameters.values
-	}
-
-	def static dispatch parentParameters(WObjectLiteral o) {
-		o.parentParameters.values
-	}
-	
-	def static parentParametersValues(WNamedObject o) {
-		if (o.parentParameters === null) return 0
-		o.parentParameters.values.size
-	}
-
-	def static parentParametersValues(WObjectLiteral o) {
-		if (o.parentParameters === null) return 0
-		o.parentParameters.values.size
-	}
 
 	def static dispatch isCustom(WMethodContainer o) { !o.fqn.startsWith("wollok.") }
 	def static dispatch isCustom(EObject o) { false }
 
+	def static dispatch shouldCheckInitialization(WMethodContainer it) { true }
+	def static dispatch shouldCheckInitialization(WClass it) { false }
+	def static dispatch shouldCheckInitialization(WMixin it) { false }
+
+	def static isInitializer(WMethodDeclaration m) { m.name.equals(INITIALIZE_METHOD) }
+
+	def static dispatch boolean isClosureWithoutParams(WExpression e) { false }
+	def static dispatch boolean isClosureWithoutParams(WClosure block) { block.parameters.isEmpty }
+	
+	def static showVariables(List<WVariableDeclaration> it) { map [ variable.name ].sort.join(", ") } 
 }

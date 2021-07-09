@@ -106,7 +106,7 @@ class QuickFixUtils {
 	def static nextSiblingCode(EObject element) {
 		element.node?.nextSibling?.text?.trim	
 	}
-	
+
 	def static previousSiblingCode(EObject element) {
 		element.node?.previousSibling?.text?.trim	
 	}
@@ -312,12 +312,6 @@ class QuickFixUtils {
 		xtextDocument.replace(constructorLocation.placeToAdd, 0, constructorLocation.formatCode(code))
 	}
 
-	def static insertConstructor(WMethodContainer declaringContext, String code, IModificationContext context) {
-		val constructorLocation = declaringContext.placeToAddConstructor
-		val xtextDocument = context.getXtextDocument(declaringContext.fileURI)
-		xtextDocument.replace(constructorLocation.placeToAdd, 0, constructorLocation.formatCode(code))
-	}
-
 	def static insertProperty(WMethodContainer declaringContext, String code, IModificationContext context) {
 		val variableLocation = declaringContext.placeToAddVariable
 		val xtextDocument = context.getXtextDocument(declaringContext.fileURI)
@@ -332,23 +326,7 @@ class QuickFixUtils {
 		new QuickFixLocation(behaviors.sortBy [ before ].last.after, Location.AFTER)
 	}
 
-	def static placeToAddConstructor(WMethodContainer declaringContext) {
-		val constructors = declaringContext.constructors().toList
-		if (!constructors.isEmpty) {
-			return new QuickFixLocation(constructors.sortBy [ before ].last.after, Location.AFTER)
-		}
-		val behaviors = declaringContext.behaviors
-		if (!behaviors.isEmpty) {
-			return new QuickFixLocation(behaviors.sortBy [ before ].head.before - 1, Location.BEFORE)
-		}
-		new QuickFixLocation(declaringContext.defaultPlace, Location.ALL)
-	}
-
 	def static placeToAddVariable(WMethodContainer declaringContext) {
-		val constructors = declaringContext.constructors().toList
-		if (!constructors.isEmpty) {
-			return new QuickFixLocation(constructors.sortBy [ before ].head.before, Location.BEFORE)
-		}
 		val behaviors = declaringContext.behaviors
 		if (!behaviors.isEmpty) {
 			return new QuickFixLocation(behaviors.sortBy [ before ].head.before - 1, Location.BEFORE)

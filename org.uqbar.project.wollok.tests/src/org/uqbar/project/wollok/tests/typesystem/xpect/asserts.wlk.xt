@@ -56,5 +56,14 @@ object assertsTest {
 	method m11(clos, comparer) {
 		assert.throwsExceptionByComparing(clos, comparer)
 	}
-	
+
+	// XPECT methodType at m12 --> () => Void
+	method m12() {
+		assert.doesNotThrowException({ 1 + 1 })
+	}
+
+	// XPECT methodType at m13 --> ({() => Any}) => Void
+	method m13(clos) {
+		assert.doesNotThrowException(clos)
+	}	
 }

@@ -18,7 +18,7 @@ class TestDescribeTestCase extends AbstractWollokInterpreterTestCase {
 		
 			var uno
 			
-			fixture {
+			method initialize() {
 				uno = 1 / 0	
 			}
 			

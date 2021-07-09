@@ -8,14 +8,11 @@ import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.List
-import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.documentation.impl.MultiLineCommentDocumentationProvider
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.launch.WollokChecker
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
-import org.uqbar.project.wollok.wollokDsl.WClass
-import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -34,6 +31,8 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  */
 class WollokDocParser extends WollokChecker {	
 	
+	val static ES = "es"
+
 	val static HEADER2_ON = "<h3>"
 	val static HEADER2_OFF = "</h3>"
 	val static HEADER3_ON = "<h4>"
@@ -60,18 +59,25 @@ class WollokDocParser extends WollokChecker {
 	val static CODE_ON = "<code>"
 	val static CODE_OFF = "</code>"
 	val static wollokDocTokens = #["author", "since", "param", "see", "See", "private", "returns", "return", "throws", "noInstantiate"]
+	val static LOCALIZED_COMMENT_SEPARATOR = '''«System.lineSeparator»---«System.lineSeparator»'''
 	var BufferedWriter wollokDocFile
 	val allFiles = <File>newArrayList
 	var String outputFolder
-			
+	val LocalDateTime timestamp
+	String locale
+
 	@Inject MultiLineCommentDocumentationProvider multilineProvider
 
 	val List<WMethodDeclaration> privateMethods = newArrayList
-		
-	def static void main(String[] args) {
-		new WollokDocParser().doMain(args)
+
+	new(LocalDateTime timestamp) {
+		this.timestamp = timestamp
 	}
-	
+
+	def static void main(String[] args) {
+		new WollokDocParser(LocalDateTime.now()).doMain(args)
+	}
+
 	override String processName() {
 		"WollokDoc Parser"
 	}
@@ -84,6 +90,7 @@ class WollokDocParser extends WollokChecker {
 	override doConfigureParser(WollokLauncherParameters parameters) {
 		injector.injectMembers(this)
 		outputFolder = parameters.folder
+		locale = parameters.locale.orElse(ES)
 	}
 
 	override launch(String folder, WollokLauncherParameters parameters) {
@@ -95,12 +102,9 @@ class WollokDocParser extends WollokChecker {
 	}
 	
 	def void writeNavbar() {
-		val path = URI.createFileURI(outputFolder).segmentsList
-		var parentOutputFolder = path.subList(0, path.length - 1)
-		var mainFile = parentOutputFolder.join(File.separator) + File.separator + "wollokDoc.md"
-		if (outputFolder.startsWith(File.separator)) {
-			mainFile = File.separator + mainFile
-		}
+		val outputFolderParent = new File(outputFolder).getAbsoluteFile().getParentFile()
+		val mainFile = outputFolderParent.path + "wollokDoc.md"
+
 		println("Writing " + mainFile)
 		val file = new File(mainFile)
 		wollokDocFile = Files.newWriter(file, Charsets.UTF_8) => [
@@ -139,7 +143,7 @@ class WollokDocParser extends WollokChecker {
 	}
 	
 	def generateWollokDocFile(WFile file, File mainFile) {
-		val lastUpdated = "Last update: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
+		val lastUpdated = "Last update: " + timestamp.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
 		file => [
 			allFiles.add(mainFile)
 			val htmlFile = mainFile.name.toHtmlFile
@@ -186,11 +190,6 @@ class WollokDocParser extends WollokChecker {
 	def dispatch void generateWollokDoc(EObject o) {
 	}
 
-	def dispatch void generateWollokDoc(WConstructor c) {
-		writeFile(BOLD_ON + WollokConstants.CONSTRUCTOR + BOLD_OFF + "(" + c.parameters.map[name].join(", ") + ")")
-		c.showComment
-	}
-	
 	def dispatch void generateWollokDoc(WMethodDeclaration m) {
 		val comment = m.comment
 		if (m.originalComment.contains(PRIVATE)) {
@@ -215,21 +214,10 @@ class WollokDocParser extends WollokChecker {
 		writeFile(TABLE_ROW_OFF)
 	}
 	
-	def dispatch getDefinedConstructors(WMethodContainer mc) { newArrayList }
-	def dispatch getDefinedConstructors(WClass c) { c.constructors }
-	
 	def dispatch void generateWollokDoc(WMethodContainer mc) {
 		header(mc.imageName + SPACE + mc.name, mc.name)
 		writeFile(showHierarchy(mc))
 		mc.showComment
-		val constructors = mc.definedConstructors
-		if (!constructors.isEmpty) {
-			header2("Constructors")
-			writeFile(TABLE_ON)
-			constructors.forEach [ generateWollokDoc ]
-			writeFile(TABLE_OFF)
-			writeFile(HORIZONTAL_LINE)
-		}
 		val attributes = mc.variableDeclarations
 		if (!attributes.isEmpty) {
 			header2("Attributes")
@@ -251,7 +239,7 @@ class WollokDocParser extends WollokChecker {
 			writeInheritedMethods(mc)
 			writeFile(HORIZONTAL_LINE)
 		}
-		if (constructors.isEmpty && mc.methods.isEmpty) {
+		if (mc.methods.isEmpty) {
 			writeFile(HORIZONTAL_LINE)
 		}
 	}
@@ -362,13 +350,30 @@ class WollokDocParser extends WollokChecker {
 	}
 	
 	def String comment(EObject o) {
-		val comment = (multilineProvider.getDocumentation(o) ?: "")
-			.replace(System.lineSeparator, LINE_BREAK)
-		wollokDocTokens.fold(comment, [ newComment, token | 
-			newComment.replace("@" + token, BOLD_ON + token + BOLD_OFF) 
+		val comment = (multilineProvider.getDocumentation(o) ?: "").localized(locale).replace(System.lineSeparator,
+			LINE_BREAK)
+
+		wollokDocTokens.fold(comment, [ newComment, token |
+			newComment.replace("@" + token, BOLD_ON + token + BOLD_OFF)
 		])
 	}
 	
+	def boolean canBeLocalized(String comment) {
+		comment.startsWith("lang: ")
+	}
+
+	def String localized(String comment, String locale) {
+		if(!comment.canBeLocalized()) return comment
+
+		val expectedLocaleDeclaration = '''lang: «locale»«System.lineSeparator»'''
+
+		val localizedComment = comment.split(LOCALIZED_COMMENT_SEPARATOR).findFirst [
+			startsWith(expectedLocaleDeclaration)
+		] ?: ""
+
+		localizedComment.replace(expectedLocaleDeclaration, "")
+	}
+
 	def Filter filterWollokElements() {
 		[ int level, String path, File file |
 			path.endsWith(".wlk")

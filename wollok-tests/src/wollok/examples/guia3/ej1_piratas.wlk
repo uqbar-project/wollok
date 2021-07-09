@@ -3,10 +3,6 @@ class Pirata {
 	var dinero
 	var nivelEbriedad
 	
-	constructor(itemsPirata) {
-		items = itemsPirata
-	}
-	
 	method getItems() {
 		return items
 	}
@@ -48,14 +44,13 @@ object saquear {
 
 object main {
 	
-	var p = new Pirata(["brujula", "cuchillo", "cuchillo"])	
+	var pirata = new Pirata(items = ["brujula", "cuchillo", "cuchillo"])	
 	//var barco = new Barco()
 	
-	method getP() {
-		return p
+	method getPirata() {
+		return pirata
 	}
 	
 	
 }
-
 

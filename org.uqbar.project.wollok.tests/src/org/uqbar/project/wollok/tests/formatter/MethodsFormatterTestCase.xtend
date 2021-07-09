@@ -297,11 +297,9 @@ const                  kmRecorridos= 0 method comer(gr) { energia = energia + gr
 		'''
   class Presentacion {
 	var fecha
-	var musicos
+	var musicos = []
 	var lugar
-	constructor() {
-		musicos = []
-	}
+
 	method fecha(_fecha) {
 		fecha = _fecha
 	}
@@ -328,12 +326,8 @@ const                  kmRecorridos= 0 method comer(gr) { energia = energia + gr
 		class Presentacion {
 		
 			var fecha
-			var musicos
+			var musicos = []
 			var lugar
-		
-			constructor() {
-				musicos = []
-			}
 		
 			method fecha(_fecha) {
 				fecha = _fecha
@@ -402,7 +396,9 @@ const                  kmRecorridos= 0 method comer(gr) { energia = energia + gr
 	def void methodReturningValuesFromIfExpression() {
 		assertFormatting(
 			'''
-			object luisAlberto inherits Musico (8) {
+			object luisAlberto inherits Musico (       valor
+			
+			 =    8) {
 			
 				var guitarra
 			
@@ -413,7 +409,7 @@ const                  kmRecorridos= 0 method comer(gr) { energia = energia + gr
 				}
 			
 				override method costo(presentacion) {
-					if (presentacion.dia() < ( new Date(30, 9, 2017) )) {
+					if (presentacion.dia() < ( new Date(day = 30, month = 9, year = 2017) )) {
 						return 
 						
 						
@@ -427,7 +423,7 @@ const                  kmRecorridos= 0 method comer(gr) { energia = energia + gr
 			}
 			''',
 			'''
-			object luisAlberto inherits Musico (8) {
+			object luisAlberto inherits Musico (valor = 8) {
 			
 				var guitarra
 			
@@ -438,7 +434,7 @@ const                  kmRecorridos= 0 method comer(gr) { energia = energia + gr
 				}
 			
 				override method costo(presentacion) {
-					if (presentacion.dia() < ( new Date(30, 9, 2017) )) {
+					if (presentacion.dia() < ( new Date(day = 30, month = 9, year = 2017) )) {
 						return 1000
 					} else {
 						return 1200

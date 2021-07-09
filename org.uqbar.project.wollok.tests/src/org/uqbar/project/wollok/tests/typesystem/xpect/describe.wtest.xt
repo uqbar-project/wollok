@@ -7,5 +7,6 @@ describe "without fixture" {
 	test "test in suite" {
 		// XPECT type at y --> String
 		var y = s
+		assert.that(true)
 	}
 }

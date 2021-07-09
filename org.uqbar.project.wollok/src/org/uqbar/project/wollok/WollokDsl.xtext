@@ -36,17 +36,9 @@ WSuite:
 	'describe' name=STRING 
 	'{'
 		(members+=WVariableDeclaration ';'?)*
-		(fixture=WFixture)?
 		(members+=WMethodDeclaration ';'?)*
 		(tests+=WTest)*
 	'}'
-;
-
-WFixture:
-	{WFixture}
-	'fixture' '{'
-		(elements+=WExpression ';'?)*
-	'}'	
 ;
 
 WPackage:
@@ -60,19 +52,6 @@ WLibraryElement: (WPackage | WClass | WNamedObject | WMixin | WVariableDeclarati
 WNamed: WMethodDeclaration | WReferenciable | WPackage | WClass | WMixin;
 WMethodContainer: WClass | {WObjectLiteral} | WNamedObject | WMixin | WSuite;
 WReferenciable: WParameter | {WVariable} | WNamedObject ;
-
-WObjectLiteral returns WExpression:
-	{WObjectLiteral}
-	=>'object'
-	('inherits' parent=[WClass|QualifiedName] 
-		(=> ( '(' parentParameters = WArgumentList ')'))?
-	)?
-	('mixed with' mixins+=[WMixin|QualifiedName] (('and'|',') mixins+=[WMixin|QualifiedName])*)?
-	'{'
-		(members+=WVariableDeclaration ';'?)*
-		(members+=WMethodDeclaration ';'?)*
-	'}'
-;
 
 WVariableDeclaration returns WExpression:
 	{WVariableDeclaration}
@@ -337,39 +316,57 @@ WListLiteral:
 WSetLiteral:
 	{WSetLiteral} '#{' (elements+=WExpression (',' elements+=WExpression )*)? '}';
 	
+WAncestorRef:
+	(WClass|WMixin)
+;
+
+WAncestor:
+	{WAncestor}
+	ref=[WAncestorRef|QualifiedName]
+		('(' parentParameters = WNamedArgumentsList ')')?
+;
+
+// Named object
 WNamedObject:
+	{WNamedObject}
 	'object' name=ID 
-		('inherits' parent=[WClass|QualifiedName] 
-			(=> ( '(' parentParameters = WArgumentList ')'))?
-		)?
-		('mixed with' mixins+=[WMixin|QualifiedName] (('and'|',') mixins+=[WMixin|QualifiedName])*)?
+		(('inherits' parents+=WAncestor ('and' parents+=WAncestor)*)?
+			| 'derived' root=[WClass|QualifiedName])	
 	'{'
 		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*
 	'}'
 ;
 
-WCanExtendClass:
-	WClass | WNamedObject
+// Object Literal
+WObjectLiteral returns WExpression:
+	{WObjectLiteral}
+	=>'object'
+		(('inherits' parents+=WAncestor ('and' parents+=WAncestor)*)?
+			| 'derived' root=[WClass|QualifiedName])	
+	'{'
+		(members+=WVariableDeclaration ';'?)*
+		(members+=WMethodDeclaration ';'?)*
+	'}'
 ;
 
-// CLASSES
-
+// Class
 WClass:
-	'class' name=ID 
-		('inherits' parent=[WClass|QualifiedName])? 
-		('mixed with' mixins+=[WMixin|QualifiedName] (('and'|',') mixins+=[WMixin|QualifiedName])*)? 
+	{WClass}
+	'class' name=ID
+		(('inherits' parents+=WAncestor ('and' parents+=WAncestor)*)?
+			| 'derived' root=[WClass|QualifiedName])
 	'{'
 		(members+=WVariableDeclaration ';'?)*
-		(constructors+=WConstructor)*
 		(members+=WMethodDeclaration ';'?)*
 	'}'
 ;
 
-// MIXINS
-
+// Mixin
 WMixin:
-	'mixin' name=ID '{'
+	'mixin' name=ID 
+		('inherits' parents+=WAncestor ('and' parents+=WAncestor)*)?
+	'{'
 		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*
 	'}'
@@ -379,47 +376,17 @@ WMember:
 	WVariableDeclaration | WMethodDeclaration
 ;
 
-WConstructor:
-	{WConstructor} 'constructor' '(' (parameters+=WParameter (',' parameters+=WParameter)*)? ')'
-		('=' delegatingConstructorCall=WDelegatingConstructorCall)?
-		(expression=WBlockExpression)?
-;
-
-WDelegatingConstructorCall:
-	WSelfDelegatingConstructorCall | WSuperDelegatingConstructorCall
-;
-
-// somehow this should be references to WConstructor
-WSelfDelegatingConstructorCall:
-	{WSelfDelegatingConstructorCall} 'self' '(' 
-	(=> argumentList=WPositionalArgumentsList)?
-	')'
-;
-
-// somehow this should be references to WConstructor
-WSuperDelegatingConstructorCall:
-	{WSuperDelegatingConstructorCall} 'super' '(' 
-	(=> argumentList=WPositionalArgumentsList)?
-	')'
-;
-
 WConstructorCall:
 	'new' classRef=[WClass|QualifiedName] '('
 	(=> argumentList=WArgumentList)?
 	')'
-	('with' mixins+=[WMixin])*
 ;
 
-WArgumentList: (=> WNamedArgumentsList | WPositionalArgumentsList);
+WArgumentList: (=> WNamedArgumentsList);
 
 WNamedArgumentsList:
 	{WNamedArgumentsList}
 	(=> initializers+=WInitializer (',' initializers+=WInitializer)*)
-;
-
-WPositionalArgumentsList:
-	{WPositionalArgumentsList}
-	(=> values += WExpression (',' values += WExpression)*)
 ;
 
 WInitializer:

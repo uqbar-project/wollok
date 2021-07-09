@@ -9,6 +9,8 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+import org.uqbar.project.wollok.interpreter.listeners.WollokTestListener
 import org.uqbar.project.wollok.launch.tests.WollokTestsReporter
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WSuite
@@ -93,7 +95,9 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 		// If in a suite, we should create a suite wko so this will be our current context to eval the tests
 		try {
 			val suiteObject = new SuiteBuilder(suite, interpreter).forTest(test).build
-			interpreter.performOnStack(test, suiteObject, [ | test.eval])
+			interpreter.performOnStack(test, suiteObject, [ |
+				test.eval
+			])
 		} catch (Exception e) {
 			handleExceptionInTest(e, test)
 		} 
@@ -104,11 +108,16 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	}
 
 	override dispatch evaluate(WTest test) {
+		val testListener = new WollokTestListener
 		try {
 			wollokTestsReporter.testStarted(test)
+			interpreter.addInterpreterListener(testListener)
 			test.elements.forEach [ expr |
 				interpreter.performOnStack(expr, currentContext) [ | expr.eval ]
 			]
+			if (testListener.hasNoAssertions) {
+				throw new WollokProgramExceptionWrapper(newWollokAssertionException(Messages.TEST_NO_MESSAGE_TO_ASSERT))
+			}
 			wollokTestsReporter.reportTestOk(test)
 			null
 		} catch (Exception e) {
@@ -146,18 +155,15 @@ class SuiteBuilder {
 		// Suite -> suite wko
 		val suiteObject = new WollokObject(interpreter, suite)
 		// Declaring suite variables as suite wko instance variables
-		suite.members.forEach [ member |
-			suiteObject.addMember(member)
+		suite.variableDeclarations.forEach [ attribute |
+			suiteObject.addMember(attribute)
+			suiteObject.initializeAttribute(attribute)
 		]
-		if (suite.fixture !== null) {
-			suite.fixture.elements.forEach [ element |
-				interpreter.performOnStack(test, suiteObject, [| interpreter.eval(element) ])
-			]
-		}		
+		WollokInterpreterEvaluator.callInitIfDefined(suiteObject)
 		if (test !== null) {
 			// Now, declaring test local variables as suite wko instance variables
-			test.variableDeclarations.forEach[ variable |
-				suiteObject.addMember(variable, false)
+			test.variableDeclarations.forEach[ attribute |
+				suiteObject.addMember(attribute)
 			]
 		}
 		suiteObject
