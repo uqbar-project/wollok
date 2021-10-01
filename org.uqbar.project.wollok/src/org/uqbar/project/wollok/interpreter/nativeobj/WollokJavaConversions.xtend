@@ -97,6 +97,8 @@ class WollokJavaConversions {
 
 	def static dispatch WollokObject convertJavaToWollok(Long o) { evaluator.getOrCreateNumber(o.toString) }
 
+	def static dispatch WollokObject convertJavaToWollok(Float o) { evaluator.getOrCreateNumber(o.toString) }
+
 	def static dispatch WollokObject convertJavaToWollok(Integer o) { evaluator.getOrCreateNumber(o.toString) }
 
 	def static dispatch WollokObject convertJavaToWollok(Double o) { evaluator.getOrCreateNumber(o.toString) }
