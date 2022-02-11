@@ -46,7 +46,7 @@ jobs:
           echo "Running with profiles $PROFILES"
           echo "Running with UPDATE_SITE $UPDATE_SITE"
           export MAVEN_OPTS=-Xmx2048m
-          mvn -q -N io.takari:maven:0.7.7:wrapper -Dmaven=3.6.3 && xvfb-run ./mvnw -e -Darguments='-Dtycho.disableP2Mirrors=false' \
+          mvn -q -N io.takari:maven:0.7.7:wrapper -Dmaven=3.5.4 && xvfb-run ./mvnw -v -e -Darguments='-Dtycho.disableP2Mirrors=false' \
            -D tycho.disableP2Mirrors=false -U \
            -D repoToken=${{ secrets.GITHUB_TOKEN }} \
            clean install jacoco:report \
