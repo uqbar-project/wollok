@@ -46,7 +46,7 @@ jobs:
           echo "Running with profiles $PROFILES"
           echo "Running with UPDATE_SITE $UPDATE_SITE"
           export MAVEN_OPTS=-Xmx2048m
-          mvn -q -N io.takari:maven:0.7.7:wrapper -Dmaven=3.6.3 && mvnw -v
+          mvn -q -N io.takari:maven:0.7.7:wrapper -Dmaven=3.6.3 && ./mvnw -v
           mvn -v
           xvfb-run mvn -e -Darguments='-Dtycho.disableP2Mirrors=false' \
            -D tycho.disableP2Mirrors=false -U \
