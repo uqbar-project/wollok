@@ -51,7 +51,6 @@ jobs:
            -D repoToken=${{ secrets.GITHUB_TOKEN }} \
            clean install jacoco:report \
            coveralls:report \
-           --no-transfer-progress \
            -P $PROFILES
           cd ..
         env:
