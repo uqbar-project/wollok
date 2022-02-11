@@ -39,10 +39,10 @@
 			<repository location="https://download.eclipse.org/tools/orbit/downloads/2019-12" />
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-			<unit id="org.eclipse.egit.mylyn.feature.group" version="5.5.1.201910021850-r" />
-			<unit id="org.eclipse.egit.feature.group" version="5.5.1.201910021850-r" />
-			<unit id="org.eclipse.egit.source.feature.group" version="5.5.1.201910021850-r" />
-			<repository location="http://eclipse.c3sl.ufpr.br/egit/updates-5.5.1/" />
+			<unit id="org.eclipse.egit.mylyn.feature.group" version="5.13.0.202109080827-r" />
+			<unit id="org.eclipse.egit.feature.group" version="5.13.0.202109080827-r" />
+			<unit id="org.eclipse.egit.source.feature.group" version="5.13.0.202109080827-r" />
+			<repository location="https://eclipse.c3sl.ufpr.br/egit/updates-5.13/" />
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 			<repository location="https://ci.eclipse.org/xpect/job/Xpect/job/release_0.2.0/lastBuild/artifact/org.eclipse.xpect.releng/p2-repository/target/repository/" />
