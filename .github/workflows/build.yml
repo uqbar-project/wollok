@@ -36,7 +36,6 @@ jobs:
       - name: Run Maven Build
         run: | 
           openssl aes-256-cbc -pass pass:${{ secrets.SETTINGS_GPG_TOKEN }} -pbkdf2 -in ./settings.xml.enc -out ./settings.xml -d
-          cat ./settings.xml
           mv ./settings.xml ~/.m2/settings.xml
           export DISPLAY=:99.0
           sudo apt-get install -y xvfb
